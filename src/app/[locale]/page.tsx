@@ -1,11 +1,14 @@
+import EventCard from "@/components/eventCards";
 import MapSection from "@/components/HomeComponents/MapSection";
 import NewsCard from "@/components/newsCard";
+import UsefulLink from "@/components/usefulLinks";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { AiFillInstagram } from "react-icons/ai";
 import { CgFacebook } from "react-icons/cg";
 import { FaArrowRight, FaPlay } from "react-icons/fa";
+import { GoArrowRight } from "react-icons/go";
 import { HiOutlineBuildingOffice, HiOutlineUsers } from "react-icons/hi2";
 import { IoLogoYoutube } from "react-icons/io";
 import { IoBriefcaseOutline } from "react-icons/io5";
@@ -176,7 +179,7 @@ export default function Home() {
               <Image src={`/images/title-shape.svg`} alt="park" fill priority />
             </span>
           </div>
-          <FaArrowRight className="text-xl" />
+          <GoArrowRight className="text-xl" />
         </Link>
         <p className="text-paragraph text-primary opacity-90 font-medium">
           Discover the latest news at Erbil Polytechnic University. Stay
@@ -205,6 +208,75 @@ export default function Home() {
       </div>
       {/* map section */}
       <MapSection />
+      {/* Events section */}
+      <div className="max-w-[1040px] w-full flex-col flex_start gap-8 mt-10">
+        <Link
+          href={"events"}
+          className="flex_center gap-5 text-primary font-semibold"
+        >
+          <div className="relative">
+            <h1 className="text-title">New Events</h1>
+            <span className="absolute -right-3 bottom-10 w-14 h-10">
+              <Image src="/images/alumni-shape.svg" alt="park" fill priority />
+            </span>
+          </div>
+          <GoArrowRight className="text-xl" />
+        </Link>
+        <p className="text-paragraph text-primary opacity-90 font-medium">
+          Stay updated with the latest events at Erbil Polytechnic University.
+          From academic seminars to cultural activities, discover what is
+          happening on campus and join us in celebrating knowledge and
+          community.
+        </p>
+        <div className="grid grid-cols-3 w-full gap-8">
+          <EventCard
+            image="/images/event.png"
+            link="/"
+            type="Computation"
+            createdAt="27 Dec 2020"
+            time="1:14 PM"
+            title="Innovate & Compete: Annual Student Innovation Challenge."
+          />
+        </div>
+      </div>
+      {/* Researchs section */}
+      <div className="w-full flex justify-between items-center mt-10">
+        <div className="flex justify-start items-start w-[60%] py-5">
+          <div className="w-[600px] h-[390px] relative">
+            <Image
+              src={"/images/research.png"}
+              alt="My Image"
+              fill
+              priority
+              className="w-full h-auto object-cover"
+            />
+          </div>
+        </div>
+        <div className="w-[40%] flex justify-end items-start flex-col gap-5 ">
+          <h1 className="text-title text-secondary font-semibold">Research</h1>
+          <span className="text-smallParagraph text-secondary max-w-[350px]">
+            Explore groundbreaking research at Erbil Polytechnic University,
+            where our dedicated teams advance knowledge, innovate solutions, and
+            contribute to global scientific and technological progress.
+          </span>
+          <div className="flex_center gap-10">
+            <div className="flex_center flex-col gap-2">
+              <h1 className="text-titleNormal text-golden">+ 2.12k</h1>
+              <span className="text-secondary text-sm font-medium">
+                Research Paper
+              </span>
+            </div>
+            <div className="flex_center flex-col gap-2">
+              <h1 className="text-titleNormal text-golden">+ 1.3k</h1>
+              <span className="text-secondary text-sm font-medium">
+                Conference Paper
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Useful links */}
+      <UsefulLink />
     </div>
   );
 }

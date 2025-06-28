@@ -28,7 +28,7 @@ export default async function RootLayout({
     <html lang={locale}>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <div className="flex justify-start items-start flex-col w-full min-h-screen gap-5">
+          <div className="flex justify-start items-start flex-col w-full min-h-screen">
             <Navbar />
             <div className="w-full pt-5">{children}</div>
             <Footer />
