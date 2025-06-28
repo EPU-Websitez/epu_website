@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+@font-face {
+  font-family: rabar;
+  src: url("../../../public/fonts/rabar.ttf");
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #fff;
+  overflow-x: hidden;
+  font-weight: 300;
+}
+
+body[dir="rtl"] {
+  font-family: rabar;
+}
+
+/* customize the browser defaults */
+::selection {
+  background-color: #080808a6;
+  color: #ffffff;
+}
+
+::-webkit-scrollbar {
+  background-color: #ffffff;
+  width: 7px;
+  border-radius: 8px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #a09999;
+  width: 7px;
+  border-radius: 8px;
+}
+
+.custom_container {
+  @apply max-w-[1370px] w-full relative;
+}
+
+.section {
+  @apply w-full min-h-[100vh] flex items-start justify-center;
+}
+
+.flex_center {
+  @apply flex justify-center items-center;
+}
+
+.flex_start {
+  @apply flex justify-start items-start;
+}
+
+.link_hover {
+  @apply duration-300 hover:text-primary;
+}
+
+.primary_button {
+  @apply bg-primary text-white sm:px-7 sm:py-3 px-4 py-2 sm:text-base text-sm rounded-md;
+}
+
+.change-font {
+  font-family: "roboto", serif;
+}

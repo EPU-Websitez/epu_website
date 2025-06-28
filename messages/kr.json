@@ -1,0 +1,19 @@
+{
+  "IndexPage": {
+    "title": "سڵاو بەڕێز",
+    "description": "چوزانم کاکە"
+  },
+  "NotFoundPage": {
+    "title": "ببورە نەدۆزرایەوە",
+    "description": "هەندێک تێکست و شت"
+  },
+  "Navigation": {
+    "home": "سەرەکی"
+  },
+  "Footer": {
+    "copyright": "کەس نایبا"
+  },
+  "About": {
+    "head": "دەربارەی ئێمە"
+  }
+}
