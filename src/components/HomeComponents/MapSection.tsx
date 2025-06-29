@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -8,18 +9,21 @@ import { MdOutlineLocationOn } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
 
 const MapSection = () => {
+  const t = useTranslations("IndexPage");
   return (
-    <div className="w-full h-[760px] relative">
-      <Image src="/images/map.png" alt="map" fill priority />
-      <div className="absolute top-0 h-full overflow-y-scroll w-[450px] left-10 bg-white bg-opacity-75 p-5 gap-3 flex_start flex-col">
+    <div className="w-full sm:h-[760px] h-[1000px] relative mt-10 bg-[#e9e9e9]">
+      <div className="w-full sm:h-full h-[300px] relative">
+        <Image src="/images/map.png" alt="map" fill priority />
+      </div>
+      <div className="absolute sm:top-0 top-52 h-full overflow-y-scroll sm:w-[450px] w-[90%] sm:left-10 left-1/2 sm:translate-x-0 -translate-x-1/2 bg-white bg-opacity-75 p-5 sm:gap-3 gap-2 flex_start flex-col">
         <Link
           href={"/"}
-          className="w-full flex justify-between items-center text-secondary text-smallTitle"
+          className="w-full flex justify-between items-center text-secondary sm:text-smallTitle text-lg font-semibold"
         >
           <h3>Khabat Technical Institute</h3>
-          <GoArrowRight />
+          <GoArrowRight className="rotate-180" />
         </Link>
-        <div className="flex_center gap-3 text-secondary">
+        <div className="flex_center gap-3 text-secondary sm:text-base text-sm">
           <MdOutlineLocationOn />
           <p className="text-sm">Khabat, Street Name, near building name</p>
         </div>
@@ -32,35 +36,37 @@ const MapSection = () => {
         </span>
         <div className="flex_center gap-14 w-full mt-5">
           <div className="flex_center flex-col gap-2 text-secondary">
-            <span className="w-16 h-16  bg-[#D5E2ED] rounded-full flex_center">
+            <span className="sm:w-16 w-12 sm:h-16 h-12  bg-[#D5E2ED] rounded-full flex_center">
               <LuBookOpen className="text-xl" />
             </span>
             <h2 className="text-lg font-semibold ">+ 12</h2>
-            <span className="text-sm">Departments</span>
+            <span className="text-sm">{t("departments")}</span>
           </div>
           <div className="flex_center flex-col gap-2 text-secondary">
-            <span className="w-16 h-16  bg-[#D5E2ED] rounded-full flex_center">
+            <span className="sm:w-16 w-12 sm:h-16 h-12  bg-[#D5E2ED] rounded-full flex_center">
               <IoBriefcaseOutline className="text-xl" />
             </span>
             <h2 className="text-lg font-semibold ">+ 32</h2>
-            <span className="text-sm">Teachers</span>
+            <span className="text-sm">{t("teachers")}</span>
           </div>
           <div className="flex_center flex-col gap-2 text-secondary">
-            <span className="w-16 h-16  bg-[#D5E2ED] rounded-full flex_center">
+            <span className="sm:w-16 w-12 sm:h-16 h-12  bg-[#D5E2ED] rounded-full flex_center">
               <PiStudent className="text-xl" />
             </span>
             <h2 className="text-lg font-semibold ">+ 2.3K</h2>
-            <span className=" text-sm">Students</span>
+            <span className=" text-sm">{t("students")}</span>
           </div>
         </div>
         <div className="flex_start w-full flex-col gap-5 mt-5">
           <div className="flex justify-between items-center w-full">
-            <h2 className="text-lg font-medium text-secondary">Latest News</h2>
+            <h2 className="text-lg font-medium text-secondary">
+              {t("latest_news")}
+            </h2>
             <Link
               href={"/"}
               className="border-b border-b-secondary text-secondary"
             >
-              See all
+              {t("see_all")}
             </Link>
           </div>
           <div className="w-full flex_start flex-col gap-4 group relative">
@@ -89,7 +95,7 @@ const MapSection = () => {
               type="button"
               className="text-lg font-medium hover:text-primary text-secondary duration-300"
             >
-              "News Title"
+              News Title
             </Link>
           </div>
         </div>

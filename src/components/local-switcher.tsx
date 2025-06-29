@@ -48,14 +48,14 @@ export default function LocalSwitcher() {
       <button
         type="button"
         onClick={handleOpenLang}
-        className="flex_center font-medium gap-3 rounded-md border-lightBorder text-lightText border px-3 py-2"
+        className="flex_center font-medium gap-3 rounded-md border-lightBorder text-lightText border sm:px-3 px-2 py-2 sm:text-base text-xs"
       >
         <span>
           {localActive === "en"
             ? "English"
             : localActive === "ar"
             ? "Arabic"
-            : localActive === "kr"
+            : localActive === "ku"
             ? "Kurdish"
             : "English"}{" "}
           Language
@@ -75,14 +75,16 @@ export default function LocalSwitcher() {
           English
         </button>
         <button
-          className={`w-full ${localActive === "en" ? "text-primary" : ""}`}
+          disabled={isPending}
+          onClick={() => onSelectChange("ar")}
+          className={`w-full ${localActive === "ar" ? "text-primary" : ""}`}
         >
           Arabic
         </button>
         <button
-          className={`w-full ${localActive === "ar" ? "text-primary" : ""}`}
+          className={`w-full ${localActive === "ku" ? "text-primary" : ""}`}
           disabled={isPending}
-          onClick={() => onSelectChange("kr")}
+          onClick={() => onSelectChange("ku")}
         >
           Kurdish
         </button>

@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AiFillInstagram } from "react-icons/ai";
 import { CgFacebook } from "react-icons/cg";
-import { FaArrowRight, FaPlay } from "react-icons/fa";
+import { FaPlay } from "react-icons/fa";
 import { GoArrowRight } from "react-icons/go";
 import { HiOutlineBuildingOffice, HiOutlineUsers } from "react-icons/hi2";
 import { IoLogoYoutube } from "react-icons/io";
@@ -44,11 +44,11 @@ export default function Home() {
   const t = useTranslations("IndexPage");
 
   return (
-    <div className="flex_center flex-col gap-5 w-full">
+    <div className="flex_center flex-col gap-5 w-full mt-8">
       {/* main section */}
-      <div className="relative custom_container">
-        <div className="flex_center flex-col gap-5 absolute z-10 right-5 top-1/2 -translate-y-1/2">
-          <span className="w-[1px] h-[70px] bg-primary"></span>
+      <div className="relative custom_container flex_center">
+        <div className="flex_center flex-col sm:gap-5 gap-2 absolute z-10 sm:right-5 right-10 top-1/2 -translate-y-1/2">
+          <span className="w-[1px] sm:h-[70px] h-[40px] bg-primary"></span>
           <a href="#" className="text-xl text-primary">
             <AiFillInstagram />
           </a>
@@ -58,21 +58,29 @@ export default function Home() {
           <a href="#" className="text-xl text-primary">
             <IoLogoYoutube />
           </a>
-          <span className="w-[1px] h-[70px] bg-primary"></span>
+          <span className="w-[1px] sm:h-[70px] h-[40px] bg-primary"></span>
         </div>
-        <div className="w-full h-[500px]">
-          <Image src="/images/main-pic.png" alt="My Image" fill priority />
+        <div className="sm:w-full w-[345px] lg:h-[500px] sm:h-[400px] h-[220px] relative">
+          <Image
+            src="/images/main-pic.png"
+            alt="Main background"
+            fill
+            priority
+            className="w-full"
+          />
         </div>
-        <div className="w-[490px] h-[290px] bg-primary absolute left-0 bottom-0 rounded-2xl flex justify-start items-start p-5 flex-col gap-8">
-          <h4 className="text-white opacity-50 font-medium  text-xl">
-            In our university
+        <div className="sm:w-[36%] w-[35%] lg:h-[290px] sm:h-[230px] h-[125px] bg-primary absolute sm:left-0 left-[3%] bottom-0 sm:rounded-2xl rounded-md flex justify-start items-start sm:p-5 p-2 flex-col lg:gap-8 gap-3">
+          <h4 className="text-white opacity-50 font-medium  lg:text-xl sm:text-base text-[8px]">
+            {t("in_our_university")}
           </h4>
           <div className="relative">
-            <h1 className="text-5xl text-white">Empowering Your Future !</h1>
-            <div className="w-[50px] h-[40px] absolute right-7 -top-7">
+            <h1 className="lg:text-5xl sm:text-3xl text-xs text-white">
+              {t("empower_future")}
+            </h1>
+            <div className="sm:w-[50px] w-[30px] sm:h-[40px] h-[20px] absolute ltr:lg:right-7 rtl:lg:left-7 ltr:right-0 rtl:left-0 sm:-top-7 -top-5">
               <Image
                 src="/images/alumni-shape.svg"
-                alt="My Image"
+                alt="shape"
                 fill
                 sizes="100px"
                 priority
@@ -92,10 +100,10 @@ export default function Home() {
                     alt={user.name}
                     width={46}
                     height={46}
-                    className="w-12 h-12 rounded-full border-3 border-white shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer"
+                    className="lg:w-12 sm:w-8 w-6 lg:h-12 sm:h-8 h-6 rounded-full border-3 border-white shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer"
                   />
                   {/* Fallback initials */}
-                  <div className="w-12 h-12 rounded-full border-3 border-white shadow-lg bg-gradient-to-br from-blue-500 to-purple-600 items-center justify-center text-white font-semibold text-sm hover:scale-110 transition-transform duration-200 cursor-pointer hidden absolute top-0 left-0">
+                  <div className="lg:w-12 sm:w-8 w-6 lg:h-12 sm:h-8 h-6 rounded-full border-3 border-white shadow-lg bg-gradient-to-br from-blue-500 to-purple-600 items-center justify-center text-white font-semibold text-sm hover:scale-110 transition-transform duration-200 cursor-pointer hidden absolute top-0 left-0">
                     {user.initials}
                   </div>
                   {/* Tooltip */}
@@ -105,62 +113,68 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <div>+4,000 Alumni</div>
+            <div className="sm:text-sm text-[8px]">+4,000 {t("alumni")}</div>
           </div>
         </div>
       </div>
 
       {/* facts section */}
-      <div className="custom_container flex-col flex_center gap-5 mt-10">
-        <h1 className="text-title text-secondary font-semibold">
-          Facts About University
+      <div className="custom_container flex-col flex_center gap-5 mt-10 px-3">
+        <h1 className="sm:text-title text-2xl text-secondary font-semibold">
+          {t("facts_about_university")}
         </h1>
         <span className="text-smallParagraph font-medium max-w-[745px] text-center text-primary opacity-90">
-          Discover the vibrant community at Erbil Polytechnic University with
-          our impressive numbers, showcasing our dedicated students, skilled
-          faculty, supportive staff, and diverse faculties.
+          {t("facts_about_university_text")}
         </span>
-        <div className="mt-5 flex justify-between w-full items-center max-w-[1000px]">
+        <div className="mt-5 grid sm:grid-cols-4 grid-cols-2 gap-5 w-full max-w-[1000px]">
           <div className="flex_center flex-col gap-4">
-            <h1 className="text-title text-secondary font-semibold">+ 3.12K</h1>
+            <h1 className="sm:text-title text-2xl text-secondary font-semibold">
+              + 3.12K
+            </h1>
             <div className="flex_center gap-2">
               <span className="bg-primary w-6 h-6 rounded-full bg-opacity-20 flex_center">
                 <PiStudent />
               </span>
-              <p className="opacity-60">Students</p>
+              <p className="opacity-60">{t("students")}</p>
             </div>
           </div>
           <div className="flex_center flex-col gap-4">
-            <h1 className="text-title text-secondary font-semibold">+ 239K</h1>
+            <h1 className="sm:text-title text-2xl text-secondary font-semibold">
+              + 239
+            </h1>
             <div className="flex_center gap-2">
               <span className="bg-primary w-6 h-6 rounded-full bg-opacity-20 flex_center">
                 <IoBriefcaseOutline />
               </span>
-              <p className="opacity-60">Teachers</p>
+              <p className="opacity-60">{t("teachers")}</p>
             </div>
           </div>
           <div className="flex_center flex-col gap-4">
-            <h1 className="text-title text-secondary font-semibold">+ 300K</h1>
+            <h1 className="sm:text-title text-2xl text-secondary font-semibold">
+              + 300
+            </h1>
             <div className="flex_center gap-2">
               <span className="bg-primary w-6 h-6 rounded-full bg-opacity-20 flex_center">
                 <HiOutlineBuildingOffice />
               </span>
-              <p className="opacity-60">Academics</p>
+              <p className="opacity-60">{t("academics")}</p>
             </div>
           </div>
           <div className="flex_center flex-col gap-4">
-            <h1 className="text-title text-secondary font-semibold">+ 2.4K</h1>
+            <h1 className="sm:text-title text-2xl text-secondary font-semibold">
+              + 2.4K
+            </h1>
             <div className="flex_center gap-2">
               <span className="bg-primary w-6 h-6 rounded-full bg-opacity-20 flex_center">
                 <HiOutlineUsers />
               </span>
-              <p className="opacity-60">Staff Members</p>
+              <p className="opacity-60">{t("staff_members")}</p>
             </div>
           </div>
         </div>
         <div className="max-w-[1000px] w-full relative mt-20">
-          <div className="w-full h-[400px] relative">
-            <button className="flex_center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 text-white rounded-full text-xl bg-gradient-to-r from-[#DCC48C] to-[#FFA64D] z-10">
+          <div className="w-full sm:h-[400px] h-[200px] relative">
+            <button className="flex_center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 sm:w-20 w-12 sm:h-20 h-12 text-white rounded-full text-xl bg-gradient-to-r from-[#DCC48C] to-[#FFA64D] z-10">
               <FaPlay />
             </button>
             <Image src={`/images/park.png`} alt="park" fill priority />
@@ -168,26 +182,23 @@ export default function Home() {
         </div>
       </div>
       {/* latest news */}
-      <div className="max-w-[1040px] w-full flex-col flex_start gap-8 mt-10">
+      <div className="max-w-[1040px] w-full flex-col flex_start gap-8 mt-10 px-3">
         <Link
           href={"news"}
           className="flex_center gap-5 text-primary font-semibold"
         >
           <div className="relative">
-            <h1 className="text-title">Latest News</h1>
-            <span className="absolute right-0 bottom-0 w-28 h-3">
+            <h1 className="sm:text-title text-2xl">{t("latest_news")}</h1>
+            <span className="absolute ltr:right-0 rtl:left-0 bottom-0 w-28 h-3">
               <Image src={`/images/title-shape.svg`} alt="park" fill priority />
             </span>
           </div>
-          <GoArrowRight className="text-xl" />
+          <GoArrowRight className="text-xl rtl:rotate-180" />
         </Link>
         <p className="text-paragraph text-primary opacity-90 font-medium">
-          Discover the latest news at Erbil Polytechnic University. Stay
-          informed about academic achievements, campus developments, and
-          community initiatives that highlight our commitment to excellence and
-          innovation.
+          {t("latest_news_text")}
         </p>
-        <div className="grid grid-cols-2 w-full gap-8">
+        <div className="grid sm:grid-cols-2 grid-cols-1 w-full gap-8">
           <NewsCard
             image="/images/news.png"
             link="/"
@@ -209,26 +220,39 @@ export default function Home() {
       {/* map section */}
       <MapSection />
       {/* Events section */}
-      <div className="max-w-[1040px] w-full flex-col flex_start gap-8 mt-10">
+      <div className="max-w-[1040px] w-full flex-col flex_start gap-8 mt-10 px-3">
         <Link
           href={"events"}
           className="flex_center gap-5 text-primary font-semibold"
         >
           <div className="relative">
-            <h1 className="text-title">New Events</h1>
-            <span className="absolute -right-3 bottom-10 w-14 h-10">
+            <h1 className="sm:text-title text-2xl">{t("new_events")}</h1>
+            <span className="absolute ltr:-right-3 rtl:-left-3 bottom-10 w-14 h-10">
               <Image src="/images/alumni-shape.svg" alt="park" fill priority />
             </span>
           </div>
-          <GoArrowRight className="text-xl" />
+          <GoArrowRight className="text-xl rtl:rotate-180" />
         </Link>
         <p className="text-paragraph text-primary opacity-90 font-medium">
-          Stay updated with the latest events at Erbil Polytechnic University.
-          From academic seminars to cultural activities, discover what is
-          happening on campus and join us in celebrating knowledge and
-          community.
+          {t("new_events_text")}
         </p>
-        <div className="grid grid-cols-3 w-full gap-8">
+        <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full gap-8">
+          <EventCard
+            image="/images/event.png"
+            link="/"
+            type="Computation"
+            createdAt="27 Dec 2020"
+            time="1:14 PM"
+            title="Innovate & Compete: Annual Student Innovation Challenge."
+          />
+          <EventCard
+            image="/images/event.png"
+            link="/"
+            type="Computation"
+            createdAt="27 Dec 2020"
+            time="1:14 PM"
+            title="Innovate & Compete: Annual Student Innovation Challenge."
+          />
           <EventCard
             image="/images/event.png"
             link="/"
@@ -240,36 +264,40 @@ export default function Home() {
         </div>
       </div>
       {/* Researchs section */}
-      <div className="w-full flex justify-between items-center mt-10">
-        <div className="flex justify-start items-start w-[60%] py-5">
-          <div className="w-[600px] h-[390px] relative">
+      <div className="w-full flex justify-between items-center mt-10 md:flex-row flex-col-reverse">
+        <div className="flex justify-start items-start md:w-[60%] w-full py-5 flex-shrink-0">
+          <div className="lg:w-[600px] w-full lg:h-[390px] md:h-[340px] sm:h-[420px] h-[270px] relative">
             <Image
               src={"/images/research.png"}
-              alt="My Image"
+              alt="Research"
               fill
               priority
               className="w-full h-auto object-cover"
             />
           </div>
         </div>
-        <div className="w-[40%] flex justify-end items-start flex-col gap-5 ">
-          <h1 className="text-title text-secondary font-semibold">Research</h1>
+        <div className="lg:w-[40%] md:w-[35%] w-full flex justify-end items-start flex-col gap-5 px-3">
+          <h1 className="sm:text-title text-2xl text-secondary font-semibold">
+            {t("research")}
+          </h1>
           <span className="text-smallParagraph text-secondary max-w-[350px]">
-            Explore groundbreaking research at Erbil Polytechnic University,
-            where our dedicated teams advance knowledge, innovate solutions, and
-            contribute to global scientific and technological progress.
+            {t("research_text")}
           </span>
           <div className="flex_center gap-10">
             <div className="flex_center flex-col gap-2">
-              <h1 className="text-titleNormal text-golden">+ 2.12k</h1>
+              <h1 className="sm:text-title text-2xlNormal text-golden">
+                + 2.12k
+              </h1>
               <span className="text-secondary text-sm font-medium">
-                Research Paper
+                {t("research_paper")}
               </span>
             </div>
             <div className="flex_center flex-col gap-2">
-              <h1 className="text-titleNormal text-golden">+ 1.3k</h1>
+              <h1 className="sm:text-title text-2xlNormal text-golden">
+                + 1.3k
+              </h1>
               <span className="text-secondary text-sm font-medium">
-                Conference Paper
+                {t("conference_paper")}
               </span>
             </div>
           </div>

@@ -76,3 +76,14 @@ body[dir="rtl"] {
 .change-font {
   font-family: "roboto", serif;
 }
+
+.custom_shadow {
+  box-shadow: 76px 5px 400px 101px rgba(0, 0, 0, 1);
+  -webkit-box-shadow: 76px 5px 400px 101px rgba(0, 0, 0, 1);
+  -moz-box-shadow: 76px 5px 400px 101px rgba(0, 0, 0, 1);
+}
+.custom_shape {
+  width: 200px;
+  height: 100px;
+  border-radius: 100px / 70px;
+}

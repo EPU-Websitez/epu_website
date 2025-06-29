@@ -21,13 +21,13 @@ const NewsCard: React.FC<NewsCardProps> = ({
   description,
 }) => {
   return (
-    <div className="w-full flex_start flex-col gap-4 group relative">
+    <div className="w-full flex_start flex-col md:gap-4 gap-2 group relative">
       <Link
         href={link}
-        className="relative w-full h-[330px] rounded-xl overflow-hidden"
+        className="relative w-full md:h-[330px] h-[200px] rounded-xl overflow-hidden"
       >
-        <div className="text-secondary bg-white h-6 w-6 flex_center rounded-full z-10 absolute top-2 right-2">
-          <IoArrowForwardOutline />
+        <div className="text-secondary bg-white h-6 w-6 flex_center rounded-full z-10 absolute top-2 ltr:right-2 rtl:left-2">
+          <IoArrowForwardOutline className="rtl:rotate-180" />
         </div>
         <Image
           src={image}
@@ -37,7 +37,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
           className="w-full h-auto object-cover group-hover:scale-105 duration-300"
         />
       </Link>
-      <div className="flex_center gap-1 text-secondary text-sm">
+      <div className="flex_center gap-1 text-secondary sm:text-sm text-xs">
         <p>{author}</p>
         <span className="opacity-75">-</span>
         <span className="opacity-75">{createdAt}</span>
@@ -45,11 +45,13 @@ const NewsCard: React.FC<NewsCardProps> = ({
       <Link
         href={link}
         type="button"
-        className="text-lg font-medium hover:text-primary text-secondary duration-300"
+        className="md:text-lg text-base font-medium hover:text-primary text-secondary duration-300"
       >
         {title}
       </Link>
-      <span className="text-sm text-secondary opacity-70">{description}</span>
+      <span className="md:text-sm text-xs text-secondary opacity-70">
+        {description}
+      </span>
     </div>
   );
 };

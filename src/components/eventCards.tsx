@@ -26,7 +26,7 @@ const EventCard: React.FC<EventCardProps> = ({
   return (
     <div className="w-full flex_start flex-col gap-4 group relative border border-lightBorder rounded-xl py-3">
       <Link href={link} className="relative w-full h-[250px] rounded-xl px-3">
-        <div className="absolute z-10 left-4 -bottom-4 border border-white bg-blue rounded-xl px-3 py-0.5 text-white">
+        <div className="absolute z-10 ltr:left-4 rtl:right-4 -bottom-4 border border-white bg-blue rounded-xl px-3 py-0.5 text-white">
           {type}
         </div>
         <Image
@@ -37,7 +37,7 @@ const EventCard: React.FC<EventCardProps> = ({
           className="w-full px-3 h-auto object-cover rounded-xl"
         />
       </Link>
-      <div className="flex_center gap-8 text-sm mt-3 px-3">
+      <div className="flex_center lg:gap-8 gap-3 lg:text-sm text-xs mt-3 px-3">
         <div className="flex_center gap-2">
           <span className="bg-blue bg-opacity-20 text-primary w-7 h-7 rounded-full flex_center">
             <FaCalendarDays />
@@ -54,7 +54,7 @@ const EventCard: React.FC<EventCardProps> = ({
       <Link
         href={link}
         type="button"
-        className="text-lg font-medium hover:text-primary text-secondary duration-300 px-3"
+        className="lg:text-lg text-base font-medium hover:text-primary text-secondary duration-300 px-3"
       >
         {title}
       </Link>
@@ -63,7 +63,7 @@ const EventCard: React.FC<EventCardProps> = ({
         className="w-full text-secondary font-semibold border-t border-t-lightBorder pt-3 px-3 flex justify-between items-center"
       >
         <span>Read More</span>
-        <GoArrowRight className="text-2xl" />
+        <GoArrowRight className="text-2xl rtl:rotate-180" />
       </Link>
     </div>
   );
