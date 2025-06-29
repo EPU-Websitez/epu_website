@@ -91,6 +91,16 @@
     "list_2": "Community and Global Engagement: EPU will develop and prepare students for life and the workplace in an intercultural and globalizing world. Today, the world is interconnected and everyone is closely related and dependent on each other to address issues such as climate change, health, and economic impact."
   },
   "AboutKurdistan": {
-    "head": "About Kurdistan"
+    "head": "About Kurdistan",
+    "general_background": "General Background",
+    "general_text": "Lebanese French University is one of the 18 private universities that are present in the Kurdistan Region of Iraq. Kurdistan Region is an autonomous region in Iraq, consisting of four Kurdish-dominated provinces: Duhok, Erbil, Halabja and Sulaymaniya, bordering Iran, Syria and Turkey. Kurdistan Region includes most of Iraqi Kurdistan, but excludes disputed territories such as Kirkuk. The Kurdistan Regional Parliament is based in Erbil. The cabinet exists of 23 ministries along with the president, prime minister, and deputy prime minister they govern the region. In the 20th century, the Iraqi Kurds shook between the battle for autonomy and independence. The Kurds became the victim of Arabization and genocide by the hands of the Ba’ath Party. The no-fly zone which was launched in March 1991 gave the Kurds the opportunity to experiment autonomy, effectively establishing an autonomous region. The central government in Baghdad only granted autonomy to the Kurdistan region in 2005 with a new Iraqi constitution after the collapse of Saddam Hussein. However, a non-binding independence referendum was passed in September 2017, with various international reactions. ",
+    "nature": "Nature and Weather",
+    "culture": "Food and Culture"
+  },
+  "Tutorials": {
+    "head": "Tutorials",
+    "search": "Search for tutorials ...",
+    "search_button": "Search",
+    "watch": "Watch On Youtube"
   }
 }
