@@ -1,8 +1,9 @@
+"use client";
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 
-const page = () => {
+const Page = () => {
   const t = useTranslations("PresidentSpeech");
   return (
     <div className="w-full flex_center my-10">
@@ -60,4 +61,4 @@ const page = () => {
     </div>
   );
 };
-export default page;
+export default Page;

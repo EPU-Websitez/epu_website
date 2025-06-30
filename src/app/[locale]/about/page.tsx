@@ -1,3 +1,4 @@
+"use client";
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -5,7 +6,7 @@ import { HiOutlineBuildingOffice } from "react-icons/hi2";
 import { IoBriefcaseOutline } from "react-icons/io5";
 import { PiStudent } from "react-icons/pi";
 
-const page = () => {
+const Page = () => {
   const t = useTranslations("About");
   return (
     <div className="w-full flex_center my-10">
@@ -121,4 +122,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

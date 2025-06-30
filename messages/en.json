@@ -102,5 +102,36 @@
     "search": "Search for tutorials ...",
     "search_button": "Search",
     "watch": "Watch On Youtube"
+  },
+  "UniversityBoard": {
+    "head": "University Board",
+    "title": "Head of the University Council",
+    "name": "Prof. Dr. Edreed Muhammed Harki",
+    "council_members": "Council Members",
+    "view_profile": "View Profile"
+  },
+  "AcademicStaff": {
+    "head": "Academic Staff",
+    "search": "Search",
+    "select_position": "Select Position",
+    "select_department": "Select Department",
+    "select_academics": "Select Academics",
+    "search_by_name": "Search by name...",
+    "results": "Results",
+    "view_profile": "View Profile",
+    "see_more": "See More"
+  },
+  "Apply": {
+    "head": "How to apply for EPU?",
+    "text": "Ready to join Erbil Polytechnic University? Complete our online application form, submit your academic documents, and pay the application fee. For any questions or assistance, our admissions team is here to help. Start your application today!",
+    "question": "Question",
+    "why_apply": "Why Should apply to our university ?",
+    "reason_1": "Cutting-Edge Programs",
+    "reason_text_1": "Our diverse range of undergraduate and postgraduate programs are designed to equip students with the latest knowledge and skills needed for today’s competitive job market.",
+    "reason_2": "Strong Industry Connections",
+    "reason_3": "Vibrant Campus Life",
+    "to_apply": "To apply for EPU, the student should",
+    "list_1": "Have a high school certificate or what equals.",
+    "list_2": "Foreign students / Graduates of International Schools must submit equalized and approved high school transcript/ certificate. For more information, please visit the Ministry of Education (KRG) website."
   }
 }

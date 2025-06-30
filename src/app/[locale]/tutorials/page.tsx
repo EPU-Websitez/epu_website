@@ -1,3 +1,4 @@
+"use client";
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -5,7 +6,7 @@ import Link from "next/link";
 import { CiSearch } from "react-icons/ci";
 import { FaPlay } from "react-icons/fa6";
 
-const page = () => {
+const Page = () => {
   const t = useTranslations("Tutorials");
   return (
     <div className="my-10 flex_center w-full">
@@ -140,4 +141,4 @@ const page = () => {
     </div>
   );
 };
-export default page;
+export default Page;

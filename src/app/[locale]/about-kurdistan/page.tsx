@@ -1,8 +1,9 @@
+"use client";
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 
-const page = () => {
+const Page = () => {
   const t = useTranslations("AboutKurdistan");
   return (
     <div className="my-10 flex_center w-full">
@@ -80,4 +81,4 @@ const page = () => {
     </div>
   );
 };
-export default page;
+export default Page;

@@ -87,3 +87,13 @@ body[dir="rtl"] {
   height: 100px;
   border-radius: 100px / 70px;
 }
+select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+}
+.custom_button {
+  @apply flex-shrink-0 rounded-2xl bg-gradient-to-r from-primary to-blue text-white;
+}

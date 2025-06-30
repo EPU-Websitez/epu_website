@@ -1,0 +1,50 @@
+import Image from "next/image";
+import Link from "next/link";
+import { MdChevronRight } from "react-icons/md";
+
+interface MemberCardProps {
+  link: string;
+  title: string;
+  staticText: string;
+  image: string;
+  description: string;
+}
+
+const MemberCard: React.FC<MemberCardProps> = ({
+  link,
+  title,
+  image,
+  staticText,
+  description,
+}) => {
+  return (
+    <div className="border border-lightBorder flex_center p-3 rounded-3xl flex-col gap-4 text-center">
+      <div className="flex_center p-1 border-4 border-primary rounded-full w-[100px] h-[100px] relative bg-white">
+        <div className="w-full h-full relative">
+          <Image
+            src={image}
+            alt="title"
+            fill
+            priority
+            className="w-full h-auto object-cover rounded-full"
+          />
+        </div>
+      </div>
+      <h3 className="text-primary">{title}</h3>
+      <span className="text-sm text-secondary opacity-70 w-full border-b border-b-lightBorder pb-4">
+        {description}
+      </span>
+      <Link
+        href={link}
+        className="flex justify-between items-center rounded-3xl w-full border border-[#81B1CE4A] border-opacity-30 py-1 px-2 text-secondary"
+      >
+        <p className="text-sm font-semibold">{staticText}</p>
+        <span className="w-[30px] h-[30px] rounded-full bg-secondary text-white text-lg flex_center">
+          <MdChevronRight className="rtl:rotate-180" />
+        </span>
+      </Link>
+    </div>
+  );
+};
+
+export default MemberCard;
