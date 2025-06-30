@@ -97,3 +97,6 @@ select {
 .custom_button {
   @apply flex-shrink-0 rounded-2xl bg-gradient-to-r from-primary to-blue text-white;
 }
+button {
+  outline: none;
+}

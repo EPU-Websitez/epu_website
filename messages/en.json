@@ -133,5 +133,12 @@
     "to_apply": "To apply for EPU, the student should",
     "list_1": "Have a high school certificate or what equals.",
     "list_2": "Foreign students / Graduates of International Schools must submit equalized and approved high school transcript/ certificate. For more information, please visit the Ministry of Education (KRG) website."
+  },
+  "Decisions": {
+    "head": "Decisions And Instructions",
+    "decision": "Decisions",
+    "intructions": "Instructions",
+    "higher_edu": "Ministry Of Higher Education and Scientific Research",
+    "uni": "Erbil Polytechnic University"
   }
 }
