@@ -43,6 +43,10 @@ body[dir="rtl"] {
   height: 4px;
 }
 
+.hide_scroll::-webkit-scrollbar {
+  display: none;
+}
+
 ::-webkit-scrollbar-thumb {
   background-color: #a09999;
   width: 7px;

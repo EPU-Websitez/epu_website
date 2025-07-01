@@ -11,7 +11,7 @@ const Page = () => {
   return (
     <div className="my-10 flex_center w-full">
       <div className="max-w-[1024px] px-3 w-full flex_start flex-col gap-8">
-        <SubHeader title={t("head")} />
+        <SubHeader title={t("head")} alt={false} />
         <div className="w-full flex_center sm:gap-10 gap-3">
           <div className="relative w-full h-14">
             <span className="pointer-events-none text-black opacity-50 absolute ltr:left-5 right-5 top-1/2 -translate-y-1/2 z-10 text-2xl">

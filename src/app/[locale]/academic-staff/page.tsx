@@ -2,17 +2,32 @@
 
 import MemberCard from "@/components/memberCard";
 import SubHeader from "@/components/subHeader";
+import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useParams, usePathname } from "next/navigation";
 import { CiSearch } from "react-icons/ci";
 import { FaChevronDown } from "react-icons/fa6";
 
+interface Teachers {
+  id: number;
+  name: string;
+  email: string;
+}
+
 const Page = () => {
   const t = useTranslations("AcademicStaff");
+  const { data, loading, error, refetch } = useFetch<Teachers[]>(
+    "https://api-dev-v1.epu.edu.iq/website/teachers?page=1&limit=10"
+  );
+  console.log(data);
+  const params = useParams();
+  const locale = params.locale;
+
   return (
     <div className="my-10 flex_center w-full">
       <div className="max-w-[1024px] px-3 w-full flex_start flex-col gap-8">
-        <SubHeader title={t("head")} />
+        <SubHeader title={t("head")} alt={false} />
         <div className="relative w-full lg:h-[530px] sm:h-[488px] h-[305px]">
           <Image
             src="/images/campus.png"
@@ -104,7 +119,7 @@ const Page = () => {
           <MemberCard
             description="Vice President for Scientific & Postgraduate Affairs"
             image="/images/president-alt.png"
-            link="/"
+            link={`/${locale}/academic-staff/1`}
             staticText={t("view_profile")}
             title="Asst. Prof. Dr. Kayhan Zrar Ghafur"
           />
