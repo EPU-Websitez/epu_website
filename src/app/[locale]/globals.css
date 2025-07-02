@@ -104,3 +104,6 @@ select {
 button {
   outline: none;
 }
+.change_direction {
+  direction: ltr;
+}

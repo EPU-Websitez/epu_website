@@ -8,7 +8,7 @@ const Page = () => {
   return (
     <div className="my-10 flex_center w-full">
       <div className="max-w-[1024px] px-3 w-full flex_start flex-col gap-8">
-        <SubHeader title={t("head")} />
+        <SubHeader title={t("head")} alt={false} />
         <div className="w-full lg:h-[500px] sm:h-[400px] h-[300px] relative">
           <Image
             src={"/images/kurdistan.png"}

@@ -166,7 +166,7 @@ const Page = () => {
               </button>
             </div>
             {tab === "qualifications" && (
-              <div className="lg:border-l border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
+              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
                 <SubHeader title={t("qualifications")} alt={false} />
                 <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
                   <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
@@ -290,7 +290,7 @@ const Page = () => {
               </div>
             )}
             {tab === "experience" && (
-              <div className="lg:border-l border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
+              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
                 <SubHeader title={t("experience")} alt={false} />
                 <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
                   <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">

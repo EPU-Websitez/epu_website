@@ -145,7 +145,23 @@
     "conferences": "Conferences",
     "trainings": "Trainings",
     "awards": "Awards",
-    "professional_acts": "Professional Acts"
+    "professional_acts": "Professional Acts",
+    "attachment": "Attachment",
+    "read_more": "Read More",
+    "number_of_audience": "Number of Audience",
+    "type": "Type",
+    "number_of_present": "Number Of Present",
+    "level": "Level",
+    "research_title": "Research Title",
+    "students": "Students",
+    "acknowledgment": "Acknowledgment",
+    "committees": "Committees",
+    "memberships": "Memberships",
+    "activities": "Activities",
+    "research_evaluation": "Research Evaluation",
+    "committees_evaluation": "Committees Evaluation",
+    "grants": "Grants",
+    "achievement": "Achievement"
   },
   "Apply": {
     "head": "How to apply for EPU?",
@@ -166,5 +182,21 @@
     "intructions": "Instructions",
     "higher_edu": "Ministry Of Higher Education and Scientific Research",
     "uni": "Erbil Polytechnic University"
+  },
+  "Centers": {
+    "head": "Centers",
+    "lang_center": "Language Center",
+    "news_center": "News Center",
+    "vision_mission": "Vision & Mission",
+    "build_edu": "Building Cross Cultural Connections Through Lanugage Education",
+    "vision_statement": "Vision Statement",
+    "vision_statement_text": "The EPU Language Center attempts to establish cross-cultural bridge and dimension by running a number of foreign language courses, such as English language which is an important medium of study at universities worldwide and the main tool of academic research.",
+    "mission_statement": "Mission Statement",
+    "mission_statement_text": "Our mission is to provide students and participants with language skills (Reading, Writing, Listening and speaking) that will enable them to develop their academic achievement.",
+    "contact": "Contact",
+    "email": "Email",
+    "phone_number": "Phone Number",
+    "staff": "Staff",
+    "news": "News"
   }
 }

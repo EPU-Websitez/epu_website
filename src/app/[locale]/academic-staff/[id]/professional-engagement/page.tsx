@@ -7,14 +7,20 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { AiOutlineRise } from "react-icons/ai";
-import { BsBook } from "react-icons/bs";
+import { BsBarChart, BsBook } from "react-icons/bs";
 import { CiSearch } from "react-icons/ci";
-import { FaFacebookF, FaGoogleScholar, FaResearchgate } from "react-icons/fa6";
-import { FiUsers } from "react-icons/fi";
-import { GoArrowRight, GoBriefcase } from "react-icons/go";
+import {
+  FaFacebookF,
+  FaGoogleScholar,
+  FaResearchgate,
+  FaUsers,
+} from "react-icons/fa6";
+import { FiUser, FiUsers } from "react-icons/fi";
+import { GoArrowRight } from "react-icons/go";
 import { HiOutlineLink } from "react-icons/hi2";
 import { IoMdArrowUp, IoMdClose } from "react-icons/io";
 import { MdCoPresent, MdKeyboardDoubleArrowRight } from "react-icons/md";
+import { PiHandHeart } from "react-icons/pi";
 
 const Page = () => {
   const t = useTranslations("AcademicStaff");
@@ -22,7 +28,7 @@ const Page = () => {
   const id = params?.id as string;
   const locale = params?.locale as string;
 
-  const [tab, setTab] = useState("books");
+  const [tab, setTab] = useState("acknowledgment");
   const handleTab = (e: string) => {
     setTab(e);
   };
@@ -135,149 +141,141 @@ const Page = () => {
           >
             {t("education")}
           </Link>
-          <Link
-            href={`/${locale}/academic-staff/${id}/professional-engagement`}
-            title={t("professional_engagement")}
-            className=" opacity-70 px-3 sm:text-base text-sm flex-shrink-0"
-          >
-            {t("professional_engagement")}
-          </Link>
           <p className="border-b border-b-secondary px-3 sm:text-base text-sm flex-shrink-0 font-semibold">
-            {t("academics")}
+            {t("professional_engagement")}
           </p>
+          <Link
+            href={`/${locale}/academic-staff/${id}/academics`}
+            title={t("academics")}
+            className="opacity-70 px-3 sm:text-base text-sm flex-shrink-0"
+          >
+            {t("academics")}
+          </Link>
         </div>
         <div className="w-full bg-backgroundSecondary border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
           <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
             <div className="flex_start flex-col gap-4 flex-shrink-0 lg:w-auto w-full">
               <button
                 type="button"
-                onClick={() => handleTab("books")}
+                onClick={() => handleTab("acknowledgment")}
                 className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
-                  tab === "books"
+                  tab === "acknowledgment"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
                 }`}
               >
-                <span>{t("books")}</span>
+                <span>{t("acknowledgment")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </button>
               <button
                 type="button"
-                onClick={() => handleTab("publications")}
+                onClick={() => handleTab("committees")}
                 className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
-                  tab === "publications"
+                  tab === "committees"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
                 }`}
               >
-                <span>{t("publications")}</span>
+                <span>{t("committees")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </button>
               <button
                 type="button"
-                onClick={() => handleTab("researchIntrest")}
+                onClick={() => handleTab("memberships")}
                 className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
-                  tab === "researchIntrest"
+                  tab === "memberships"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
                 }`}
               >
-                <span>{t("research_intrest")}</span>
+                <span>{t("memberships")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </button>
               <button
                 type="button"
-                onClick={() => handleTab("supervisingResearch")}
+                onClick={() => handleTab("activities")}
                 className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
-                  tab === "supervisingResearch"
+                  tab === "activities"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
                 }`}
               >
-                <span>{t("supervising_research")}</span>
+                <span>{t("activities")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </button>
               <button
                 type="button"
-                onClick={() => handleTab("seminars")}
+                onClick={() => handleTab("researchEvaluation")}
                 className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
-                  tab === "seminars"
+                  tab === "researchEvaluation"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
                 }`}
               >
-                <span>{t("seminars")}</span>
+                <span>{t("research_evaluation")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </button>
               <button
                 type="button"
-                onClick={() => handleTab("workshops")}
+                onClick={() => handleTab("committeesEvaluation")}
                 className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
-                  tab === "workshops"
+                  tab === "committeesEvaluation"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
                 }`}
               >
-                <span>{t("workshops")}</span>
+                <span>{t("committees_evaluation")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </button>
               <button
                 type="button"
-                onClick={() => handleTab("conferences")}
+                onClick={() => handleTab("grants")}
                 className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
-                  tab === "conferences"
+                  tab === "grants"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
                 }`}
               >
-                <span>{t("conferences")}</span>
-                <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-              </button>
-              <button
-                type="button"
-                onClick={() => handleTab("trainings")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
-                  tab === "trainings"
-                    ? "text-primary border-primary"
-                    : "text-secondary opacity-70 border-transparent"
-                }`}
-              >
-                <span>{t("trainings")}</span>
-                <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-              </button>
-              <button
-                type="button"
-                onClick={() => handleTab("awards")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
-                  tab === "awards"
-                    ? "text-primary border-primary"
-                    : "text-secondary opacity-70 border-transparent"
-                }`}
-              >
-                <span>{t("awards")}</span>
-                <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-              </button>
-              <button
-                type="button"
-                onClick={() => handleTab("professionalActs")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
-                  tab === "professionalActs"
-                    ? "text-primary border-primary"
-                    : "text-secondary opacity-70 border-transparent"
-                }`}
-              >
-                <span>{t("professional_acts")}</span>
+                <span>{t("grants")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </button>
             </div>
-            {tab === "books" && (
+            {tab === "acknowledgment" && (
               <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("books")} alt={false} />
+                <SubHeader title={t("acknowledgment")} alt={false} />
                 <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
                   <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
                     <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
                       <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-lg">
-                        <BsBook className="text-2xl" />
+                        <FiUser className="text-2xl" />
+                      </div>
+                      <div className="flex_start flex-col">
+                        <h4 className="font-medium">Organization Level</h4>
+                        <span className="text-black opacity-60 text-sm">
+                          2020 - 2024
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex_start w-full gap-5 lg:flex-row flex-col">
+                      <div className="flex_start flex-col lg:w-1/2 w-full">
+                        <span className="text-black opacity-60 text-xs">
+                          {t("level")}
+                        </span>
+                        <p className="lg:text-base text-sm">Manager</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {tab === "committees" && (
+              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
+                <SubHeader title={t("committees")} alt={false} />
+                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
+                  <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
+                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
+                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-2xl">
+                        <FaUsers className="text-2xl" />
                       </div>
                       <div className="flex_start flex-col">
                         <h4 className="font-medium">University Of Mosul</h4>
@@ -286,64 +284,26 @@ const Page = () => {
                         </span>
                       </div>
                     </div>
-                    <div className="flex_start w-full gap-5 lg:flex-row flex-col">
-                      <div className="flex_start flex-col lg:w-1/2 w-full">
+                    <div className="grid lg:grid-cols-2 grid-cols-1 w-full gap-5">
+                      <div className="flex_start flex-col w-full">
                         <span className="text-black opacity-60 text-xs">
-                          {t("attachment")}
+                          {t("level")}
                         </span>
-                        <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                          <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                            <HiOutlineLink />
-                          </span>
-                          <span>botancv.PDF</span>
-                        </button>
+                        <p className="lg:text-base text-sm">Department</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             )}
-            {tab === "publications" && (
+            {tab === "memberships" && (
               <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("publications")} alt={false} />
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
-                  <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
-                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-lg">
-                        <CiSearch className="text-2xl" />
-                      </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
-                          25 - 06 - 1992
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex_start w-full gap-5 lg:flex-row flex-col">
-                      <div className="flex_start flex-col lg:w-1/2 w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("attachment")}
-                        </span>
-                        <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                          <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                            <HiOutlineLink />
-                          </span>
-                          <span>botancv.PDF</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            {tab === "researchIntrest" && (
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("research_intrest")} alt={false} />
+                <SubHeader title={t("memberships")} alt={false} />
                 <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
                   <div className="flex_start flex-col gap-3 rounded-3xl bg-background text-secondary w-full">
                     <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full px-3 pt-3">
                       <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl">
-                        <CiSearch className="text-2xl" />
+                        <CiSearch />
                       </div>
                       <div className="flex_start flex-col">
                         <h4 className="font-medium">University Of Mosul</h4>
@@ -376,62 +336,14 @@ const Page = () => {
                 </div>
               </div>
             )}
-            {tab === "supervisingResearch" && (
+            {tab === "activities" && (
               <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("supervising_research")} alt={false} />
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
-                  <div className="flex_start flex-col gap-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full px-3 pt-3">
-                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl">
-                        <CiSearch className="text-2xl" />
-                      </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
-                          25 - 06 - 1992
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex_start w-full gap-5 lg:flex-row flex-col px-3">
-                      <div className="flex_start flex-col lg:w-1/2 w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("attachment")}
-                        </span>
-                        <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                          <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                            <HiOutlineLink />
-                          </span>
-                          <span>botancv.PDF</span>
-                        </button>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleModal(1)}
-                      className="w-full py-3 text-golden border-t border-lightBorder flex justify-between items-center px-3"
-                    >
-                      <span className="text-sm">{t("read_more")}</span>
-                      <GoArrowRight className="text-xl rtl:rotate-180" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-            {tab === "seminars" && (
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("seminars")} alt={false} />
+                <SubHeader title={t("activities")} alt={false} />
                 <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
                   <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
                     <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
                       <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl">
-                        <div className="h-6 w-6 relative">
-                          <Image
-                            src="/images/seminar.svg"
-                            alt="title"
-                            fill
-                            priority
-                            className="w-full h-auto"
-                          />
-                        </div>
+                        <BsBarChart className="text-2xl" />
                       </div>
                       <div className="flex_start flex-col">
                         <h4 className="font-medium">University Of Mosul</h4>
@@ -441,13 +353,7 @@ const Page = () => {
                       </div>
                     </div>
                     <div className="flex_start w-full gap-5 lg:flex-row flex-col">
-                      <div className="flex_start flex-col lg:w-1/2 w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("number_of_audience")}
-                        </span>
-                        <p className="lg:text-base text-sm">+ 325 Audience</p>
-                      </div>
-                      <div className="flex_start flex-col lg:w-1/2 w-full">
+                      <div className="flex_start flex-col w-full">
                         <span className="text-black opacity-60 text-xs">
                           {t("attachment")}
                         </span>
@@ -463,14 +369,14 @@ const Page = () => {
                 </div>
               </div>
             )}
-            {tab === "workshops" && (
+            {tab === "researchEvaluation" && (
               <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("workshops")} alt={false} />
+                <SubHeader title={t("research_evaluation")} alt={false} />
                 <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
                   <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
                     <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
                       <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl">
-                        <MdCoPresent className="text-2xl" />
+                        <MdCoPresent />
                       </div>
                       <div className="flex_start flex-col">
                         <h4 className="font-medium">University Of Mosul</h4>
@@ -509,14 +415,14 @@ const Page = () => {
                 </div>
               </div>
             )}
-            {tab === "conferences" && (
+            {tab === "committeesEvaluation" && (
               <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("conferences")} alt={false} />
+                <SubHeader title={t("committees_evaluation")} alt={false} />
                 <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
                   <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
                     <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
                       <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl">
-                        <FiUsers className="text-2xl" />
+                        <FiUsers />
                       </div>
                       <div className="flex_start flex-col">
                         <h4 className="font-medium">University Of Mosul</h4>
@@ -555,14 +461,14 @@ const Page = () => {
                 </div>
               </div>
             )}
-            {tab === "trainings" && (
+            {tab === "grants" && (
               <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("trainings")} alt={false} />
+                <SubHeader title={t("grants")} alt={false} />
                 <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
                   <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
                     <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
-                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl">
-                        <AiOutlineRise className="text-2xl" />
+                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-2xl">
+                        <PiHandHeart className="text-2xl" />
                       </div>
                       <div className="flex_start flex-col">
                         <h4 className="font-medium">University Of Mosul</h4>
@@ -574,7 +480,7 @@ const Page = () => {
                     <div className="grid lg:grid-cols-2 grid-cols-1 w-full gap-5">
                       <div className="flex_start flex-col w-full">
                         <span className="text-black opacity-60 text-xs">
-                          {t("level")}
+                          {t("type")}
                         </span>
                         <p className="lg:text-base text-sm">International</p>
                       </div>
@@ -590,11 +496,14 @@ const Page = () => {
                           <span>botancv.PDF</span>
                         </button>
                       </div>
-                      <div className="flex_start flex-col w-full">
+                      <div className="flex_start flex-col w-full col-span-2">
                         <span className="text-black opacity-60 text-xs">
-                          {t("type")}
+                          {t("achievement")}
                         </span>
-                        <p className="lg:text-base text-sm">Online Course</p>
+                        <p className="lg:text-base text-sm">
+                          Developed a new model for sustainable energy usage in
+                          urban areas, published in major journals.
+                        </p>
                       </div>
                     </div>
                   </div>
