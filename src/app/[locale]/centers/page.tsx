@@ -36,7 +36,7 @@ const Page = () => {
             <p className="font-medium md:text-base text-sm">{t("build_edu")}</p>
           </div>
           <Link
-            href="/"
+            href={`/${locale}/centers/news`}
             className="text-lg w-10 h-10 rounded-full bg-golden flex_center text-white flex-shrink-0"
           >
             <FaChevronRight className="rtl:rotate-180" />

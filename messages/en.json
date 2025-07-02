@@ -197,6 +197,8 @@
     "email": "Email",
     "phone_number": "Phone Number",
     "staff": "Staff",
-    "news": "News"
+    "news": "News",
+    "staff_members": "Staff Members",
+    "center_news": "Center News"
   }
 }
