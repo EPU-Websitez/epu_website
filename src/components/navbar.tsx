@@ -195,7 +195,7 @@ const Navbar = () => {
             </Link>
             <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
             <Link
-              href={`/${locale}/about`}
+              href={`/${locale}/students`}
               className="flex_center gap-2 xl:text-base text-xs"
             >
               <span>{t("students")}</span>

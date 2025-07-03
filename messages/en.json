@@ -200,5 +200,33 @@
     "news": "News",
     "staff_members": "Staff Members",
     "center_news": "Center News"
+  },
+  "Students": {
+    "head": "Campus Life",
+    "text": "Campus on a tour designed for prospective graduate and professional students. You will see how our university like, facilities, studenst and life in this university. Meet our graduate admissions representative to learn more about our graduate programs and decide what it the best for you.",
+    "stadiums": "Stadiums",
+    "pools": "Pools",
+    "libraries": "Libraries",
+    "libraries_at_EPU": "Libraries At EPU",
+    "library_text": "Discover a wealth of knowledge with our extensive collections and state-of-the-art facilities. Our libraries are designed to support your academic and research needs.",
+    "study_spaces": "Study Spaces",
+    "technology_access": "Technology Access",
+    "library_house": "Library House",
+    "university_sports_stadiums": "University Sports & Stadiums",
+    "university_sports_stadiums_text": "Enjoy a variety of sports, from football to tennis, for all skill levels.",
+    "beautiful_campus_parks": "Beautiful Campus Parks",
+    "beautiful_campus_parks_text": "Our picturesque campus parks provide serene spaces for relaxation, study, and socializing. Enjoy the beauty of nature while you unwind and connect with fellow students.",
+    "see_on_map": "See On Map",
+    "campus_life_through_the_lens": "Campus Life Through the Lens",
+    "campus_life_through_the_lens_text": "Explore the vibrant life at our university through a collection of captivating photos.",
+    "campuses": "Campuses",
+    "campuses_text": "Construction and Materials Technology Engineering Department",
+    "accomodation": "Student Accomodations",
+    "accomodation_text": "Experience a comfortable and enriching living environment at our student dormitories. Our accommodations are designed with students' needs in mind, offering modern amenities and a supportive community atmosphere. Each dormitory provides spacious rooms, study areas, and recreational facilities to ensure a balanced lifestyle. The university offers various services tailored to support students from all our academies, colleges, and institutions. We provide high-speed internet, laundry facilities, and dining options to cater to your daily needs. Dedicated study rooms and lounges offer the perfect environment for academic focus and group study sessions. For relaxation and leisure, our dormitories feature common rooms, fitness centers, and outdoor recreational spaces. Our residence life team organizes events and activities to help you connect with fellow students and build lasting friendships. Safety is a top priority, with 24/7 security and on-site staff available to assist you. Each academic unit within the university, including our colleges and institutions, offers additional support services. These may include academic advising, tutoring, and career counseling to help you achieve your personal and professional goals. Living in the dormitory provides easy access to campus resources, ensuring you are always close to your classes, libraries, and labs. Enjoy the convenience and camaraderie of on-campus living, where you can fully immerse yourself in the university experience. Our student dormitories are more than just a place to stay; they are a community where you can grow, learn, and thrive.",
+    "intern_and_career": "Intern & Career",
+    "career_development_opportunities": "Career Development Opportunities",
+    "career_development_opportunities_text": "Discover a range of career programs designed to support your professional growth and success. From personalized counseling and skill development to job search resources and internships, our services aim to prepare you for a rewarding career. Explore how we can help you achieve your career goals.",
+    "enhance_skills": "What Our University Offers to Enhance Our Students' Skills ?",
+    "enhance_skills_text": "Explore the diverse services and opportunities we provide to foster skill development and career readiness."
   }
 }
