@@ -34,13 +34,18 @@ const Navbar = () => {
     return { normalizedPath: segments.join("/") || "/", locale };
   };
   const { normalizedPath, locale } = normalizePathname(pathname);
+  const [isCollege, setIsCollege] = useState(false);
+
   useEffect(() => {
     if (locale === "en") {
       document.body.dir = "ltr";
     } else {
       document.body.dir = "rtl";
     }
-  }, [locale]);
+    if (normalizedPath.includes("colleges")) {
+      setIsCollege(true);
+    }
+  }, [locale, normalizedPath]);
 
   const [navIsOpen, setNavIsOpen] = useState(false);
   const handleNav = () => {
@@ -87,137 +92,268 @@ const Navbar = () => {
               className="fixed top-0 left-0 w-full h-screen z-20 bg-black bg-opacity-40"
             ></button>
           )}
-          <div
-            className={`flex_start flex-col gap-5 rounded-3xl bg-white w-[80%] h-screen fixed top-0 right-0 z-40 text-secondary  duration-300 ${
-              navIsOpen
-                ? "max-w-[80%] py-10 px-5"
-                : "max-w-0 overflow-hidden p-0"
-            }`}
-          >
-            <button
-              type="button"
-              onClick={handleNav}
-              className="flex justify-start items-center text-xl bg-white custom_shape absolute top-1/2 -left-[50px] w-20 h-16 shadow-[12px_0_0_0_white] rounded-full -translate-y-1/2 z-10 text-black"
+          {!isCollege ? (
+            <div
+              className={`flex_start flex-col gap-5 rounded-3xl bg-white w-[80%] h-screen fixed top-0 right-0 z-40 text-secondary  duration-300 ${
+                navIsOpen
+                  ? "max-w-[80%] py-10 px-5"
+                  : "max-w-0 overflow-hidden p-0"
+              }`}
             >
-              <IoChevronForward className="ml-5" />
-            </button>
-            <Link
-              href="/"
-              className="flex w-full border-b border-b-lightBorder z-10 font-semibold pb-3"
+              <button
+                type="button"
+                onClick={handleNav}
+                className="flex justify-start items-center text-xl bg-white custom_shape absolute top-1/2 -left-[50px] w-20 h-16 shadow-[12px_0_0_0_white] rounded-full -translate-y-1/2 z-10 text-black"
+              >
+                <IoChevronForward className="ml-5" />
+              </button>
+              <Link
+                href="/"
+                className="flex w-full border-b border-b-lightBorder z-10 font-semibold pb-3"
+              >
+                {t("home")}
+              </Link>
+              <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
+                <Link href={"about"}>{t("about")}</Link>
+                <button className="text-2xl">
+                  <FiPlus />
+                </button>
+              </div>
+              <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
+                <Link href={"about"}>{t("academics")}</Link>
+                <button className="text-2xl">
+                  <FiPlus />
+                </button>
+              </div>
+              <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
+                <Link href={"about"}>{t("relation")}</Link>
+                <button className="text-2xl">
+                  <FiPlus />
+                </button>
+              </div>
+              <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
+                <Link href={"about"}>{t("studyProgram")}</Link>
+                <button className="text-2xl">
+                  <FiPlus />
+                </button>
+              </div>
+              <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
+                <Link href={"about"}>{t("students")}</Link>
+                <button className="text-2xl">
+                  <FiPlus />
+                </button>
+              </div>
+              <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
+                <Link href={"about"}>{t("portals")}</Link>
+                <button className="text-2xl">
+                  <FiPlus />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div
+              className={`flex_start flex-col gap-5 rounded-3xl bg-white w-[80%] h-screen fixed top-0 right-0 z-40 text-secondary  duration-300 ${
+                navIsOpen
+                  ? "max-w-[80%] py-10 px-5"
+                  : "max-w-0 overflow-hidden p-0"
+              }`}
             >
-              {t("home")}
-            </Link>
-            <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
-              <Link href={"about"}>{t("about")}</Link>
-              <button className="text-2xl">
-                <FiPlus />
+              <button
+                type="button"
+                onClick={handleNav}
+                className="flex justify-start items-center text-xl bg-white custom_shape absolute top-1/2 -left-[50px] w-20 h-16 shadow-[12px_0_0_0_white] rounded-full -translate-y-1/2 z-10 text-black"
+              >
+                <IoChevronForward className="ml-5" />
               </button>
+              <Link
+                href={`/${locale}/colleges`}
+                title={t("home")}
+                className="flex w-full border-b border-b-lightBorder z-10 font-semibold pb-3"
+              >
+                {t("home")}
+              </Link>
+              <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
+                <Link href={`/${locale}/colleges/about`} title={t("about")}>
+                  {t("about")}
+                </Link>
+                <button className="text-2xl">
+                  <FiPlus />
+                </button>
+              </div>
+              <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
+                <Link
+                  href={`/${locale}/colleges/departments`}
+                  title={t("departments")}
+                >
+                  {t("departments")}
+                </Link>
+              </div>
+              <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
+                <Link
+                  href={`/${locale}/colleges/college-council`}
+                  title={t("college_council")}
+                >
+                  {t("college_council")}
+                </Link>
+              </div>
+              <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
+                <Link
+                  href={`/${locale}/colleges/teachers`}
+                  title={t("teachers")}
+                >
+                  {t("teachers")}
+                </Link>
+              </div>
+              <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
+                <Link href={`/${locale}/colleges/labs`} title={t("labs")}>
+                  {t("labs")}
+                </Link>
+              </div>
+              <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
+                <Link
+                  href={`/${locale}/colleges/news-and-events`}
+                  title={t("news_events")}
+                >
+                  {t("news_events")}
+                </Link>
+              </div>
             </div>
-            <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
-              <Link href={"about"}>{t("academics")}</Link>
-              <button className="text-2xl">
-                <FiPlus />
-              </button>
-            </div>
-            <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
-              <Link href={"about"}>{t("relation")}</Link>
-              <button className="text-2xl">
-                <FiPlus />
-              </button>
-            </div>
-            <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
-              <Link href={"about"}>{t("studyProgram")}</Link>
-              <button className="text-2xl">
-                <FiPlus />
-              </button>
-            </div>
-            <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
-              <Link href={"about"}>{t("students")}</Link>
-              <button className="text-2xl">
-                <FiPlus />
-              </button>
-            </div>
-            <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
-              <Link href={"about"}>{t("portals")}</Link>
-              <button className="text-2xl">
-                <FiPlus />
-              </button>
-            </div>
-          </div>
+          )}
 
           {/* desktop navbar */}
-          <div className="sm:flex hidden justify-center items-center xl:gap-5 gap-3">
-            <Link
-              href={`/${locale}`}
-              className="flex_center gap-2 xl:text-base text-xs relative"
-            >
-              <span>{t("home")}</span>
-            </Link>
-            <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
-            <Link
-              href={`/${locale}/about`}
-              className="flex_center gap-2 xl:text-base text-xs"
-            >
-              <span>{t("about")}</span>
-              <BsChevronDown className="text-white" />
-            </Link>
-            <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
-            <Link
-              href={`/${locale}/about`}
-              className="flex_center gap-2 xl:text-base text-xs"
-            >
-              <span>{t("academics")}</span>
-              <BsChevronDown className="text-white" />
-            </Link>
-            <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
-            <Link
-              href={`/${locale}/about`}
-              className="flex_center gap-2 xl:text-base text-xs"
-            >
-              <span>{t("relation")}</span>
-              <BsChevronDown className="text-white" />
-            </Link>
-            <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
-            <Link
-              href={`/${locale}/centers`}
-              className="lg:flex hidden justify-center items-center gap-2 xl:text-base text-xs"
-            >
-              <span>{t("centers")}</span>
-              <BsChevronDown className="text-white" />
-            </Link>
-            <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50 lg:block hidden"></span>
-            <Link
-              href={`/${locale}/about`}
-              className="flex_center gap-2 xl:text-base text-xs"
-            >
-              <span>{t("studyProgram")}</span>
-              <BsChevronDown className="text-white" />
-            </Link>
-            <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
-            <Link
-              href={`/${locale}/students`}
-              className="flex_center gap-2 xl:text-base text-xs"
-            >
-              <span>{t("students")}</span>
-              <BsChevronDown className="text-white" />
-            </Link>
-            <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
-            <Link
-              href={`/${locale}/about`}
-              className="flex_center gap-2 xl:text-base text-xs"
-            >
-              <span>{t("portals")}</span>
-              <BsChevronDown className="text-white" />
-            </Link>
-            <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50 lg:block hidden"></span>
-            <Link
-              href={`/${locale}/academic-staff`}
-              className="lg:flex hidden justify-center items-center gap-2 xl:text-base text-xs"
-            >
-              <span>{t("academicStaff")}</span>
-              <BsChevronDown className="text-white" />
-            </Link>
-          </div>
+          {!isCollege ? (
+            <div className="sm:flex hidden justify-center items-center xl:gap-5 gap-3">
+              <Link
+                href={`/${locale}`}
+                className="flex_center gap-2 xl:text-base text-xs relative"
+              >
+                <span>{t("home")}</span>
+              </Link>
+              <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
+              <Link
+                href={`/${locale}/about`}
+                className="flex_center gap-2 xl:text-base text-xs"
+              >
+                <span>{t("about")}</span>
+                <BsChevronDown className="text-white" />
+              </Link>
+              <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
+              <Link
+                href={`/${locale}/about`}
+                className="flex_center gap-2 xl:text-base text-xs"
+              >
+                <span>{t("academics")}</span>
+                <BsChevronDown className="text-white" />
+              </Link>
+              <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
+              <Link
+                href={`/${locale}/about`}
+                className="flex_center gap-2 xl:text-base text-xs"
+              >
+                <span>{t("relation")}</span>
+                <BsChevronDown className="text-white" />
+              </Link>
+              <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
+              <Link
+                href={`/${locale}/centers`}
+                className="lg:flex hidden justify-center items-center gap-2 xl:text-base text-xs"
+              >
+                <span>{t("centers")}</span>
+                <BsChevronDown className="text-white" />
+              </Link>
+              <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50 lg:block hidden"></span>
+              <Link
+                href={`/${locale}/about`}
+                className="flex_center gap-2 xl:text-base text-xs"
+              >
+                <span>{t("studyProgram")}</span>
+                <BsChevronDown className="text-white" />
+              </Link>
+              <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
+              <Link
+                href={`/${locale}/students`}
+                className="flex_center gap-2 xl:text-base text-xs"
+              >
+                <span>{t("students")}</span>
+                <BsChevronDown className="text-white" />
+              </Link>
+              <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
+              <Link
+                href={`/${locale}/about`}
+                className="flex_center gap-2 xl:text-base text-xs"
+              >
+                <span>{t("portals")}</span>
+                <BsChevronDown className="text-white" />
+              </Link>
+              <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50 lg:block hidden"></span>
+              <Link
+                href={`/${locale}/academic-staff`}
+                className="lg:flex hidden justify-center items-center gap-2 xl:text-base text-xs"
+              >
+                <span>{t("academicStaff")}</span>
+                <BsChevronDown className="text-white" />
+              </Link>
+            </div>
+          ) : (
+            <div className="sm:flex hidden justify-center items-center xl:gap-5 gap-3">
+              <Link
+                href={`/${locale}/colleges`}
+                title={t("home")}
+                className="flex_center gap-2 xl:text-base text-xs relative"
+              >
+                <span>{t("home")}</span>
+              </Link>
+              <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
+              <Link
+                href={`/${locale}/colleges/about`}
+                title={t("about")}
+                className="flex_center gap-2 xl:text-base text-xs"
+              >
+                <span>{t("about")}</span>
+                <BsChevronDown className="text-white" />
+              </Link>
+              <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
+              <Link
+                href={`/${locale}/colleges/departments`}
+                title={t("departments")}
+                className="flex_center gap-2 xl:text-base text-xs"
+              >
+                <span>{t("departments")}</span>
+              </Link>
+              <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
+              <Link
+                href={`/${locale}/colleges/college-council`}
+                title={t("college_council")}
+                className="flex_center gap-2 xl:text-base text-xs"
+              >
+                <span>{t("college_council")}</span>
+              </Link>
+              <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
+              <Link
+                href={`/${locale}/colleges/teachers`}
+                title={t("teachers")}
+                className="lg:flex hidden justify-center items-center gap-2 xl:text-base text-xs"
+              >
+                <span>{t("teachers")}</span>
+              </Link>
+              <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50 lg:block hidden"></span>
+              <Link
+                href={`/${locale}/colleges/labs`}
+                title={t("labs")}
+                className="flex_center gap-2 xl:text-base text-xs"
+              >
+                <span>{t("labs")}</span>
+              </Link>
+              <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
+              <Link
+                href={`/${locale}/colleges/news-and-events`}
+                title={t("news_events")}
+                className="flex_center gap-2 xl:text-base text-xs"
+              >
+                <span>{t("news_events")}</span>
+              </Link>
+            </div>
+          )}
           <div className="flex_center gap-4">
             <button className="text-2xl">
               <FiSearch />

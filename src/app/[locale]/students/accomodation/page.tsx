@@ -3,12 +3,7 @@
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import Link from "next/link";
 import { useParams } from "next/navigation";
-import { FaChevronRight, FaPlay } from "react-icons/fa6";
-import { LiaSwimmerSolid } from "react-icons/lia";
-import { LuLibraryBig } from "react-icons/lu";
-import { TbOlympics } from "react-icons/tb";
 
 const Page = () => {
   const t = useTranslations("Students");
