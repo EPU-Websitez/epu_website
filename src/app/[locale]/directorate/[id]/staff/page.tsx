@@ -76,19 +76,27 @@ const Page = () => {
                       }`}
                     >
                       <Link
-                        href={`/${locale}/directorate/${id}/staff`}
-                        title={t("units")}
-                        className="w-full gap-3 pt-3 flex items-center text-opacity-70 opacity-70 justify-between border-t border-t-lightBorder"
-                      >
-                        <span>{t("news")}</span>
-                        <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                      </Link>
-                      <Link
-                        href={`/${locale}/directorate/${id}/staff`}
-                        title={t("units")}
+                        href={{
+                          pathname: `/${locale}/directorate/${id}/units`,
+                          query: { type: "registry_university" },
+                        }}
+                        title={t("registry_university")}
                         className="w-full gap-3 flex items-center justify-between opacity-70"
                       >
-                        <span>{t("news")}</span>
+                        <span className="max-w-full truncate">
+                          {t("registry_university")}
+                        </span>
+                        <MdKeyboardDoubleArrowRight className="rtl:rotate-180 flex-shrink-0" />
+                      </Link>
+                      <Link
+                        href={{
+                          pathname: `/${locale}/directorate/${id}/units`,
+                          query: { type: "university_secrtariat" },
+                        }}
+                        title={t("university_secrtariat")}
+                        className="w-full gap-3 pt-3 flex items-center text-opacity-70 opacity-70 justify-between border-t border-t-lightBorder"
+                      >
+                        <span>{t("university_secrtariat")}</span>
                         <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                       </Link>
                     </div>

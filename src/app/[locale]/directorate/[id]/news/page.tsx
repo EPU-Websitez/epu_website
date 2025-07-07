@@ -1,5 +1,7 @@
 "use client";
 
+import MemberCard from "@/components/memberCard";
+import NewsCard from "@/components/newsCard";
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -19,6 +21,7 @@ const Page = () => {
   const handleOpenStaff = () => {
     setStaffIsOpen(!staffIsOpen);
   };
+
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
       <div className="max-w-[1045px] px-3 w-full flex_start flex-col gap-8">
@@ -36,14 +39,14 @@ const Page = () => {
           <div className="w-full border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
             <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
               <div className="flex_start flex-col gap-4 flex-shrink-0 lg:w-auto w-full">
-                <div
-                  // href={`/${locale}/directorate/${id}`}
-                  // title={t("about")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-primary border-primary"
+                <Link
+                  href={`/${locale}/directorate/${id}`}
+                  title={t("about")}
+                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
                 >
                   <span>{t("about")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                </div>
+                </Link>
                 <Link
                   href={`/${locale}/directorate/${id}/staff`}
                   title={t("staff")}
@@ -104,101 +107,34 @@ const Page = () => {
                     </div>
                   )}
                 </div>
-                <Link
-                  href={`/${locale}/directorate/${id}/news`}
-                  title={t("news")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
-                >
+                <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-primary border-primary">
                   <span>{t("news")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                </Link>
+                </div>
               </div>
 
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b text-secondary border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
+              <div className="lg:border-l text-secondary border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
                 <h2 className="relative text-lg font-semibold ">
                   <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
-                  <span className="z-10 relative">{t("about")}</span>
+                  <span className="z-10 relative">{t("staff")}</span>
                 </h2>
-                <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder">
-                  <p className="text-opacity-70 text-sm">
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industrys
-                    standard dummy text ever since the 1500s, when an unknown
-                    printer took a galley of type and scrambled it to make a
-                    type specimen book. It has survived not only five centuries,
-                    but also the leap into electronic typesetting, remaining
-                    essentially unchanged. It was popularised in the 1960s with
-                    the release of Letraset sheets containing Lorem Ipsum
-                    passages, and more recently with desktop publishing software
-                    like Aldus PageMaker including versions of Lorem Ipsum. It
-                    is a long established fact that a reader will be distracted
-                    by the readable content of a page when looking at its
-                    layout. The point of using Lorem Ipsum is that it has a
-                    more-or-less normal distribution of letters, as opposed to
-                    using Content here, content here, making it look like
-                    readable English. Many desktop publishing packages and web
-                    page editors now use Lorem Ipsum as their default model
-                    text, and a search for lorem ipsum will uncover many web
-                    sites still in their infancy. Various versions have evolved
-                    over the years, sometimes by accident, sometimes on purpose
-                    (injected humour and the like).
-                  </p>
-                  <div className="grid grid-cols-3 w-full">
-                    <div className="relative w-full md:h-[257px] h-[122px]">
-                      <Image
-                        src={"/images/about-stage-1.png"}
-                        alt="My Image"
-                        fill
-                        priority
-                        className="w-full h-full"
-                      />
-                    </div>
-                    <div className="relative w-full md:h-[257px] h-[122px]">
-                      <Image
-                        src={"/images/about-stage-1.png"}
-                        alt="My Image"
-                        fill
-                        priority
-                        className="w-full h-full"
-                      />
-                    </div>
-                    <div className="relative w-full md:h-[257px] h-[122px]">
-                      <Image
-                        src={"/images/about-stage-1.png"}
-                        alt="My Image"
-                        fill
-                        priority
-                        className="w-full h-full"
-                      />
-                    </div>
-                    <div className="relative w-full md:h-[257px] h-[122px]">
-                      <Image
-                        src={"/images/about-stage-1.png"}
-                        alt="My Image"
-                        fill
-                        priority
-                        className="w-full h-full"
-                      />
-                    </div>
-                    <div className="relative w-full md:h-[257px] h-[122px]">
-                      <Image
-                        src={"/images/about-stage-1.png"}
-                        alt="My Image"
-                        fill
-                        priority
-                        className="w-full h-full"
-                      />
-                    </div>
-                    <div className="relative w-full md:h-[257px] h-[122px]">
-                      <Image
-                        src={"/images/about-stage-1.png"}
-                        alt="My Image"
-                        fill
-                        priority
-                        className="w-full h-full"
-                      />
-                    </div>
-                  </div>
+                <div className="grid lg:grid-cols-1 md:grid-cols-2 grid-cols-1 w-full gap-8">
+                  <NewsCard
+                    image="/images/news.png"
+                    link="/"
+                    author="Craig Bator"
+                    createdAt="27 Dec 2020"
+                    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Faucibus lobortis augue condimentum maecenas. Metus at in fames vitae posuere ut vel vulputate ..."
+                    title="Solskjaer dismisses Klopp comments on Man Utd penalty record"
+                  />
+                  <NewsCard
+                    image="/images/news.png"
+                    link="/"
+                    author="Craig Bator"
+                    createdAt="27 Dec 2020"
+                    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Faucibus lobortis augue condimentum maecenas. Metus at in fames vitae posuere ut vel vulputate ..."
+                    title="Solskjaer dismisses Klopp comments on Man Utd penalty record"
+                  />
                 </div>
               </div>
             </div>
