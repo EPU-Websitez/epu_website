@@ -96,7 +96,7 @@ const Page = () => {
                           query: { type: "university_secrtariat" },
                         }}
                         title={t("university_secrtariat")}
-                        className="w-full gap-3 pt-3 flex items-center text-opacity-70 opacity-70 justify-between border-t border-t-lightBorder"
+                        className="w-full gap-3 pt-3 flex items-center text-opacity-70 text-secondary opacity-70 justify-between border-t border-t-lightBorder"
                       >
                         <span>{t("university_secrtariat")}</span>
                         <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -115,12 +115,12 @@ const Page = () => {
               </div>
 
               <div className="lg:border-l border-l-none lg:border-b-0 border-b text-secondary border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <h2 className="relative text-lg font-semibold ">
+                <h2 className="relative sm:text-titleNormal text-lg font-semibold ">
                   <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
                   <span className="z-10 relative">{t("about")}</span>
                 </h2>
                 <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder">
-                  <p className="text-opacity-70 text-sm">
+                  <p className="text-opacity-70 text-secondary text-sm">
                     Lorem Ipsum is simply dummy text of the printing and
                     typesetting industry. Lorem Ipsum has been the industrys
                     standard dummy text ever since the 1500s, when an unknown

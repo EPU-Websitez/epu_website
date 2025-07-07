@@ -26,7 +26,7 @@ const useFetch = <T = any>(url: string): UseFetchReturn<T> => {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
           },
-          credentials: "include",
+          // credentials: "include",
         });
 
         if (!response.ok) {

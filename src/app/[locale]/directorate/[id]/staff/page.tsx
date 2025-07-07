@@ -113,7 +113,7 @@ const Page = () => {
               </div>
 
               <div className="lg:border-l text-secondary border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <h2 className="relative text-lg font-semibold ">
+                <h2 className="relative sm:text-titleNormal text-lg font-semibold ">
                   <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
                   <span className="z-10 relative">{t("staff")}</span>
                 </h2>
