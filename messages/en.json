@@ -358,6 +358,27 @@
     "language": "Language",
     "hours_per_week": "Hours Per Week",
     "PDF_lectures": "PDF Lectures",
-    "course_carriculum": "Course Carriculum"
+    "course_carriculum": "Course Carriculum",
+    "theory_hours": "Theory Hours",
+    "practical_hours": "Practical Hours",
+    "ECTS": "ECTS",
+    "module_description": "Module Description",
+    "subject": "Subject",
+    "first_semester": "First Semester",
+    "second_semester": "Second Semester",
+    "third_semester": "Third Semester"
+  },
+  "Directorate": {
+    "university_directory": "University Directory",
+    "administrative_structure": "Administrative Structure",
+    "scientific_structure": "Scientific Structure",
+    "student_affairs": "Student Affairs",
+    "about": "About",
+    "staff": "Staff",
+    "units": "Units",
+    "news": "News",
+    "dean_of_college": "Dean Of College",
+    "name": "Prof. Dr. Edreed Muhammed Harki",
+    "view_profile": "View Profile"
   }
 }

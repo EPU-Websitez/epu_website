@@ -53,6 +53,12 @@ body[dir="rtl"] {
   width: 7px;
   border-radius: 8px;
 }
+.custom_scroll::-webkit-scrollbar {
+  @apply bg-backgroundSecondary;
+}
+.custom_scroll::-webkit-scrollbar-thumb {
+  @apply bg-primary;
+}
 
 .custom_container {
   @apply max-w-[1370px] w-full relative;

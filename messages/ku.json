@@ -351,6 +351,15 @@
     "lectures": "دەرسەکان",
     "language": "زمان",
     "hours_per_week": "کاتژمێرەکان لە هەفتەیەکدا",
-    "PDF_lectures": "دەرسەکان بە PDF"
+    "PDF_lectures": "دەرسەکان بە PDF",
+    "course_carriculum": "مەنهەجی کۆرس",
+    "theory_hours": "کاتژمێرەکانی تیۆری",
+    "practical_hours": "کاتژمێرە پراکتیکییەکان",
+    "ECTS": "ECTS",
+    "module_description": "باسکردنی مۆدیول",
+    "subject": "بابەت",
+    "first_semester": "وەرزی یەکەم",
+    "second_semester": "وەرزی دووەم",
+    "third_semester": "وەرزی سێیەم"
   }
 }
