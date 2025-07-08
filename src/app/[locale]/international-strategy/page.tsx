@@ -15,10 +15,7 @@ const Page = () => {
   const params = useParams();
   const locale = params?.locale as string;
   const id = params?.id as string;
-  const [staffIsOpen, setStaffIsOpen] = useState(false);
-  const handleOpenStaff = () => {
-    setStaffIsOpen(!staffIsOpen);
-  };
+
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
       <div className="max-w-[1045px] px-3 w-full flex_start flex-col gap-8">
