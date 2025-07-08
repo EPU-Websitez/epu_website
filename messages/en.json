@@ -425,5 +425,8 @@
     "head": "Memorandum Of Understanding",
     "local_universities": "Local Universities And Institutes",
     "international_universities": "International Universities And Institutes"
+  },
+  "ResearchesAndPublications": {
+    "head": "Researches And Publications"
   }
 }
