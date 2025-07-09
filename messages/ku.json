@@ -419,5 +419,47 @@
     "head": "یاداشتی لێکتێگەیشتن",
     "local_universities": "زانکۆ و پەیمانگا ناوخۆییەکان",
     "international_universities": "زانکۆ و پەیمانگا نێودەوڵەتییەکان"
+  },
+  "ResearchesAndPublications": {
+    "head": "توێژینەوە و بڵاوکراوەکان",
+    "select_date": "بەروار هەڵبژێرە",
+    "search": "گەڕان",
+    "search_research": "گەڕان بەدوای توێژینەوە، بڵاوکردنەوە...",
+    "researches": "توێژینەوەکان",
+    "publications": "بڵاوکراوەکان",
+    "research_detail": "وردەکاری توێژینەوە",
+    "research_title": "ناونیشانی توێژینەوە",
+    "supervisor": "سەرپەرشتیار",
+    "research_description": "وەسفکردنی توێژینەوە",
+    "authors": "نووسەران",
+    "publication_date": "بەرواری بڵاوکردنەوە",
+    "source": "سەرچاوە",
+    "research_type": "جۆری توێژینەوە",
+    "pages": "pages",
+    "total_citations": "کۆی گشتی وەرگێڕانەکان",
+    "attachment": "هاوپێچکردن"
+  },
+  "News": {
+    "head": "هەواڵەکان",
+    "see_details": "سەیری وردەکارییەکان بکە",
+    "see_more": "بینینی زیاتر",
+    "release_news": "هەواڵی بڵاوکراوە",
+    "search_news": "گەڕان بەدوای هەواڵدا بە تاگ، ناونیشان..",
+    "search": "گەڕان",
+    "select_date": "بەروار هەڵبژێرە",
+    "most_viewed_news": "زۆرترین هەواڵی بینراو",
+    "related_news": "هەواڵی پەیوەندیدار",
+    "search_news_hashtag": "گەڕان بە هاشتاگ..."
+  },
+  "Events": {
+    "head": "بۆنەکان",
+    "conference": "کۆنفرانس",
+    "late_events": "بۆنە نزیکەکان",
+    "see_more": "بینینی زیاتر",
+    "location": "شوێن",
+    "schedule": "خشتە",
+    "speakers": "وتاردەران",
+    "may_you_like_these": "ڕەنگە ئەمانەشت بەدڵ بێت",
+    "participant_type": "جۆری بەشداربوو"
   }
 }

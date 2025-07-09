@@ -427,6 +427,45 @@
     "international_universities": "International Universities And Institutes"
   },
   "ResearchesAndPublications": {
-    "head": "Researches And Publications"
+    "head": "Researches And Publications",
+    "select_date": "Select Date",
+    "search": "Search",
+    "search_research": "Search for research, publication...",
+    "researches": "Researches",
+    "publications": "Publications",
+    "research_detail": "Research Detail",
+    "research_title": "Research Title",
+    "supervisor": "Supervisor",
+    "research_description": "Research Description",
+    "authors": "Authors",
+    "publication_date": "Publication Date",
+    "source": "Source",
+    "research_type": "Research Type",
+    "pages": "Pages",
+    "total_citations": "Total citations",
+    "attachment": "Attachment"
+  },
+  "News": {
+    "head": "News",
+    "see_details": "See Details",
+    "see_more": "See More",
+    "release_news": "Release News",
+    "search_news": "Search for news by tag, title..",
+    "search": "Search",
+    "select_date": "Select Date",
+    "most_viewed_news": "Most Viewed News",
+    "related_news": "Related News",
+    "search_news_hashtag": "Search by hashtag..."
+  },
+  "Events": {
+    "head": "Events",
+    "conference": "Conference",
+    "late_events": "Late Events",
+    "see_more": "See More",
+    "location": "Location",
+    "schedule": "Schedule",
+    "speakers": "Speakers",
+    "may_you_like_these": "May You Like These",
+    "participant_type": "Participant Type"
   }
 }

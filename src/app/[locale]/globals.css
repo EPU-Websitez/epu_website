@@ -125,3 +125,10 @@ button {
     direction: rtl;
   }
 }
+.swiper-pagination-bullet {
+  @apply !bg-background !w-2 !h-2 !opacity-100 rounded-full mx-1 transition-all;
+}
+
+.swiper-pagination-bullet-active {
+  @apply !bg-golden opacity-100 !w-10 !h-2 !rounded-md;
+}
