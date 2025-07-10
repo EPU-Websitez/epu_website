@@ -460,12 +460,30 @@
   "Events": {
     "head": "Events",
     "conference": "Conference",
-    "late_events": "Late Events",
+    "late_events": "Latest Events",
     "see_more": "See More",
     "location": "Location",
     "schedule": "Schedule",
     "speakers": "Speakers",
     "may_you_like_these": "May You Like These",
     "participant_type": "Participant Type"
+  },
+  "Anniversary": {
+    "head": "Anniversary",
+    "conference": "Conference",
+    "latest_anniversary": "Latest Anniversary"
+  },
+  "Journal": {
+    "head": "EPU Journals",
+    "select_date": "Select Date",
+    "search": "Search",
+    "search_journal": "Search for journal....",
+    "attachment": "Attachment",
+    "issue_date": "Issue Date",
+    "latest_issue_date": "Latest Issue date",
+    "global_reach": "Global Reach",
+    "historical_significance": "Historical Significance",
+    "extensive_collection": "Extensive Collection",
+    "leading_journal": "Leading Journal"
   }
 }

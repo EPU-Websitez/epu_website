@@ -132,3 +132,136 @@ button {
 .swiper-pagination-bullet-active {
   @apply !bg-golden opacity-100 !w-10 !h-2 !rounded-md;
 }
+
+.card__arc {
+  width: 80px;
+  height: 80px;
+  position: absolute;
+  bottom: 100%;
+  z-index: 1;
+  right: 91px;
+  transform: rotate(90deg);
+}
+.card__arc path {
+  fill: #ffffff;
+  d: path("M 40 80 c 22 0 40 -22 40 -40 v 40 Z");
+}
+.card__arc_alt {
+  width: 80px;
+  height: 80px;
+  position: absolute;
+  bottom: -52%;
+  z-index: 1;
+  right: 91px;
+  transform: rotate(-180deg);
+}
+.card__arc_alt path {
+  fill: #ffffff;
+  d: path("M 40 80 c 22 0 40 -22 40 -40 v 40 Z");
+}
+@media screen and (max-width: 1024px) {
+  .card__arc_alt {
+    right: 30px;
+  }
+  .card__arc {
+    right: 30px;
+  }
+}
+@media screen and (max-width: 995px) {
+  .card__arc_alt {
+    right: 50px;
+    bottom: -85%;
+  }
+  .card__arc {
+    right: 50px;
+  }
+}
+@media screen and (max-width: 972px) {
+  .card__arc_alt {
+    right: 70px;
+    bottom: -85%;
+  }
+  .card__arc {
+    right: 70px;
+  }
+}
+@media screen and (max-width: 952px) {
+  .card__arc_alt {
+    right: 90px;
+  }
+  .card__arc {
+    right: 90px;
+  }
+}
+@media screen and (max-width: 932px) {
+  .card__arc_alt {
+    right: 100px;
+  }
+  .card__arc {
+    right: 110px;
+  }
+}
+@media screen and (max-width: 912px) {
+  .card__arc_alt {
+    right: 120px;
+  }
+  .card__arc {
+    right: 120px;
+  }
+}
+@media screen and (max-width: 892px) {
+  .card__arc_alt {
+    right: 140px;
+  }
+  .card__arc {
+    right: 140px;
+  }
+}
+@media screen and (max-width: 882px) {
+  .card__arc_alt {
+    right: 160px;
+  }
+  .card__arc {
+    right: 160px;
+  }
+}
+@media screen and (max-width: 862px) {
+  .card__arc_alt {
+    right: 180px;
+  }
+  .card__arc {
+    right: 180px;
+  }
+}
+@media screen and (max-width: 842px) {
+  .card__arc_alt {
+    right: 200px;
+  }
+  .card__arc {
+    right: 200px;
+  }
+}
+@media screen and (max-width: 822px) {
+  .card__arc_alt {
+    right: 220px;
+  }
+  .card__arc {
+    right: 220px;
+  }
+}
+@media screen and (max-width: 802px) {
+  .card__arc_alt {
+    right: 240px;
+  }
+  .card__arc {
+    right: 240px;
+  }
+}
+@media screen and (max-width: 792px) {
+  .card__arc_alt {
+    right: 260px;
+  }
+  .card__arc {
+    right: 260px;
+  }
+}

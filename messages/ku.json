@@ -461,5 +461,23 @@
     "speakers": "وتاردەران",
     "may_you_like_these": "ڕەنگە ئەمانەشت بەدڵ بێت",
     "participant_type": "جۆری بەشداربوو"
+  },
+  "Anniversary": {
+    "head": "ساڵانە",
+    "conference": "کۆنفرانس",
+    "latest_anniversary": "دوایین ساڵیادیەکان"
+  },
+  "Journal": {
+    "head": "گۆڤارەکانی EPU",
+    "select_date": "بەروار هەڵبژێرە",
+    "search": "گەڕان",
+    "search_journal": "گەڕان بەدوای گۆڤاردا....",
+    "attachment": "هاوپێچکردن",
+    "issue_date": "بەرواری دەرچوون",
+    "latest_issue_date": "دوایین بەرواری دەرچوون",
+    "global_reach": "گەیشتن بە جیهان",
+    "historical_significance": "گرنگی مێژووییe",
+    "extensive_collection": "کۆکردنەوەی بەرفراوان",
+    "leading_journal": "گۆڤاری پێشەنگ"
   }
 }
