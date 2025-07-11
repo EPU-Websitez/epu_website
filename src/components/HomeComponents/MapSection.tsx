@@ -11,19 +11,19 @@ import { PiStudent } from "react-icons/pi";
 const MapSection = () => {
   const t = useTranslations("IndexPage");
   return (
-    <div className="w-full sm:h-[760px] h-[1000px] relative mt-10 bg-[#e9e9e9]">
+    <div className="w-full sm:h-[760px] h-[600px] relative mt-10 bg-[#e9e9e9]">
       <div className="w-full sm:h-full h-[300px] relative">
         <Image src="/images/map.png" alt="map" fill priority />
       </div>
-      <div className="absolute sm:top-0 top-52 h-full overflow-y-scroll sm:w-[450px] w-[90%] sm:left-10 left-1/2 sm:translate-x-0 -translate-x-1/2 bg-white bg-opacity-75 p-5 sm:gap-3 gap-2 flex_start flex-col">
+      <div className="absolute sm:top-0 top-52 sm:h-full overflow-y-scroll sm:w-[450px] w-[90%] sm:left-10 left-1/2 sm:translate-x-0 -translate-x-1/2 bg-white bg-opacity-75 p-5 sm:gap-3 gap-2 flex_start h-auto flex-col">
         <Link
           href={"/"}
           className="w-full flex justify-between items-center text-secondary sm:text-smallTitle text-lg font-semibold"
         >
           <h3>Khabat Technical Institute</h3>
-          <GoArrowRight className="rotate-180" />
+          <GoArrowRight className="rtl:rotate-180 text-lg" />
         </Link>
-        <div className="flex_center gap-3 text-secondary sm:text-base text-sm">
+        <div className="flex justify-start items-center gap-3 text-secondary sm:text-base text-sm border-b border-b-lightBorder pb-3 w-full">
           <MdOutlineLocationOn />
           <p className="text-sm">Khabat, Street Name, near building name</p>
         </div>
@@ -34,37 +34,37 @@ const MapSection = () => {
           currently five scientific departments in the morning; includi{" "}
           <button className="opacity-100 font-semibold">.... More</button>
         </span>
-        <div className="flex_center gap-14 w-full mt-5">
-          <div className="flex_center flex-col gap-2 text-secondary">
+        <div className="flex_center sm:gap-14 gap-10 w-full mt-5">
+          <div className="flex_center flex-col gap-1 text-secondary">
             <span className="sm:w-16 w-12 sm:h-16 h-12  bg-[#D5E2ED] rounded-full flex_center">
-              <LuBookOpen className="text-xl" />
+              <LuBookOpen className="text-lg" />
             </span>
             <h2 className="text-lg font-semibold ">+ 12</h2>
             <span className="text-sm">{t("departments")}</span>
           </div>
-          <div className="flex_center flex-col gap-2 text-secondary">
+          <div className="flex_center flex-col gap-1 text-secondary">
             <span className="sm:w-16 w-12 sm:h-16 h-12  bg-[#D5E2ED] rounded-full flex_center">
-              <IoBriefcaseOutline className="text-xl" />
+              <IoBriefcaseOutline className="text-lg" />
             </span>
             <h2 className="text-lg font-semibold ">+ 32</h2>
             <span className="text-sm">{t("teachers")}</span>
           </div>
-          <div className="flex_center flex-col gap-2 text-secondary">
+          <div className="flex_center flex-col gap-1 text-secondary">
             <span className="sm:w-16 w-12 sm:h-16 h-12  bg-[#D5E2ED] rounded-full flex_center">
-              <PiStudent className="text-xl" />
+              <PiStudent className="text-lg" />
             </span>
             <h2 className="text-lg font-semibold ">+ 2.3K</h2>
             <span className=" text-sm">{t("students")}</span>
           </div>
         </div>
-        <div className="flex_start w-full flex-col gap-5 mt-5">
+        <div className="flex_start w-full flex-col sm:gap-5 gap-3 mt-5">
           <div className="flex justify-between items-center w-full">
-            <h2 className="text-lg font-medium text-secondary">
+            <h2 className="sm:text-lg text-base font-medium text-secondary">
               {t("latest_news")}
             </h2>
             <Link
               href={"/"}
-              className="border-b border-b-secondary text-secondary"
+              className="border-b border-b-secondary text-secondary sm:text-sm text-xs"
             >
               {t("see_all")}
             </Link>
@@ -93,7 +93,7 @@ const MapSection = () => {
             <Link
               href="/"
               type="button"
-              className="text-lg font-medium hover:text-primary text-secondary duration-300"
+              className="text-lg font-bold hover:text-primary text-secondary duration-300"
             >
               News Title
             </Link>

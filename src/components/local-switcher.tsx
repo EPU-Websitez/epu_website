@@ -48,7 +48,7 @@ export default function LocalSwitcher() {
       <button
         type="button"
         onClick={handleOpenLang}
-        className="flex_center font-medium gap-3 rounded-md border-lightBorder text-lightText border sm:px-3 px-2 py-2 sm:text-base text-xs"
+        className="flex_center font-medium md:gap-3 gap-2 rounded-md border-lightBorder text-lightText border sm:px-3 px-1 py-1 sm:text-base text-xs"
       >
         <span>
           {localActive === "en"

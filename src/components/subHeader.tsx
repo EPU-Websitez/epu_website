@@ -11,7 +11,7 @@ const SubHeader: React.FC<SubHeaderProps> = ({ title, alt = false }) => {
           alt ? "bg-secondary" : "bg-golden"
         }`}
       ></span>
-      <h2 className="sm:text-titleNormal text-smallTitle text-secondary font-semibold">
+      <h2 className="sm:text-titleNormal text-xl text-secondary font-semibold">
         {title}
       </h2>
     </div>

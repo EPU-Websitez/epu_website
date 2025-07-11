@@ -25,7 +25,7 @@ const Page = () => {
             <h2 className="bg-primary  text-white text-xl font-semibold z-10 p-5">
               {t("build_edu")}
             </h2>
-            <BsFillTriangleFill className="text-8xl -mt-14 rotate-90 -ml-1.5" />
+            <div className="triangle -mt-14 rotate-90"></div>
           </div>
           <Image
             src={"/images/center.png"}
@@ -35,7 +35,7 @@ const Page = () => {
             className="w-full h-full"
           />
         </div>
-        <div className="md:w-[720px] w-full sm:h-[50px] my-10 h-[35px] grid grid-cols-3 justify-center items-center bg-lightBorder text-secondary rounded-3xl">
+        <div className="md:w-[720px] w-full my-10 sm:h-[50px] h-[35px] grid grid-cols-3 justify-center items-center bg-lightBorder text-secondary rounded-3xl">
           <Link
             title={t("vision_mission")}
             href={`/${locale}/centers/vision-and-mission`}

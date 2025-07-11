@@ -24,7 +24,8 @@ const Page = () => {
             <h2 className="bg-primary  text-white text-xl font-semibold z-10 p-5">
               {t("build_edu")}
             </h2>
-            <BsFillTriangleFill className="text-8xl -mt-14 rotate-90 -ml-1.5" />
+            {/* <BsFillTriangleFill className="text-8xl -mt-14 rotate-90 -ml-1.5" /> */}
+            <div className="triangle -mt-14 rotate-90"></div>
           </div>
           <Image
             src={"/images/center.png"}
@@ -71,7 +72,7 @@ const Page = () => {
                   />
                 </div>
               </div>
-              <h3 className="text-lg font-medium px-5">
+              <h3 className="text-lg font-semibold px-5">
                 Prof. DR. Nadhim Hassan Aziz
               </h3>
               <span className="opacity-70 mb-3 px-5 text-sm">
@@ -99,7 +100,7 @@ const Page = () => {
                   />
                 </div>
               </div>
-              <h3 className="text-lg font-medium px-5">
+              <h3 className="text-lg font-semibold px-5">
                 Prof. DR. Nadhim Hassan Aziz
               </h3>
               <span className="opacity-70 mb-3 px-5 text-sm">
@@ -127,7 +128,7 @@ const Page = () => {
                   />
                 </div>
               </div>
-              <h3 className="text-lg font-medium px-5">
+              <h3 className="text-lg font-semibold px-5">
                 Prof. DR. Nadhim Hassan Aziz
               </h3>
               <span className="opacity-70 mb-3 px-5 text-sm">
@@ -155,7 +156,7 @@ const Page = () => {
                   />
                 </div>
               </div>
-              <h3 className="text-lg font-medium px-5">
+              <h3 className="text-lg font-semibold px-5">
                 Prof. DR. Nadhim Hassan Aziz
               </h3>
               <span className="opacity-70 mb-3 px-5 text-sm">

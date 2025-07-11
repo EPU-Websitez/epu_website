@@ -55,8 +55,8 @@ const Navbar = () => {
   return (
     <div className="w-full flex-col flex justify-center">
       <div className="flex_center w-full">
-        <div className="flex justify-between items-center custom_container sm:px-3 px-1 py-2">
-          <div className="flex_center gap-2 text-secondary font-semibold sm:text-sm text-xs">
+        <div className="flex justify-between items-center custom_container px-3 py-2">
+          <div className="flex_center gap-2 text-secondary sm:text-sm text-xs">
             <span>Conference (IEC2023)</span>
             <span>|</span>
             <span>Journals</span>
@@ -70,7 +70,7 @@ const Navbar = () => {
           <LocalSwitcher />
         </div>
       </div>
-      <div className="flex_center w-full bg-primary text-white lg:py-5 py-3 font-medium sm:px-3 px-1">
+      <div className="flex_center w-full bg-primary text-white lg:py-5 py-3 font-medium sm:px-3 px-3">
         <div className="custom_container flex justify-between items-center xl:gap-5 gap-2">
           {/* mobile navbar */}
           <Link
@@ -355,13 +355,13 @@ const Navbar = () => {
             </div>
           )}
           <div className="flex_center gap-4">
-            <button className="text-2xl">
+            <button className="sm:text-2xl text-lg">
               <FiSearch />
             </button>
             <button
               type="button"
               onClick={handleNav}
-              className="sm:hidden block text-2xl"
+              className="sm:hidden block text-lg"
             >
               <IoMenu />
             </button>

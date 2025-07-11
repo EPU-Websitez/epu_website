@@ -24,9 +24,9 @@ const NewsCard: React.FC<NewsCardProps> = ({
     <div className="w-full flex_start flex-col md:gap-4 gap-2 group relative">
       <Link
         href={link}
-        className="relative w-full md:h-[330px] h-[200px] rounded-xl overflow-hidden"
+        className="relative w-full md:h-[330px] h-[200px] rounded-t-xl overflow-hidden"
       >
-        <div className="text-secondary bg-white h-6 w-6 flex_center rounded-full z-10 absolute top-2 ltr:right-2 rtl:left-2">
+        <div className="text-secondary bg-white sm:text-base text-sm h-6 w-6 flex_center rounded-full z-10 absolute top-2 ltr:right-2 rtl:left-2">
           <IoArrowForwardOutline className="rtl:rotate-180" />
         </div>
         <Image
@@ -45,7 +45,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
       <Link
         href={link}
         type="button"
-        className="md:text-lg text-base font-medium hover:text-primary text-secondary duration-300"
+        className="md:text-lg text-base font-bold hover:text-primary text-secondary duration-300"
       >
         {title}
       </Link>

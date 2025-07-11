@@ -13,11 +13,13 @@ export default function Footer() {
 
   return (
     <div className="w-full flex_center flex-col gap-5 py-10 px-5 bg-primary text-white">
-      <p className="text-sm opacity-50">{t("connect_with_us")}</p>
+      <p className="text-base uppercase opacity-50 tracking-wide">
+        {t("connect_with_us")}
+      </p>
       <h1 className="sm:text-6xl text-2xl text-center max-w-[35ch] font-semibold">
         {t("empower_future_text")}
       </h1>
-      <div className="flex_start sm:gap-10 gap-14 mt-10 flex-wrap">
+      <div className="flex_start sm:gap-20 gap-14 mt-10 flex-wrap">
         <div className="flex_start flex-col gap-3">
           <h3 className="text-lg font-medium">{t("academics")}</h3>
           <Link href={"/"} className="opacity-50">
@@ -55,7 +57,7 @@ export default function Footer() {
           </Link>
         </div>
       </div>
-      <div className="max-w-[1024px] w-full flex justify-between items-center gap-3 mt-10 px-4 md:flex-row flex-col">
+      <div className="max-w-[1024px] w-full border-t border-t-white border-opacity-50 pt-10 flex justify-between items-center gap-3 mt-5 px-4 md:flex-row flex-col">
         <div className="lg:w-[200px] sm:w-[150px] w-[200px] lg:h-[50px] h-[40px] relative">
           <Image
             src={"/images/logo-alt.png"}
@@ -65,31 +67,29 @@ export default function Footer() {
             className="w-full h-auto"
           />
         </div>
-        <span className="opacity-80 lg:text-base text-sm">
-          {t("copyright")}
-        </span>
+        <span className="opacity-80 text-sm">{t("copyright")}</span>
         <div className="flex_center gap-5">
           <a
             href="/"
-            className="lg:w-12 w-10 lg:h-12 h-10 border border-white rounded-full flex_center"
+            className="lg:w-12 w-10 lg:h-12 h-10 border border-white border-opacity-50 rounded-full flex_center"
           >
             <FaLinkedinIn />
           </a>
           <a
             href="/"
-            className="lg:w-12 w-10 lg:h-12 h-10 border border-white rounded-full flex_center"
+            className="lg:w-12 w-10 lg:h-12 h-10 border border-white border-opacity-50 rounded-full flex_center"
           >
             <FaFacebookF />
           </a>
           <a
             href="/"
-            className="lg:w-12 w-10 lg:h-12 h-10 border border-white rounded-full flex_center"
+            className="lg:w-12 w-10 lg:h-12 h-10 border border-white border-opacity-50 rounded-full flex_center"
           >
             <FaInstagram />
           </a>
           <a
             href="/"
-            className="lg:w-12 w-10 lg:h-12 h-10 border border-white rounded-full flex_center"
+            className="lg:w-12 w-10 lg:h-12 h-10 border border-white border-opacity-50 rounded-full flex_center"
           >
             <FaYoutube />
           </a>
