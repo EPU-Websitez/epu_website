@@ -20,28 +20,28 @@ const Page = () => {
       <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full">
         <CollegeHeader title={t("header_title")} desc={t("header_desc")} />
         <SubHeader title={t("about")} alt={false} />
-        <p className="text-sm">{t("about_text")}</p>
+        <p className="text-sm text-secondary font-medium">{t("about_text")}</p>
         <div className="grid sm:grid-cols-3 grid-cols-2 lg:gap-5 sm:gap-2 gap-5 justify-between w-full my-10 lg:px-10 px-3 text-secondary">
           <div className="flex_center flex-col gap-2">
             <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
               <PiStudent />
             </span>
-            <h1 className="text-title font-medium">+ 3.12K</h1>
-            <p className="font-medium">{t("students")}</p>
+            <h1 className="text-title font-semibold">+ 3.12K</h1>
+            <p className="font-medium text-black text-opacity-60">{t("students")}</p>
           </div>
           <div className="flex_center flex-col gap-2">
             <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
               <IoBriefcaseOutline />
             </span>
-            <h1 className="text-title font-medium">+ 239</h1>
-            <p className="font-medium">{t("teachers")}</p>
+            <h1 className="text-title font-semibold">+ 239</h1>
+            <p className="font-medium text-black text-opacity-60">{t("teachers")}</p>
           </div>
           <div className="flex_center flex-col gap-2">
             <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
               <HiOutlineBuildingOffice />
             </span>
-            <h1 className="text-title font-medium">+ 300</h1>
-            <p className="font-medium">{t("departments")}</p>
+            <h1 className="text-title font-semibold">+ 300</h1>
+            <p className="font-medium text-black text-opacity-60">{t("departments")}</p>
           </div>
         </div>
         <SubHeader title={t("contact")} alt={false} />
@@ -58,21 +58,21 @@ const Page = () => {
               <IoMdMail className="text-2xl" />
               <div className="flex_start flex-col">
                 <span className="text-sm">{t("mail")}</span>
-                <p>info@epu.edu.iq</p>
+                <p className="font-medium">info@epu.edu.iq</p>
               </div>
             </div>
             <div className="flex justify-start items-center gap-3">
               <FaPhoneAlt className="text-2xl" />
               <div className="flex_start flex-col">
                 <span className="text-sm">{t("mail")}</span>
-                <p className="change_direction">0750 123 4567</p>
+                <p className="change_direction font-medium">0750 123 4567</p>
               </div>
             </div>
             <div className="flex justify-start items-center gap-3">
               <IoLocationSharp className="text-2xl" />
               <div className="flex_start flex-col">
                 <span className="text-sm">{t("location")}</span>
-                <p>Karkuk St, Erbil 44001</p>
+                <p className="font-medium">Karkuk St, Erbil 44001</p>
               </div>
             </div>
           </div>

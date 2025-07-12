@@ -25,31 +25,31 @@ const Page = () => {
         <div className="w-full flex justify-between md:items-center items-start md:flex-row flex-col gap-5 p-5 rounded-3xl bg-golden text-white">
           <div className="flex_center gap-3">
             <span className="w-[60px] h-[60px] flex-shrink-0 rounded-lg flex_center bg-white bg-opacity-30">
-              <HiOutlineBuildingOffice className="text-3xl" />
+              <HiOutlineBuildingOffice className="text-4xl" />
             </span>
             <div className="flex-start flex-col">
               <small className="text-xs">{t("belongs_to")}</small>
-              <h4 className="md:text-lg text-base font-semibold">
+              <h4 className="md:text-lg text-base font-medium">
                 Medical Microbiology Department
               </h4>
             </div>
           </div>
           <div className="flex_center gap-3">
             <span className="w-[60px] h-[60px] flex-shrink-0 rounded-lg flex_center bg-white bg-opacity-30">
-              <PiFlaskLight className="text-3xl" />
+              <PiFlaskLight className="text-4xl" />
             </span>
             <div className="flex-start flex-col">
               <small className="text-xs">{t("lab_number")}</small>
-              <h4 className="md:text-lg text-base font-semibold">F2H4</h4>
+              <h4 className="md:text-lg text-base font-medium">F2H4</h4>
             </div>
           </div>
           <div className="flex_center gap-3">
             <span className="w-[60px] h-[60px] flex-shrink-0 rounded-lg flex_center bg-white bg-opacity-30">
-              <RiDashboardHorizontalLine className="text-3xl" />
+              <RiDashboardHorizontalLine className="text-4xl" />
             </span>
             <div className="flex-start flex-col">
               <small className="text-xs">{t("equipped_with")}</small>
-              <h4 className="md:text-lg text-base font-semibold">
+              <h4 className="md:text-lg text-base font-medium">
                 Specialized Instruments
               </h4>
             </div>
@@ -64,19 +64,19 @@ const Page = () => {
               <span className="h-full w-1 bg-golden"></span>
             </div>
             {locale === "en" && (
-              <h1 className="md:text-3xl text-xl font-semibold relative">
+              <h1 className="md:text-[32px] text-xl font-semibold relative">
                 Cutting-Edge Medical <br />{" "}
                 <span className="text-golden">Research</span> Hub
               </h1>
             )}
             {locale === "ku" && (
-              <h1 className="md:text-3xl text-xl font-semibold relative">
+              <h1 className="md:text-[32px] text-xl font-semibold relative">
                 باشترین ناوەندی پرۆگرامی <br />{" "}
                 <span className="text-golden">لێکۆڵینەوەی</span> پزیشکی
               </h1>
             )}
             {locale === "ar" && (
-              <h1 className="md:text-3xl text-xl font-semibold relative">
+              <h1 className="md:text-[32px] text-xl font-semibold relative">
                 مركز الأبحاث <br /> <span className="text-golden">الطبية</span>{" "}
                 المتطورة
               </h1>
@@ -106,7 +106,7 @@ const Page = () => {
             />
           </div>
           <div className="flex_start flex-col gap-5">
-            <h1 className="md:text-3xl text-xl font-semibold">
+            <h1 className="md:text-[32px] text-xl font-semibold">
               {t("ensuring_campus_safety")}
             </h1>
             <p className="md:text-base text-sm">

@@ -21,7 +21,7 @@ const Page = () => {
       <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full">
         <CollegeHeader title={t("header_title")} desc={t("header_desc")} />
         <SubHeader title={t("college_council")} alt={false} />
-        <div className="flex_center gap-10 sm:w-auto w-full border sm:border-none sm:p-0 p-5 sm:rounded-none rounded-3xl border-lightBorder">
+        <div className="flex_center gap-10 sm:w-auto w-full border p-5 sm:rounded-none rounded-3xl border-lightBorder">
           <div className="sm:w-[310px] w-[125px] sm:h-[285px] h-[125px] relative">
             <Image
               src="/images/president-alt.png"
@@ -35,7 +35,7 @@ const Page = () => {
             <h3 className="text-golden sm:text-lg text-sm font-semibold">
               {t("dean_of_college")}
             </h3>
-            <h1 className="max-w-[350px] lg:text-title sm:text-smallTitle text-xs font-semibold relative">
+            <h1 className="max-w-[350px] lg:text-title sm:text-smallTitle text-xs font-medium relative">
               <span className="relative z-10">{t("name")}</span>
               <span className="absolute ltr:left-0 rtl:right-0 -bottom-3 w-[80%] h-6">
                 <Image src="/images/title-shape.svg" alt="park" fill priority />
