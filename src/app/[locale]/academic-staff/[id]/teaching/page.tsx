@@ -48,11 +48,11 @@ const Page = () => {
             <Breadcrumb title="" alt={false} />
           </div>
           <Image
-            src="/images/bg.png"
+            src="/images/academic-bg.png"
             alt="title"
             fill
             priority
-            className="w-full h-auto object-cover rounded-2xl"
+            className="w-full h-auto rounded-2xl"
           />
         </div>
         <div className="flex_start lg:w-[1024px] w-auto absolute lg:left-1/2 md:left-[12%] sm:left-[18%] left-[22%] -translate-x-1/2 sm:top-[180px] top-[220px]">
@@ -73,15 +73,15 @@ const Page = () => {
             Assistant Professor Doctor
           </span>
           <h3 className="text-xl font-semibold">Kayhan Zrar Ghafoor</h3>
-          <div className="flex w-full justify-between lg:items-center items-start lg:gap-2 gap-6 mt-3 lg:flex-row flex-col">
-            <div className="flex sm:justify-center justify-start sm:items-center items-start gap-3 sm:flex-row flex-col">
+          <div className="flex w-full justify-between lg:items-center items-start lg:gap-2 xl:gap-6 gap-3 mt-3 lg:flex-row flex-col">
+            <div className="flex sm:justify-center flex-shrink-0 justify-start sm:items-center items-start gap-3 sm:flex-row flex-col">
               <div className="flex_center gap-3 rounded-xl border-golden border text-golden px-3 py-1.5">
-                <span className="w-2 h-2 rounded-full flex-shrink-0 bg-golden text-sm"></span>
-                <p>Vice President for Scientific</p>
+                <span className="w-2 h-2 rounded-full flex-shrink-0 bg-golden"></span>
+                <p className="text-sm">Vice President for Scientific</p>
               </div>
-              <div className="flex_center gap-3 rounded-xl border-golden border text-golden px-3 py-1.5">
+              <div className="flex_center gap-3 flex-shrink-0 rounded-xl border-golden border text-golden px-3 py-1.5">
                 <span className="w-2 h-2 rounded-full flex-shrink-0 bg-golden text-sm"></span>
-                <p> Postgraduate Affairs</p>
+                <p className="text-sm"> Postgraduate Affairs</p>
               </div>
             </div>
             <div className="flex sm:justify-center justify-start sm:items-center items-start gap-3 sm:flex-nowrap flex-wrap">
@@ -129,7 +129,7 @@ const Page = () => {
           >
             {t("about")}
           </Link>
-          <p className=" border-b border-b-secondary px-3 sm:text-base text-sm flex-shrink-0 font-semibold">
+          <p className=" border-b border-b-secondary px-3 sm:text-base text-sm flex-shrink-0 font-medium">
             {t("teaching")}
           </p>
           <Link
@@ -155,22 +155,27 @@ const Page = () => {
           </Link>
         </div>
         <div className="w-full bg-backgroundSecondary border-t-lightBorder border-t pb-20 flex_center  sm:px-0 px-5">
-          <div className="mt-10 flex_start flex-col gap-10 max-w-[1024px] w-full px-2">
-            <SubHeader title={t("teaching")} alt={true} />
-            <div className="overflow-x-auto shadow-lg rounded-lg w-full">
+          <div className="sm:mt-10 mt-5 flex_start flex-col gap-10 max-w-[1024px] w-full px-2">
+            <div className="lg:block hidden">
+              <SubHeader title={t("teaching")} alt={true} />
+            </div>
+            <div className="lg:hidden block">
+              <SubHeader title={t("teaching")} alt={false} />
+            </div>
+            <div className="overflow-x-auto shadow-lg w-full sm:mt-0 -mt-4">
               <table className="w-full bg-white">
                 <thead>
                   <tr className="lg:bg-primary bg-golden text-white">
-                    <th className="md:px-6 px-3 sm:py-4 py-3 text-start font-medium text-sm uppercase tracking-wider ltr:border-r rtl:border-l border-blue-700 md:min-w-max min-w-[170px]">
+                    <th className="md:px-6 px-3 sm:py-4 py-3 font-medium text-xs text-center tracking-wider ltr:border-r rtl:border-l border-blue-700 md:min-w-max min-w-[170px]">
                       {t("subject")}
                     </th>
-                    <th className="md:px-6 px-3 sm:py-4 py-3 text-start font-medium text-sm uppercase tracking-wider ltr:border-r rtl:border-l border-blue-700 md:min-w-max min-w-[170px]">
+                    <th className="md:px-6 px-3 sm:py-4 py-3 font-medium text-xs text-center tracking-wider ltr:border-r rtl:border-l border-blue-700 md:min-w-max min-w-[170px]">
                       {t("stage")}
                     </th>
-                    <th className="md:px-6 px-3 sm:py-4 py-3 text-start font-medium text-sm uppercase tracking-wider ltr:border-r rtl:border-l border-blue-700 md:min-w-max min-w-[170px]">
+                    <th className="md:px-6 px-3 sm:py-4 py-3 font-medium text-xs text-center tracking-wider ltr:border-r rtl:border-l border-blue-700 md:min-w-max min-w-[170px]">
                       {t("semester")}
                     </th>
-                    <th className="md:px-6 px-3 sm:py-4 py-3 text-start font-medium text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
+                    <th className="md:px-6 px-3 sm:py-4 py-3 font-medium text-xs text-center tracking-wider md:min-w-max min-w-[170px]">
                       {t("year")}
                     </th>
                   </tr>
@@ -182,16 +187,16 @@ const Page = () => {
                       key={index}
                       className="hover:bg-gray-50 transition-colors duration-200"
                     >
-                      <td className="md:px-6 px-3 md:py-4 py-3 text-sm text-blue-700 font-medium ltr:border-r rtl:border-l border-gray-200">
+                      <td className="md:px-6 px-3 md:py-4 py-3 text-xs text-center font-medium ltr:border-r rtl:border-l border-gray-200">
                         {row.subject}
                       </td>
-                      <td className="md:px-6 px-3 md:py-4 py-3 text-sm text-blue-700 ltr:border-r rtl:border-l border-gray-200">
+                      <td className="md:px-6 px-3 md:py-4 py-3 text-xs text-center ltr:border-r rtl:border-l border-gray-200">
                         {row.stage}
                       </td>
-                      <td className="md:px-6 px-3 md:py-4 py-3 text-sm text-gray-900 ltr:border-r rtl:border-l border-gray-200">
+                      <td className="md:px-6 px-3 md:py-4 py-3 text-xs text-center ltr:border-r rtl:border-l border-gray-200">
                         {row.semester}
                       </td>
-                      <td className="md:px-6 px-3 md:py-4 py-3 text-sm text-gray-900">
+                      <td className="md:px-6 px-3 md:py-4 py-3 text-xs text-center">
                         {row.year}
                       </td>
                     </tr>

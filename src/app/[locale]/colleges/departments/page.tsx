@@ -52,7 +52,7 @@ const Page = () => {
                   <GoBriefcase />
                 </div>
                 <div className="flex_start flex-col">
-                  <small className="font-medium sm:text-xs text-[8px]">
+                  <small className="font-medium sm:text-[10px] text-[8px]">
                     +12.4 K
                   </small>
                   <small className="sm:text-[8px] text-[6px] text-black opacity-60">
@@ -65,7 +65,7 @@ const Page = () => {
                   <PiStudent />
                 </div>
                 <div className="flex_start flex-col">
-                  <small className="font-medium sm:text-xs text-[8px]">
+                  <small className="font-medium sm:text-[10px] text-[8px]">
                     +12.4 K
                   </small>
                   <small className="sm:text-[8px] text-[6px] text-black opacity-60">
@@ -100,7 +100,7 @@ const Page = () => {
                   <GoBriefcase />
                 </div>
                 <div className="flex_start flex-col">
-                  <small className="font-medium sm:text-xs text-[8px]">
+                  <small className="font-medium sm:text-[10px] text-[8px]">
                     +12.4 K
                   </small>
                   <small className="sm:text-[8px] text-[6px] text-black opacity-60">
@@ -113,7 +113,7 @@ const Page = () => {
                   <PiStudent />
                 </div>
                 <div className="flex_start flex-col">
-                  <small className="font-medium sm:text-xs text-[8px]">
+                  <small className="font-medium sm:text-[10px] text-[8px]">
                     +12.4 K
                   </small>
                   <small className="sm:text-[8px] text-[6px] text-black opacity-60">
@@ -148,7 +148,7 @@ const Page = () => {
                   <GoBriefcase />
                 </div>
                 <div className="flex_start flex-col">
-                  <small className="font-medium sm:text-xs text-[8px]">
+                  <small className="font-medium sm:text-[10px] text-[8px]">
                     +12.4 K
                   </small>
                   <small className="sm:text-[8px] text-[6px] text-black opacity-60">
@@ -161,7 +161,7 @@ const Page = () => {
                   <PiStudent />
                 </div>
                 <div className="flex_start flex-col">
-                  <small className="font-medium sm:text-xs text-[8px]">
+                  <small className="font-medium sm:text-[10px] text-[8px]">
                     +12.4 K
                   </small>
                   <small className="sm:text-[8px] text-[6px] text-black opacity-60">
@@ -196,7 +196,7 @@ const Page = () => {
                   <GoBriefcase />
                 </div>
                 <div className="flex_start flex-col">
-                  <small className="font-medium sm:text-xs text-[8px]">
+                  <small className="font-medium sm:text-[10px] text-[8px]">
                     +12.4 K
                   </small>
                   <small className="sm:text-[8px] text-[6px] text-black opacity-60">
@@ -209,7 +209,7 @@ const Page = () => {
                   <PiStudent />
                 </div>
                 <div className="flex_start flex-col">
-                  <small className="font-medium sm:text-xs text-[8px]">
+                  <small className="font-medium sm:text-[10px] text-[8px]">
                     +12.4 K
                   </small>
                   <small className="sm:text-[8px] text-[6px] text-black opacity-60">
@@ -244,7 +244,7 @@ const Page = () => {
                   <GoBriefcase />
                 </div>
                 <div className="flex_start flex-col">
-                  <small className="font-medium sm:text-xs text-[8px]">
+                  <small className="font-medium sm:text-[10px] text-[8px]">
                     +12.4 K
                   </small>
                   <small className="sm:text-[8px] text-[6px] text-black opacity-60">

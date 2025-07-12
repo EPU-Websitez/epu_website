@@ -30,15 +30,15 @@ const MemberCard: React.FC<MemberCardProps> = ({
           />
         </div>
       </div>
-      <h3 className="text-primary">{title}</h3>
+      <h3 className="text-primary font-bold">{title}</h3>
       <span className="text-sm text-secondary opacity-70 w-full border-b border-b-lightBorder pb-4">
         {description}
       </span>
       <Link
         href={link}
-        className="flex justify-between items-center rounded-3xl w-full border border-[#81B1CE4A] border-opacity-30 py-1 px-2 text-secondary"
+        className="flex justify-between items-center rounded-3xl w-full border border-[#81B1CE4A] border-opacity-30 p-1 text-secondary"
       >
-        <p className="text-sm font-semibold">{staticText}</p>
+        <p className="text-sm">{staticText}</p>
         <span className="w-[30px] h-[30px] rounded-full bg-secondary text-white text-lg flex_center">
           <MdChevronRight className="rtl:rotate-180" />
         </span>

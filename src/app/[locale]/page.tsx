@@ -69,7 +69,7 @@ export default function Home() {
             className="w-full"
           />
         </div>
-        <div className="sm:w-[36%] w-[33%] lg:h-[290px] sm:h-[230px] h-[125px] bg-primary absolute sm:left-0 left-[3%] bottom-0 sm:rounded-2xl rounded-md flex justify-start items-start sm:p-5 p-2 flex-col lg:gap-8 gap-3">
+        <div className="sm:w-[36%] w-[33%] lg:h-[290px] sm:h-[230px] h-[125px] bg-primary absolute sm:left-3 left-[3%] bottom-0 sm:rounded-2xl rounded-md flex justify-start items-start sm:p-5 p-2 flex-col lg:gap-8 gap-3">
           <h4 className="text-white opacity-50 font-medium  lg:text-xl sm:text-base text-[8px]">
             {t("in_our_university")}
           </h4>

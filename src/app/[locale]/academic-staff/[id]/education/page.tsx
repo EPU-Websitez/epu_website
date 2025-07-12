@@ -31,11 +31,11 @@ const Page = () => {
             <Breadcrumb title="" alt={false} />
           </div>
           <Image
-            src="/images/bg.png"
+            src="/images/academic-bg.png"
             alt="title"
             fill
             priority
-            className="w-full h-auto object-cover rounded-2xl"
+            className="w-full h-auto rounded-2xl"
           />
         </div>
         <div className="flex_start lg:w-[1024px] w-auto absolute lg:left-1/2 md:left-[12%] sm:left-[18%] left-[22%] -translate-x-1/2 sm:top-[180px] top-[220px]">
@@ -60,11 +60,11 @@ const Page = () => {
             <div className="flex sm:justify-center justify-start sm:items-center items-start gap-3 sm:flex-row flex-col">
               <div className="flex_center gap-3 rounded-xl border-golden border text-golden px-3 py-1.5">
                 <span className="w-2 h-2 rounded-full flex-shrink-0 bg-golden text-sm"></span>
-                <p>Vice President for Scientific</p>
+                <p className="text-sm">Vice President for Scientific</p>
               </div>
               <div className="flex_center gap-3 rounded-xl border-golden border text-golden px-3 py-1.5">
                 <span className="w-2 h-2 rounded-full flex-shrink-0 bg-golden text-sm"></span>
-                <p> Postgraduate Affairs</p>
+                <p className="text-sm"> Postgraduate Affairs</p>
               </div>
             </div>
             <div className="flex sm:justify-center justify-start sm:items-center items-start gap-3 sm:flex-nowrap flex-wrap">
@@ -119,7 +119,7 @@ const Page = () => {
           >
             {t("teaching")}
           </Link>
-          <p className="border-b border-b-secondary px-3 sm:text-base text-sm flex-shrink-0 font-semibold">
+          <p className="border-b border-b-secondary px-3 sm:text-base text-sm flex-shrink-0 font-medium">
             {t("education")}
           </p>
           <Link
@@ -143,34 +143,34 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("qualifications")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[40px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-lg ${
                   tab === "qualifications"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
                 }`}
               >
-                <span>{t("qualifications")}</span>
-                <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+                <span className="text-sm">{t("qualifications")}</span>
+                <MdKeyboardDoubleArrowRight className="rtl:rotate-180 text-xl" />
               </button>
               <button
                 type="button"
                 onClick={() => handleTab("experience")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[40px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-lg ${
                   tab === "experience"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
                 }`}
               >
-                <span>{t("experience")}</span>
-                <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+                <span className="text-sm">{t("experience")}</span>
+                <MdKeyboardDoubleArrowRight className="rtl:rotate-180 text-xl" />
               </button>
             </div>
             {tab === "qualifications" && (
               <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
                 <SubHeader title={t("qualifications")} alt={false} />
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
+                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-10 gap-5">
                   <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
+                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-5 w-full">
                       <div className="w-10 h-10 rounded-lg bg-golden flex_center">
                         <div className="h-6 w-6 relative">
                           <Image
@@ -182,9 +182,11 @@ const Page = () => {
                           />
                         </div>
                       </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
+                      <div className="flex_start flex-col lg:gap-0 gap-1">
+                        <h4 className="font-medium text-sm">
+                          University Of Mosul
+                        </h4>
+                        <span className="text-black opacity-60 text-xs">
                           25 - 06 - 1992
                         </span>
                       </div>
@@ -194,7 +196,7 @@ const Page = () => {
                         <span className="text-black opacity-60 text-xs">
                           Degree
                         </span>
-                        <p className="lg:text-base text-sm">
+                        <p className="lg:text-sm text-xs">
                           Bachelor Of Science
                         </p>
                       </div>
@@ -202,14 +204,12 @@ const Page = () => {
                         <span className="text-black opacity-60 text-xs">
                           Department
                         </span>
-                        <p className="lg:text-base text-sm">
-                          Civil Engineering
-                        </p>
+                        <p className="lg:text-sm text-xs">Civil Engineering</p>
                       </div>
                     </div>
                   </div>
                   <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
+                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-5 w-full">
                       <div className="w-10 h-10 rounded-lg bg-golden flex_center">
                         <div className="h-6 w-6 relative">
                           <Image
@@ -221,9 +221,11 @@ const Page = () => {
                           />
                         </div>
                       </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
+                      <div className="flex_start flex-col lg:gap-0 gap-1">
+                        <h4 className="font-medium text-sm">
+                          University Of Mosul
+                        </h4>
+                        <span className="text-black opacity-60 text-xs">
                           25 - 06 - 1992
                         </span>
                       </div>
@@ -233,7 +235,7 @@ const Page = () => {
                         <span className="text-black opacity-60 text-xs">
                           Degree
                         </span>
-                        <p className="lg:text-base text-sm">
+                        <p className="lg:text-sm text-xs">
                           Bachelor Of Science
                         </p>
                       </div>
@@ -241,14 +243,12 @@ const Page = () => {
                         <span className="text-black opacity-60 text-xs">
                           Department
                         </span>
-                        <p className="lg:text-base text-sm">
-                          Civil Engineering
-                        </p>
+                        <p className="lg:text-sm text-xs">Civil Engineering</p>
                       </div>
                     </div>
                   </div>
                   <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
+                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-5 w-full">
                       <div className="w-10 h-10 rounded-lg bg-golden flex_center">
                         <div className="h-6 w-6 relative">
                           <Image
@@ -260,9 +260,11 @@ const Page = () => {
                           />
                         </div>
                       </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
+                      <div className="flex_start flex-col lg:gap-0 gap-1">
+                        <h4 className="font-medium text-sm">
+                          University Of Mosul
+                        </h4>
+                        <span className="text-black opacity-60 text-xs">
                           25 - 06 - 1992
                         </span>
                       </div>
@@ -272,7 +274,7 @@ const Page = () => {
                         <span className="text-black opacity-60 text-xs">
                           Degree
                         </span>
-                        <p className="lg:text-base text-sm">
+                        <p className="lg:text-sm text-xs">
                           Bachelor Of Science
                         </p>
                       </div>
@@ -280,9 +282,7 @@ const Page = () => {
                         <span className="text-black opacity-60 text-xs">
                           Department
                         </span>
-                        <p className="lg:text-base text-sm">
-                          Civil Engineering
-                        </p>
+                        <p className="lg:text-sm text-xs">Civil Engineering</p>
                       </div>
                     </div>
                   </div>
@@ -294,13 +294,15 @@ const Page = () => {
                 <SubHeader title={t("experience")} alt={false} />
                 <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
                   <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
+                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-5 w-full">
                       <div className="w-10 h-10 rounded-lg bg-golden flex_center">
                         <GoBriefcase className="text-white text-xl" />
                       </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
+                      <div className="flex_start flex-col lg:gap-0 gap-1">
+                        <h4 className="font-medium text-sm">
+                          University Of Mosul
+                        </h4>
+                        <span className="text-black opacity-60 text-xs">
                           25 - 06 - 1992
                         </span>
                       </div>
@@ -310,7 +312,7 @@ const Page = () => {
                         <span className="text-black opacity-60 text-xs">
                           Scientific Title
                         </span>
-                        <p className="lg:text-base text-sm">
+                        <p className="lg:text-sm text-xs">
                           Bachelor Of Science
                         </p>
                       </div>

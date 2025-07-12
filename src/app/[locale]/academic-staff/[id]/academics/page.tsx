@@ -40,11 +40,11 @@ const Page = () => {
             <Breadcrumb title="" alt={false} />
           </div>
           <Image
-            src="/images/bg.png"
+            src="/images/academic-bg.png"
             alt="title"
             fill
             priority
-            className="w-full h-auto object-cover rounded-2xl"
+            className="w-full h-auto rounded-2xl"
           />
         </div>
         <div className="flex_start lg:w-[1024px] w-auto absolute lg:left-1/2 md:left-[12%] sm:left-[18%] left-[22%] -translate-x-1/2 sm:top-[180px] top-[220px]">

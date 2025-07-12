@@ -20,7 +20,7 @@ import { GoArrowRight } from "react-icons/go";
 import { HiOutlineLink } from "react-icons/hi2";
 import { IoMdArrowUp, IoMdClose } from "react-icons/io";
 import { MdCoPresent, MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { PiHandHeart } from "react-icons/pi";
+import { PiHandHeart, PiSealCheck } from "react-icons/pi";
 
 const Page = () => {
   const t = useTranslations("AcademicStaff");
@@ -46,11 +46,11 @@ const Page = () => {
             <Breadcrumb title="" alt={false} />
           </div>
           <Image
-            src="/images/bg.png"
+            src="/images/academic-bg.png"
             alt="title"
             fill
             priority
-            className="w-full h-auto object-cover rounded-2xl"
+            className="w-full h-auto rounded-2xl"
           />
         </div>
         <div className="flex_start lg:w-[1024px] w-auto absolute lg:left-1/2 md:left-[12%] sm:left-[18%] left-[22%] -translate-x-1/2 sm:top-[180px] top-[220px]">
@@ -75,11 +75,11 @@ const Page = () => {
             <div className="flex sm:justify-center justify-start sm:items-center items-start gap-3 sm:flex-row flex-col">
               <div className="flex_center gap-3 rounded-xl border-golden border text-golden px-3 py-1.5">
                 <span className="w-2 h-2 rounded-full flex-shrink-0 bg-golden text-sm"></span>
-                <p>Vice President for Scientific</p>
+                <p className="text-sm">Vice President for Scientific</p>
               </div>
               <div className="flex_center gap-3 rounded-xl border-golden border text-golden px-3 py-1.5">
                 <span className="w-2 h-2 rounded-full flex-shrink-0 bg-golden text-sm"></span>
-                <p> Postgraduate Affairs</p>
+                <p className="text-sm"> Postgraduate Affairs</p>
               </div>
             </div>
             <div className="flex sm:justify-center justify-start sm:items-center items-start gap-3 sm:flex-nowrap flex-wrap">
@@ -141,7 +141,7 @@ const Page = () => {
           >
             {t("education")}
           </Link>
-          <p className="border-b border-b-secondary px-3 sm:text-base text-sm flex-shrink-0 font-semibold">
+          <p className="border-b border-b-secondary px-3 sm:text-base text-sm flex-shrink-0 font-medium">
             {t("professional_engagement")}
           </p>
           <Link
@@ -247,11 +247,11 @@ const Page = () => {
                   <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
                     <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
                       <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-lg">
-                        <FiUser className="text-2xl" />
+                        <PiSealCheck className="text-2xl" />
                       </div>
                       <div className="flex_start flex-col">
                         <h4 className="font-medium">Organization Level</h4>
-                        <span className="text-black opacity-60 text-sm">
+                        <span className="text-black opacity-60 text-xs">
                           2020 - 2024
                         </span>
                       </div>
@@ -259,9 +259,14 @@ const Page = () => {
                     <div className="flex_start w-full gap-5 lg:flex-row flex-col">
                       <div className="flex_start flex-col lg:w-1/2 w-full">
                         <span className="text-black opacity-60 text-xs">
-                          {t("level")}
+                          {t("certificate")}
                         </span>
-                        <p className="lg:text-base text-sm">Manager</p>
+                        <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
+                          <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
+                            <HiOutlineLink />
+                          </span>
+                          <span>botancv.PDF</span>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -278,8 +283,8 @@ const Page = () => {
                         <FaUsers className="text-2xl" />
                       </div>
                       <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
+                        <h4 className="font-medium text-sm">University Of Mosul</h4>
+                        <span className="text-black opacity-60 text-xs">
                           25 - 06 - 1992
                         </span>
                       </div>
@@ -303,11 +308,11 @@ const Page = () => {
                   <div className="flex_start flex-col gap-3 rounded-3xl bg-background text-secondary w-full">
                     <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full px-3 pt-3">
                       <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl">
-                        <CiSearch />
+                        <FiUser />
                       </div>
                       <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
+                        <h4 className="font-medium text-sm">University Of Mosul</h4>
+                        <span className="text-black opacity-60 text-xs">
                           25 - 06 - 1992
                         </span>
                       </div>
@@ -315,22 +320,17 @@ const Page = () => {
                     <div className="flex_start w-full gap-5 lg:flex-row flex-col px-3">
                       <div className="flex_start flex-col lg:w-1/2 w-full">
                         <span className="text-black opacity-60 text-xs">
-                          {t("attachment")}
+                          {t("level")}
                         </span>
-                        <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                          <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                            <HiOutlineLink />
-                          </span>
-                          <span>botancv.PDF</span>
-                        </button>
+                        <p className="lg:text-base text-sm">International</p>
                       </div>
                     </div>
                     <button
                       onClick={() => handleModal(1)}
                       className="w-full py-3 text-golden border-t border-lightBorder flex justify-between items-center px-3"
                     >
-                      <span className="text-sm">{t("read_more")}</span>
-                      <GoArrowRight className="text-xl rtl:rotate-180" />
+                      <span className="text-sm font-semibold">{t("read_more")}</span>
+                      <GoArrowRight className="text-2xl rtl:rotate-180" />
                     </button>
                   </div>
                 </div>
@@ -346,8 +346,8 @@ const Page = () => {
                         <BsBarChart className="text-2xl" />
                       </div>
                       <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
+                        <h4 className="font-medium text-sm">University Of Mosul</h4>
+                        <span className="text-black opacity-60 text-xs">
                           25 - 06 - 1992
                         </span>
                       </div>
@@ -379,8 +379,8 @@ const Page = () => {
                         <MdCoPresent />
                       </div>
                       <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
+                        <h4 className="font-medium text-sm">University Of Mosul</h4>
+                        <span className="text-black opacity-60 text-xs">
                           25 - 06 - 1992
                         </span>
                       </div>
@@ -425,8 +425,8 @@ const Page = () => {
                         <FiUsers />
                       </div>
                       <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
+                        <h4 className="font-medium text-sm">University Of Mosul</h4>
+                        <span className="text-black opacity-60 text-xs">
                           25 - 06 - 1992
                         </span>
                       </div>
@@ -471,8 +471,8 @@ const Page = () => {
                         <PiHandHeart className="text-2xl" />
                       </div>
                       <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
+                        <h4 className="font-medium text-sm">University Of Mosul</h4>
+                        <span className="text-black opacity-60 text-xs">
                           25 - 06 - 1992
                         </span>
                       </div>
@@ -517,7 +517,7 @@ const Page = () => {
         <div className="flex_center fixed top-0 left-0 w-full h-full">
           <div className="bg-white flex_start flex-col gap-5 z-10 sm:w-[550px] w-[90%] rounded-3xl overflow-hidden">
             <div className="flex justify-between items-center gap-2 w-full bg-golden text-white p-6">
-              <h3 className="text-smallTitle font-semibold">Research Detail</h3>
+              <h3 className="text-smallTitle font-medium">Research Detail</h3>
               <button
                 type="button"
                 onClick={() => handleModal(null)}
@@ -526,10 +526,10 @@ const Page = () => {
                 <IoMdClose />
               </button>
             </div>
-            <div className="flex_start flex-col gap-5 w-full p-6">
+            <div className="flex_start flex-col gap-7 w-full p-6">
               <div className="flex_start gap-1 flex-col">
                 <span className="text-black opacity-60 text-sm">
-                  {"research_title"}
+                  {t("research_title")}
                 </span>
                 <p className="text-secondary font-medium">
                   Innovative Approaches to Renewable Energy Integration in Urban
@@ -555,7 +555,7 @@ const Page = () => {
                   {t("attachment")}
                 </span>
                 <p className="text-secondary font-medium">2018 - 2019</p>
-                <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
+                <button className="border border-lightBorder rounded-3xl flex_center gap-3 px-1 py-1.5 text-sm">
                   <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
                     <HiOutlineLink />
                   </span>

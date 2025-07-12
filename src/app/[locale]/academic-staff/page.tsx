@@ -26,7 +26,7 @@ const Page = () => {
 
   return (
     <div className="my-10 flex_center w-full">
-      <div className="max-w-[1024px] px-3 w-full flex_start flex-col gap-8">
+      <div className="max-w-[1024px] px-3 w-full flex_start flex-col gap-10">
         <SubHeader title={t("head")} alt={false} />
         <div className="relative w-full lg:h-[530px] sm:h-[488px] h-[305px]">
           <Image
@@ -36,18 +36,18 @@ const Page = () => {
             priority
             className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
           />
-          <div className="absolute w-[95%] left-1/2 -translate-x-1/2 sm:bottom-24 bottom-[30%] bg-white lg:hidden flex gap-5 sm:p-3 p-1 sm:rounded-3xl rounded-lg">
+          <div className="absolute w-[95%] left-1/2 -translate-x-1/2 sm:bottom-24 bottom-[30%] bg-white lg:hidden flex gap-3 sm:p-3 p-1 sm:rounded-3xl rounded-lg">
             <div className="relative w-full">
-              <span className="pointer-events-none text-black opacity-50 absolute ltr:left-2 right-2 top-1/2 -translate-y-1/2 z-10 text-xl">
+              <span className="pointer-events-none text-black opacity-50 absolute ltr:left-2 right-2 top-1/2 -translate-y-1/2 z-10 sm:text-xl text-lg">
                 <CiSearch />
               </span>
               <input
                 type="text"
-                className="py-2 w-full border-lightBorder px-8 sm:rounded-3xl rounded-lg border focus:border-primary outline-none"
+                className="py-2 w-full sm:text-base text-sm border-lightBorder px-8 sm:rounded-xl rounded-lg border focus:border-primary outline-none"
                 placeholder={t("search_by_name")}
               />
             </div>
-            <button className="sm:px-6 px-4 flex-shrink-0 p-2 rounded-2xl bg-gradient-to-r from-primary to-blue text-white sm:block hidden">
+            <button className="sm:px-6 px-4 flex-shrink-0 p-2 sm:rounded-xl rounded-lg bg-gradient-to-r from-primary to-blue text-white sm:block hidden">
               {t("search")}
             </button>
           </div>
@@ -56,14 +56,14 @@ const Page = () => {
               <select
                 name="academic"
                 id="academic"
-                className="text-start w-full sm:px-2 px-1 sm:py-2 py-1 border border-lightBorder sm:rounded-3xl rounded-lg text-black text-opacity-50 focus:border-primary outline-none"
+                className="text-start w-full sm:px-2 px-1 sm:py-2 py-1 border border-lightBorder sm:rounded-xl rounded-lg text-black text-opacity-50 focus:border-primary outline-none"
               >
                 <option value="#">{t("select_academics")}</option>
                 <option value="#">Academic 1</option>
                 <option value="#">Academic 2</option>
                 <option value="#">Academic 3</option>
               </select>
-              <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary pointer-events-none">
+              <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary text-opacity-70 pointer-events-none">
                 <FaChevronDown />
               </span>
             </div>
@@ -71,14 +71,14 @@ const Page = () => {
               <select
                 name="academic"
                 id="academic"
-                className="text-start w-full sm:px-2 px-1 sm:py-2 py-1 border border-lightBorder sm:rounded-3xl rounded-lg text-black text-opacity-50 focus:border-primary outline-none"
+                className="text-start w-full sm:px-2 px-1 sm:py-2 py-1 border border-lightBorder sm:rounded-xl rounded-lg text-black text-opacity-50 focus:border-primary outline-none"
               >
                 <option value="#">{t("select_department")}</option>
                 <option value="#">Academic 1</option>
                 <option value="#">Academic 2</option>
                 <option value="#">Academic 3</option>
               </select>
-              <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary pointer-events-none">
+              <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary text-opacity-70 pointer-events-none">
                 <FaChevronDown />
               </span>
             </div>
@@ -86,14 +86,14 @@ const Page = () => {
               <select
                 name="academic"
                 id="academic"
-                className="text-start w-full sm:px-2 px-1 sm:py-2 py-1 border border-lightBorder sm:rounded-3xl rounded-lg text-black text-opacity-50 focus:border-primary outline-none"
+                className="text-start w-full sm:px-2 px-1 sm:py-2 py-1 border border-lightBorder sm:rounded-xl rounded-lg text-black text-opacity-50 focus:border-primary outline-none"
               >
                 <option value="#">{t("select_position")}</option>
                 <option value="#">Academic 1</option>
                 <option value="#">Academic 2</option>
                 <option value="#">Academic 3</option>
               </select>
-              <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary pointer-events-none">
+              <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary text-opacity-70 pointer-events-none">
                 <FaChevronDown />
               </span>
             </div>
@@ -103,19 +103,19 @@ const Page = () => {
               </span>
               <input
                 type="text"
-                className="py-2 w-full border-lightBorder px-8 sm:rounded-3xl rounded-lg border focus:border-primary outline-none"
+                className="py-2 w-full border-lightBorder px-8 sm:rounded-xl rounded-lg border focus:border-primary outline-none"
                 placeholder={t("search_by_name")}
               />
             </div>
-            <button className="sm:px-6 px-2 flex-shrink-0 sm:p-2 p-1 sm:rounded-3xl rounded-lg bg-gradient-to-r from-primary to-blue text-white lg:block sm:hidden block">
+            <button className="sm:px-6 px-2 flex-shrink-0 sm:p-2 p-1 sm:rounded-xl rounded-lg bg-gradient-to-r from-primary to-blue text-white lg:block sm:hidden block">
               {t("search")}
             </button>
           </div>
         </div>
-        <h3 className="text-lg opacity-60 font-semibold">
-          {t("results")} (45)
+        <h3 className="sm:text-lg text-base opacity-60 font-semibold">
+          45 {t("results")}
         </h3>
-        <div className="grid w-full lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-8">
+        <div className="grid w-full lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 -mt-3">
           <MemberCard
             description="Vice President for Scientific & Postgraduate Affairs"
             image="/images/president-alt.png"
