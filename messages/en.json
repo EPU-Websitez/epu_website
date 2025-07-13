@@ -486,5 +486,19 @@
     "historical_significance": "Historical Significance",
     "extensive_collection": "Extensive Collection",
     "leading_journal": "Leading Journal"
+  },
+  "Programs": {
+    "head": "Undergraduate Programs",
+    "colleges": "Colleges",
+    "institution": "Institution",
+    "erbil_technical_engineering_college": "Erbil Technical Engineering College",
+    "text": "Embark on Your Educational Journey with Comprehensive Diploma and Bachelor's Degree Options.",
+    "see_more": "See More",
+    "degrees": "Degrees",
+    "degrees_text": "Advance Your Expertise with Our Master's and Doctoral Degree Programs. Take Your Career to the Next Level with Specialized Postgraduate Studies.",
+    "register": "Register",
+    "see_details": "See Details",
+    "application_requirements": "Application Requirements",
+    "application_form": "Application For Higher Diploma"
   }
 }
