@@ -205,7 +205,9 @@
     "staff": "Staff",
     "news": "News",
     "staff_members": "Staff Members",
-    "center_news": "Center News"
+    "center_news": "Center News",
+    "see_more": "See More", 
+    "loading": "Loading..."
   },
   "Students": {
     "head": "Campus Life",

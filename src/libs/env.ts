@@ -1,0 +1,1 @@
+export const API_URL = "https://api-dev-v1.epu.edu.iq";

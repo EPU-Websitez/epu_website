@@ -22,7 +22,7 @@ interface RootLayoutProps {
 
 export default async function RootLayout(props: Readonly<RootLayoutProps>) {
   const { children, params } = props;
-  const { locale } = await params; // ✅ Await params before destructuring
+  const { locale } = await params;
 
   const messages = await getMessages({ locale });
 
