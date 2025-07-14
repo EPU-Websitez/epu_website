@@ -15,16 +15,16 @@ export const metadata: Metadata = {
 
 interface RootLayoutProps {
   children: React.ReactNode;
-  params: {
+  params: Promise<{
     locale: string;
-  };
+  }>;
 }
 
 export default async function RootLayout(props: Readonly<RootLayoutProps>) {
   const { children, params } = props;
-  const { locale } = params;
+  const { locale } = await params; // ✅ Await params before destructuring
 
-  const messages = await getMessages({ locale }); 
+  const messages = await getMessages({ locale });
 
   return (
     <html lang={locale}>
