@@ -28,7 +28,7 @@ export default async function RootLayout(props: Readonly<RootLayoutProps>) {
 
   return (
     <html lang={locale}>
-      <body className={inter.className}>
+      <body>
         <NextIntlClientProvider messages={messages}>
           <div className="flex justify-start items-start flex-col w-full min-h-screen">
             <Navbar />

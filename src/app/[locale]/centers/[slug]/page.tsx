@@ -9,7 +9,12 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { BsTelephoneFill } from "react-icons/bs";
 import { IoMdMail } from "react-icons/io";
-
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import { Swiper as SwiperCore } from "swiper/types";
+import { Pagination } from "swiper/modules";
+import "swiper/css/pagination";
+import { useRef } from "react";
 // ================= INTERFACES =================
 interface CenterResponse {
   id: number;
@@ -65,7 +70,10 @@ const CenterSkeleton = () => (
 
       <div className="w-full flex_start flex-col gap-10">
         {[...Array(3)].map((_, idx) => (
-          <div key={idx} className="mt-10 pb-10 border-b w-full border-b-lightBorder flex_start flex-col gap-5">
+          <div
+            key={idx}
+            className="mt-10 pb-10 border-b w-full border-b-lightBorder flex_start flex-col gap-5"
+          >
             <div className="h-6 w-40 bg-gray-300 rounded"></div>
             <div className="h-4 w-full max-w-[600px] bg-gray-200 rounded"></div>
             <div className="h-4 w-full max-w-[500px] bg-gray-200 rounded"></div>
@@ -94,6 +102,7 @@ const CenterSkeleton = () => (
 
 // ================= MAIN PAGE =================
 const Page = () => {
+  const swiperRef = useRef<SwiperCore>();
   const t = useTranslations("Centers");
   const params = useParams();
   const locale = params?.locale as string;
@@ -105,44 +114,59 @@ const Page = () => {
 
   if (loading || !data) return <CenterSkeleton />;
 
-  const email = data.contacts.find(c => c.type === "EMAIL")?.value;
-  const phone = data.contacts.find(c => c.type === "PHONE")?.value;
+  const email = data.contacts.find((c) => c.type === "EMAIL")?.value;
+  const phone = data.contacts.find((c) => c.type === "PHONE")?.value;
 
   return (
     <div className="w-full flex justify-center items-start sm:mt-10 mt-6 min-h-screen">
       <div className="max-w-[1024px] px-3 text-secondary flex_center flex-col gap-5 w-full">
         <div className="w-full flex_start">
-          <SubHeader title={t("lang_center")} alt={false} />
+          <SubHeader title={data.title} alt={false} />
+        </div>
+        <div className="w-full relative">
+          <Swiper
+            modules={[Pagination]}
+            slidesPerView={1}
+            pagination={{ clickable: true }}
+            loop={true}
+            onBeforeInit={(swiper) => {
+              swiperRef.current = swiper;
+            }}
+          >
+            {data.galleries.map((slide, index) => (
+              <SwiperSlide key={index}>
+                <div className="w-full lg:h-[500px] sm:h-[400px] h-[220px] relative sm:mt-14 mt-6">
+                  <div className="absolute lg:-top-14 top-10 ltr:left-10 right-10 sm:flex hidden flex-col max-w-[520px] z-10 p-4">
+                    <h2 className="bg-primary text-white text-xl font-semibold z-10 p-5">
+                      {data.description}
+                    </h2>
+                    <div className="triangle -mt-14 rotate-90"></div>
+                  </div>
+                  <Image
+                    src={`${API_URL}/${slide.image.lg}`}
+                    alt={data.title}
+                    fill
+                    priority
+                    className="w-full h-full object-cover rounded-3xl"
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
 
-        <div className="w-full lg:h-[500px] sm:h-[400px] h-[220px] relative sm:mt-14 mt-6">
-          <div className="absolute lg:-top-14 top-10 ltr:left-10 right-10 sm:flex hidden flex-col max-w-[520px] z-10 p-4">
-            <h2 className="bg-primary text-white text-xl font-semibold z-10 p-5">
-              {data.description}
-            </h2>
-            <div className="triangle -mt-14 rotate-90"></div>
-          </div>
-          <Image
-            src={"/images/center.png"}
-            alt="Center Image"
-            fill
-            priority
-            className="w-full h-full object-cover"
-          />
-        </div>
-
-        <div className="md:w-[720px] w-full my-10 sm:h-[50px] h-[35px] grid grid-cols-3 justify-center items-center bg-lightBorder text-secondary rounded-3xl">
+        <div className="md:w-[720px] w-full sm:my-10 my-5 sm:h-[50px] h-[35px] grid grid-cols-3 justify-center items-center bg-lightBorder text-secondary rounded-3xl">
           <p className="bg-primary text-white rounded-3xl h-full flex_center sm:text-lg text-sm font-medium">
             {t("vision_mission")}
           </p>
           <Link
-            href={`/${locale}/centers/staff`}
+            href={`/${locale}/centers/${slug}/staff`}
             className="opacity-70 flex_center sm:text-lg text-sm font-medium"
           >
             {t("staff")}
           </Link>
           <Link
-            href={`/${locale}/centers/news`}
+            href={`/${locale}/centers/${slug}/news`}
             className="opacity-70 flex_center sm:text-lg text-sm font-medium"
           >
             {t("news")}
@@ -151,29 +175,25 @@ const Page = () => {
 
         <div className="w-full flex_start flex-col gap-10">
           {/* Vision */}
-          <div className="mt-10 pb-10 border-b w-full border-b-lightBorder flex_start flex-col gap-5">
+          <div className="sm:mt-10 mt-5 sm:pb-10 pb-5 border-b w-full border-b-lightBorder flex_start flex-col gap-5">
             <h2 className="md:text-3xl relative text-lg font-semibold ">
               <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-[6ch]"></span>
               <span className="z-10 relative">{t("vision_statement")}</span>
             </h2>
-            <p className="font-medium md:text-base text-sm">
-              {data.vision}
-            </p>
+            <p className="font-medium md:text-base text-sm">{data.vision}</p>
           </div>
 
           {/* Mission */}
-          <div className="mt-10 pb-10 border-b w-full border-b-lightBorder flex_start flex-col gap-5">
+          <div className="sm:mt-10 mt-5 sm:pb-10 pb-5 border-b w-full border-b-lightBorder flex_start flex-col gap-5">
             <h2 className="md:text-3xl relative text-lg font-semibold ">
               <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-[7ch]"></span>
               <span className="z-10 relative">{t("mission_statement")}</span>
             </h2>
-            <p className="font-medium md:text-base text-sm">
-              {data.mission}
-            </p>
+            <p className="font-medium md:text-base text-sm">{data.mission}</p>
           </div>
 
           {/* Contact */}
-          <div className="mt-10 pb-10 border-b w-full border-b-lightBorder flex_start flex-col gap-5">
+          <div className="sm:mt-10 mt-5 sm:pb-10 pb-5 border-b w-full border-b-lightBorder flex_start flex-col gap-5">
             <h2 className="md:text-3xl relative text-lg font-semibold ">
               <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
               <span className="z-10 relative">{t("contact")}</span>
@@ -189,11 +209,18 @@ const Page = () => {
                 </a>
               )}
               {phone && (
-                <a href={`tel:${phone}`} className="flex sm:justify-center justify-start items-center sm:w-auto w-full gap-3">
+                <a
+                  href={`tel:${phone}`}
+                  className="flex sm:justify-center justify-start items-center sm:w-auto w-full gap-3"
+                >
                   <BsTelephoneFill className="text-2xl" />
                   <div className="flex_start flex-col">
-                    <span className="opacity-70 text-xs">{t("phone_number")}</span>
-                    <p className="font-semibold change_direction flex-end flex">{phone}</p>
+                    <span className="opacity-70 text-xs">
+                      {t("phone_number")}
+                    </span>
+                    <p className="font-semibold change_direction flex-end flex">
+                      {phone}
+                    </p>
                   </div>
                 </a>
               )}
