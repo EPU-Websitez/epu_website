@@ -4,16 +4,12 @@ import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import useFetch from "@/libs/hooks/useFetch";
 import { API_URL } from "@/libs/env";
-import SubHeader from "@/components/subHeader";
 import Image from "next/image";
 import Link from "next/link";
 import { CiMail } from "react-icons/ci";
 import { useEffect, useRef, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import { Swiper as SwiperCore } from "swiper/types";
-import { Pagination } from "swiper/modules";
-import "swiper/css/pagination";
+
+import CenterHeader from "@/components/CenterHeader";
 
 // ========== Types ==========
 interface ImageType {
@@ -53,41 +49,6 @@ interface Center {
   created_at: string;
   updated_at: string;
   priority: number;
-}
-interface CenterResponse {
-  id: number;
-  slug: string;
-  title: string;
-  description: string;
-  vision: string;
-  mission: string;
-  created_at: string;
-  updated_at: string;
-  priority: number;
-  contacts: {
-    id: number;
-    center_id: number;
-    type: "EMAIL" | "PHONE";
-    value: string;
-    created_at: string;
-    updated_at: string;
-  }[];
-  galleries: {
-    id: number;
-    center_id: number;
-    image_id: number;
-    created_at: string;
-    updated_at: string;
-    image: {
-      id: number;
-      original: string;
-      lg: string;
-      md: string;
-      sm: string;
-      created_at: string;
-      updated_at: string;
-    };
-  }[];
 }
 
 interface StaffMember {
@@ -158,55 +119,16 @@ const Page = () => {
     setCenters([]);
     setPage(1);
   }, [slug, locale]);
-  const {
-    data: centerData,
-    loading: centerLoading,
-    error,
-  } = useFetch<CenterResponse>(`${API_URL}/website/centers/${slug}`);
-  const swiperRef = useRef<SwiperCore>();
 
   const handleLoadMore = () => setPage((prev) => prev + 1);
 
   return (
     <div className="w-full flex justify-center items-start sm:my-10 my-6 min-h-screen">
       <div className="max-w-[1024px] px-3 text-secondary flex_center flex-col gap-5 w-full">
-        <div className="w-full flex_start">
-          <SubHeader title={centerData?.title || slug} alt={false} />
-        </div>
-        <div className="w-full relative">
-          <Swiper
-            modules={[Pagination]}
-            slidesPerView={1}
-            pagination={{ clickable: true }}
-            loop={true}
-            onBeforeInit={(swiper) => {
-              swiperRef.current = swiper;
-            }}
-          >
-            {centerData?.galleries.map((slide, index) => (
-              <SwiperSlide key={index}>
-                <div className="w-full lg:h-[500px] sm:h-[400px] h-[220px] relative sm:mt-14 mt-6">
-                  <div className="absolute lg:-top-14 top-10 ltr:left-10 right-10 sm:flex hidden flex-col max-w-[520px] z-10 p-4">
-                    <h2 className="bg-primary text-white text-xl font-semibold z-10 p-5">
-                      {centerData.description}
-                    </h2>
-                    <div className="triangle -mt-14 rotate-90"></div>
-                  </div>
-                  <Image
-                    src={`${API_URL}/${slide.image.lg}`}
-                    alt={centerData.title}
-                    fill
-                    priority
-                    className="w-full h-full object-cover rounded-3xl"
-                  />
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
+        <CenterHeader />
         <div className="md:w-[720px] w-full sm:h-[50px] my-10 h-[35px] grid grid-cols-3 justify-center items-center bg-lightBorder text-secondary rounded-3xl">
           <Link
-            href={`/${locale}/centers/${slug}/vision-and-mission`}
+            href={`/${locale}/centers/${slug}`}
             className="opacity-70 flex_center sm:text-lg text-sm font-medium"
           >
             {t("vision_mission")}

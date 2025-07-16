@@ -44,7 +44,7 @@ const ResearchModal: React.FC<ResearchModalProps> = ({ handleClick }) => {
                 {t("research_description")}
               </span>
               <p className="text-secondary font-medium">
-                Breast cancer is one of the world's leading causes of mortality
+                Breast cancer is one of the worlds leading causes of mortality
                 in women and is due to uncontrollable breast cell growth. Early
                 detection and proper care are the only means of avoiding deaths
                 from breast cancer. The precise characterization of tumors is a
