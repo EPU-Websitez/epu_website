@@ -42,7 +42,7 @@ const Page = () => {
                 <Link
                   href={`/${locale}/directorate/${id}`}
                   title={t("about")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                 >
                   <span>{t("about")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -50,7 +50,7 @@ const Page = () => {
                 <Link
                   href={`/${locale}/directorate/${id}/staff`}
                   title={t("staff")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                 >
                   <span>{t("staff")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -86,7 +86,7 @@ const Page = () => {
                           query: { type: "registry_university" },
                         }}
                         title={t("registry_university")}
-                        className="w-full gap-3 flex items-center justify-between opacity-70"
+                        className="w-full gap-3 border-t border-t-lightBorder pt-2 flex items-center justify-between opacity-70"
                       >
                         <span className="max-w-full truncate">
                           {t("registry_university")}
@@ -107,7 +107,7 @@ const Page = () => {
                     </div>
                   )}
                 </div>
-                <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-primary border-primary">
+                <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-primary border-primary">
                   <span>{t("news")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                 </div>

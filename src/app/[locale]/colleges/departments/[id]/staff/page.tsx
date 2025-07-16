@@ -40,7 +40,7 @@ const Page = () => {
               <Link
                 href={`/${locale}/colleges/departments/${id}`}
                 title={t("about_button")}
-                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("about_button")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -48,19 +48,19 @@ const Page = () => {
               <Link
                 href={`/${locale}/colleges/departments/${id}/about`}
                 title={t("about_button")}
-                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("vision_mission")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </Link>
-              <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-primary border-primary">
+              <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-primary border-primary">
                 <span>{t("council_staff")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </div>
               <Link
                 href={`/${locale}/colleges/departments/${id}/news`}
                 title={t("news_button")}
-                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("news_button")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -68,7 +68,7 @@ const Page = () => {
               <Link
                 href={`/${locale}/colleges/departments/${id}/researches`}
                 title={t("researches")}
-                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("researches")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -76,7 +76,7 @@ const Page = () => {
               <Link
                 href={`/${locale}/colleges/departments/${id}/course-subjects`}
                 title={t("course_subjects")}
-                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("course_subjects")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -84,7 +84,7 @@ const Page = () => {
               <Link
                 href={`/${locale}/colleges/departments/${id}/guide-lines`}
                 title={t("guide_lines")}
-                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("guide_lines")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />

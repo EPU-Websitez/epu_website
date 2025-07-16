@@ -31,12 +31,15 @@ const Page = () => {
             priority
             className="w-full h-full object-cover rounded-2xl"
           />
+          <div className="absolute text-sm z-10 ltr:left-10 rtl:right-10 -bottom-4 border border-white bg-blue rounded-xl px-3 py-0.5 text-white">
+          Conference
+        </div>
         </div>
         <h1 className="md:text-titleNormal text-base font-semibold">
           Future Insights: International Conference on Technology and Education.
         </h1>
         <div className="flex items-start justify-between lg:flex-row flex-col gap-5 w-full">
-          <p className="lg:w-1/2 w-full opacity-70">
+          <p className="lg:w-1/2 lg:text-xl text-base w-full opacity-70">
             Today, Monday, the 8th of July, 2024, Prof. Dr. Edrees Muhamad Tahir
             Harki, the Rector of the Erbil Polytechnic University and Asst.
             Prof. Ranj Sirwan Abdullah, the General Director of the Scientific
@@ -49,9 +52,9 @@ const Page = () => {
             of pedagogical centers, participants of pedagogical training, and
             (HAMK) University of Finland.
           </p>
-          <div className="bg-backgroundSecondary border border-lightBorder p-5 flex_start flex-col gap-5 rounded-3xl lg:w-auto w-full">
-            <h3 className="">{t("location")}</h3>
-            <p className="px-3 py-2 text-sm rounded-3xl bg-background border border-lightBorder text-black text-opacity-60">
+          <div className="bg-backgroundSecondary border border-lightBorder p-5 flex_start flex-col gap-5 md:rounded-3xl rounded-xl lg:w-auto w-full">
+            <h3 className="sm:text-xl text-base font-semibold">{t("location")}</h3>
+            <p className="px-3 py-2 text-sm md:rounded-3xl rounded-xl bg-background border border-lightBorder text-black text-opacity-60">
               cumbpus 1 college technology and building 3 room 4
             </p>
             <div className="w-full h-[235px] relative">
@@ -63,8 +66,8 @@ const Page = () => {
                 className="w-full h-full object-cover rounded-2xl"
               />
             </div>
-            <h3 className="">{t("schedule")}</h3>
-            <div className="flex justify-between items-center md:flex-nowrap flex-wrap gap-3 w-full px-3 py-2 rounded-3xl border border-lightBorder bg-white">
+            <h3 className="sm:text-xl text-base font-semibold">{t("schedule")}</h3>
+            <div className="flex justify-between items-center md:flex-nowrap flex-wrap gap-3 w-full px-3 py-2 md:rounded-3xl rounded-xl border border-lightBorder bg-white">
               <div className="flex_center gap-3">
                 <span className="bg-secondary bg-opacity-30 rounded-full flex_center w-7 h-7">
                   <FaCalendarAlt />
@@ -86,8 +89,8 @@ const Page = () => {
                 <p className="text-sm text-black text-opacity-60">2 Days</p>
               </div>
             </div>
-            <h3 className="">{t("participant_type")}</h3>
-            <div className="flex justify-between items-center gap-3 w-full px-3 py-2 rounded-3xl border border-lightBorder bg-white">
+            <h3 className="sm:text-xl text-base font-semibold">{t("participant_type")}</h3>
+            <div className="flex justify-between items-center gap-3 w-full px-3 py-2 md:rounded-3xl rounded-xl border border-lightBorder bg-white">
               <div className="flex_center gap-3">
                 <span className="bg-secondary bg-opacity-30 rounded-full flex_center w-7 h-7">
                   <MdOutlinePayment />
@@ -100,7 +103,7 @@ const Page = () => {
         <div className="flex_start flex-col gap-8 w-full">
           <h3 className="text-xl font-semibold">{t("speakers")}</h3>
           <div className="w-full grid lg:grid-cols-3 md:grid-cols-2 gap-5 text-secondary text-center">
-            <div className="rounded-3xl flex_center flex-col gap-4 border border-lightBorder">
+            <div className="md:rounded-3xl rounded-xl flex_center flex-col gap-4 border border-lightBorder">
               <div className="sm:w-[120px] w-[80px] mt-5 sm:h-[120px] h-[80px] border-[5px] border-primary rounded-full flex_center">
                 <div className="sm:w-[100px] w-[65px] sm:h-[100px] h-[65px] relative">
                   <Image
@@ -119,7 +122,7 @@ const Page = () => {
                 The Director of EPU Language Centre
               </span>
             </div>
-            <div className="rounded-3xl flex_center flex-col gap-4 border border-lightBorder">
+            <div className="md:rounded-3xl rounded-xl flex_center flex-col gap-4 border border-lightBorder">
               <div className="sm:w-[120px] w-[80px] mt-5 sm:h-[120px] h-[80px] border-[5px] border-primary rounded-full flex_center">
                 <div className="sm:w-[100px] w-[65px] sm:h-[100px] h-[65px] relative">
                   <Image
@@ -138,7 +141,7 @@ const Page = () => {
                 The Director of EPU Language Centre
               </span>
             </div>
-            <div className="rounded-3xl flex_center flex-col gap-4 border border-lightBorder">
+            <div className="md:rounded-3xl rounded-xl flex_center flex-col gap-4 border border-lightBorder">
               <div className="sm:w-[120px] w-[80px] mt-5 sm:h-[120px] h-[80px] border-[5px] border-primary rounded-full flex_center">
                 <div className="sm:w-[100px] w-[65px] sm:h-[100px] h-[65px] relative">
                   <Image
@@ -157,7 +160,7 @@ const Page = () => {
                 The Director of EPU Language Centre
               </span>
             </div>
-            <div className="rounded-3xl flex_center flex-col gap-4 border border-lightBorder">
+            <div className="md:rounded-3xl rounded-xl flex_center flex-col gap-4 border border-lightBorder">
               <div className="sm:w-[120px] w-[80px] mt-5 sm:h-[120px] h-[80px] border-[5px] border-primary rounded-full flex_center">
                 <div className="sm:w-[100px] w-[65px] sm:h-[100px] h-[65px] relative">
                   <Image

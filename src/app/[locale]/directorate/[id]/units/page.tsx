@@ -22,7 +22,6 @@ const Page = () => {
   const handleOpenStaff = () => {
     setStaffIsOpen(!staffIsOpen);
   };
-  console.log(staff);
 
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
@@ -44,7 +43,7 @@ const Page = () => {
                 <Link
                   href={`/${locale}/directorate/${id}`}
                   title={t("about")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                 >
                   <span>{t("about")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -52,7 +51,7 @@ const Page = () => {
                 <Link
                   href={`/${locale}/directorate/${id}/staff`}
                   title={t("staff")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                 >
                   <span>{t("staff")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -88,7 +87,7 @@ const Page = () => {
                           query: { type: "registry_university" },
                         }}
                         title={t("registry_university")}
-                        className={`w-full gap-3 flex items-center justify-between ${
+                        className={`w-full gap-3 border-t border-t-lightBorder pt-2 flex items-center justify-between ${
                           staff === "registry_university"
                             ? "opacity-100"
                             : "opacity-70"
@@ -105,7 +104,7 @@ const Page = () => {
                           query: { type: "university_secrtariat" },
                         }}
                         title={t("university_secrtariat")}
-                        className={`w-full gap-3 pt-3 flex items-center opacity-70 justify-between border-t border-t-lightBorder ${
+                        className={`w-full gap-3 flex items-center opacity-70 justify-between ${
                           staff === "university_secrtariat"
                             ? "opacity-100"
                             : "opacity-70"
@@ -122,7 +121,7 @@ const Page = () => {
                 <Link
                   href={`/${locale}/directorate/${id}/news`}
                   title={t("news")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                 >
                   <span>{t("news")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -143,7 +142,8 @@ const Page = () => {
                   )}
                 </h2>
                 <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder">
-                  <p className="text-opacity-70 text-sm">
+                  <h4 className="sm:text-base text-sm font-semibold">{t("about")}</h4>
+                  <p className="opacity-70 sm:text-sm text-xs">
                     Lorem Ipsum is simply dummy text of the printing and
                     typesetting industry. Lorem Ipsum has been the industrys
                     standard dummy text ever since the 1500s, when an unknown

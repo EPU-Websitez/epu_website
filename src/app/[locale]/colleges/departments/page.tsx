@@ -23,8 +23,10 @@ const Page = () => {
   const locale = params?.locale as string;
   return (
     <div className="w-full flex_center flex-col sm:my-10 my-5">
-      <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full">
+      <div className="max-w-[1379px] px-3 flex_start w-full">
         <CollegeHeader title={t("header_title")} desc={t("header_desc")} />
+      </div>
+      <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full">
         <SubHeader title={t("departments")} alt={false} />
         <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-5 w-full flex-shrink-0">
           <div className="relative border border-lightBorder rounded-3xl p-2 flex_center flex-col gap-3 text-center">

@@ -43,19 +43,19 @@ const Page = () => {
                 <Link
                   href={`/${locale}/international-strategy/${id}`}
                   title={t("strategy")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                 >
                   <span>{t("strategy")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                 </Link>
-                <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-primary border-primary">
+                <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-primary border-primary">
                   <span>{t("goals")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                 </div>
                 <Link
                   href={`/${locale}/international-strategy/activities`}
                   title={t("activities")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                 >
                   <span>{t("activities")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -63,7 +63,7 @@ const Page = () => {
                 <Link
                   href={`/${locale}/international-strategy/outcomes`}
                   title={t("outcomes")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                 >
                   <span>{t("outcomes")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -71,7 +71,7 @@ const Page = () => {
                 <Link
                   href={`/${locale}/international-strategy/actions`}
                   title={t("actions")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                 >
                   <span>{t("actions")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />

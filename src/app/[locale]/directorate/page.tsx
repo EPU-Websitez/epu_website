@@ -51,13 +51,13 @@ const Page = () => {
             alt="My Image"
             fill
             priority
-            className="w-full h-full"
+            className="w-full h-full rounded-3xl"
           />
         </div>
         <div className="w-full flex_center flex-col gap-10 text-secondary">
           <div className="flex justify-center items-center lg:w-[920px] w-full lg:h-[55px] h-[65px] relative bg-lightBorder rounded-3xl overflow-hidden">
             <span
-              className={`bg-gradient-to-r from-primary to-blue duration-200 text-white absolute ltr:left-0 rtl:right-0 top-0 w-[33%] text-wrap h-full rounded-3xl ${
+              className={`bg-primary duration-200 text-white absolute ltr:left-0 rtl:right-0 top-0 w-[33%] text-wrap h-full rounded-3xl ${
                 tab === "administrativeStructure"
                   ? "ltr:left-0 rtl:right-0"
                   : tab === "scientificStructure"
@@ -68,7 +68,7 @@ const Page = () => {
             <button
               type="button"
               onClick={() => handleTab("administrativeStructure")}
-              className={`flex_center w-[33%] text-wrap lg:text-lg text-sm z-10 text-center h-full ${
+              className={`flex_center w-[33%] text-wrap lg:text-lg text-xs z-10 text-center h-full ${
                 tab === "administrativeStructure"
                   ? "text-white"
                   : "text-secondary opacity-70"
@@ -79,7 +79,7 @@ const Page = () => {
             <button
               type="button"
               onClick={() => handleTab("scientificStructure")}
-              className={`flex_center w-[33%] text-wrap lg:text-lg text-sm z-10 text-center h-full ${
+              className={`flex_center w-[33%] text-wrap lg:text-lg text-xs z-10 text-center h-full ${
                 tab === "scientificStructure"
                   ? "text-white"
                   : "text-secondary opacity-70"
@@ -90,7 +90,7 @@ const Page = () => {
             <button
               type="button"
               onClick={() => handleTab("studentAffairs")}
-              className={`flex_center w-[33%] text-wrap lg:text-lg text-sm z-10 text-center h-full ${
+              className={`flex_center w-[33%] text-wrap lg:text-lg text-xs z-10 text-center h-full ${
                 tab === "studentAffairs"
                   ? "text-white"
                   : "text-secondary opacity-70"

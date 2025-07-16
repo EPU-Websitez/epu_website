@@ -70,7 +70,7 @@ const Page = () => {
         <div className="w-full flex_center">
           <div className="sm:flex hidden justify-center items-center w-[920px] h-[85px] relative bg-lightBorder rounded-2xl overflow-hidden gap-5">
             <span
-              className={`bg-gradient-to-r from-primary to-blue duration-200 text-white absolute ltr:left-0 rtl:right-0 top-0 w-1/2 h-full rounded-2xl ${
+              className={`bg-primary text-white absolute ltr:left-0 rtl:right-0 top-0 w-1/2 h-full rounded-2xl ${
                 tab === "higherEdu"
                   ? "ltr:left-0 rtl:right-0"
                   : "-translate-x-0 ltr:left-1/2 rtl:right-1/2"
@@ -103,7 +103,7 @@ const Page = () => {
           </h3>
         </div>
         <div className="flex_start flex-col gap-5 w-full">
-          <div className="w-full flex_start flex-col rounded-2xl text-secondary border border-lightBorder">
+          <div className={`w-full flex_start flex-col rounded-2xl text-secondary border  ${openedAccordion === 1 ? 'border-golden' : 'border-lightBorder'}`}>
             <button
               type="button"
               onClick={() => handleAccordion(1, "instruction")}
@@ -126,7 +126,7 @@ const Page = () => {
                   : "max-h-0 overflow-y-hidden"
               }`}
             >
-              <p>
+              <p className="opacity-70">
                 The mission of this section is to support the academic staff or
                 the alumni to study abroad through participation in quality
                 programs in a wide range of disciplines. Also to enable the
@@ -156,7 +156,7 @@ const Page = () => {
               </button>
             </div>
           </div>
-          <div className="w-full flex_start flex-col rounded-2xl text-secondary border border-lightBorder">
+          <div className={`w-full flex_start flex-col rounded-2xl text-secondary border  ${openedAccordion === 1 ? 'border-golden' : 'border-lightBorder'}`}>
             <button
               type="button"
               onClick={() => handleAccordion(2, "instruction")}
@@ -179,7 +179,7 @@ const Page = () => {
                   : "max-h-0 overflow-y-hidden"
               }`}
             >
-              <p>
+              <p className="opacity-70">
                 The mission of this section is to support the academic staff or
                 the alumni to study abroad through participation in quality
                 programs in a wide range of disciplines. Also to enable the
@@ -209,7 +209,7 @@ const Page = () => {
               </button>
             </div>
           </div>
-          <div className="w-full flex_start flex-col rounded-2xl text-secondary border border-lightBorder">
+          <div className={`w-full flex_start flex-col rounded-2xl text-secondary border  ${openedAccordion === 1 ? 'border-golden' : 'border-lightBorder'}`}>
             <button
               type="button"
               onClick={() => handleAccordion(3, "instruction")}
@@ -232,7 +232,7 @@ const Page = () => {
                   : "max-h-0 overflow-y-hidden"
               }`}
             >
-              <p>
+              <p className="opacity-70">
                 The mission of this section is to support the academic staff or
                 the alumni to study abroad through participation in quality
                 programs in a wide range of disciplines. Also to enable the
@@ -270,7 +270,7 @@ const Page = () => {
           </h3>
         </div>
         <div className="flex_start flex-col gap-5 w-full">
-          <div className="w-full flex_start flex-col rounded-2xl text-secondary border border-lightBorder">
+          <div className={`w-full flex_start flex-col rounded-2xl text-secondary border  ${openedAccordion === 1 ? 'border-golden' : 'border-lightBorder'}`}>
             <button
               type="button"
               onClick={() => handleAccordion(4, "decision")}
@@ -293,7 +293,7 @@ const Page = () => {
                   : "max-h-0 overflow-y-hidden"
               }`}
             >
-              <p>
+              <p className="opacity-70">
                 The mission of this section is to support the academic staff or
                 the alumni to study abroad through participation in quality
                 programs in a wide range of disciplines. Also to enable the
@@ -323,7 +323,7 @@ const Page = () => {
               </button>
             </div>
           </div>
-          <div className="w-full flex_start flex-col rounded-2xl text-secondary border border-lightBorder">
+          <div className={`w-full flex_start flex-col rounded-2xl text-secondary border  ${openedAccordion === 1 ? 'border-golden' : 'border-lightBorder'}`}>
             <button
               type="button"
               onClick={() => handleAccordion(5, "decision")}
@@ -346,7 +346,7 @@ const Page = () => {
                   : "max-h-0 overflow-y-hidden"
               }`}
             >
-              <p>
+              <p className="opacity-70">
                 The mission of this section is to support the academic staff or
                 the alumni to study abroad through participation in quality
                 programs in a wide range of disciplines. Also to enable the
@@ -376,7 +376,7 @@ const Page = () => {
               </button>
             </div>
           </div>
-          <div className="w-full flex_start flex-col rounded-2xl text-secondary border border-lightBorder">
+          <div className={`w-full flex_start flex-col rounded-2xl text-secondary border  ${openedAccordion === 1 ? 'border-golden' : 'border-lightBorder'}`}>
             <button
               type="button"
               onClick={() => handleAccordion(6, "decision")}
@@ -399,7 +399,7 @@ const Page = () => {
                   : "max-h-0 overflow-y-hidden"
               }`}
             >
-              <p>
+              <p className="opacity-70">
                 The mission of this section is to support the academic staff or
                 the alumni to study abroad through participation in quality
                 programs in a wide range of disciplines. Also to enable the

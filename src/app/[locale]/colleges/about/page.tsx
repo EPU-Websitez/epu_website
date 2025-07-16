@@ -17,8 +17,10 @@ const Page = () => {
   const locale = params?.locale as string;
   return (
     <div className="w-full flex_center flex-col sm:my-10 my-5">
-      <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full">
+      <div className="max-w-[1379px] px-3 flex_start w-full">
         <CollegeHeader title={t("header_title")} desc={t("header_desc")} />
+      </div>
+      <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full">
         <SubHeader title={t("about")} alt={false} />
         <p className="text-sm text-secondary font-medium">{t("about_text")}</p>
         <div className="grid sm:grid-cols-3 grid-cols-2 lg:gap-5 sm:gap-2 gap-5 justify-between w-full my-10 lg:px-10 px-3 text-secondary">
@@ -64,7 +66,7 @@ const Page = () => {
             <div className="flex justify-start items-center gap-3">
               <FaPhoneAlt className="text-2xl" />
               <div className="flex_start flex-col">
-                <span className="text-sm">{t("mail")}</span>
+                <span className="text-sm">{t("phone_number")}</span>
                 <p className="change_direction font-medium">0750 123 4567</p>
               </div>
             </div>

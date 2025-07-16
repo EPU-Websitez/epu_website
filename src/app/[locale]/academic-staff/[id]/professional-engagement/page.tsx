@@ -158,7 +158,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("acknowledgment")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "acknowledgment"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -170,7 +170,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("committees")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "committees"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -182,7 +182,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("memberships")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "memberships"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -194,7 +194,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("activities")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "activities"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -206,7 +206,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("researchEvaluation")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "researchEvaluation"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -218,7 +218,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("committeesEvaluation")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "committeesEvaluation"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -230,7 +230,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("grants")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "grants"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"

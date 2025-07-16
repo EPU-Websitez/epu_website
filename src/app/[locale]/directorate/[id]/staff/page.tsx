@@ -41,12 +41,12 @@ const Page = () => {
                 <Link
                   href={`/${locale}/directorate/${id}`}
                   title={t("about")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                 >
                   <span>{t("about")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                 </Link>
-                <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-primary border-primary">
+                <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-primary border-primary">
                   <span>{t("staff")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                 </div>
@@ -81,7 +81,7 @@ const Page = () => {
                           query: { type: "registry_university" },
                         }}
                         title={t("registry_university")}
-                        className="w-full gap-3 flex items-center justify-between opacity-70"
+                        className="w-full gap-3 border-t border-t-lightBorder pt-2 flex items-center justify-between opacity-70"
                       >
                         <span className="max-w-full truncate">
                           {t("registry_university")}
@@ -105,7 +105,7 @@ const Page = () => {
                 <Link
                   href={`/${locale}/directorate/${id}/news`}
                   title={t("news")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                 >
                   <span>{t("news")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -117,8 +117,8 @@ const Page = () => {
                   <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
                   <span className="z-10 relative">{t("staff")}</span>
                 </h2>
-                <div className="flex_center gap-10 sm:w-auto w-full border sm:border-none sm:p-0 p-5 sm:rounded-none rounded-3xl border-lightBorder">
-                  <div className="sm:w-[200px] w-[125px] sm:h-[190px] h-[125px] relative">
+                <div className="flex_center sm:gap-10 gap-5 sm:w-auto w-full border p-5 rounded-3xl border-lightBorder">
+                  <div className="sm:w-[200px] w-[125px] sm:h-[190px] h-[125px] relative flex-shrink-0">
                     <Image
                       src="/images/president-alt.png"
                       alt="title"

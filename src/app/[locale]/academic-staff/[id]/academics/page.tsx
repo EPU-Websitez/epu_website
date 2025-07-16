@@ -152,7 +152,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("books")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "books"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -164,7 +164,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("publications")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "publications"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -176,7 +176,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("researchIntrest")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "researchIntrest"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -188,7 +188,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("supervisingResearch")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "supervisingResearch"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -200,7 +200,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("seminars")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "seminars"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -212,7 +212,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("workshops")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "workshops"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -224,7 +224,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("conferences")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "conferences"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -236,7 +236,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("trainings")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "trainings"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -248,7 +248,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("awards")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "awards"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -260,7 +260,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => handleTab("professionalActs")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl ${
+                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
                   tab === "professionalActs"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"

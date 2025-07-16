@@ -18,10 +18,12 @@ const Page = () => {
   const locale = params?.locale as string;
   return (
     <div className="w-full flex_center flex-col sm:my-10 my-5">
-      <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full">
+      <div className="max-w-[1379px] px-3 flex_start w-full">
         <CollegeHeader title={t("header_title")} desc={t("header_desc")} />
+      </div>
+      <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full">
         <SubHeader title={t("college_council")} alt={false} />
-        <div className="flex_center gap-10 sm:w-auto w-full border p-5 sm:rounded-none rounded-3xl border-lightBorder">
+        <div className="flex md:justify-start justify-center md:items-start items-center gap-10 w-full border p-5 rounded-3xl border-lightBorder">
           <div className="sm:w-[310px] w-[125px] sm:h-[285px] h-[125px] relative">
             <Image
               src="/images/president-alt.png"
@@ -36,7 +38,7 @@ const Page = () => {
               {t("dean_of_college")}
             </h3>
             <h1 className="max-w-[350px] lg:text-title sm:text-smallTitle text-xs font-medium relative">
-              <span className="relative z-10">{t("name")}</span>
+              <span className="relative z-10 font-medium">{t("name")}</span>
               <span className="absolute ltr:left-0 rtl:right-0 -bottom-3 w-[80%] h-6">
                 <Image src="/images/title-shape.svg" alt="park" fill priority />
               </span>

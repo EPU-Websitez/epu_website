@@ -78,13 +78,15 @@ const Page = () => {
             centers.map((center) => (
               <div key={center.id} className="mt-10 pb-10 border-b w-full border-b-lightBorder flex justify-between items-start gap-5">
           <div className="flex_start flex-col gap-5">
-            <h2 className="md:text-titleNormal text-lg font-semibold">
+            <Link href={`/${locale}/centers/${center.slug}`}
+            title={center.title} className="md:text-titleNormal text-lg font-semibold">
               {center.title}
-            </h2>
+            </Link>
             <p className="font-medium md:text-base text-sm">{center.mission}</p>
           </div>
           <Link
             href={`/${locale}/centers/${center.slug}`}
+            title={center.title}
             className="text-lg w-10 h-10 rounded-full bg-golden flex_center text-white flex-shrink-0"
           >
             <FaChevronRight className="rtl:rotate-180" />

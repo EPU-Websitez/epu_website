@@ -36,14 +36,14 @@ const Page = () => {
         <div className="w-full border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
           <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
             <div className="flex_start flex-col gap-4 flex-shrink-0 lg:w-auto w-full">
-              <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-primary border-primary">
+              <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-primary border-primary">
                 <span>{t("about_button")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </div>
               <Link
                 href={`/${locale}/colleges/departments/${id}/vision-and-mission`}
                 title={t("vision_mission")}
-                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("vision_mission")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -51,7 +51,7 @@ const Page = () => {
               <Link
                 href={`/${locale}/colleges/departments/${id}/council-staff`}
                 title={t("council_staff")}
-                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("council_staff")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -59,7 +59,7 @@ const Page = () => {
               <Link
                 href={`/${locale}/colleges/departments/${id}/news`}
                 title={t("news_button")}
-                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("news_button")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -67,7 +67,7 @@ const Page = () => {
               <Link
                 href={`/${locale}/colleges/departments/${id}/researches`}
                 title={t("researches")}
-                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("researches")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -75,7 +75,7 @@ const Page = () => {
               <Link
                 href={`/${locale}/colleges/departments/${id}/course-subjects`}
                 title={t("course_subjects")}
-                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("course_subjects")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -83,7 +83,7 @@ const Page = () => {
               <Link
                 href={`/${locale}/colleges/departments/${id}/guide-lines`}
                 title={t("guide_lines")}
-                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("guide_lines")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -118,26 +118,26 @@ const Page = () => {
                 installation, testing and acceptance of information systems.
               </p>
               <div className="grid sm:grid-cols-3 grid-cols-2 lg:gap-5 sm:gap-2 gap-5 justify-between w-full my-10 lg:px-10 px-3 text-secondary">
-                <div className="flex_center flex-col gap-2">
+                <div className="flex_center flex-col sm:gap-2 gap-1">
                   <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
                     <PiStudent />
                   </span>
-                  <h1 className="text-title font-medium">+ 3.12K</h1>
-                  <p className="font-medium">{t("students")}</p>
+                  <h1 className="sm:text-title text-xl font-medium">+ 3.12K</h1>
+                  <p className="sm:text-base text-sm font-medium">{t("students")}</p>
                 </div>
-                <div className="flex_center flex-col gap-2">
+                <div className="flex_center flex-col sm:gap-2 gap-1">
                   <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
                     <IoBriefcaseOutline />
                   </span>
-                  <h1 className="text-title font-medium">+ 239</h1>
-                  <p className="font-medium">{t("teachers")}</p>
+                  <h1 className="sm:text-title text-xl font-medium">+ 239</h1>
+                  <p className="sm:text-base text-sm font-medium">{t("teachers")}</p>
                 </div>
-                <div className="flex_center flex-col gap-2">
+                <div className="flex_center flex-col sm:gap-2 gap-1">
                   <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
                     <LuUsers />
                   </span>
-                  <h1 className="text-title font-medium">+ 300</h1>
-                  <p className="font-medium">{t("staff_members")}</p>
+                  <h1 className="sm:text-title text-xl font-medium">+ 300</h1>
+                  <p className="sm:text-base text-sm font-medium">{t("staff_members")}</p>
                 </div>
               </div>
             </div>

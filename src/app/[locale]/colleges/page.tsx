@@ -81,7 +81,7 @@ const Page = () => {
                     <GoBriefcase />
                   </div>
                   <div className="flex_start flex-col">
-                    <small className="font-medium sm:text-[10px] text-[8px]">
+                    <small className="font-semibold sm:text-[10px] text-[8px]">
                       +12.4 K
                     </small>
                     <small className="sm:text-[8px] text-[6px] text-black opacity-60">
@@ -94,7 +94,7 @@ const Page = () => {
                     <PiStudent />
                   </div>
                   <div className="flex_start flex-col">
-                    <small className="font-medium sm:text-[10px] text-[8px]">
+                    <small className="font-semibold sm:text-[10px] text-[8px]">
                       +12.4 K
                     </small>
                     <small className="sm:text-[8px] text-[6px] text-black opacity-60">
@@ -129,7 +129,7 @@ const Page = () => {
                     <GoBriefcase />
                   </div>
                   <div className="flex_start flex-col">
-                    <small className="font-medium sm:text-[10px] text-[8px]">
+                    <small className="font-semibold sm:text-[10px] text-[8px]">
                       +12.4 K
                     </small>
                     <small className="sm:text-[8px] text-[6px] text-black opacity-60">
@@ -168,7 +168,7 @@ const Page = () => {
             </p>
             <Link
               href={""}
-              className="flex_center gap-5 bg-gradient-to-r from-blue to-primary rounded-3xl lg:py-4 text-sm py-3 lg:px-10 px-5 text-white"
+              className="flex_center gap-5 bg-gradient-to-r from-blue to-primary rounded-3xl lg:py-3 text-sm py-2 lg:px-10 px-5 text-white"
             >
               <span>{t("see_all_departments")}</span>
               <FaChevronRight className="text-lg rtl:rotate-180" />
@@ -187,7 +187,7 @@ const Page = () => {
               pellentesque. Gravida dictum fusce ut placerat.
             </p>
           </div>
-          <div className="md:w-1/2 w-full grid grid-cols-2 gap-2">
+          <div className="md:w-1/2 w-full grid grid-cols-2 gap-1">
             <div className="relative w-[152px] h-[152px]">
               <Image
                 src={`/images/student-2.png`}
@@ -199,7 +199,7 @@ const Page = () => {
             </div>
 
             <div className="max-w-[125px] sm:text-smallTitle text-xl relative">
-              <div className="absolute w-[30px] h-[30px] ltr:-right-3 rtl:-left-3 -top-3">
+              <div className="absolute w-[30px] h-[30px] ltr:-right-3 rtl:-left-3 -top-7">
               <Image
                 src={`/images/star.png`}
                 className="object-cover"
@@ -211,7 +211,7 @@ const Page = () => {
               {t("great_teacher")}
             </div>
             <div className="max-w-[225px] text-lg text-golden flex justify-center items-center">
-              <h1 className="text-start max-w-[125px]">{t("useful_labs")}</h1>
+              <h1 className="text-start max-w-[125px] -mt-8">{t("useful_labs")}</h1>
             </div>
             <div className="relative sm:w-[200px] w-[152px] sm:h-[200px] h-[152px]">
               <div className="absolute top-5 -left-5 sm:w-[200px] w-[152px] sm:h-[200px] h-[152px] border-4 border-golden rounded-full"></div>
