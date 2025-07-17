@@ -9,7 +9,7 @@ import { FaChartLine, FaChevronDown } from "react-icons/fa6";
 import { FiAward } from "react-icons/fi";
 import { HiOutlineLink } from "react-icons/hi2";
 import { IoLockOpenOutline } from "react-icons/io5";
-import { MdAccessTime } from "react-icons/md";
+import { MdAccessTime, MdCalendarToday, MdLockOpen } from "react-icons/md";
 import { VscLibrary } from "react-icons/vsc";
 
 const Page = () => {
@@ -32,7 +32,7 @@ const Page = () => {
                 <path />
               </svg>
               {locale === "en" && (
-                <span className="z-10 relative">
+                <span className="z-10 relative font-semibold">
                   Dive into a diverse range of{" "}
                   <span className="text-golden">peer-reviewed journals</span>,
                   covering various disciplines and offering cutting-edge
@@ -40,7 +40,7 @@ const Page = () => {
                 </span>
               )}
               {locale === "ku" && (
-                <span className="z-10 relative">
+                <span className="z-10 relative font-semibold">
                   خۆت بخەرە ناو کۆمەڵێک{" "}
                   <span className="text-golden">گۆڤاری هەمەچەشن</span>, کە
                   لەلایەن هاوتاکانەوە پێداچوونەوەیان بۆ کراوە و دیسیپلینە
@@ -48,7 +48,7 @@ const Page = () => {
                 </span>
               )}
               {locale === "ar" && (
-                <span className="z-10 relative">
+                <span className="z-10 relative font-semibold">
                   انغمس في مجموعة متنوعة{" "}
                   <span className="text-golden">من المجلات المحكمة</span>, التي
                   تغطي مختلف التخصصات وتقدم أبحاثًا متطورة.
@@ -58,24 +58,26 @@ const Page = () => {
             <div className="grid md:grid-cols-2 grid-cols-1 gap-5">
               <div className="flex_center gap-2 rounded-3xl border border-golden py-1 px-2">
                 <CiGlobe />
-                <span className="lg:text-sm text-xs">{t("global_reach")}</span>
+                <span className="lg:text-sm text-[10px]">
+                  {t("global_reach")}
+                </span>
               </div>
 
               <div className="flex_center gap-2 rounded-3xl border border-golden py-1 px-2">
                 <MdAccessTime />
-                <span className="lg:text-sm text-xs">
+                <span className="lg:text-sm text-[10px]">
                   {t("historical_significance")}
                 </span>
               </div>
               <div className="flex_center gap-2 rounded-3xl border border-golden py-1 px-2">
                 <VscLibrary />
-                <span className="lg:text-sm text-xs">
+                <span className="lg:text-sm text-[10px]">
                   {t("extensive_collection")}
                 </span>
               </div>
               <div className="flex_center gap-2 rounded-3xl border border-golden py-1 px-2">
                 <FiAward />
-                <span className="lg:text-sm text-xs">
+                <span className="lg:text-sm text-[10px]">
                   {t("leading_journal")}
                 </span>
               </div>
@@ -85,15 +87,24 @@ const Page = () => {
                 <select
                   name="academic"
                   id="academic"
-                  className="text-start sm:block hidden w-full sm:px-2 px-1 sm:py-2 py-1 border border-lightBorder bg-backgroundSecondary sm:rounded-xl rounded-md text-black text-opacity-50 focus:border-primary outline-none"
+                  className="sm:block hidden w-full pl-8 pr-8 py-2 border border-lightBorder bg-backgroundSecondary rounded-xl text-[#9E9E9E] focus:border-primary outline-none appearance-none cursor-pointer"
                 >
                   <option value="#">{t("select_date")}</option>
                   <option value="#">Academic 1</option>
                   <option value="#">Academic 2</option>
                   <option value="#">Academic 3</option>
                 </select>
+
+                {/* Calendar icon - visible on small screens only */}
                 <CiCalendar className="sm:hidden block text-2xl" />
-                <span className="absolute top-1/2 -translate-y-1/2 right-2 text-secondary pointer-events-none">
+
+                {/* Calendar icon for select - visible on larger screens */}
+                <span className="sm:block hidden absolute left-2 top-1/2 -translate-y-1/2 text-[#9E9E9E] pointer-events-none">
+                  <CiCalendar className="text-lg" />
+                </span>
+
+                {/* Dropdown arrow - visible on larger screens only */}
+                <span className="sm:block hidden absolute top-1/2 -translate-y-1/2 right-2 text-secondary pointer-events-none">
                   <FaChevronDown />
                 </span>
               </div>
@@ -103,7 +114,7 @@ const Page = () => {
                 </span>
                 <input
                   type="text"
-                  className="sm:py-2 py-[9px] w-full border-lightBorder bg-backgroundSecondary md:bg-opacity-50 bg-opacity-100 sm:text-base text-sm px-8 sm:rounded-xl rounded-md border focus:border-primary outline-none"
+                  className="sm:py-2 py-[9px] w-full border-lightBorder bg-backgroundSecondary md:bg-opacity-50 text-[#9E9E9E] bg-opacity-100 sm:text-base text-sm px-8 sm:rounded-xl rounded-md border focus:border-primary outline-none"
                   placeholder={t("search_journal")}
                 />
               </div>
@@ -153,24 +164,26 @@ const Page = () => {
             <div className="flex_start flex-col gap-2">
               <div className="flex_center gap-2 rounded-3xl border border-golden py-1 px-2">
                 <CiGlobe />
-                <span className="lg:text-sm text-xs">{t("global_reach")}</span>
+                <span className="lg:text-sm text-[10px]">
+                  {t("global_reach")}
+                </span>
               </div>
 
               <div className="flex_center gap-2 rounded-3xl border border-golden py-1 px-2">
                 <MdAccessTime />
-                <span className="lg:text-sm text-xs">
+                <span className="lg:text-sm text-[10px]">
                   {t("historical_significance")}
                 </span>
               </div>
               <div className="flex_center gap-2 rounded-3xl border border-golden py-1 px-2">
                 <VscLibrary />
-                <span className="lg:text-sm text-xs">
+                <span className="lg:text-sm text-[10px]">
                   {t("extensive_collection")}
                 </span>
               </div>
               <div className="flex_center gap-2 rounded-3xl border border-golden py-1 px-2">
                 <FiAward />
-                <span className="lg:text-sm text-xs">
+                <span className="lg:text-sm text-[10px]">
                   {t("leading_journal")}
                 </span>
               </div>
@@ -187,8 +200,8 @@ const Page = () => {
           </div>
         </div>
         <div className="w-full md:hidden flex justify-center items-center gap-5">
-          <div className="relative w-14 text-sm flex-shrink-0 border border-lightBorder p-2 rounded-md">
-            <CiCalendar className="text-2xl" />
+          <div className="relative w-14 text-sm flex-shrink-0 border border-lightBorder p-1 rounded-md">
+            <CiCalendar className="text-xl" />
             <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary pointer-events-none">
               <FaChevronDown />
             </span>
@@ -199,11 +212,11 @@ const Page = () => {
             </span>
             <input
               type="text"
-              className="py-2 w-full border-lightBorder sm:text-base text-sm px-8 sm:rounded-xl rounded-md border focus:border-primary outline-none"
+              className="py-1 w-full border-lightBorder sm:text-base text-sm px-8 sm:rounded-xl rounded-md border focus:border-primary outline-none"
               placeholder={t("search_journal")}
             />
           </div>
-          <button className="sm:px-6 px-2 flex-shrink-0 py-2 sm:rounded-xl rounded-md bg-primary text-white">
+          <button className="sm:px-6 px-2 flex-shrink-0 py-1 sm:rounded-xl rounded-md bg-primary text-white text-sm">
             {t("search")}
           </button>
         </div>
@@ -220,17 +233,17 @@ const Page = () => {
               tortor ut <button className="font-semibold">..More</button>
             </small>
             <div className="w-full flex_start gap-3 flex-wrap">
-              <span className="bg-backgroundSecondary text-secondary text-sm text-opacity-70 p-2 rounded-md">
+              <span className="bg-backgroundSecondary text-secondary sm:text-sm text-xs text-opacity-70 p-2 rounded-md">
                 Sarwah Othman Ismael
               </span>
-              <span className="bg-backgroundSecondary text-secondary text-sm text-opacity-70 p-2 rounded-md">
+              <span className="bg-backgroundSecondary text-secondary sm:text-sm text-xs text-opacity-70 p-2 rounded-md">
                 Sarwah Othman Ismael
               </span>
             </div>
             <div className="border-t border-t-lightBorder pt-5 w-full flex justify-between items-center gap-3">
               <div className="flex_center gap-2">
                 <span className="w-[30px] h-[30px] rounded-full flex_center bg-backgroundSecondary">
-                  <CiCalendar />
+                  <MdCalendarToday />
                 </span>
                 <div className="flex_start flex-col">
                   <h5 className="text-xs font-semibold">Quarterly</h5>
@@ -252,7 +265,7 @@ const Page = () => {
               </div>
               <div className="flex_center gap-2">
                 <span className="w-[30px] h-[30px] rounded-full flex_center bg-backgroundSecondary">
-                  <IoLockOpenOutline />
+                  <MdLockOpen />
                 </span>
                 <div className="flex_start flex-col">
                   <h5 className="text-xs font-semibold">Open Access</h5>
@@ -308,7 +321,7 @@ const Page = () => {
             <div className="border-t border-t-lightBorder pt-5 w-full flex justify-between items-center gap-3">
               <div className="flex_center gap-2">
                 <span className="w-[30px] h-[30px] rounded-full flex_center bg-backgroundSecondary">
-                  <CiCalendar />
+                  <MdCalendarToday />
                 </span>
                 <div className="flex_start flex-col">
                   <h5 className="text-xs font-semibold">Quarterly</h5>
@@ -330,7 +343,7 @@ const Page = () => {
               </div>
               <div className="flex_center gap-2">
                 <span className="w-[30px] h-[30px] rounded-full flex_center bg-backgroundSecondary">
-                  <IoLockOpenOutline />
+                  <MdLockOpen />
                 </span>
                 <div className="flex_start flex-col">
                   <h5 className="text-xs font-semibold">Open Access</h5>
@@ -386,7 +399,7 @@ const Page = () => {
             <div className="border-t border-t-lightBorder pt-5 w-full flex justify-between items-center gap-3">
               <div className="flex_center gap-2">
                 <span className="w-[30px] h-[30px] rounded-full flex_center bg-backgroundSecondary">
-                  <CiCalendar />
+                  <MdCalendarToday />
                 </span>
                 <div className="flex_start flex-col">
                   <h5 className="text-xs font-semibold">Quarterly</h5>
@@ -408,7 +421,7 @@ const Page = () => {
               </div>
               <div className="flex_center gap-2">
                 <span className="w-[30px] h-[30px] rounded-full flex_center bg-backgroundSecondary">
-                  <IoLockOpenOutline />
+                  <MdLockOpen />
                 </span>
                 <div className="flex_start flex-col">
                   <h5 className="text-xs font-semibold">Open Access</h5>

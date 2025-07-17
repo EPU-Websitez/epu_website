@@ -15,10 +15,7 @@ const Page = () => {
   const params = useParams();
   const locale = params?.locale as string;
   const id = params?.id as string;
-  const [staffIsOpen, setStaffIsOpen] = useState(false);
-  const handleOpenStaff = () => {
-    setStaffIsOpen(!staffIsOpen);
-  };
+
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
       <div className="max-w-[1045px] px-3 w-full flex_start flex-col gap-8">
@@ -32,7 +29,7 @@ const Page = () => {
             className="w-full h-full"
           />
           <div className="ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary to-transparent absolute top-0 left-0 w-full h-full z-10"></div>
-          <h3 className="absolute z-20 text-white top-10 ltr:left-10 rtl:right-10 text-[28px] max-w-[710px]">
+          <h3 className="absolute z-20 text-white top-10 ltr:left-10 rtl:right-10 md:text-titleNormal text-sm max-w-[710px]">
             {t("international_strategy_text")}
           </h3>
         </div>
@@ -78,7 +75,7 @@ const Page = () => {
                 </Link>
               </div>
 
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b text-secondary border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
+              <div className="lg:border-l border-l-none lg:border-b-0 border-b text-secondary border-black border-opacity-30 lg:pl-10 lg:pb-0 pb-10 flex_start flex-col gap-7 w-full">
                 <h2 className="relative sm:text-titleNormal text-lg font-semibold ">
                   <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
                   <span className="z-10 relative">{t("goals")}</span>
@@ -90,7 +87,7 @@ const Page = () => {
                   <p className="text-opacity-70 text-sm text-secondary">
                     {t("first_goal_text")}
                   </p>
-                  <h3 className="text-xl font-semibold text-golden">
+                  <h3 className="text-xl font-semibold text-golden pt-5 border-t border-t-lightBorder w-full">
                     {t("second_goal")}
                   </h3>
                   <p className="text-opacity-70 text-sm text-secondary">

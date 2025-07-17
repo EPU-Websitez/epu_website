@@ -23,7 +23,7 @@ const Page = () => {
       <div className="max-w-[1024px] md:px-3 px-8 text-secondary flex_start flex-col gap-5 w-full">
         <SubHeader title={t("union")} alt={false} />
         <div className="w-full flex md:flex-row flex-col justify-between md:items-center items-start gap-10">
-          <h1 className="lg:text-[70px] text-[55px]">
+          <h1 className="lg:text-[70px] sm:text-[55px] text-[40px]">
             {t("teach")} <br className="md:block hidden" /> {t("learn")} <br />
             {t("grow")}
           </h1>
@@ -61,12 +61,12 @@ const Page = () => {
           </div>
         </div>
         <div className="flex_center w-full mt-10">
-          <h3 className="text-titleNormal font-semibold relative text-center">
+          <h3 className="sm:text-titleNormal text-base font-semibold relative text-center">
             <span className="relative z-10">{t("student_achievement")}</span>
             <span className="w-full absolute left-0 h-3 bg-golden bottom-2"></span>
           </h3>
         </div>
-        <p className="text-center text-lg px-10 font-medium">
+        <p className="text-center sm:text-lg text-sm px-10 font-medium">
           {t("student_achievement_text")}
         </p>
         <div className="grid w-full lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5 mt-10 mb-20">

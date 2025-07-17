@@ -206,7 +206,7 @@
     "news": "News",
     "staff_members": "Staff Members",
     "center_news": "Center News",
-    "see_more": "See More", 
+    "see_more": "See More",
     "loading": "Loading..."
   },
   "Students": {
@@ -499,7 +499,7 @@
     "degrees": "Degrees",
     "degrees_text": "Advance Your Expertise with Our Master's and Doctoral Degree Programs. Take Your Career to the Next Level with Specialized Postgraduate Studies.",
     "register": "Register",
-    "see_details": "See Details",
+    "see_programs": "See Programs",
     "application_requirements": "Application Requirements",
     "application_form": "Application For Higher Diploma"
   }

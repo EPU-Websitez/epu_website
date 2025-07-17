@@ -22,7 +22,9 @@ const Page = () => {
             className="w-full h-full object-cover"
           />
         </div>
-        <p className="md:text-lg text-base">{t("accomodation_text")}</p>
+        <p className="md:text-lg text-base opacity-70">
+          {t("accomodation_text")}
+        </p>
       </div>
     </div>
   );

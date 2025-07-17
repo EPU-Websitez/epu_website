@@ -17,7 +17,7 @@ const Page = () => {
             priority
             className="w-full h-full"
           />
-          <p className="absolute bg-golden lg:bg-primary border-white border-4 right-0 sm:bottom-0 -bottom-1 rounded-2xl text-white w-[33%] py-4 text-center lg:text-base md:text-sm text-xs">
+          <p className="absolute bg-golden lg:bg-primary border-white border-4 right-0 lg:bottom-0 -bottom-1.5 rounded-2xl text-white w-[33%] py-4 text-center lg:text-base md:text-sm text-xs">
             {t("name")}
           </p>
         </div>

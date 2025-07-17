@@ -11,7 +11,7 @@ import { PiStudent } from "react-icons/pi";
 const MapSection = () => {
   const t = useTranslations("IndexPage");
   return (
-    <div className="w-full sm:h-[760px] h-[600px] relative mt-10 bg-[#e9e9e9]">
+    <div className="w-full sm:h-[760px] h-[900px] relative mt-10 bg-[#e9e9e9]">
       <div className="w-full sm:h-full h-[300px] relative">
         <Image src="/images/map.png" alt="map" fill priority />
       </div>

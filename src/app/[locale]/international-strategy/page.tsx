@@ -29,7 +29,7 @@ const Page = () => {
             className="w-full h-full"
           />
           <div className="ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary to-transparent absolute top-0 left-0 w-full h-full z-10"></div>
-          <h3 className="absolute z-20 text-white top-10 ltr:left-10 rtl:right-10 text-[28px] max-w-[710px]">
+          <h3 className="absolute z-20 text-white top-10 ltr:left-10 rtl:right-10 md:text-titleNormal text-sm max-w-[710px]">
             {t("international_strategy_text")}
           </h3>
         </div>

@@ -17,7 +17,7 @@ const ResearchModal: React.FC<ResearchModalProps> = ({ handleClick }) => {
     <div className="flex md:justify-center justify-start md:items-center items-start fixed top-0 left-0 w-full h-full z-20 overflow-y-auto">
       <div className="bg-white flex_start flex-col gap-5 z-10 md:w-[778px] w-full md:rounded-3xl rounded-none overflow-hidden">
         <div className="flex justify-between items-center gap-2 w-full bg-golden text-white p-6">
-          <h3 className="md:text-smallTitle text-lg font-semibold">
+          <h3 className="md:text-smallTitle text-lg font-medium">
             {t("research_detail")}
           </h3>
           <button
@@ -34,7 +34,7 @@ const ResearchModal: React.FC<ResearchModalProps> = ({ handleClick }) => {
               <span className="text-black opacity-60 text-sm">
                 {t("research_title")}
               </span>
-              <p className="text-secondary font-medium">
+              <p className="text-secondary font-medium text-sm">
                 Innovative Approaches to Renewable Energy Integration in Urban
                 Infrastructure
               </p>
@@ -43,7 +43,7 @@ const ResearchModal: React.FC<ResearchModalProps> = ({ handleClick }) => {
               <span className="text-black opacity-60 text-sm">
                 {t("research_description")}
               </span>
-              <p className="text-secondary font-medium">
+              <p className="text-secondary font-medium text-sm">
                 Breast cancer is one of the worlds leading causes of mortality
                 in women and is due to uncontrollable breast cell growth. Early
                 detection and proper care are the only means of avoiding deaths
@@ -56,13 +56,15 @@ const ResearchModal: React.FC<ResearchModalProps> = ({ handleClick }) => {
               <span className="text-black opacity-60 text-sm">
                 {t("publication_date")}
               </span>
-              <p className="text-secondary font-medium">07 - 01 - 2023</p>
+              <p className="text-secondary font-medium text-sm">
+                07 - 01 - 2023
+              </p>
             </div>
             <div className="flex_start gap-1 flex-col">
               <span className="text-black opacity-60 text-sm">
                 {t("source")}
               </span>
-              <p className="text-secondary font-medium">
+              <p className="text-secondary font-medium text-sm">
                 Qalaai Zanist Journal
               </p>
             </div>
@@ -72,21 +74,21 @@ const ResearchModal: React.FC<ResearchModalProps> = ({ handleClick }) => {
               <span className="text-black opacity-60 text-sm">
                 {t("supervisor")}
               </span>
-              <p className="text-secondary font-medium">
+              <p className="text-secondary font-medium text-sm">
                 Profs. Dr. Ahmad Adnan Kamaran
               </p>
             </div>
-            <div className="flex_start gap-1 flex-col">
+            <div className="flex_start flex-col">
               <span className="text-black opacity-60 text-sm">
                 {t("authors")}
               </span>
-              <li className="text-secondary font-medium list-disc">
+              <li className="text-secondary font-medium list-disc text-sm">
                 Sanarya Hamakarim Ali
               </li>
-              <li className="text-secondary font-medium list-disc">
+              <li className="text-secondary font-medium list-disc text-sm">
                 Sanarya Hamakarim Ali
               </li>
-              <li className="text-secondary font-medium list-disc">
+              <li className="text-secondary font-medium list-disc text-sm">
                 Sanarya Hamakarim Ali
               </li>
             </div>
@@ -94,26 +96,28 @@ const ResearchModal: React.FC<ResearchModalProps> = ({ handleClick }) => {
               <span className="text-black opacity-60 text-sm">
                 {t("research_type")}
               </span>
-              <p className="text-secondary font-medium">Conference Paper</p>
+              <p className="text-secondary font-medium text-sm">
+                Conference Paper
+              </p>
             </div>
             <div className="flex_start gap-1 flex-col">
               <span className="text-black opacity-60 text-sm">
                 {t("pages")}
               </span>
-              <p className="text-secondary font-medium">878-902</p>
+              <p className="text-secondary font-medium text-sm">878-902</p>
             </div>
             <div className="flex_start gap-1 flex-col">
               <span className="text-black opacity-60 text-sm">
                 {t("total_citations")}
               </span>
-              <p className="text-secondary font-medium">878-902</p>
+              <p className="text-secondary font-medium text-sm">878-902</p>
             </div>
             <div className="flex_start gap-1 flex-col">
               <span className="text-black opacity-60 text-sm">
                 {t("attachment")}
               </span>
-              <p className="text-secondary font-medium">2018 - 2019</p>
-              <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
+              <p className="text-secondary font-medium text-sm">2018 - 2019</p>
+              <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm text-secondary">
                 <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
                   <HiOutlineLink />
                 </span>

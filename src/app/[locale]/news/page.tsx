@@ -79,7 +79,7 @@ const Page = () => {
                       {t("most_viewed_news")}
                     </p>
                   </div>
-                  <h3 className="lg:text-[26px] md:text-smallTitle text-sm md:max-w-[625px] max-w-full md:px-0 px-3 text-white">
+                  <h3 className="lg:text-[26px] md:text-smallTitle text-sm md:max-w-[625px] max-w-full md:px-0 px-3 text-white text-opacity-90">
                     {slide.name}
                   </h3>
                   <Link
@@ -104,19 +104,25 @@ const Page = () => {
           <span className="w-full h-1 bg-golden"></span>
         </div>
         <div className="w-full flex_center gap-5">
-          <div className="relative lg:w-[20%] sm:w-[33%] w-14 text-sm flex-shrink-0 sm:border-none border border-lightBorder sm:p-0 p-2 rounded-md">
+          <div className="relative sm:bg-transparent bg-white lg:w-[20%] sm:w-[33%] w-14 text-sm flex-shrink-0 sm:border-none border border-lightBorder sm:p-0 p-2 rounded-md">
             <select
               name="academic"
               id="academic"
-              className="text-start sm:block hidden w-full sm:px-2 px-1 sm:py-2 py-1 border border-lightBorder sm:rounded-xl rounded-md text-black text-opacity-50 focus:border-primary outline-none"
+              className="sm:block hidden w-full pl-8 pr-8 py-2 border border-lightBorder bg-lightBorder bg-opacity-50 rounded-xl text-[#9E9E9E] focus:border-primary outline-none appearance-none cursor-pointer"
             >
               <option value="#">{t("select_date")}</option>
               <option value="#">Academic 1</option>
               <option value="#">Academic 2</option>
               <option value="#">Academic 3</option>
             </select>
+
             <CiCalendar className="sm:hidden block text-2xl" />
-            <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary pointer-events-none">
+
+            <span className="sm:block hidden absolute left-2 top-1/2 -translate-y-1/2 text-[#9E9E9E] pointer-events-none">
+              <CiCalendar className="text-lg" />
+            </span>
+
+            <span className="sm:block hidden absolute top-1/2 -translate-y-1/2 right-2 text-secondary pointer-events-none">
               <FaChevronDown />
             </span>
           </div>
@@ -126,7 +132,7 @@ const Page = () => {
             </span>
             <input
               type="text"
-              className="py-2 w-full border-lightBorder sm:text-base text-sm px-8 sm:rounded-xl rounded-md border focus:border-primary outline-none"
+              className="py-2 w-full border-lightBorder bg-lightBorder bg-opacity-50 sm:text-base text-sm px-8 sm:rounded-xl rounded-md border focus:border-primary outline-none"
               placeholder={t("search_news")}
             />
           </div>

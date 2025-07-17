@@ -65,7 +65,7 @@ const Page = () => {
           <div className="flex_start flex-col gap-3">
             <h1 className="lg:text-titleNormal text-xl font-semibold relative">
               {t("libraries_at_EPU")}
-              <div className="sm:w-[50px] w-[30px] sm:h-[40px] h-[20px] absolute ltr:lg:-right-7 rtl:lg:-left-7 ltr:right-0 rtl:left-0 sm:-top-7 -top-5">
+              <div className="sm:w-[50px] w-[30px] sm:h-[40px] h-[20px] absolute ltr:lg:-right-7 rtl:lg:-left-7 ltr:right-0 rtl:left-0 lg:-top-7 sm:-top-9 -top-5">
                 <Image
                   src="/images/alumni-shape.svg"
                   alt="shape"
@@ -138,12 +138,12 @@ const Page = () => {
                 />
               </div>
             </h1>
-            <span className="text-sm max-w-[440px] opacity-70">
+            <span className="sm:text-base text-sm max-w-[440px] opacity-70">
               {t("beautiful_campus_parks_text")}
             </span>
             <a
               href="#"
-              className="flex_center gap-5 bg-gradient-to-r from-blue to-primary rounded-3xl py-4 px-8 text-white mt-10"
+              className="flex_center gap-5 bg-gradient-to-r from-blue to-primary rounded-3xl py-3 px-10 text-white mt-10"
             >
               <span>{t("see_on_map")}</span>
               <FaChevronRight className="text-xl" />

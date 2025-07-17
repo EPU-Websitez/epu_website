@@ -109,7 +109,7 @@ const Page = () => {
                 {tags.map(({ Tag }) => (
                   <span
                     key={Tag.id}
-                    className="bg-backgroundSecondary p-2 rounded-md md:text-base text-xs"
+                    className="bg-backgroundSecondary font-medium p-2 rounded-sm md:text-base text-xs"
                   >
                     #{Tag[`name_${locale}`]}
                   </span>
@@ -129,17 +129,17 @@ const Page = () => {
           </span>
           <input
             type="text"
-            className="py-3 w-full border-lightBorder sm:text-base text-sm px-8 sm:rounded-xl rounded-md border focus:border-primary outline-none"
+            className="sm:py-3 py-2 w-full border-lightBorder sm:text-base text-sm px-8 sm:rounded-lg rounded-md border focus:border-primary outline-none"
             placeholder={t("search_news_hashtag")}
           />
         </div>
 
         {/* Placeholder Tags */}
-        <div className="w-full flex_start gap-4 flex-wrap">
+        <div className="w-full flex_start sm:gap-4 gap-2 flex-wrap">
           {[...Array(8)].map((_, i) => (
             <span
               key={i}
-              className="bg-backgroundSecondary p-2 rounded-md md:text-base text-xs"
+              className="bg-backgroundSecondary font-medium p-2 rounded-sm md:text-base text-xs"
             >
               #Kurdistan
             </span>

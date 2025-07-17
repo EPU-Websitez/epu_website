@@ -150,7 +150,7 @@ button {
   width: 80px;
   height: 80px;
   position: absolute;
-  bottom: -52%;
+  bottom: -34%;
   z-index: 1;
   right: 91px;
   transform: rotate(-180deg);
@@ -170,7 +170,7 @@ button {
 @media screen and (max-width: 995px) {
   .card__arc_alt {
     right: 50px;
-    bottom: -85%;
+    bottom: -56%;
   }
   .card__arc {
     right: 50px;
@@ -179,7 +179,6 @@ button {
 @media screen and (max-width: 972px) {
   .card__arc_alt {
     right: 70px;
-    bottom: -85%;
   }
   .card__arc {
     right: 70px;

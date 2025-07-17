@@ -58,32 +58,40 @@ const Page = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="w-full bg-white rounded-2xl flex_start flex-col gap-5 p-5 z-10 shadow shadow-[#00000015]">
+            <div className="w-full bg-white rounded-2xl flex_start flex-col sm:gap-5 gap-2 sm:p-5 p-2 z-10 shadow shadow-[#00000015]">
               <span className="w-10 h-10 rounded bg-secondary bg-opacity-10 text-xl flex_center z-10">
                 <LiaUserTieSolid />
               </span>
-              <h5 className="text-base font-medium">{t("card_1")}</h5>
+              <h5 className="sm:text-base text-sm font-medium">
+                {t("card_1")}
+              </h5>
               <span className="text-xs">{t("card_1_text")}</span>
             </div>
-            <div className="w-full bg-white rounded-2xl flex_start flex-col gap-5 p-5 z-10 shadow shadow-[#00000015]">
+            <div className="w-full bg-white rounded-2xl flex_start flex-col sm:gap-5 gap-2 sm:p-5 p-2 z-10 shadow shadow-[#00000015]">
               <span className="w-10 h-10 rounded bg-secondary bg-opacity-10 text-xl flex_center z-10">
                 <MdCoPresent />
               </span>
-              <h5 className="text-base font-medium">{t("card_2")}</h5>
+              <h5 className="sm:text-base text-sm font-medium">
+                {t("card_2")}
+              </h5>
               <span className="text-xs">{t("card_2_text")}</span>
             </div>
-            <div className="w-full bg-white rounded-2xl flex_start flex-col gap-5 p-5 z-10 shadow shadow-[#00000015]">
+            <div className="w-full bg-white rounded-2xl flex_start flex-col sm:gap-5 gap-2 sm:p-5 p-2 z-10 shadow shadow-[#00000015]">
               <span className="w-10 h-10 rounded bg-secondary bg-opacity-10 text-xl flex_center z-10">
                 <IoBriefcaseOutline />
               </span>
-              <h5 className="text-base font-medium">{t("card_3")}</h5>
+              <h5 className="sm:text-base text-sm font-medium">
+                {t("card_3")}
+              </h5>
               <span className="text-xs">{t("card_3_text")}</span>
             </div>
-            <div className="w-full bg-white rounded-2xl flex_start flex-col gap-5 p-5 z-10 shadow shadow-[#00000015]">
+            <div className="w-full bg-white rounded-2xl flex_start flex-col sm:gap-5 gap-2 sm:p-5 p-2 z-10 shadow shadow-[#00000015]">
               <span className="w-10 h-10 rounded bg-secondary bg-opacity-10 text-xl flex_center z-10">
                 <ImLab />
               </span>
-              <h5 className="text-base font-medium">{t("card_4")}</h5>
+              <h5 className="sm:text-base text-sm font-medium">
+                {t("card_4")}
+              </h5>
               <span className="text-xs">{t("card_4_text")}</span>
             </div>
           </div>
@@ -118,7 +126,7 @@ const Page = () => {
           />
         </div>
         {locale === "en" && (
-          <h1 className="lg:max-w-[740px] md:max-w-[500px] max-w-[90%] lg:text-title md:text-titleNormal text-2xl font-semibold text-center">
+          <h1 className="lg:max-w-[740px] md:max-w-[490px] max-w-[90%] lg:text-title md:text-titleNormal text-2xl text-center">
             Empowering Students to Navigate <br />
             <span className="text-golden">
               Career Paths with Expert Counseling
@@ -127,7 +135,7 @@ const Page = () => {
           </h1>
         )}
         {locale === "ku" && (
-          <h1 className="lg:max-w-[740px] md:max-w-[500px] max-w-[90%] lg:text-title md:text-titleNormal text-2xl font-semibold text-center">
+          <h1 className="lg:max-w-[740px] md:max-w-[490px] max-w-[90%] lg:text-title md:text-titleNormal text-2xl text-center">
             پاڵپشتی کردنی خوێندکاران بۆ گەڕان <br />
             <span className="text-golden">
               بە ڕێگاکانی پیشەیی بە پشتگیری ڕاوێژکاری
@@ -137,7 +145,7 @@ const Page = () => {
           </h1>
         )}
         {locale === "ar" && (
-          <h1 className="lg:max-w-[740px] md:max-w-[500px] max-w-[90%] lg:text-title md:text-titleNormal text-2xl font-semibold text-center">
+          <h1 className="lg:max-w-[740px] md:max-w-[490px] max-w-[90%] lg:text-title md:text-titleNormal text-2xl text-center">
             تمكين الطلاب من تحديد
             <br />
             <span className="text-golden">
@@ -147,7 +155,7 @@ const Page = () => {
             الخبراء
           </h1>
         )}
-        <div className="grid md:grid-cols-4 grid-cols-2 gap-5 w-full mt-10">
+        <div className="grid md:grid-cols-4 grid-cols-2 gap-5 w-full mt-10 max-w-[1040px]">
           <div className="w-full flex_center flex-col gap-3">
             <div className="md:w-[160px] w-[120px] md:h-[175px] h-[130px] relative">
               <div className="absolute ltr:left-0 rtl:right-0 -top-10 w-[70px] h-[45px] md:block hidden">

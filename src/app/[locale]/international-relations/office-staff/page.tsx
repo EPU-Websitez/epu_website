@@ -40,10 +40,10 @@ const Page = () => {
             className="w-full h-full"
           />
           <div className="ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary to-transparent absolute top-0 left-0 w-full h-full z-10"></div>
-          <h3 className="absolute z-20 text-white top-10 ltr:left-10 rtl:right-10 lg:text-[28px] text-[20px] max-w-[710px]">
+          <h3 className="absolute z-20 text-white top-10 ltr:left-10 rtl:right-10 lg:text-[28px] text-sm max-w-[710px]">
             {t("international_strategy_text")}
           </h3>
-          <div className="absolute z-20 text-white bottom-10 ltr:left-10 rtl:right-10 sm:flex hidden justify-center items-center gap-5">
+          <div className="absolute z-20 text-white bottom-14 ltr:left-10 rtl:right-10 sm:flex hidden justify-center items-center gap-5">
             <Link
               href={`/${locale}/international-relations`}
               title={t("about")}
@@ -68,7 +68,7 @@ const Page = () => {
             </Link>
           </div>
         </div>
-        <h2 className="relative sm:text-titleNormal text-lg font-semibold ">
+        <h2 className="relative sm:text-titleNormal text-lg text-secondary font-semibold ">
           <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
           <span className="z-10 relative">{t("office_staff")}</span>
         </h2>
@@ -88,7 +88,7 @@ const Page = () => {
             <h3 className="text-lg font-medium px-5">
               Prof. DR. Nadhim Hassan Aziz
             </h3>
-            <span className="opacity-70 mb-3 px-5 text-sm">
+            <span className="opacity-80 mb-3 px-5 text-sm">
               The Director of EPU Language Centre
             </span>
             <a
@@ -96,7 +96,7 @@ const Page = () => {
               className="flex_center gap-3 w-full py-5 px-5 border-t border-t-lightBorder"
             >
               <CiMail className="text-xl" />
-              <span className="text-sm opacity-70">
+              <span className="text-sm opacity-80">
                 nadhimhassan123@epu.edu.iq
               </span>
             </a>
@@ -116,7 +116,7 @@ const Page = () => {
             <h3 className="text-lg font-medium px-5">
               Prof. DR. Nadhim Hassan Aziz
             </h3>
-            <span className="opacity-70 mb-3 px-5 text-sm">
+            <span className="opacity-80 mb-3 px-5 text-sm">
               The Director of EPU Language Centre
             </span>
             <a
@@ -124,7 +124,7 @@ const Page = () => {
               className="flex_center gap-3 w-full py-5 px-5 border-t border-t-lightBorder"
             >
               <CiMail className="text-xl" />
-              <span className="text-sm opacity-70">
+              <span className="text-sm opacity-80">
                 nadhimhassan123@epu.edu.iq
               </span>
             </a>
@@ -144,7 +144,7 @@ const Page = () => {
             <h3 className="text-lg font-medium px-5">
               Prof. DR. Nadhim Hassan Aziz
             </h3>
-            <span className="opacity-70 mb-3 px-5 text-sm">
+            <span className="opacity-80 mb-3 px-5 text-sm">
               The Director of EPU Language Centre
             </span>
             <a
@@ -152,7 +152,7 @@ const Page = () => {
               className="flex_center gap-3 w-full py-5 px-5 border-t border-t-lightBorder"
             >
               <CiMail className="text-xl" />
-              <span className="text-sm opacity-70">
+              <span className="text-sm opacity-80">
                 nadhimhassan123@epu.edu.iq
               </span>
             </a>
@@ -172,7 +172,7 @@ const Page = () => {
             <h3 className="text-lg font-medium px-5">
               Prof. DR. Nadhim Hassan Aziz
             </h3>
-            <span className="opacity-70 mb-3 px-5 text-sm">
+            <span className="opacity-80 mb-3 px-5 text-sm">
               The Director of EPU Language Centre
             </span>
             <a
@@ -180,7 +180,7 @@ const Page = () => {
               className="flex_center gap-3 w-full py-5 px-5 border-t border-t-lightBorder"
             >
               <CiMail className="text-xl" />
-              <span className="text-sm opacity-70">
+              <span className="text-sm opacity-80">
                 nadhimhassan123@epu.edu.iq
               </span>
             </a>
@@ -190,7 +190,7 @@ const Page = () => {
           <Link
             href={`/${locale}/international-relations`}
             title={t("about")}
-            className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+            className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-80 border-lightBorder"
           >
             <span>{t("about")}</span>
             <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -198,7 +198,7 @@ const Page = () => {
           <Link
             href={`/${locale}/international-relations/exchange-programs`}
             title={t("directory_structure")}
-            className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+            className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-80 border-lightBorder"
           >
             <span>{t("directory_structure")}</span>
             <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -210,7 +210,7 @@ const Page = () => {
           <Link
             href={`/${locale}/international-relations/contact`}
             title={t("contact")}
-            className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+            className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-80 border-lightBorder"
           >
             <span>{t("contact")}</span>
             <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />

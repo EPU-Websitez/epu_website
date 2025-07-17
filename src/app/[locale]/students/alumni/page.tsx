@@ -187,7 +187,7 @@ const Page = () => {
             </span>
             <Link
               href={""}
-              className="px-3 py-4 text-golden border-t border-t-lightBorder w-full flex justify-between items-center font-semibold"
+              className="px-3 py-4 text-golden border-t border-t-lightBorder w-full flex justify-between text-sm items-center font-semibold"
             >
               <span>{t("read_more")}</span>
               <GoArrowRight className="text-xl rtl:rotate-180" />
@@ -216,7 +216,7 @@ const Page = () => {
             </span>
             <Link
               href={""}
-              className="px-3 py-4 text-golden border-t border-t-lightBorder w-full flex justify-between items-center font-semibold"
+              className="px-3 py-4 text-golden border-t border-t-lightBorder w-full flex justify-between text-sm items-center font-semibold"
             >
               <span>{t("read_more")}</span>
               <GoArrowRight className="text-xl rtl:rotate-180" />
@@ -233,7 +233,7 @@ const Page = () => {
           className="w-full h-full object-cover"
         />
         <div className="opacity-40 bg-primary absolute left-0 top-0 w-full h-full z-10"></div>
-        <div className="w-[1024px] text-white px-3 flex_start flex-col gap-5 z-20">
+        <div className="w-[1024px] text-white text-opacity-90 px-3 flex_start flex-col gap-5 z-20">
           <h1 className="md:text-4xl text-2xl font-semibold z-20">
             {t("become_alumni")}
           </h1>

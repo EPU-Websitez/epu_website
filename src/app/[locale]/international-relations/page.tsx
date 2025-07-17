@@ -39,10 +39,10 @@ const Page = () => {
             className="w-full h-full"
           />
           <div className="ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary to-transparent absolute top-0 left-0 w-full h-full z-10"></div>
-          <h3 className="absolute z-20 text-white top-10 ltr:left-10 rtl:right-10 lg:text-[28px] text-[20px] max-w-[710px]">
+          <h3 className="absolute z-20 text-white top-10 ltr:left-10 rtl:right-10 lg:text-[28px] text-sm max-w-[710px]">
             {t("international_strategy_text")}
           </h3>
-          <div className="absolute z-20 text-white bottom-10 ltr:left-10 rtl:right-10 sm:flex hidden justify-center items-center gap-5">
+          <div className="absolute z-20 text-white bottom-14 ltr:left-10 rtl:right-10 sm:flex hidden justify-center items-center gap-5">
             <span>{t("about")}</span>
             <span className="h-[20px] w-[1px] bg-white"></span>
             <Link
@@ -67,16 +67,16 @@ const Page = () => {
             </Link>
           </div>
         </div>
-        <h2 className="relative sm:text-titleNormal text-lg font-semibold ">
+        <h2 className="relative sm:text-[32px] text-lg font-semibold ">
           <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
           <span className="z-10 relative">{t("about")}</span>
         </h2>
-        <p className="text-opacity-70 text-secondary text-sm">
+        <p className="text-opacity-70 text-secondary text-sm sm:rounded-none rounded-lg sm:border-none border border-lightBorder sm:p-0 p-3">
           {t("international_relations_about_text")}
         </p>
         <div className="flex_center w-full gap-5 mt-5">
           <span className="bg-lightBorder w-full h-[1px]"></span>
-          <h3 className="text-secondary text-xl font-semibold">{t("units")}</h3>
+          <h3 className="text-secondary text-xl font-medium">{t("units")}</h3>
           <span className="bg-lightBorder w-full h-[1px]"></span>
         </div>
         <div className="flex_start flex-col gap-5 w-full">
@@ -107,7 +107,7 @@ const Page = () => {
                   : "max-h-0 overflow-y-hidden"
               }`}
             >
-              <p>
+              <p className="sm:text-base text-sm opacity-70">
                 The mission of this section is to support the academic staff or
                 the alumni to study abroad through participation in quality
                 programs in a wide range of disciplines. Also to enable the
@@ -157,7 +157,7 @@ const Page = () => {
                   : "max-h-0 overflow-y-hidden"
               }`}
             >
-              <p>
+              <p className="sm:text-base text-sm opacity-70">
                 The mission of this section is to support the academic staff or
                 the alumni to study abroad through participation in quality
                 programs in a wide range of disciplines. Also to enable the
@@ -207,7 +207,7 @@ const Page = () => {
                   : "max-h-0 overflow-y-hidden"
               }`}
             >
-              <p>
+              <p className="sm:text-base text-sm opacity-70">
                 The mission of this section is to support the academic staff or
                 the alumni to study abroad through participation in quality
                 programs in a wide range of disciplines. Also to enable the
@@ -230,7 +230,7 @@ const Page = () => {
           </div>
           <div className="flex_center w-full gap-5 mt-5">
             <span className="bg-lightBorder w-full h-[1px]"></span>
-            <h3 className="text-secondary text-xl font-semibold">
+            <h3 className="text-secondary text-xl font-medium">
               {t("programs")}
             </h3>
             <span className="bg-lightBorder w-full h-[1px]"></span>
@@ -245,9 +245,7 @@ const Page = () => {
                 <GoBook />
               </span>
               <div className="flex_start flex-col gap-3">
-                <h3 className="lg:text-2xl text-lg">
-                  {t("exchange_programs")}
-                </h3>
+                <h3 className="lg:text-xl text-lg">{t("exchange_programs")}</h3>
                 <div className="flex_center gap-3">
                   <span className="w-[10px] h-[10px] flex-shrink-0 rounded-full bg-golden"></span>
                   <small className="text-xs">
@@ -287,7 +285,7 @@ const Page = () => {
                 <GoBook />
               </span>
               <div className="flex_start flex-col gap-3">
-                <h3 className="lg:text-2xl text-lg">
+                <h3 className="lg:text-xl text-lg">
                   {t("programs_staff_researchers")}
                 </h3>
                 <div className="flex_center gap-3">
@@ -308,7 +306,7 @@ const Page = () => {
               </div>
             </Link>
           </div>
-          <div className="sm:hidden flex justify-start items-start flex-col gap-4 flex-shrink-0 w-full">
+          <div className="sm:hidden flex justify-start items-start flex-col gap-4 flex-shrink-0 w-full sm:border-none border-t border-t-lightBorder sm:pt-0 pt-5">
             <div className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-primary border-primary">
               <span>{t("about")}</span>
               <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
