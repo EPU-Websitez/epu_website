@@ -268,22 +268,22 @@ export default function Calendar() {
       </div>
       <div className="md:my-20 my-10 w-full">
         <div className="overflow-x-auto shadow-lg custom_scroll rounded-lg w-full border lg:border-primary border-golden">
-          <div className="w-full py-5 lg:bg-primary bg-golden text-center text-white text-[22px]">
-            Semester
+          <div className="w-full py-5 lg:bg-primary bg-golden text-center text-white text-[22px] font-semibold">
+            Fall Semester
           </div>
           <table className="w-full bg-white">
             <thead className="border-b border-b-lightBorder">
-              <tr className="text-black">
-                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-medium text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
+              <tr className="text-secondary">
+                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-semibold text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
                   subject
                 </th>
-                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-medium text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
+                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-semibold text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
                   stage
                 </th>
-                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-medium text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
+                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-semibold text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
                   semester
                 </th>
-                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-medium text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
+                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-semibold text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
                   year
                 </th>
               </tr>
@@ -295,16 +295,16 @@ export default function Calendar() {
                   key={index}
                   className="hover:bg-gray-50 transition-colors duration-200"
                 >
-                  <td className="md:px-6 px-3 md:py-4 py-3 text-sm text-blue-700 font-medium ltr:border-r rtl:border-l border-gray-200">
+                  <td className="md:px-6 px-3 md:py-4 text-center py-3 text-sm text-secondary font-medium ltr:border-r rtl:border-l border-gray-200">
                     {row.subject}
                   </td>
-                  <td className="md:px-6 px-3 md:py-4 py-3 text-sm text-blue-700 ltr:border-r rtl:border-l border-gray-200">
+                  <td className="md:px-6 px-3 md:py-4 text-center py-3 text-sm text-secondary ltr:border-r rtl:border-l border-gray-200">
                     {row.stage}
                   </td>
-                  <td className="md:px-6 px-3 md:py-4 py-3 text-sm text-gray-900 ltr:border-r rtl:border-l border-gray-200">
+                  <td className="md:px-6 px-3 md:py-4 text-center py-3 text-sm text-secondary ltr:border-r rtl:border-l border-gray-200">
                     {row.semester}
                   </td>
-                  <td className="md:px-6 px-3 md:py-4 py-3 text-sm text-gray-900">
+                  <td className="md:px-6 px-3 md:py-4 text-center py-3 text-sm text-secondary">
                     {row.year}
                   </td>
                 </tr>
@@ -315,22 +315,22 @@ export default function Calendar() {
       </div>
       <div className="w-full">
         <div className="overflow-x-auto shadow-lg custom_scroll rounded-lg w-full border lg:border-primary border-golden">
-          <div className="w-full py-5 lg:bg-primary bg-golden text-center text-white text-[22px]">
+          <div className="w-full py-5 lg:bg-primary bg-golden text-center text-white text-[22px] font-semibold">
             Second Semester
           </div>
           <table className="w-full bg-white">
             <thead className="border-b border-b-lightBorder">
-              <tr className="text-black">
-                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-medium text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
+              <tr className="text-secondary">
+                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-semibold text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
                   subject
                 </th>
-                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-medium text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
+                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-semibold text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
                   stage
                 </th>
-                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-medium text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
+                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-semibold text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
                   semester
                 </th>
-                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-medium text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
+                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-semibold text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
                   year
                 </th>
               </tr>
@@ -342,16 +342,16 @@ export default function Calendar() {
                   key={index}
                   className="hover:bg-gray-50 transition-colors duration-200"
                 >
-                  <td className="md:px-6 px-3 md:py-4 py-3 text-sm text-blue-700 font-medium ltr:border-r rtl:border-l border-gray-200">
+                  <td className="md:px-6 px-3 md:py-4 text-center py-3 text-sm text-secondary font-medium ltr:border-r rtl:border-l border-gray-200">
                     {row.subject}
                   </td>
-                  <td className="md:px-6 px-3 md:py-4 py-3 text-sm text-blue-700 ltr:border-r rtl:border-l border-gray-200">
+                  <td className="md:px-6 px-3 md:py-4 text-center py-3 text-sm text-secondary ltr:border-r rtl:border-l border-gray-200">
                     {row.stage}
                   </td>
-                  <td className="md:px-6 px-3 md:py-4 py-3 text-sm text-gray-900 ltr:border-r rtl:border-l border-gray-200">
+                  <td className="md:px-6 px-3 md:py-4 text-center py-3 text-sm text-secondary ltr:border-r rtl:border-l border-gray-200">
                     {row.semester}
                   </td>
-                  <td className="md:px-6 px-3 md:py-4 py-3 text-sm text-gray-900">
+                  <td className="md:px-6 px-3 md:py-4 text-center py-3 text-sm text-secondary">
                     {row.year}
                   </td>
                 </tr>

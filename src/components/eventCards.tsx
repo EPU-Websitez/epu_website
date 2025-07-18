@@ -42,13 +42,13 @@ const EventCard: React.FC<EventCardProps> = ({
       <div className="flex_center lg:gap-8 gap-3 lg:text-sm text-xs mt-3 px-3">
         <div className="flex_center gap-2">
           <span className="bg-blue bg-opacity-20 text-primary w-7 h-7 rounded-full flex_center">
-            <IoIosTime className="text-lg" />
+            <FaCalendarDays />            
           </span>
           <span>{createdAt}</span>
         </div>
         <div className="flex_center gap-2">
           <span className="bg-blue bg-opacity-20 text-primary w-7 h-7 rounded-full flex_center">
-            <FaCalendarDays />
+            <IoIosTime className="text-lg" />
           </span>
           <span>{time}</span>
         </div>
@@ -56,13 +56,13 @@ const EventCard: React.FC<EventCardProps> = ({
       <Link
         href={link}
         type="button"
-        className="lg:text-xl text-base font-semibold pt-3 border-t border-t-lightBorder hover:text-primary text-secondary duration-300 px-3"
+        className="lg:text-xl text-base font-medium pt-3 border-t border-t-lightBorder hover:text-primary text-secondary duration-300 px-3"
       >
         {title}
       </Link>
       <Link
         href={link}
-        className="w-full text-sm text-secondary font-semibold border-t border-t-lightBorder pt-3 px-3 flex justify-between items-center"
+        className="w-full text-sm text-secondary font-bold border-t border-t-lightBorder pt-3 px-3 flex justify-between items-center"
       >
         <span>Read More</span>
         <GoArrowRight className="text-2xl rtl:rotate-180" />

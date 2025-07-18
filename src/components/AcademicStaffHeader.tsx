@@ -109,7 +109,7 @@ const AcademicStaffHeader = () => {
             </div>
           </div>
         </div>
-        <div className="flex_start max-w-[1024px] px-2 sm:mt-32 mt-16 w-full flex-col gap-4">
+        <div className="flex_start max-w-[1024px] sm:mt-24 mt-16 w-full flex-col gap-4">
           <span className="text-sm font-medium">{title}</span>
           <h3 className="sm:text-xl text-lg font-medium">{fullName}</h3>
           <div className="flex w-full justify-between lg:items-center items-start lg:gap-2 gap-6 mt-3 lg:flex-row flex-col">
@@ -123,17 +123,17 @@ const AcademicStaffHeader = () => {
                 <p className="text-sm"> Postgraduate Affairs</p>
               </div>
             </div>
-            <div className="flex sm:justify-center justify-start sm:items-center items-start sm:flex-row flex-col gap-3 sm:flex-nowrap flex-wrap">
+            <div className="flex sm:justify-center justify-start sm:items-center items-start sm:flex-row gap-3 sm:w-auto w-f sm:flex-nowrap flex-wrap">
               <Link
                 href=""
-                className="flex_center gap-2 sm:rounded-xl rounded-lg sm:px-3 px-2 py-1.5 border border-lightBorder text-sm"
+                className="flex_center gap-2 sm:rounded-xl rounded-lg sm:px-3 px-1 py-1.5 border border-lightBorder text-sm"
               >
                 <span>Academic Staff Portal</span>
                 <IoMdArrowUp className="rotate-45" />
               </Link>
               <a
                 href=""
-                className="sm:rounded-xl rounded-lg sm:px-3 px-2 py-1.5 border border-lightBorder text-sm"
+                className="sm:rounded-xl rounded-lg sm:px-3 px-1 py-1.5 border border-lightBorder text-sm"
               >
                 botan@epu.edu.iq
               </a>

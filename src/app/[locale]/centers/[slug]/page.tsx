@@ -116,7 +116,7 @@ const Page = () => {
             {/* Vision */}
             <div className="sm:mt-10 mt-5 sm:pb-10 pb-5 border-b w-full border-b-lightBorder flex_start flex-col gap-5">
               <h2 className="md:text-3xl relative text-lg font-semibold ">
-                <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-[6ch]"></span>
+                <span className="absolute ltr:left-0 right-0 bottom-1 h-[40%] bg-golden w-[6ch]"></span>
                 <span className="z-10 relative">{t("vision_statement")}</span>
               </h2>
               <p className="font-medium md:text-base text-sm">{data.vision}</p>
@@ -125,7 +125,7 @@ const Page = () => {
             {/* Mission */}
             <div className="sm:mt-10 mt-5 sm:pb-10 pb-5 border-b w-full border-b-lightBorder flex_start flex-col gap-5">
               <h2 className="md:text-3xl relative text-lg font-semibold ">
-                <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-[7ch]"></span>
+                <span className="absolute ltr:left-0 right-0 bottom-1 h-[40%] bg-golden w-[7ch]"></span>
                 <span className="z-10 relative">{t("mission_statement")}</span>
               </h2>
               <p className="font-medium md:text-base text-sm">{data.mission}</p>
@@ -134,7 +134,7 @@ const Page = () => {
             {/* Contact */}
             <div className="sm:mt-10 mt-5 sm:pb-10 pb-5 border-b w-full border-b-lightBorder flex_start flex-col gap-5">
               <h2 className="md:text-3xl relative text-lg font-semibold ">
-                <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
+                <span className="absolute ltr:left-0 right-0 bottom-1 h-[40%] bg-golden w-full"></span>
                 <span className="z-10 relative">{t("contact")}</span>
               </h2>
               <div className="flex_center sm:flex-row flex-col gap-10 text-secondary">

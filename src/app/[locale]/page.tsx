@@ -69,7 +69,7 @@ export default function Home() {
             className="w-full"
           />
         </div>
-        <div className="sm:w-[36%] w-[33%] lg:h-[290px] sm:h-[230px] h-[125px] bg-primary absolute sm:left-3 left-[3%] bottom-0 sm:rounded-2xl rounded-md flex justify-start items-start sm:p-5 p-2 flex-col lg:gap-8 gap-3">
+        <div className="sm:w-[36%] w-[33%] lg:h-[290px] sm:h-[230px] h-[125px] bg-primary absolute sm:left-3 left-[4%] bottom-0 sm:rounded-2xl rounded-md flex justify-start items-start sm:p-5 p-2 flex-col lg:gap-8 gap-3">
           <h4 className="text-white opacity-50 font-medium  lg:text-xl sm:text-base text-[8px]">
             {t("in_our_university")}
           </h4>
@@ -128,7 +128,7 @@ export default function Home() {
         </span>
         <div className="sm:mt-5 mt-0 grid sm:grid-cols-4 grid-cols-2 gap-5 w-full max-w-[1000px]">
           <div className="flex_center flex-col gap-4">
-            <h1 className="sm:text-title text-2xl text-secondary font-semibold">
+            <h1 className="sm:text-title text-2xl text-secondary font-medium">
               + 3.12K
             </h1>
             <div className="flex_center gap-2">
@@ -139,7 +139,7 @@ export default function Home() {
             </div>
           </div>
           <div className="flex_center flex-col gap-4">
-            <h1 className="sm:text-title text-2xl text-secondary font-semibold">
+            <h1 className="sm:text-title text-2xl text-secondary font-medium">
               + 239
             </h1>
             <div className="flex_center gap-2">
@@ -150,7 +150,7 @@ export default function Home() {
             </div>
           </div>
           <div className="flex_center flex-col gap-4">
-            <h1 className="sm:text-title text-2xl text-secondary font-semibold">
+            <h1 className="sm:text-title text-2xl text-secondary font-medium">
               + 300
             </h1>
             <div className="flex_center gap-2">
@@ -161,7 +161,7 @@ export default function Home() {
             </div>
           </div>
           <div className="flex_center flex-col gap-4">
-            <h1 className="sm:text-title text-2xl text-secondary font-semibold">
+            <h1 className="sm:text-title text-2xl text-secondary font-medium">
               + 2.4K
             </h1>
             <div className="flex_center gap-2">
@@ -195,7 +195,7 @@ export default function Home() {
           </div>
           <FaArrowRight className="sm:text-2xl text-xl rtl:rotate-180" />
         </Link>
-        <p className="sm:text-paragraph text-xs tracking-normal text-primary opacity-90 font-medium">
+        <p className="sm:text-smallParagraph text-xs tracking-normal text-primary opacity-90 font-medium">
           {t("latest_news_text")}
         </p>
         <div className="grid sm:grid-cols-2 grid-cols-1 w-full mt-3 gap-5 mb-10">
@@ -288,7 +288,7 @@ export default function Home() {
               <h1 className="sm:text-title text-2xl font-bold text-golden">
                 + 2.12k
               </h1>
-              <span className="text-secondary text-sm font-medium">
+              <span className="text-secondary text-sm font-medium border-b border-b-lightBorder pb-1">
                 {t("research_paper")}
               </span>
             </div>
@@ -296,7 +296,7 @@ export default function Home() {
               <h1 className="sm:text-title text-2xl font-bold text-golden">
                 + 1.3k
               </h1>
-              <span className="text-secondary text-sm font-medium">
+              <span className="text-secondary text-sm font-medium border-b border-b-lightBorder pb-1">
                 {t("conference_paper")}
               </span>
             </div>

@@ -22,7 +22,7 @@ const Page = () => {
             className="w-full h-full"
           />
         </div>
-        <p className="text-secondary font-semibold mt-5 sm:text-base text-sm">
+        <p className="text-secondary font-medium mt-5 sm:text-base text-sm">
           {t("history_text")}
         </p>
         <div className="flex justify-between items-center gap-3 w-full border-b border-b-golden sm:pb-20 pb-10 lg:flex-row flex-col lg:px-0 px-3">
@@ -34,7 +34,7 @@ const Page = () => {
               <div className="flex_start flex-col gap-2 relative">
                 <span className="absolute top-0 ltr:-left-[34px] rtl:-right-[34px] z-10 border-2 border-golden w-7 h-7 rounded-full bg-white"></span>
                 <span className="absolute top-1.5 ltr:-left-[28px] rtl:-right-[28px] z-20 bg-golden w-4 h-4 rounded-full"></span>
-                <h1 className="sm:text-titleNormal text-xl text-golden font-semibold">
+                <h1 className="sm:text-titleNormal text-xl text-golden font-medium">
                   1993
                 </h1>
                 <p className="text-secondary sm:text-base text-sm max-w-[380px]">
@@ -44,7 +44,7 @@ const Page = () => {
               <div className="flex_start flex-col gap-2 relative">
                 <span className="absolute top-1 ltr:-left-[34px] rtl:-right-[34px] z-10 border-2 border-golden w-7 h-7 rounded-full bg-white"></span>
                 <span className="absolute top-2.5 ltr:-left-[28px] rtl:-right-[28px] z-20 bg-golden w-4 h-4 rounded-full"></span>
-                <h1 className="sm:text-titleNormal text-xl text-golden font-semibold">
+                <h1 className="sm:text-titleNormal text-xl text-golden font-medium">
                   1996
                 </h1>
                 <p className="text-secondary sm:text-base text-sm max-w-[380px]">
@@ -54,7 +54,7 @@ const Page = () => {
               <div className="flex_start flex-col gap-2 relative">
                 <span className="absolute top-1 ltr:-left-[34px] rtl:-right-[34px] z-10 border-2 border-golden w-7 h-7 rounded-full bg-white"></span>
                 <span className="absolute top-2.5 ltr:-left-[28px] rtl:-right-[28px] z-20 bg-golden w-4 h-4 rounded-full"></span>
-                <h1 className="sm:text-titleNormal text-xl text-golden font-semibold">
+                <h1 className="sm:text-titleNormal text-xl text-golden font-medium">
                   2012
                 </h1>
                 <p className="text-secondary sm:text-base text-sm max-w-[380px]">
@@ -87,19 +87,19 @@ const Page = () => {
         <h1 className="sm:text-title text-titleNormal font-semibold sm:mt-10 mt-5 text-secondary">
           {t("head")}
         </h1>
-        <p className="text-secondary sm:text-base text-sm">{t("about_text")}</p>
+        <p className="text-secondary sm:text-base text-sm font-medium">{t("about_text")}</p>
         <div className="sm:px-14 px-0 flex_start flex-col gap-5 text-secondary font-medium">
           <div className="flex_start gap-5">
             <span className="sm:w-6 w-5 sm:h-6 h-5 rounded-full bg-golden flex-shrink-0"></span>
-            <p className="sm:text-base text-sm">{t("about_list_1")}</p>
+            <p className="sm:text-base text-sm font-medium">{t("about_list_1")}</p>
           </div>
           <div className="flex_start gap-5">
             <span className="sm:w-6 w-5 sm:h-6 h-5 rounded-full bg-golden flex-shrink-0"></span>
-            <p className="sm:text-base text-sm">{t("about_list_2")}</p>
+            <p className="sm:text-base text-sm font-medium">{t("about_list_2")}</p>
           </div>
           <div className="flex_start gap-5">
             <span className="sm:w-6 w-5 sm:h-6 h-5 rounded-full bg-golden flex-shrink-0"></span>
-            <p className="sm:text-base text-sm">{t("about_list_3")}</p>
+            <p className="sm:text-base text-sm font-medium">{t("about_list_3")}</p>
           </div>
         </div>
         <div className="grid sm:grid-cols-4 grid-cols-2 lg:gap-5 sm:gap-2 gap-5 justify-between w-full my-10 lg:px-10 px-3 text-secondary">

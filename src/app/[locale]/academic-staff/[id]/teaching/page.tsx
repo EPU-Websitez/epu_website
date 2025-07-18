@@ -162,20 +162,20 @@ const Page = () => {
             <div className="lg:hidden block">
               <SubHeader title={t("teaching")} alt={false} />
             </div>
-            <div className="overflow-x-auto shadow-lg w-full sm:mt-0 -mt-4">
+            <div className="overflow-x-auto shadow-lg w-full sm:mt-0 -mt-4 custom_scroll">
               <table className="w-full bg-white">
                 <thead>
                   <tr className="lg:bg-primary bg-golden text-white">
-                    <th className="md:px-6 px-3 sm:py-4 py-3 font-medium text-xs text-center tracking-wider ltr:border-r rtl:border-l border-blue-700 md:min-w-max min-w-[170px]">
+                    <th className="md:px-6 px-3 sm:py-4 py-3 font-medium lg:text-base text-xs text-center tracking-wider ltr:border-r rtl:border-l border-blue-700 md:min-w-max min-w-[170px]">
                       {t("subject")}
                     </th>
-                    <th className="md:px-6 px-3 sm:py-4 py-3 font-medium text-xs text-center tracking-wider ltr:border-r rtl:border-l border-blue-700 md:min-w-max min-w-[170px]">
+                    <th className="md:px-6 px-3 sm:py-4 py-3 font-medium lg:text-base text-xs text-center tracking-wider ltr:border-r rtl:border-l border-blue-700 md:min-w-max min-w-[170px]">
                       {t("stage")}
                     </th>
-                    <th className="md:px-6 px-3 sm:py-4 py-3 font-medium text-xs text-center tracking-wider ltr:border-r rtl:border-l border-blue-700 md:min-w-max min-w-[170px]">
+                    <th className="md:px-6 px-3 sm:py-4 py-3 font-medium lg:text-base text-xs text-center tracking-wider ltr:border-r rtl:border-l border-blue-700 md:min-w-max min-w-[170px]">
                       {t("semester")}
                     </th>
-                    <th className="md:px-6 px-3 sm:py-4 py-3 font-medium text-xs text-center tracking-wider md:min-w-max min-w-[170px]">
+                    <th className="md:px-6 px-3 sm:py-4 py-3 font-medium lg:text-base text-xs text-center tracking-wider md:min-w-max min-w-[170px]">
                       {t("year")}
                     </th>
                   </tr>
@@ -187,16 +187,16 @@ const Page = () => {
                       key={index}
                       className="hover:bg-gray-50 transition-colors duration-200"
                     >
-                      <td className="md:px-6 px-3 md:py-4 py-3 text-xs text-center font-medium ltr:border-r rtl:border-l border-gray-200">
+                      <td className="md:px-6 px-3 md:py-4 py-3 lg:text-sm text-xs text-center font-medium ltr:border-r rtl:border-l border-gray-200">
                         {row.subject}
                       </td>
-                      <td className="md:px-6 px-3 md:py-4 py-3 text-xs text-center ltr:border-r rtl:border-l border-gray-200">
+                      <td className="md:px-6 px-3 md:py-4 py-3 lg:text-sm text-xs text-center ltr:border-r rtl:border-l border-gray-200">
                         {row.stage}
                       </td>
-                      <td className="md:px-6 px-3 md:py-4 py-3 text-xs text-center ltr:border-r rtl:border-l border-gray-200">
+                      <td className="md:px-6 px-3 md:py-4 py-3 lg:text-sm text-xs text-center ltr:border-r rtl:border-l border-gray-200">
                         {row.semester}
                       </td>
-                      <td className="md:px-6 px-3 md:py-4 py-3 text-xs text-center">
+                      <td className="md:px-6 px-3 md:py-4 py-3 lg:text-sm text-xs text-center">
                         {row.year}
                       </td>
                     </tr>

@@ -181,77 +181,147 @@ const Page = () => {
           </div>
 
           {/* Main search filters */}
-          <div className="absolute w-[95%] left-1/2 -translate-x-1/2 sm:bottom-5 bottom-2 bg-white flex_center sm:gap-5 gap-2 sm:p-3 p-1 sm:rounded-3xl rounded-lg sm:flex-nowrap flex-wrap">
-            <div className="relative lg:w-[20%] sm:w-[33%] w-[45%] text-sm">
-              <select
-                name="academic"
-                id="academic"
-                value={selectedAcademic}
-                onChange={(e) => setSelectedAcademic(e.target.value)}
-                className="text-start w-full sm:px-2 px-1 sm:py-2 py-1 border border-lightBorder sm:rounded-xl rounded-lg text-black text-opacity-50 focus:border-primary outline-none"
-              >
-                <option value="">{t("select_academics")}</option>
-                <option value="academic1">Academic 1</option>
-                <option value="academic2">Academic 2</option>
-                <option value="academic3">Academic 3</option>
-              </select>
-              <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary text-opacity-70 pointer-events-none">
-                <FaChevronDown />
-              </span>
-            </div>
-            <div className="relative lg:w-[20%] sm:w-[33%] w-[45%] text-sm">
-              <select
-                name="department"
-                id="department"
-                value={selectedDepartment}
-                onChange={(e) => setSelectedDepartment(e.target.value)}
-                className="text-start w-full sm:px-2 px-1 sm:py-2 py-1 border border-lightBorder sm:rounded-xl rounded-lg text-black text-opacity-50 focus:border-primary outline-none"
-              >
-                <option value="">{t("select_department")}</option>
-                <option value="department1">Department 1</option>
-                <option value="department2">Department 2</option>
-                <option value="department3">Department 3</option>
-              </select>
-              <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary text-opacity-70 pointer-events-none">
-                <FaChevronDown />
-              </span>
-            </div>
-            <div className="relative lg:w-[20%] sm:w-[33%] w-[63%] text-sm">
-              <select
-                name="position"
-                id="position"
-                value={selectedPosition}
-                onChange={(e) => setSelectedPosition(e.target.value)}
-                className="text-start w-full sm:px-2 px-1 sm:py-2 py-1 border border-lightBorder sm:rounded-xl rounded-lg text-black text-opacity-50 focus:border-primary outline-none"
-              >
-                <option value="">{t("select_position")}</option>
-                <option value="position1">Position 1</option>
-                <option value="position2">Position 2</option>
-                <option value="position3">Position 3</option>
-              </select>
-              <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary text-opacity-70 pointer-events-none">
-                <FaChevronDown />
-              </span>
-            </div>
-            <div className="relative w-[30%] lg:block hidden">
-              <span className="pointer-events-none text-black opacity-50 absolute ltr:left-2 right-2 top-1/2 -translate-y-1/2 z-10 text-xl">
-                <CiSearch />
-              </span>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="py-2 w-full border-lightBorder px-8 sm:rounded-xl rounded-lg border focus:border-primary outline-none"
-                placeholder={t("search_by_name")}
-              />
-            </div>
-            <button
-              onClick={handleSearch}
-              className="sm:px-6 px-2 flex-shrink-0 sm:p-2 p-1 sm:rounded-xl rounded-lg bg-gradient-to-r from-primary to-blue text-white lg:block sm:hidden block"
-            >
-              {t("search")}
-            </button>
-          </div>
+          <div className="absolute w-[95%] left-1/2 -translate-x-1/2 sm:bottom-5 bottom-2 bg-white flex_center sm:gap-5 gap-2 sm:p-3 p-1 sm:rounded-3xl rounded-lg">
+            {/* Desktop layout - flex */}
+              <div className="hidden sm:flex sm:gap-5 w-full items-center">
+                  <div className="relative lg:w-[20%] sm:w-[33%] text-sm">
+      <select
+        name="academic"
+        id="academic"
+        value={selectedAcademic}
+        onChange={(e) => setSelectedAcademic(e.target.value)}
+        className="text-start w-full sm:px-2 px-1 sm:py-2 py-1 border border-lightBorder sm:rounded-xl rounded-lg text-black text-opacity-50 focus:border-primary outline-none"
+      >
+        <option value="">{t("select_academics")}</option>
+        <option value="academic1">Academic 1</option>
+        <option value="academic2">Academic 2</option>
+        <option value="academic3">Academic 3</option>
+      </select>
+      <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary text-opacity-70 pointer-events-none">
+        <FaChevronDown />
+      </span>
+    </div>
+    <div className="relative lg:w-[20%] sm:w-[33%] text-sm">
+      <select
+        name="department"
+        id="department"
+        value={selectedDepartment}
+        onChange={(e) => setSelectedDepartment(e.target.value)}
+        className="text-start w-full sm:px-2 px-1 sm:py-2 py-1 border border-lightBorder sm:rounded-xl rounded-lg text-black text-opacity-50 focus:border-primary outline-none"
+      >
+        <option value="">{t("select_department")}</option>
+        <option value="department1">Department 1</option>
+        <option value="department2">Department 2</option>
+        <option value="department3">Department 3</option>
+      </select>
+      <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary text-opacity-70 pointer-events-none">
+        <FaChevronDown />
+      </span>
+    </div>
+    <div className="relative lg:w-[20%] sm:w-[33%] text-sm">
+      <select
+        name="position"
+        id="position"
+        value={selectedPosition}
+        onChange={(e) => setSelectedPosition(e.target.value)}
+        className="text-start w-full sm:px-2 px-1 sm:py-2 py-1 border border-lightBorder sm:rounded-xl rounded-lg text-black text-opacity-50 focus:border-primary outline-none"
+      >
+        <option value="">{t("select_position")}</option>
+        <option value="position1">Position 1</option>
+        <option value="position2">Position 2</option>
+        <option value="position3">Position 3</option>
+      </select>
+      <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary text-opacity-70 pointer-events-none">
+        <FaChevronDown />
+      </span>
+    </div>
+    <div className="relative w-[30%] lg:block hidden">
+      <span className="pointer-events-none text-black opacity-50 absolute ltr:left-2 right-2 top-1/2 -translate-y-1/2 z-10 text-xl">
+        <CiSearch />
+      </span>
+      <input
+        type="text"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="py-2 w-full border-lightBorder px-8 sm:rounded-xl rounded-lg border focus:border-primary outline-none"
+        placeholder={t("search_by_name")}
+      />
+    </div>
+    <button
+      onClick={handleSearch}
+      className="sm:px-6 px-2 flex-shrink-0 sm:p-2 p-1 sm:rounded-xl sm:text-base text-sm rounded-lg bg-gradient-to-r from-primary to-blue text-white lg:block sm:hidden block"
+    >
+      {t("search")}
+    </button>
+  </div>
+
+  {/* Mobile layout - grid */}
+  <div className="grid sm:hidden grid-cols-2 gap-2 w-full text-sm">
+    {/* Top row - two selects */}
+    <div className="relative">
+      <select
+        name="academic"
+        id="academic"
+        value={selectedAcademic}
+        onChange={(e) => setSelectedAcademic(e.target.value)}
+        className="text-start text-sm w-full px-1 py-1 border border-lightBorder rounded-lg text-black text-opacity-50 focus:border-primary outline-none"
+      >
+        <option value="">{t("select_academics")}</option>
+        <option value="academic1">Academic 1</option>
+        <option value="academic2">Academic 2</option>
+        <option value="academic3">Academic 3</option>
+      </select>
+      <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary text-opacity-70 pointer-events-none">
+        <FaChevronDown />
+      </span>
+    </div>
+    <div className="relative">
+      <select
+        name="department"
+        id="department"
+        value={selectedDepartment}
+        onChange={(e) => setSelectedDepartment(e.target.value)}
+        className="text-start text-sm w-full px-1 py-1 border border-lightBorder rounded-lg text-black text-opacity-50 focus:border-primary outline-none"
+      >
+        <option value="">{t("select_department")}</option>
+        <option value="department1">Department 1</option>
+        <option value="department2">Department 2</option>
+        <option value="department3">Department 3</option>
+      </select>
+      <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary text-opacity-70 pointer-events-none">
+        <FaChevronDown />
+      </span>
+    </div>
+    
+    {/* Bottom row - position select takes 80%, search button takes 20% */}
+    <div className="relative col-span-2 flex gap-2">
+      <div className="flex-1 relative" style={{width: '80%'}}>
+        <select
+          name="position"
+          id="position"
+          value={selectedPosition}
+          onChange={(e) => setSelectedPosition(e.target.value)}
+          className="text-start text-sm w-full px-1 py-1 border border-lightBorder rounded-lg text-black text-opacity-50 focus:border-primary outline-none"
+        >
+          <option value="">{t("select_position")}</option>
+          <option value="position1">Position 1</option>
+          <option value="position2">Position 2</option>
+          <option value="position3">Position 3</option>
+        </select>
+        <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary text-opacity-70 pointer-events-none">
+          <FaChevronDown />
+        </span>
+      </div>
+      <button
+        onClick={handleSearch}
+        className="px-2 p-1 text-sm rounded-lg bg-gradient-to-r from-primary to-blue text-white flex-shrink-0"
+        style={{width: '20%'}}
+      >
+        {t("search")}
+      </button>
+    </div>
+  </div>
+</div>
         </div>
 
         <div className="flex justify-between items-center w-full">

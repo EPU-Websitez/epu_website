@@ -37,7 +37,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
           className="w-full h-auto object-cover group-hover:scale-105 duration-300"
         />
       </Link>
-      <div className="flex_center gap-1 text-secondary sm:text-sm text-xs">
+      <div className="flex_center gap-1 text-secondary sm:text-xs text-[10px]">
         <p>{author}</p>
         <span className="opacity-75">-</span>
         <span className="opacity-75">{createdAt}</span>

@@ -33,7 +33,7 @@ const Page = () => {
             {t("text")}
           </p>
         </div>
-        <div className="w-full flex_start flex-col lg:p-10 p-5 rounded-3xl gap-3 bg-gradient-to-r from-blue to-primary text-white">
+        <div className="w-full flex_start flex-col lg:p-10 p-5 rounded-3xl gap-3 bg-gradient-to-r from-primary to-blue text-white">
           <span className="text-sm">{t("question")}</span>
           <h1 className="sm:text-titleNormal text-lg font-semibold relative mb-3">
             {t("why_apply")}

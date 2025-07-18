@@ -38,7 +38,7 @@ const MemberCard: React.FC<MemberCardProps> = ({
         href={link}
         className="flex justify-between items-center rounded-3xl w-full border border-[#81B1CE4A] border-opacity-30 p-1 text-secondary"
       >
-        <p className="text-sm">{staticText}</p>
+        <p className="text-sm mx-2 font-medium">{staticText}</p>
         <span className="w-[30px] h-[30px] rounded-full bg-secondary text-white text-lg flex_center">
           <MdChevronRight className="rtl:rotate-180" />
         </span>

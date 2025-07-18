@@ -13,10 +13,10 @@ export default function Footer() {
 
   return (
     <div className="w-full flex_center flex-col gap-5 py-10 px-5 bg-primary text-white">
-      <p className="text-base uppercase opacity-50 tracking-wide">
+      <p className="text-sm uppercase opacity-50 tracking-wide">
         {t("connect_with_us")}
       </p>
-      <h1 className="sm:text-6xl text-2xl text-center max-w-[35ch] font-semibold">
+      <h1 className="sm:text-[50px] leading-relaxed text-2xl text-center max-w-[35ch] font-semibold">
         {t("empower_future_text")}
       </h1>
       <div className="flex_start sm:gap-20 gap-14 mt-10 flex-wrap">
@@ -57,7 +57,7 @@ export default function Footer() {
           </Link>
         </div>
       </div>
-      <div className="max-w-[1024px] w-full border-t border-t-white border-opacity-50 pt-10 flex justify-between items-center gap-3 mt-5 px-4 md:flex-row flex-col">
+      <div className="max-w-[1024px] w-full border-t border-t-white border-opacity-30 pt-10 flex justify-between items-center gap-3 mt-5 px-4 md:flex-row flex-col">
         <div className="lg:w-[200px] sm:w-[150px] w-[200px] lg:h-[50px] h-[40px] relative">
           <Image
             src={"/images/logo-alt.png"}

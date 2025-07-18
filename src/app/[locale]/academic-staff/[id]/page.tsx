@@ -89,12 +89,12 @@ const Page = () => {
         {/* Main Bio Section */}
         <div className="w-full bg-backgroundSecondary border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
           <div className="mt-10 flex_start lg:flex-row flex-col gap-10 max-w-[1024px] w-full px-2">
-            <div className="bg-background p-4 rounded-3xl gap-5 lg:max-w-[335px] w-full flex_start flex-col">
+            <div className="bg-background p-4 rounded-3xl gap-5 lg:max-w-[335px] w-full flex_start lg:flex-col flex-row flex-wrap">
               <div className="flex_start flex-col gap-2">
                 <span className="text-xs text-black text-opacity-60">
                   {t("general_specialization")}
                 </span>
-                <p className="text-sm sm:font-semibold font-medium">
+                <p className="text-sm font-medium">
                   {generalSpec}
                 </p>
               </div>
@@ -113,7 +113,7 @@ const Page = () => {
                 <span className="text-xs text-black text-opacity-60">
                   {t("specific_specialization")}
                 </span>
-                <p className="text-sm sm:font-semibold font-medium">
+                <p className="text-sm font-medium">
                   {specificSpec}
                 </p>
               </div>
@@ -121,7 +121,7 @@ const Page = () => {
                 <span className="text-xs text-black text-opacity-60">
                   {t("lecturer_at")}
                 </span>
-                <p className="text-sm sm:font-semibold font-medium">
+                <p className="text-sm font-medium">
                   Erbil Technology College - Department of Road Construction
                 </p>
               </div>
@@ -142,7 +142,7 @@ const Page = () => {
               <h2 className="sm:text-2xl text-lg font-semibold">
                 {t("biography")}
               </h2>
-              <p className="lg:text-lg sm:text-base text-xs sm:text-black text-primary text-opacity-60 tracking-normal text-justify lg:max-w-[635px] max-w-full">
+              <p className="lg:text-lg sm:text-base text-xs text-black opacity-60 tracking-normal text-justify lg:max-w-[635px] max-w-full">
                 {biography}
               </p>
             </div>
