@@ -16,9 +16,9 @@ interface File {
   updated_at: string;
 }
 
-interface ActivityFile {
+interface Files {
   id: number;
-  acknowledgment_id: number;
+  researchEvaluation_id: number;
   file_id: number;
   created_at: string;
   updated_at: string;
@@ -32,7 +32,7 @@ interface Activity {
   year: string;
   created_at: string;
   updated_at: string;
-  files: ActivityFile[];
+  files: Files[];
 }
 
 interface AcknowledgmentResponse {
@@ -65,7 +65,7 @@ interface AcknowledgmentProps {
   teacherId: string;
 }
 
-const Acknowledgment = ({ teacherId }: AcknowledgmentProps) => {
+const ResearchEvaluation = ({ teacherId }: AcknowledgmentProps) => {
   const t = useTranslations("AcademicStaff");
   const [acknowledgment, setAcknowledgment] = useState<Activity[]>([]);
   const [page, setPage] = useState(1);
@@ -168,9 +168,7 @@ const Acknowledgment = ({ teacherId }: AcknowledgmentProps) => {
                             <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
                               <HiOutlineLink />
                             </span>
-                            <span className="max-w-[10ch] truncate">
-                              {getFileName(activityFile.file.path)}
-                            </span>
+                            <span>{getFileName(activityFile.file.path)}</span>
                           </button>
                         ))}
                       </div>
@@ -215,4 +213,4 @@ const Acknowledgment = ({ teacherId }: AcknowledgmentProps) => {
   );
 };
 
-export default Acknowledgment;
+export default ResearchEvaluation;

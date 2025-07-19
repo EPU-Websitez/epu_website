@@ -6,9 +6,9 @@ import { BsBarChart } from "react-icons/bs";
 import { HiOutlineLink } from "react-icons/hi2";
 import { API_URL } from "@/libs/env";
 import useFetch from "@/libs/hooks/useFetch";
-import { PiSealCheck } from "react-icons/pi";
+import { PiHandHeart, PiSealCheck } from "react-icons/pi";
 
-// Interfaces
+// Updated Interfaces
 interface File {
   id: number;
   path: string;
@@ -16,34 +16,36 @@ interface File {
   updated_at: string;
 }
 
-interface ActivityFile {
+interface Files {
   id: number;
-  acknowledgment_id: number;
+  grant_id: number;
   file_id: number;
   created_at: string;
   updated_at: string;
   file: File;
 }
 
-interface Activity {
+interface MainData {
   id: number;
   teacher_id: number;
   title: string;
   year: string;
+  type: string;
   created_at: string;
   updated_at: string;
-  files: ActivityFile[];
+  achievements: string;
+  files: Files[];
 }
 
-interface AcknowledgmentResponse {
+interface Response {
   total: number;
   page: number;
   limit: number;
-  data: Activity[];
+  data: MainData[];
 }
 
 // Skeleton Component
-const SkeletonActivityCard = () => (
+const SkeletonCard = () => (
   <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full animate-pulse">
     <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
       <div className="w-10 h-10 rounded-lg bg-gray-300" />
@@ -61,23 +63,24 @@ const SkeletonActivityCard = () => (
   </div>
 );
 
-interface AcknowledgmentProps {
+interface Props {
   teacherId: string;
+  locale?: string; // Add locale prop for internationalization
 }
 
-const Acknowledgment = ({ teacherId }: AcknowledgmentProps) => {
+const Grants = ({ teacherId, locale = "en" }: Props) => {
   const t = useTranslations("AcademicStaff");
-  const [acknowledgment, setAcknowledgment] = useState<Activity[]>([]);
+  const [items, setItems] = useState<MainData[]>([]);
   const [page, setPage] = useState(1);
   const limit = 10;
 
-  const { data, loading, error, refetch } = useFetch<AcknowledgmentResponse>(
-    `${API_URL}/website/teachers/${teacherId}/acknowledgments?page=${page}&limit=${limit}`
+  const { data, loading, error, refetch } = useFetch<Response>(
+    `${API_URL}/website/teachers/${teacherId}/grants?page=${page}&limit=${limit}`
   );
 
   useEffect(() => {
     if (data?.data) {
-      setAcknowledgment((prev) => [...prev, ...data.data]);
+      setItems((prev) => [...prev, ...data.data]);
     }
   }, [data]);
 
@@ -120,56 +123,59 @@ const Acknowledgment = ({ teacherId }: AcknowledgmentProps) => {
 
   return (
     <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-      <SubHeader title={t("acknowledgment")} alt={false} />
+      <SubHeader title={t("grants")} alt={false} />
 
-      {/* Dynamic Acknowledgment Grid */}
+      {/* Dynamic Data Grid */}
       <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
         {loading && !data
-          ? Array.from({ length: 4 }).map((_, i) => (
-              <SkeletonActivityCard key={i} />
-            ))
-          : acknowledgment.map((activity) => (
+          ? Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
+          : items.map((item) => (
               <div
-                key={activity.id}
+                key={item.id}
                 className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full"
               >
                 <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
                   <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl">
-                    <PiSealCheck className="text-2xl" />
+                    <PiHandHeart className="text-2xl" />
                   </div>
                   <div className="flex_start flex-col">
-                    <h4 className="font-medium text-sm">{activity.title}</h4>
+                    <h4 className="font-medium text-sm">{item.title}</h4>
                     <span className="text-black opacity-60 text-xs">
-                      {formatDate(activity.year)}
+                      {formatDate(item.year)}
                     </span>
                   </div>
                 </div>
 
-                {/* Files Section */}
-                <div className="flex_start w-full gap-5 lg:flex-row flex-col">
+                {/* Main Content Section */}
+                <div className="grid lg:grid-cols-2 grid-cols-1 w-full gap-5">
+                  <div className="flex_start flex-col w-full">
+                    <span className="text-black opacity-60 text-xs">
+                      {t("type")}
+                    </span>
+                    <p className="lg:text-base text-sm capitalize">
+                      {item.type}
+                    </p>
+                  </div>
+
                   <div className="flex_start flex-col w-full">
                     <span className="text-black opacity-60 text-xs">
                       {t("attachment")}
                     </span>
 
-                    {activity.files && activity.files.length > 0 ? (
+                    {item.files && item.files.length > 0 ? (
                       <div className="flex flex-wrap gap-2 mt-1">
-                        {activity.files.map((activityFile) => (
+                        {item.files.map((file) => (
                           <button
-                            key={activityFile.id}
+                            key={file.id}
                             className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm hover:bg-gray-50 transition-colors"
-                            onClick={() =>
-                              handleFileDownload(activityFile.file.path)
-                            }
-                            title={`Download ${getFileName(
-                              activityFile.file.path
-                            )}`}
+                            onClick={() => handleFileDownload(file.file.path)}
+                            title={`Download ${getFileName(file.file.path)}`}
                           >
                             <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
                               <HiOutlineLink />
                             </span>
                             <span className="max-w-[10ch] truncate">
-                              {getFileName(activityFile.file.path)}
+                              {getFileName(file.file.path)}
                             </span>
                           </button>
                         ))}
@@ -180,13 +186,29 @@ const Acknowledgment = ({ teacherId }: AcknowledgmentProps) => {
                       </span>
                     )}
                   </div>
+
+                  {/* Achievements Section */}
+                  <div className="flex_start flex-col w-full col-span-2">
+                    <span className="text-black opacity-60 text-xs">
+                      {t("achievements")}
+                    </span>
+                    {item.achievements ? (
+                      <p className="lg:text-base text-sm">
+                        {item.achievements}
+                      </p>
+                    ) : (
+                      <p className="lg:text-base text-sm text-gray-400 mt-1">
+                        {t("no_achievements")}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
       </div>
 
       {/* Load More Button */}
-      {data && acknowledgment.length < data.total && (
+      {data && items.length < data.total && (
         <div className="flex_center w-full my-5">
           <button
             onClick={handleLoadMore}
@@ -201,18 +223,18 @@ const Acknowledgment = ({ teacherId }: AcknowledgmentProps) => {
       {/* Error State */}
       {error && (
         <div className="text-red-500 text-center w-full">
-          {t("error_loading_activities")}
+          {t("error_loading_grants")}
         </div>
       )}
 
       {/* No Data State */}
-      {!loading && data && acknowledgment.length === 0 && (
+      {!loading && data && items.length === 0 && (
         <div className="text-gray-500 text-center w-full">
-          {t("no_activities_found")}
+          {t("no_grants_found")}
         </div>
       )}
     </div>
   );
 };
 
-export default Acknowledgment;
+export default Grants;

@@ -170,7 +170,10 @@
     "certificate": "Certificate",
     "loading": "Loading...",
     "no_attachments": "No Attachments",
-    "no_activities_found": "No Activities Found"
+    "no_activities_found": "No Activities Found",
+    "no_achievements": "No Achievements",
+    "no_grants_found": "No Grants Gound",
+    "achievements": "Achievements"
   },
   "Apply": {
     "head": "How to apply for EPU?",

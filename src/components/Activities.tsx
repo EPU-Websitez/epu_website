@@ -167,7 +167,9 @@ const Activities = ({ teacherId }: ActivitiesProps) => {
                             <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
                               <HiOutlineLink />
                             </span>
-                            <span>{getFileName(activityFile.file.path)}</span>
+                            <span className="max-w-[10ch] truncate">
+                              {getFileName(activityFile.file.path)}
+                            </span>
                           </button>
                         ))}
                       </div>

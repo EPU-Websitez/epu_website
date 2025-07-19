@@ -4,6 +4,7 @@ import Acknowledgment from "@/components/Acknowledgment";
 import Activities from "@/components/Activities";
 import Breadcrumb from "@/components/breadcrumb";
 import Committees from "@/components/Committees";
+import Grants from "@/components/Grants";
 import Memberships from "@/components/Memberships";
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
@@ -268,57 +269,7 @@ const Page = () => {
                 </div>
               </div>
             )}
-            {tab === "grants" && (
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("grants")} alt={false} />
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
-                  <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
-                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-2xl">
-                        <PiHandHeart className="text-2xl" />
-                      </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium text-sm">
-                          University Of Mosul
-                        </h4>
-                        <span className="text-black opacity-60 text-xs">
-                          25 - 06 - 1992
-                        </span>
-                      </div>
-                    </div>
-                    <div className="grid lg:grid-cols-2 grid-cols-1 w-full gap-5">
-                      <div className="flex_start flex-col w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("type")}
-                        </span>
-                        <p className="lg:text-base text-sm">International</p>
-                      </div>
-
-                      <div className="flex_start flex-col w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("attachment")}
-                        </span>
-                        <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                          <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                            <HiOutlineLink />
-                          </span>
-                          <span>botancv.PDF</span>
-                        </button>
-                      </div>
-                      <div className="flex_start flex-col w-full col-span-2">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("achievement")}
-                        </span>
-                        <p className="lg:text-base text-sm">
-                          Developed a new model for sustainable energy usage in
-                          urban areas, published in major journals.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+            {tab === "grants" && <Grants teacherId={id} />}
           </div>
         </div>
       </div>
