@@ -167,7 +167,10 @@
     "committees_evaluation": "Committees Evaluation",
     "grants": "Grants",
     "achievement": "Achievement",
-    "certificate": "Certificate"
+    "certificate": "Certificate",
+    "loading": "Loading...",
+    "no_attachments": "No Attachments",
+    "no_activities_found": "No Activities Found"
   },
   "Apply": {
     "head": "How to apply for EPU?",

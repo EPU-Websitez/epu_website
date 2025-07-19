@@ -1,5 +1,10 @@
 "use client";
+import AcademicStaffHeader from "@/components/AcademicStaffHeader";
+import Acknowledgment from "@/components/Acknowledgment";
+import Activities from "@/components/Activities";
 import Breadcrumb from "@/components/breadcrumb";
+import Committees from "@/components/Committees";
+import Memberships from "@/components/Memberships";
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -40,84 +45,7 @@ const Page = () => {
 
   return (
     <div className="flex_center w-full flex-col">
-      <div className="max-w-[1380px] w-full relative flex_center flex-col gap-5 sm:px-2 px-5 text-secondary">
-        <div className="relative w-full h-[276px]">
-          <div className="absolute ltr:left-5 rtl:right-5 top-5 z-10">
-            <Breadcrumb title="" alt={false} />
-          </div>
-          <Image
-            src="/images/academic-bg.png"
-            alt="title"
-            fill
-            priority
-            className="w-full h-auto rounded-2xl"
-          />
-        </div>
-        <div className="flex_start lg:w-[1024px] w-auto absolute lg:left-1/2 md:left-[12%] sm:left-[18%] left-[22%] -translate-x-1/2 sm:top-[180px] top-[220px]">
-          <div className="sm:w-[215px] w-[115px] sm:h-[215px] h-[115px] flex_center relative rounded-full bg-white">
-            <div className="flex_center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:w-[200px] w-[100px] sm:h-[200px] h-[100px] rounded-full">
-              <Image
-                src="/images/president-alt.png"
-                alt="title"
-                fill
-                priority
-                className="w-full h-auto object-cover rounded-full"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="flex_start max-w-[1024px] px-2 sm:mt-32 mt-16 w-full flex-col gap-4">
-          <span className="text-sm font-medium">
-            Assistant Professor Doctor
-          </span>
-          <h3 className="text-xl font-semibold">Kayhan Zrar Ghafoor</h3>
-          <div className="flex w-full justify-between lg:items-center items-start lg:gap-2 gap-6 mt-3 lg:flex-row flex-col">
-            <div className="flex sm:justify-center justify-start sm:items-center items-start gap-3 sm:flex-row flex-col">
-              <div className="flex_center gap-3 rounded-xl border-golden border text-golden px-3 py-1.5">
-                <span className="w-2 h-2 rounded-full flex-shrink-0 bg-golden text-sm"></span>
-                <p className="text-sm">Vice President for Scientific</p>
-              </div>
-              <div className="flex_center gap-3 rounded-xl border-golden border text-golden px-3 py-1.5">
-                <span className="w-2 h-2 rounded-full flex-shrink-0 bg-golden text-sm"></span>
-                <p className="text-sm"> Postgraduate Affairs</p>
-              </div>
-            </div>
-            <div className="flex sm:justify-center justify-start sm:items-center items-start gap-3 sm:flex-nowrap flex-wrap">
-              <Link
-                href=""
-                className="flex_center gap-2 rounded-xl sm:px-3 px-2 py-1.5 border border-lightBorder text-sm"
-              >
-                <span>Academic Staff Portal</span>
-                <IoMdArrowUp className="rotate-45" />
-              </Link>
-              <a
-                href=""
-                className="rounded-xl sm:px-3 px-2 py-1.5 border border-lightBorder text-sm"
-              >
-                botan@epu.edu.iq
-              </a>
-              <a
-                href=""
-                className="rounded-full flex_center w-10 h-10 border border-lightBorder hover:bg-lightBorder"
-              >
-                <FaFacebookF />
-              </a>
-              <a
-                href=""
-                className="rounded-full flex_center w-10 h-10 border border-lightBorder hover:bg-lightBorder"
-              >
-                <FaGoogleScholar />
-              </a>
-              <a
-                href=""
-                className="rounded-full flex_center w-10 h-10 border border-lightBorder hover:bg-lightBorder"
-              >
-                <FaResearchgate />
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+      <AcademicStaffHeader />
       <div className="mt-14 w-full flex_center flex-col text-secondary">
         <div className="max-w-[1024px] w-full flex_start sm:gap-5 gap-3 overflow-x-auto hide_scroll sm:px-0 px-5">
           <Link
@@ -240,135 +168,10 @@ const Page = () => {
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </button>
             </div>
-            {tab === "acknowledgment" && (
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("acknowledgment")} alt={false} />
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
-                  <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
-                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-lg">
-                        <PiSealCheck className="text-2xl" />
-                      </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium">Organization Level</h4>
-                        <span className="text-black opacity-60 text-xs">
-                          2020 - 2024
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex_start w-full gap-5 lg:flex-row flex-col">
-                      <div className="flex_start flex-col lg:w-1/2 w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("certificate")}
-                        </span>
-                        <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                          <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                            <HiOutlineLink />
-                          </span>
-                          <span>botancv.PDF</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            {tab === "committees" && (
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("committees")} alt={false} />
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
-                  <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
-                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-2xl">
-                        <FaUsers className="text-2xl" />
-                      </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium text-sm">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-xs">
-                          25 - 06 - 1992
-                        </span>
-                      </div>
-                    </div>
-                    <div className="grid lg:grid-cols-2 grid-cols-1 w-full gap-5">
-                      <div className="flex_start flex-col w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("level")}
-                        </span>
-                        <p className="lg:text-base text-sm">Department</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            {tab === "memberships" && (
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("memberships")} alt={false} />
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
-                  <div className="flex_start flex-col gap-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full px-3 pt-3">
-                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl">
-                        <FiUser />
-                      </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium text-sm">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-xs">
-                          25 - 06 - 1992
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex_start w-full gap-5 lg:flex-row flex-col px-3">
-                      <div className="flex_start flex-col lg:w-1/2 w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("level")}
-                        </span>
-                        <p className="lg:text-base text-sm">International</p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleModal(1)}
-                      className="w-full py-3 text-golden border-t border-lightBorder flex justify-between items-center px-3"
-                    >
-                      <span className="text-sm font-semibold">{t("read_more")}</span>
-                      <GoArrowRight className="text-2xl rtl:rotate-180" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-            {tab === "activities" && (
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("activities")} alt={false} />
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
-                  <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
-                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl">
-                        <BsBarChart className="text-2xl" />
-                      </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium text-sm">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-xs">
-                          25 - 06 - 1992
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex_start w-full gap-5 lg:flex-row flex-col">
-                      <div className="flex_start flex-col w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("attachment")}
-                        </span>
-                        <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                          <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                            <HiOutlineLink />
-                          </span>
-                          <span>botancv.PDF</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+            {tab === "acknowledgment" && <Acknowledgment teacherId={id} />}
+            {tab === "committees" && <Committees teacherId={id} />}
+            {tab === "memberships" && <Memberships teacherId={id} />}
+            {tab === "activities" && <Activities teacherId={id} />}
             {tab === "researchEvaluation" && (
               <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
                 <SubHeader title={t("research_evaluation")} alt={false} />
@@ -379,7 +182,9 @@ const Page = () => {
                         <MdCoPresent />
                       </div>
                       <div className="flex_start flex-col">
-                        <h4 className="font-medium text-sm">University Of Mosul</h4>
+                        <h4 className="font-medium text-sm">
+                          University Of Mosul
+                        </h4>
                         <span className="text-black opacity-60 text-xs">
                           25 - 06 - 1992
                         </span>
@@ -425,7 +230,9 @@ const Page = () => {
                         <FiUsers />
                       </div>
                       <div className="flex_start flex-col">
-                        <h4 className="font-medium text-sm">University Of Mosul</h4>
+                        <h4 className="font-medium text-sm">
+                          University Of Mosul
+                        </h4>
                         <span className="text-black opacity-60 text-xs">
                           25 - 06 - 1992
                         </span>
@@ -471,7 +278,9 @@ const Page = () => {
                         <PiHandHeart className="text-2xl" />
                       </div>
                       <div className="flex_start flex-col">
-                        <h4 className="font-medium text-sm">University Of Mosul</h4>
+                        <h4 className="font-medium text-sm">
+                          University Of Mosul
+                        </h4>
                         <span className="text-black opacity-60 text-xs">
                           25 - 06 - 1992
                         </span>
