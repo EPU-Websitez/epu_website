@@ -80,7 +80,7 @@ const CollegeHeader = () => {
             <div className="flex_center md:gap-20 gap-7 md:h-[437px] sm:h-[300px] h-[225px] rounded-3xl overflow-hidden relative w-full">
               <div className="absolute left-0 top-0 w-full h-full ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary to-[#ffffff71] z-10 opacity-80"></div>
               <div className="z-20 flex_start flex-col md:max-w-[710px] max-w-[60%] md:gap-8 gap-4 text-white px-3">
-                <h1 className="lg:text-[60px] md:text-[40px] text-base font-bold">
+                <h1 className="lg:text-[60px] leading-relaxed md:text-[40px] text-base font-bold">
                   {data.title}
                 </h1>
                 <p className="lg:text-lg md:text-base text-[10px] font-medium">

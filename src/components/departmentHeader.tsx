@@ -92,7 +92,7 @@ const DepartmentHeader = () => {
       <div className="z-20 flex_start flex-col max-w-[1040px] w-full md:gap-8 gap-4 text-white px-3">
         <div className="flex_center gap-2 group relative">
           <span className="w-14 h-[2px] rounded-md bg-golden"></span>
-          <h2 className="sm:text-[52px] text-smallTitle font-semibold">
+          <h2 className="sm:text-[52px] leading-normal text-smallTitle font-semibold">
             {data.title}
           </h2>
         </div>

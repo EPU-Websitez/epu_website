@@ -61,17 +61,6 @@ interface College {
   updated_at: string;
 }
 
-interface StaffMember {
-  id: number;
-  college_id: number;
-  teacher_id: number;
-  role_in_college: string;
-  created_at: string;
-  updated_at: string;
-  college: College;
-  teacher: Teacher;
-}
-
 interface Lead {
   id: number;
   college_id: number;
@@ -82,13 +71,6 @@ interface Lead {
   updated_at: string;
   college: College;
   teacher: Teacher;
-}
-
-interface StaffResponse {
-  total: number;
-  page: number;
-  limit: number;
-  data: StaffMember[];
 }
 
 interface LeadsResponse {
@@ -143,47 +125,49 @@ const Page = () => {
   const locale = params?.locale as string;
   const college = params?.college as string;
 
-  const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
+  const [leads, setLeads] = useState<Lead[]>([]);
   const [page, setPage] = useState(1);
   const limit = 15;
 
-  // Fetch college leads (dean)
+  // Fetch college leads with pagination
   const {
     data: leadsData,
     loading: leadsLoading,
     error: leadsError,
   } = useFetch<LeadsResponse>(
-    `${API_URL}/website/colleges/${college}/leads?page=1&limit=1`
-  );
-
-  // Fetch staff members
-  const {
-    data: staffData,
-    loading: staffLoading,
-    error: staffError,
-    refetch,
-  } = useFetch<StaffResponse>(
-    `${API_URL}/website/colleges/${college}/staff?page=${page}&limit=${limit}`
+    `${API_URL}/website/colleges/${college}/leads?page=${page}&limit=${limit}`
   );
 
   useEffect(() => {
-    if (staffData?.data) {
+    if (leadsData?.data) {
       if (page === 1) {
-        setStaffMembers(staffData.data);
+        setLeads(leadsData.data);
       } else {
-        setStaffMembers((prev) => [...prev, ...staffData.data]);
+        setLeads((prev) => [...prev, ...leadsData.data]);
       }
     }
-  }, [staffData, page]);
+  }, [leadsData, page]);
 
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
   };
 
   // Get the dean from leads data
-  const dean = leadsData?.data?.[0];
-  const loading = leadsLoading || (staffLoading && page === 1);
-  const error = leadsError || (staffError && page === 1);
+  const dean = leads.find(
+    (lead) =>
+      lead.role.toLowerCase().includes("dean") ||
+      lead.role.toLowerCase().includes("عميد")
+  );
+
+  // Get other leads (excluding the dean)
+  const otherLeads = leads.filter(
+    (lead) =>
+      !lead.role.toLowerCase().includes("dean") &&
+      !lead.role.toLowerCase().includes("عميد")
+  );
+
+  const loading = leadsLoading && page === 1;
+  const error = leadsError && page === 1;
 
   if (loading) {
     return <PageSkeleton />;
@@ -210,7 +194,7 @@ const Page = () => {
       <div className="max-w-[1024px] sm:mt-14 mt-10 px-3 text-secondary flex_start flex-col gap-10 w-full">
         <SubHeader title={t("college_council")} alt={false} />
 
-        {/* Dean Section - Now Dynamic */}
+        {/* Dean Section - Only show if dean exists in leads */}
         {dean ? (
           <div className="flex justify-start md:items-start items-center gap-10 w-full border p-5 rounded-3xl border-lightBorder">
             <div className="sm:w-[310px] w-[125px] sm:h-[285px] h-[125px] relative">
@@ -226,7 +210,7 @@ const Page = () => {
             </div>
             <div className="flex_start flex-col gap-5">
               <h3 className="text-golden sm:text-lg text-sm font-semibold">
-                {dean.role || t("dean_of_college")}
+                {dean.role}
               </h3>
               <h1 className="max-w-[350px] lg:text-title sm:text-smallTitle text-xs font-medium relative">
                 <span className="relative z-10 font-medium">
@@ -241,7 +225,7 @@ const Page = () => {
                   />
                 </span>
               </h1>
-              {/* {dean.teacher.title && (
+              {dean.teacher.title && (
                 <p className="text-sm text-gray-600 font-medium">
                   {dean.teacher.title}
                 </p>
@@ -250,57 +234,33 @@ const Page = () => {
                 <p className="text-xs text-gray-500">
                   {dean.teacher.specific_spec}
                 </p>
-              )} */}
+              )}
             </div>
           </div>
         ) : (
-          // Fallback if no dean data
-          <div className="flex md:justify-start justify-center md:items-start items-center gap-10 w-full border p-5 rounded-3xl border-lightBorder">
-            <div className="sm:w-[310px] w-[125px] sm:h-[285px] h-[125px] relative">
-              <Image
-                src="/images/president-alt.png"
-                alt="Dean"
-                fill
-                priority
-                className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
-              />
-            </div>
-            <div className="flex_start flex-col gap-5">
-              <h3 className="text-golden sm:text-lg text-sm font-semibold">
-                {t("dean_of_college")}
-              </h3>
-              <h1 className="max-w-[350px] lg:text-title sm:text-smallTitle text-xs font-medium relative">
-                <span className="relative z-10 font-medium">{t("name")}</span>
-                <span className="absolute ltr:left-0 rtl:right-0 -bottom-3 w-[80%] h-6">
-                  <Image
-                    src="/images/title-shape.svg"
-                    alt="shape"
-                    fill
-                    priority
-                  />
-                </span>
-              </h1>
-            </div>
+          // Show message if no dean found
+          <div className="text-gray-500 text-center w-full py-5">
+            {t("no_dean_found")}
           </div>
         )}
 
-        {/* Council Members Grid */}
+        {/* Council Members Grid - All other leads */}
         <div className="grid w-full lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-8">
-          {staffMembers.map((member) => (
+          {otherLeads.map((lead) => (
             <MemberCard
-              key={member.id}
-              description={member.role_in_college}
+              key={lead.id}
+              description={lead.role}
               image={
-                member.teacher.profile_image?.md || "/images/president-alt.png"
+                lead.teacher.profile_image?.md || "/images/president-alt.png"
               }
-              link={`/${locale}/academic-staff/${member.teacher.id}`}
+              link={`/${locale}/academic-staff/${lead.teacher.id}`}
               staticText={t("view_profile")}
-              title={member.teacher.full_name}
+              title={lead.teacher.full_name}
             />
           ))}
 
           {/* Loading skeletons while fetching more data */}
-          {loading &&
+          {leadsLoading &&
             page > 1 &&
             Array.from({ length: 3 }).map((_, i) => (
               <MemberCardSkeleton key={`skeleton-${i}`} />
@@ -308,27 +268,27 @@ const Page = () => {
         </div>
 
         {/* Load More Button */}
-        {staffData && staffMembers.length < staffData.total && (
+        {leadsData && leads.length < leadsData.total && (
           <div className="flex_center w-full my-5">
             <button
               onClick={handleLoadMore}
-              disabled={loading}
+              disabled={leadsLoading}
               className="sm:text-base text-sm border border-primary px-8 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors"
             >
-              {loading ? t("loading") : t("see_more")}
+              {leadsLoading ? t("loading") : t("see_more")}
             </button>
           </div>
         )}
 
         {/* Error State for Load More */}
-        {error && page > 1 && (
+        {leadsError && page > 1 && (
           <div className="text-red-500 text-center w-full">
             {t("error_loading_data")}
           </div>
         )}
 
         {/* No Data State */}
-        {!loading && staffData && staffMembers.length === 0 && (
+        {!loading && leadsData && leads.length === 0 && (
           <div className="text-gray-500 text-center w-full py-10">
             {t("no_council_members_found")}
           </div>
