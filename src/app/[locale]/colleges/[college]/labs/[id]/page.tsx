@@ -20,7 +20,7 @@ const Page = () => {
   return (
     <div className="w-full flex_center flex-col sm:my-10 my-5">
       <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full">
-        <CollegeHeader title={t("header_title")} desc={t("header_desc")} />
+        <CollegeHeader />
         <SubHeader title="Medical Laboratory" alt={false} />
         <div className="w-full flex justify-between md:items-center items-start md:flex-row flex-col gap-5 p-5 rounded-3xl bg-golden text-white">
           <div className="flex_center gap-3">

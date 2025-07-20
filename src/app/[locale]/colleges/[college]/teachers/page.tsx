@@ -19,9 +19,9 @@ const Page = () => {
   return (
     <div className="w-full flex_center flex-col sm:my-10 my-5">
       <div className="max-w-[1379px] px-3 flex_start w-full">
-        <CollegeHeader title={t("header_title")} desc={t("header_desc")} />
+        <CollegeHeader />
       </div>
-      <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full">
+      <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full sm:mt-14 mt-10">
         <SubHeader title={t("teachers")} alt={false} />
 
         <div className="grid w-full lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-8">

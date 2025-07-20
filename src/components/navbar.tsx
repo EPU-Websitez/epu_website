@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import LocalSwitcher from "./local-switcher";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { BsChevronDown } from "react-icons/bs";
 import { FiPlus, FiSearch } from "react-icons/fi";
 import { useTranslations } from "next-intl";
@@ -33,6 +33,8 @@ const Navbar = () => {
     }
     return { normalizedPath: segments.join("/") || "/", locale };
   };
+  const params = useParams();
+  const college = params?.college as string;
   const { normalizedPath, locale } = normalizePathname(pathname);
   const [isCollege, setIsCollege] = useState(false);
 
@@ -166,14 +168,17 @@ const Navbar = () => {
                 <IoChevronForward className="ml-5" />
               </button>
               <Link
-                href={`/${locale}/colleges`}
+                href={`/${locale}/colleges/${college}`}
                 title={t("home")}
                 className="flex w-full border-b border-b-lightBorder z-10 font-semibold pb-3"
               >
                 {t("home")}
               </Link>
               <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
-                <Link href={`/${locale}/colleges/about`} title={t("about")}>
+                <Link
+                  href={`/${locale}/colleges/${college}/about`}
+                  title={t("about")}
+                >
                   {t("about")}
                 </Link>
                 <button className="text-2xl">
@@ -182,7 +187,7 @@ const Navbar = () => {
               </div>
               <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
                 <Link
-                  href={`/${locale}/colleges/departments`}
+                  href={`/${locale}/colleges/${college}/departments`}
                   title={t("departments")}
                 >
                   {t("departments")}
@@ -190,7 +195,7 @@ const Navbar = () => {
               </div>
               <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
                 <Link
-                  href={`/${locale}/colleges/college-council`}
+                  href={`/${locale}/colleges/${college}/college-council`}
                   title={t("college_council")}
                 >
                   {t("college_council")}
@@ -198,20 +203,23 @@ const Navbar = () => {
               </div>
               <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
                 <Link
-                  href={`/${locale}/colleges/teachers`}
+                  href={`/${locale}/colleges/${college}/teachers`}
                   title={t("teachers")}
                 >
                   {t("teachers")}
                 </Link>
               </div>
               <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
-                <Link href={`/${locale}/colleges/labs`} title={t("labs")}>
+                <Link
+                  href={`/${locale}/colleges/${college}/labs`}
+                  title={t("labs")}
+                >
                   {t("labs")}
                 </Link>
               </div>
               <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
                 <Link
-                  href={`/${locale}/colleges/news-and-events`}
+                  href={`/${locale}/colleges/${college}/news-and-events`}
                   title={t("news_events")}
                 >
                   {t("news_events")}
@@ -297,7 +305,7 @@ const Navbar = () => {
           ) : (
             <div className="sm:flex hidden justify-center items-center xl:gap-5 gap-3">
               <Link
-                href={`/${locale}/colleges`}
+                href={`/${locale}/colleges/${college}`}
                 title={t("home")}
                 className="flex_center gap-2 xl:text-base text-xs relative"
               >
@@ -305,7 +313,7 @@ const Navbar = () => {
               </Link>
               <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
               <Link
-                href={`/${locale}/colleges/about`}
+                href={`/${locale}/colleges/${college}/about`}
                 title={t("about")}
                 className="flex_center gap-2 xl:text-base text-xs"
               >
@@ -314,7 +322,7 @@ const Navbar = () => {
               </Link>
               <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
               <Link
-                href={`/${locale}/colleges/departments`}
+                href={`/${locale}/colleges/${college}/departments`}
                 title={t("departments")}
                 className="flex_center gap-2 xl:text-base text-xs"
               >
@@ -322,7 +330,7 @@ const Navbar = () => {
               </Link>
               <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
               <Link
-                href={`/${locale}/colleges/college-council`}
+                href={`/${locale}/colleges/${college}/college-council`}
                 title={t("college_council")}
                 className="flex_center gap-2 xl:text-base text-xs"
               >
@@ -330,7 +338,7 @@ const Navbar = () => {
               </Link>
               <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
               <Link
-                href={`/${locale}/colleges/teachers`}
+                href={`/${locale}/colleges/${college}/teachers`}
                 title={t("teachers")}
                 className="lg:flex hidden justify-center items-center gap-2 xl:text-base text-xs"
               >
@@ -338,7 +346,7 @@ const Navbar = () => {
               </Link>
               <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50 lg:block hidden"></span>
               <Link
-                href={`/${locale}/colleges/labs`}
+                href={`/${locale}/colleges/${college}/labs`}
                 title={t("labs")}
                 className="flex_center gap-2 xl:text-base text-xs"
               >
@@ -346,7 +354,7 @@ const Navbar = () => {
               </Link>
               <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
               <Link
-                href={`/${locale}/colleges/news-and-events`}
+                href={`/${locale}/colleges/${college}/news-and-events`}
                 title={t("news_events")}
                 className="flex_center gap-2 xl:text-base text-xs"
               >

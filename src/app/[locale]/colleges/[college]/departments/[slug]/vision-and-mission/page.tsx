@@ -21,23 +21,17 @@ const Page = () => {
   const t = useTranslations("Colleges");
   const params = useParams();
   const locale = params?.locale as string;
-  const id = params?.id as string;
+  const slug = params?.slug as string;
+  const college = params?.college as string;
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 -mt-5">
-      <DepartmentHeader
-        title="Civil Engineering Department"
-        email="Email"
-        emailValue="info@epu.edu.iq"
-        location="Location"
-        locationValue="Karkuk St, Erbil 44001"
-        desc="founded in 2008, offers BSc, higher diploma, MSc, and PhD degrees, focusing on modern information, computer technology, and software developments to support economic growth in developing countries."
-      />
+      <DepartmentHeader />
       <div className="max-w-[1040px] px-3 flex_start w-full">
         <div className="w-full border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
           <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
             <div className="flex_start flex-col gap-4 flex-shrink-0 lg:w-auto w-full">
               <Link
-                href={`/${locale}/colleges/departments/${id}`}
+                href={`/${locale}/colleges/${college}/departments/${slug}`}
                 title={t("about_button")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
@@ -49,7 +43,7 @@ const Page = () => {
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </div>
               <Link
-                href={`/${locale}/colleges/departments/${id}/staff`}
+                href={`/${locale}/colleges/${college}/departments/${slug}/staff`}
                 title={t("council_staff")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
@@ -57,7 +51,7 @@ const Page = () => {
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </Link>
               <Link
-                href={`/${locale}/colleges/departments/${id}/news`}
+                href={`/${locale}/colleges/${college}/departments/${slug}/news`}
                 title={t("news_button")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
@@ -65,7 +59,7 @@ const Page = () => {
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </Link>
               <Link
-                href={`/${locale}/colleges/departments/${id}/researches`}
+                href={`/${locale}/colleges/${college}/departments/${slug}/researches`}
                 title={t("researches")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
@@ -73,7 +67,7 @@ const Page = () => {
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </Link>
               <Link
-                href={`/${locale}/colleges/departments/${id}/course-subjects`}
+                href={`/${locale}/colleges/${college}/departments/${slug}/course-subjects`}
                 title={t("course_subjects")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
@@ -81,7 +75,7 @@ const Page = () => {
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </Link>
               <Link
-                href={`/${locale}/colleges/departments/${id}/guide-lines`}
+                href={`/${locale}/colleges/${college}/departments/${slug}/guide-lines`}
                 title={t("guide_lines")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >

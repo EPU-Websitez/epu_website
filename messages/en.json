@@ -375,7 +375,11 @@
     "subject": "Subject",
     "first_semester": "First Semester",
     "second_semester": "Second Semester",
-    "third_semester": "Third Semester"
+    "third_semester": "Third Semester",
+    "see_more": "See More",
+    "head": "Colleges",
+    "loading": "Loading...",
+    "no_council_members_found": "No Council Members Found"
   },
   "Directorate": {
     "university_directory": "University Directory",

@@ -16,7 +16,7 @@ const Page = () => {
   return (
     <div className="w-full flex_center flex-col sm:my-10 my-5">
       <div className="max-w-[1379px] px-3 flex_start w-full">
-        <CollegeHeader title={t("header_title")} desc={t("header_desc")} />
+        <CollegeHeader />
       </div>
       <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full">
         <SubHeader title={t("labs")} alt={false} />
