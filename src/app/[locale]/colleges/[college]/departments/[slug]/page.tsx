@@ -159,7 +159,7 @@ const Page = () => {
                 Department Not Found
               </h1>
               <p className="text-gray-600">
-                The department you're looking for doesn't exist.
+                The department youre looking for doesnt exist.
               </p>
             </div>
           </div>

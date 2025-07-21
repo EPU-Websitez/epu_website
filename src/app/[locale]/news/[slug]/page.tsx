@@ -9,53 +9,135 @@ import { API_URL } from "@/libs/env";
 import useFetch from "@/libs/hooks/useFetch";
 import { CiSearch } from "react-icons/ci";
 
+interface Image {
+  id: number;
+  original: string;
+  lg: string;
+  md: string;
+  sm: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Gallery {
+  id: number;
+  news_id: number;
+  image_id: number;
+  created_at: string;
+  updated_at: string;
+  Image: Image;
+}
+
 interface Tag {
+  news_id: number;
+  tag_id: number;
   Tag: {
     id: number;
-    name_en: string;
-    name_ku: string;
-    name_ar: string;
+    name: string;
+    created_at: string;
+    updated_at: string;
   };
+}
+
+interface Department {
+  id: number;
+  college_id: number;
+  slug: string;
+  title: string;
+  subtitle: string;
+  about: string;
+  vision: string;
+  mission: string;
+  priority: number;
+  created_at: string;
+  updated_at: string;
+  student_number: string;
+  staffCount: number;
+  leadCount: number;
 }
 
 interface NewsDetail {
   id: number;
+  author: string;
+  title: string;
   slug: string;
-  [`title_en`]: string;
-  [`title_ku`]: string;
-  [`title_ar`]: string;
-  [`excerpt_en`]: string;
-  [`excerpt_ku`]: string;
-  [`excerpt_ar`]: string;
-  [`author_en`]: string;
-  [`author_ku`]: string;
-  [`author_ar`]: string;
-  [`content_en`]: string;
-  [`content_ku`]: string;
-  [`content_ar`]: string;
+  excerpt: string;
+  content: string;
+  status: string;
+  published_at: string;
   created_at: string;
+  updated_at: string;
+  cover_image_id: number;
+  center_id: number | null;
+  college_id: number | null;
+  department_id: number | null;
+  created_by_id: number;
+  userId: number | null;
+  directorate_id: number | null;
+  sub_directorate_id: number | null;
+  Gallery: Gallery[];
   NewsTags: Tag[];
-  CoverImage: {
-    lg: string;
+  NewsCategoryNews: any[];
+  CoverImage: Image;
+  Center: any | null;
+  College: any | null;
+  Department: Department | null;
+  Directorate: any | null;
+  SubDirectorate: any | null;
+  CreatedBy: {
+    id: number;
   };
+}
+
+interface RelatedNewsResponse {
+  total: number;
+  page: number;
+  limit: number;
+  data: NewsDetail[];
 }
 
 const Page = () => {
   const t = useTranslations("News");
   const params = useParams();
-  const locale = params?.locale as "en" | "ku" | "ar";
+  const locale = params?.locale as string;
   const slug = params?.slug as string;
 
   const { data, loading } = useFetch<NewsDetail>(
     `${API_URL}/website/news/${slug}`
   );
 
+  // Fetch related news only when main news data is loaded
+  const relatedNewsUrl = data?.id
+    ? `${API_URL}/website/news?page=1&limit=4&exclude=${data.id}`
+    : "";
+  const { data: relatedNews, loading: relatedLoading } =
+    useFetch<RelatedNewsResponse>(relatedNewsUrl);
+
   const isInitialLoading = loading && !data;
 
-  const title = data?.[`title_${locale}`] || "";
-  const author = data?.[`author_${locale}`] || "";
-  const content = data?.[`content_${locale}`] || "";
-  const tags = data?.NewsTags || [];
+  // Get image with fallback logic
+  const getNewsImage = (news: NewsDetail | null | undefined) => {
+    if (!news) return "/images/news.png";
+
+    return (
+      news.CoverImage?.lg ||
+      news.CoverImage?.md ||
+      news.CoverImage?.original ||
+      news.Gallery?.[0]?.Image?.lg ||
+      news.Gallery?.[0]?.Image?.md ||
+      news.Gallery?.[0]?.Image?.original ||
+      "/images/news.png"
+    );
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(locale, {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
 
   return (
     <div className="my-10 flex_center w-full flex-col gap-10 lg:px-0 px-3 text-secondary">
@@ -79,8 +161,8 @@ const Page = () => {
           <>
             <div className="w-full md:h-[470px] h-[220px] relative">
               <Image
-                src={`${API_URL}/${data?.CoverImage?.lg}`}
-                alt={title}
+                src={getNewsImage(data)}
+                alt={data?.title || "News"}
                 fill
                 priority
                 className="w-full h-full object-cover rounded-2xl"
@@ -88,30 +170,30 @@ const Page = () => {
             </div>
 
             <div className="flex_center gap-2 text-sm">
-              <p>{author}</p>
+              <p>{data?.author}</p>
               <span>-</span>
               <span className="opacity-70">
-                {new Date(data?.created_at || "").toLocaleDateString(locale)}
+                {formatDate(data?.published_at || data?.created_at || "")}
               </span>
             </div>
 
             <h1 className="md:text-titleNormal text-base font-semibold">
-              {title}
+              {data?.title}
             </h1>
 
             <div
               className="lg:text-xl md:text-base text-sm opacity-70"
-              dangerouslySetInnerHTML={{ __html: content }}
+              dangerouslySetInnerHTML={{ __html: data?.content || "" }}
             />
 
-            {tags.length > 0 && (
+            {data?.NewsTags && data.NewsTags.length > 0 && (
               <div className="w-full flex_start gap-4 flex-wrap">
-                {tags.map(({ Tag }) => (
+                {data.NewsTags.map(({ Tag }) => (
                   <span
                     key={Tag.id}
                     className="bg-backgroundSecondary font-medium p-2 rounded-sm md:text-base text-xs"
                   >
-                    #{Tag[`name_${locale}`]}
+                    #{Tag.name}
                   </span>
                 ))}
               </div>
@@ -134,31 +216,73 @@ const Page = () => {
           />
         </div>
 
-        {/* Placeholder Tags */}
-        <div className="w-full flex_start sm:gap-4 gap-2 flex-wrap">
-          {[...Array(8)].map((_, i) => (
-            <span
-              key={i}
-              className="bg-backgroundSecondary font-medium p-2 rounded-sm md:text-base text-xs"
-            >
-              #Kurdistan
-            </span>
-          ))}
-        </div>
+        {/* Tags from current news and related news */}
+        {data?.NewsTags && data.NewsTags.length > 0 && (
+          <div className="w-full flex_start sm:gap-4 gap-2 flex-wrap">
+            {data.NewsTags.map(({ Tag }) => (
+              <button
+                key={Tag.id}
+                className="bg-backgroundSecondary font-medium p-2 rounded-sm md:text-base text-xs hover:bg-primary hover:text-white transition-colors cursor-pointer"
+              >
+                #{Tag.name}
+              </button>
+            ))}
+            {/* Add some placeholder tags if needed */}
+            {data.NewsTags.length < 6 && (
+              <>
+                <button className="bg-backgroundSecondary font-medium p-2 rounded-sm md:text-base text-xs hover:bg-primary hover:text-white transition-colors cursor-pointer">
+                  #Education
+                </button>
+                <button className="bg-backgroundSecondary font-medium p-2 rounded-sm md:text-base text-xs hover:bg-primary hover:text-white transition-colors cursor-pointer">
+                  #Research
+                </button>
+                <button className="bg-backgroundSecondary font-medium p-2 rounded-sm md:text-base text-xs hover:bg-primary hover:text-white transition-colors cursor-pointer">
+                  #Innovation
+                </button>
+              </>
+            )}
+          </div>
+        )}
 
-        {/* Placeholder Related News */}
+        {/* Related News */}
         <div className="grid sm:grid-cols-2 grid-cols-1 w-full gap-8">
-          {[...Array(2)].map((_, i) => (
-            <NewsCard
-              key={i}
-              image="/images/news.png"
-              link="/"
-              author="Craig Bator"
-              createdAt="27 Dec 2020"
-              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
-              title="Solskjaer dismisses Klopp comments on Man Utd penalty record"
-            />
-          ))}
+          {relatedLoading
+            ? // Loading state for related news
+              [...Array(2)].map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="w-full h-48 bg-gray-300 rounded-lg mb-4"></div>
+                  <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-full mb-1"></div>
+                  <div className="h-3 bg-gray-200 rounded w-4/5"></div>
+                </div>
+              ))
+            : relatedNews?.data && relatedNews.data.length > 0
+            ? relatedNews.data
+                .slice(0, 2)
+                .map((news) => (
+                  <NewsCard
+                    key={news.id}
+                    image={getNewsImage(news)}
+                    link={`/${locale}/news/${news.slug}`}
+                    author={news.author || "Unknown"}
+                    createdAt={formatDate(news.published_at || news.created_at)}
+                    description={news.excerpt || ""}
+                    title={news.title || ""}
+                  />
+                ))
+            : // Fallback to placeholder cards
+              [...Array(2)].map((_, i) => (
+                <NewsCard
+                  key={`placeholder-${i}`}
+                  image="/images/news.png"
+                  link="/"
+                  author="Craig Bator"
+                  createdAt="27 Dec 2020"
+                  description="Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
+                  title="Solskjaer dismisses Klopp comments on Man Utd penalty record"
+                />
+              ))}
         </div>
       </div>
     </div>

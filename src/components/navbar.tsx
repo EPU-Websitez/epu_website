@@ -9,7 +9,7 @@ import { FiPlus, FiSearch } from "react-icons/fi";
 import { useTranslations } from "next-intl";
 import { IoChevronForward, IoMenu } from "react-icons/io5";
 import { API_URL } from "@/libs/env";
-import useFetch from "@/libs/hooks/useFetch";
+import useSWR from "swr";
 
 // Interfaces
 interface MenuItem {
@@ -30,6 +30,8 @@ interface MenuResponse {
   data: MenuItem[];
   message: string;
 }
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const normalizePathname = (pathname: string) => {
   const segments = pathname.split("/");
@@ -52,10 +54,15 @@ const Navbar = () => {
   const [navIsOpen, setNavIsOpen] = useState(false);
   const [hoveredDropdown, setHoveredDropdown] = useState<number | null>(null);
 
-  // Fetch menu data
-  const { data: menuData, loading: menuLoading } = useFetch<MenuResponse>(
-    `${API_URL}/website/menus`
-  );
+  // Fetch menu data with SWR caching
+  const {
+    data: menuData,
+    error,
+    isLoading: menuLoading,
+  } = useSWR<MenuResponse>(`${API_URL}/website/menus`, fetcher, {
+    dedupingInterval: 1000 * 60 * 60, // 1 hour
+    revalidateOnFocus: false,
+  });
 
   useEffect(() => {
     if (locale === "en") {
@@ -79,6 +86,11 @@ const Navbar = () => {
   const handleMouseLeave = () => {
     setHoveredDropdown(null);
   };
+
+  // Error handling
+  if (error) {
+    console.error("Failed to load menu data:", error);
+  }
 
   const getMenuItemUrl = (item: MenuItem) => {
     if (item.type === "LINK" && item.link) {
@@ -273,13 +285,17 @@ const Navbar = () => {
                 <IoChevronForward className="ml-5" />
               </button>
 
-              {menuLoading ? (
+              {menuLoading || !menuData ? (
                 <div className="w-full space-y-4">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div key={i} className="animate-pulse">
                       <div className="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
                     </div>
                   ))}
+                </div>
+              ) : error ? (
+                <div className="text-red-500 text-center">
+                  Failed to load menu
                 </div>
               ) : (
                 menuData?.data?.map((item) =>
@@ -371,7 +387,7 @@ const Navbar = () => {
           {/* Desktop navbar */}
           {!isCollege ? (
             <div className="sm:flex hidden justify-center items-center xl:gap-5 gap-3">
-              {menuLoading ? (
+              {menuLoading || !menuData ? (
                 <div className="flex gap-5">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div key={i} className="animate-pulse">
@@ -379,6 +395,8 @@ const Navbar = () => {
                     </div>
                   ))}
                 </div>
+              ) : error ? (
+                <div className="text-red-200 text-sm">Menu unavailable</div>
               ) : (
                 menuData?.data?.map((item, index) => (
                   <React.Fragment key={item.id}>
