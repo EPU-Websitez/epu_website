@@ -219,7 +219,7 @@ const Navbar = () => {
               </div>
               <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
                 <Link
-                  href={`/${locale}/colleges/${college}/news-and-events`}
+                  href={`/${locale}/colleges/${college}/news`}
                   title={t("news_events")}
                 >
                   {t("news_events")}
@@ -354,7 +354,7 @@ const Navbar = () => {
               </Link>
               <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
               <Link
-                href={`/${locale}/colleges/${college}/news-and-events`}
+                href={`/${locale}/colleges/${college}/news`}
                 title={t("news_events")}
                 className="flex_center gap-2 xl:text-base text-xs"
               >

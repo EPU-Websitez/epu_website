@@ -151,10 +151,6 @@ const Page = () => {
     error: departmentError,
   } = useFetch<Department>(`${API_URL}/website/departments/${slug}`);
 
-  if (departmentLoading) {
-    return <PageSkeleton />;
-  }
-
   if (departmentError) {
     return (
       <div className="w-full flex_center flex-col sm:mb-10 mb-5 -mt-5">
@@ -188,6 +184,7 @@ const Page = () => {
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 -mt-5">
       <DepartmentHeader />
+
       <div className="max-w-[1040px] px-3 flex_start w-full">
         <div className="w-full border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
           <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
@@ -248,31 +245,35 @@ const Page = () => {
             </div>
 
             {/* Content Area */}
-            <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-              {/* Vision Section */}
-              <div className="md:block hidden">
-                <SubHeader title={t("vision")} alt={false} />
-              </div>
-              <h2 className="md:hidden block relative text-lg font-semibold ">
-                <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
-                <span className="z-10 relative">{t("vision")}</span>
-              </h2>
-              <p className="opacity-70 text-secondary md:text-base text-xs leading-relaxed">
-                {departmentData.vision || t("no_vision_available")}
-              </p>
+            {departmentLoading ? (
+              <PageSkeleton />
+            ) : (
+              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
+                {/* Vision Section */}
+                <div className="md:block hidden">
+                  <SubHeader title={t("vision")} alt={false} />
+                </div>
+                <h2 className="md:hidden block relative text-lg font-semibold ">
+                  <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
+                  <span className="z-10 relative">{t("vision")}</span>
+                </h2>
+                <p className="opacity-70 text-secondary md:text-base text-xs leading-relaxed">
+                  {departmentData.vision || t("no_vision_available")}
+                </p>
 
-              {/* Mission Section */}
-              <div className="md:block hidden">
-                <SubHeader title={t("mission")} alt={false} />
+                {/* Mission Section */}
+                <div className="md:block hidden">
+                  <SubHeader title={t("mission")} alt={false} />
+                </div>
+                <h2 className="md:hidden block relative text-lg font-semibold ">
+                  <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
+                  <span className="z-10 relative">{t("mission")}</span>
+                </h2>
+                <p className="opacity-70 text-secondary md:text-base text-xs leading-relaxed">
+                  {departmentData.mission || t("no_mission_available")}
+                </p>
               </div>
-              <h2 className="md:hidden block relative text-lg font-semibold ">
-                <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
-                <span className="z-10 relative">{t("mission")}</span>
-              </h2>
-              <p className="opacity-70 text-secondary md:text-base text-xs leading-relaxed">
-                {departmentData.mission || t("no_mission_available")}
-              </p>
-            </div>
+            )}
           </div>
         </div>
       </div>

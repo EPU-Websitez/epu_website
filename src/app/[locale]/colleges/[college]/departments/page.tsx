@@ -147,10 +147,6 @@ const Page = () => {
     };
   };
 
-  if (loading && page === 1) {
-    return <PageSkeleton />;
-  }
-
   if (error && page === 1) {
     return (
       <div className="w-full flex_center flex-col sm:my-10 my-5">
@@ -169,102 +165,106 @@ const Page = () => {
       <div className="max-w-[1379px] px-3 flex_start w-full">
         <CollegeHeader />
       </div>
-      <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full sm:mt-14 mt-10">
-        <SubHeader title={t("departments")} alt={false} />
 
-        <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-5 w-full flex-shrink-0">
-          {departments.map((department, i) => {
-            const stats = generateStats(department.id);
-            return (
-              <div
-                key={i}
-                className="relative border border-lightBorder rounded-3xl p-2 flex_center flex-col gap-3 text-center"
-              >
-                <Link
-                  href={`/${locale}/colleges/${college}/departments/${department.slug}`}
-                  title={department.title}
-                  className="w-full h-[165px] relative overflow-hidden rounded-3xl group"
+      {loading && page === 1 ? (
+        <PageSkeleton />
+      ) : (
+        <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full sm:mt-14 mt-10">
+          <SubHeader title={t("departments")} alt={false} />
+
+          <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-5 w-full flex-shrink-0">
+            {departments.map((department, i) => {
+              const stats = generateStats(department.id);
+              return (
+                <div
+                  key={i}
+                  className="relative border border-lightBorder rounded-3xl p-2 flex_center flex-col gap-3 text-center"
                 >
-                  <div className="text-secondary bg-white h-4 w-4 flex_center rounded-full z-10 absolute top-2 ltr:right-2 rtl:left-2 text-sm transition-all group-hover:scale-110">
-                    <IoArrowForwardOutline className="rtl:rotate-180" />
-                  </div>
-                  <Image
-                    src={`/images/campus.png`}
-                    className="object-cover transition-transform group-hover:scale-105"
-                    alt={department.title}
-                    fill
-                    priority
-                  />
-                </Link>
-                <Link
-                  href={`/${locale}/colleges/${college}/departments/${department.slug}`}
-                  className="sm:text-sm text-[10px] font-semibold px-2 text-center hover:text-primary transition-colors"
-                  title={department.title}
-                >
-                  {department.title}
-                </Link>
-                <div className="flex_center gap-8 w-full">
-                  <div className="flex_center gap-2">
-                    <div className="w-5 text-xs h-5 rounded-full bg-blue bg-opacity-30 flex_center">
-                      <GoBriefcase />
+                  <Link
+                    href={`/${locale}/colleges/${college}/departments/${department.slug}`}
+                    title={department.title}
+                    className="w-full h-[165px] relative overflow-hidden rounded-3xl group"
+                  >
+                    <div className="text-secondary bg-white h-4 w-4 flex_center rounded-full z-10 absolute top-2 ltr:right-2 rtl:left-2 text-sm transition-all group-hover:scale-110">
+                      <IoArrowForwardOutline className="rtl:rotate-180" />
                     </div>
-                    <div className="flex_start flex-col">
-                      <small className="font-medium sm:text-[10px] text-[8px]">
-                        +{stats.teachers}
-                      </small>
-                      <small className="sm:text-[8px] text-[6px] text-black opacity-60">
-                        {t("teachers")}
-                      </small>
+                    <Image
+                      src={`/images/campus.png`}
+                      className="object-cover transition-transform group-hover:scale-105"
+                      alt={department.title}
+                      fill
+                      priority
+                    />
+                  </Link>
+                  <Link
+                    href={`/${locale}/colleges/${college}/departments/${department.slug}`}
+                    className="sm:text-sm text-[10px] font-semibold px-2 text-center hover:text-primary transition-colors"
+                    title={department.title}
+                  >
+                    {department.title}
+                  </Link>
+                  <div className="flex_center gap-8 w-full">
+                    <div className="flex_center gap-2">
+                      <div className="w-5 text-xs h-5 rounded-full bg-blue bg-opacity-30 flex_center">
+                        <GoBriefcase />
+                      </div>
+                      <div className="flex_start flex-col">
+                        <small className="font-medium sm:text-[10px] text-[8px]">
+                          +{stats.teachers}
+                        </small>
+                        <small className="sm:text-[8px] text-[6px] text-black opacity-60">
+                          {t("teachers")}
+                        </small>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex_center gap-2">
-                    <div className="w-5 text-xs h-5 rounded-full bg-blue bg-opacity-30 flex_center">
-                      <PiStudent />
-                    </div>
-                    <div className="flex_start flex-col">
-                      <small className="font-medium sm:text-[10px] text-[8px]">
-                        +{stats.students}
-                      </small>
-                      <small className="sm:text-[8px] text-[6px] text-black opacity-60">
-                        {t("students")}
-                      </small>
+                    <div className="flex_center gap-2">
+                      <div className="w-5 text-xs h-5 rounded-full bg-blue bg-opacity-30 flex_center">
+                        <PiStudent />
+                      </div>
+                      <div className="flex_start flex-col">
+                        <small className="font-medium sm:text-[10px] text-[8px]">
+                          +{stats.students}
+                        </small>
+                        <small className="sm:text-[8px] text-[6px] text-black opacity-60">
+                          {t("students")}
+                        </small>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
 
-          {/* Loading skeletons during pagination */}
-          {/* {loading &&
+            {/* Loading skeletons during pagination */}
+            {/* {loading &&
             page > 1 &&
             Array.from({ length: 4 }).map((_, i) => (
               <DepartmentCardSkeleton key={`skeleton-${i}`} />
             ))} */}
-        </div>
-
-        {/* Load More Button */}
-        {departmentsData && departments.length < departmentsData.total && (
-          <div className="flex_center w-full my-5">
-            <button
-              onClick={handleLoadMore}
-              disabled={loading}
-              className="sm:text-base text-sm border border-primary px-8 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors disabled:opacity-50"
-            >
-              {loading ? t("loading") : t("see_more")}
-            </button>
           </div>
-        )}
 
-        {/* Error State for Load More */}
-        {error && page > 1 && (
-          <div className="text-red-500 text-center w-full">
-            {t("error_loading_data")}
-          </div>
-        )}
+          {/* Load More Button */}
+          {departmentsData && departments.length < departmentsData.total && (
+            <div className="flex_center w-full my-5">
+              <button
+                onClick={handleLoadMore}
+                disabled={loading}
+                className="sm:text-base text-sm border border-primary px-8 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors disabled:opacity-50"
+              >
+                {loading ? t("loading") : t("see_more")}
+              </button>
+            </div>
+          )}
 
-        {/* No Data State */}
-        {/* {!loading && departmentsData && departments.length === 0 && (
+          {/* Error State for Load More */}
+          {error && page > 1 && (
+            <div className="text-red-500 text-center w-full">
+              {t("error_loading_data")}
+            </div>
+          )}
+
+          {/* No Data State */}
+          {/* {!loading && departmentsData && departments.length === 0 && (
           <div className="text-gray-500 text-center w-full py-10">
             <div className="flex_center flex-col gap-4">
               <div className="text-4xl">🏢</div>
@@ -274,7 +274,8 @@ const Page = () => {
             </div>
           </div>
         )} */}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

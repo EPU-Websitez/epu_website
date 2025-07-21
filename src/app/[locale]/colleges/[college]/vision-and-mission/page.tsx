@@ -123,10 +123,6 @@ const Page = () => {
     error: collegeError,
   } = useFetch<College>(`${API_URL}/website/colleges/${college}`);
 
-  if (collegeLoading) {
-    return <PageSkeleton />;
-  }
-
   if (collegeError) {
     return (
       <div className="w-full flex_center flex-col sm:my-10 my-5">
@@ -160,25 +156,29 @@ const Page = () => {
       <div className="max-w-[1379px] px-3 flex_start w-full">
         <CollegeHeader />
       </div>
-      <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full sm:mt-14 mt-10">
-        <div className="lg:grid-cols-2 grid-cols-1 grid w-full gap-10">
-          {/* Vision Section */}
-          <div className="flex_start flex-col gap-5">
-            <SubHeader title={t("vision")} alt={false} />
-            <p className="text-sm leading-relaxed">
-              {collegeData.vision || t("no_vision_available")}
-            </p>
-          </div>
+      {collegeLoading ? (
+        <PageSkeleton />
+      ) : (
+        <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full sm:mt-14 mt-10">
+          <div className="lg:grid-cols-2 grid-cols-1 grid w-full gap-10">
+            {/* Vision Section */}
+            <div className="flex_start flex-col gap-5">
+              <SubHeader title={t("vision")} alt={false} />
+              <p className="text-sm leading-relaxed">
+                {collegeData.vision || t("no_vision_available")}
+              </p>
+            </div>
 
-          {/* Mission Section */}
-          <div className="flex_start flex-col gap-5">
-            <SubHeader title={t("mission")} alt={false} />
-            <p className="text-sm leading-relaxed">
-              {collegeData.mission || t("no_mission_available")}
-            </p>
+            {/* Mission Section */}
+            <div className="flex_start flex-col gap-5">
+              <SubHeader title={t("mission")} alt={false} />
+              <p className="text-sm leading-relaxed">
+                {collegeData.mission || t("no_mission_available")}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

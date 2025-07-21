@@ -24,14 +24,7 @@ const Page = () => {
   const id = params?.id as string;
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 -mt-5">
-      <DepartmentHeader
-        title="Civil Engineering Department"
-        email="Email"
-        emailValue="info@epu.edu.iq"
-        location="Location"
-        locationValue="Karkuk St, Erbil 44001"
-        desc="founded in 2008, offers BSc, higher diploma, MSc, and PhD degrees, focusing on modern information, computer technology, and software developments to support economic growth in developing countries."
-      />
+      <DepartmentHeader />
       <div className="max-w-[1040px] px-3 flex_start w-full">
         <div className="w-full border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
           <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">

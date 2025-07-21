@@ -176,10 +176,11 @@ const Page = () => {
           <PageSkeleton />
         ) : (
           <div className="grid w-full md:grid-cols-2 grid-cols-1 gap-5">
-            {laboratories.map((lab) => (
+            {laboratories.map((lab, i) => (
               <Link
-                key={lab.id}
-                href={`/${locale}/colleges/labs/${lab.slug}`}
+                key={i}
+                href={`/${locale}/colleges/${college}/labs/${lab.slug}`}
+                title={lab.name}
                 className="w-full text-white group lg:h-[385px] md:h-[320px] h-[240px] relative rounded-3xl overflow-hidden"
               >
                 <Image

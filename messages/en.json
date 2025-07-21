@@ -379,7 +379,10 @@
     "see_more": "See More",
     "head": "Colleges",
     "loading": "Loading...",
-    "no_council_members_found": "No Council Members Found"
+    "no_council_members_found": "No Council Members Found",
+    "no_laboratories_found": "No Laboratories Found",
+    "no_department_staff_found": "No Department Staff Found",
+    "no_department_head_found": "No Department Head Found"
   },
   "Directorate": {
     "university_directory": "University Directory",

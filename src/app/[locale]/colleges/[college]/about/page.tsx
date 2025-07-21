@@ -234,10 +234,6 @@ const Page = () => {
     return match ? match[0] : "0";
   };
 
-  if (loading) {
-    return <AboutPageSkeleton />;
-  }
-
   if (error) {
     return (
       <div className="w-full flex_center flex-col sm:my-10 my-5">
@@ -256,103 +252,112 @@ const Page = () => {
       <div className="max-w-[1379px] px-3 flex_start w-full">
         <CollegeHeader />
       </div>
-      <div className="max-w-[1024px] sm:mt-14 mt-10 px-3 text-secondary flex_start flex-col gap-10 w-full">
-        <SubHeader title={collegeData?.about_title || t("about")} alt={false} />
+      {loading ? (
+        <AboutPageSkeleton />
+      ) : (
+        <div className="max-w-[1024px] sm:mt-14 mt-10 px-3 text-secondary flex_start flex-col gap-10 w-full">
+          <SubHeader
+            title={collegeData?.about_title || t("about")}
+            alt={false}
+          />
 
-        <p className="text-sm text-secondary font-medium">
-          {collegeData?.about_content || t("about_text")}
-        </p>
+          <p className="text-sm text-secondary font-medium">
+            {collegeData?.about_content || t("about_text")}
+          </p>
 
-        <div className="grid sm:grid-cols-3 grid-cols-2 lg:gap-5 sm:gap-2 gap-5 justify-between w-full my-10 lg:px-10 px-3 text-secondary">
-          <div className="flex_center flex-col gap-2">
-            <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
-              <PiStudent />
-            </span>
-            <h1 className="sm:text-title text-smallTitle font-semibold">
-              + {extractNumber(collegeData?.student_number || "3.12K")}
-            </h1>
-            <p className="font-medium text-black text-opacity-60 sm:text-base text-sm">
-              {t("students")}
-            </p>
+          <div className="grid sm:grid-cols-3 grid-cols-2 lg:gap-5 sm:gap-2 gap-5 justify-between w-full my-10 lg:px-10 px-3 text-secondary">
+            <div className="flex_center flex-col gap-2">
+              <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
+                <PiStudent />
+              </span>
+              <h1 className="sm:text-title text-smallTitle font-semibold">
+                + {extractNumber(collegeData?.student_number || "3.12K")}
+              </h1>
+              <p className="font-medium text-black text-opacity-60 sm:text-base text-sm">
+                {t("students")}
+              </p>
+            </div>
+            <div className="flex_center flex-col gap-2">
+              <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
+                <IoBriefcaseOutline />
+              </span>
+              <h1 className="sm:text-title text-smallTitle font-semibold">
+                + 239
+              </h1>
+              <p className="font-medium text-black text-opacity-60 sm:text-base text-sm">
+                {t("teachers")}
+              </p>
+            </div>
+            <div className="flex_center flex-col gap-2">
+              <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
+                <HiOutlineBuildingOffice />
+              </span>
+              <h1 className="sm:text-title text-smallTitle font-semibold">
+                + 300
+              </h1>
+              <p className="font-medium text-black text-opacity-60 sm:text-base text-sm">
+                {t("departments")}
+              </p>
+            </div>
           </div>
-          <div className="flex_center flex-col gap-2">
-            <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
-              <IoBriefcaseOutline />
-            </span>
-            <h1 className="sm:text-title text-smallTitle font-semibold">
-              + 239
-            </h1>
-            <p className="font-medium text-black text-opacity-60 sm:text-base text-sm">
-              {t("teachers")}
-            </p>
-          </div>
-          <div className="flex_center flex-col gap-2">
-            <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
-              <HiOutlineBuildingOffice />
-            </span>
-            <h1 className="sm:text-title text-smallTitle font-semibold">
-              + 300
-            </h1>
-            <p className="font-medium text-black text-opacity-60 sm:text-base text-sm">
-              {t("departments")}
-            </p>
+
+          <SubHeader title={t("contact")} alt={false} />
+
+          <div className="w-full sm:h-[530px] h-[380px] relative flex justify-center items-start">
+            {mapData ? (
+              <CollegeMapComponent
+                lat={mapData.lat}
+                lng={mapData.lng}
+                title={mapData.title}
+                address={mapData.address}
+              />
+            ) : (
+              <Image
+                src={
+                  collegeData?.galleries?.[0]?.image?.original ||
+                  "/images/map.png"
+                }
+                alt="College Map"
+                fill
+                priority
+                className="w-full h-full object-cover rounded-lg"
+              />
+            )}
+            <div className="bg-primary grid sm:grid-cols-3 absolute grid-cols-1 sm:gap-5 gap-2 sm:rounded-3xl rounded-xl sm:py-5 p-2 lg:px-8 px-5 lg:w-[85%] w-[95%] text-white z-10 sm:mt-10 mt-5">
+              <div className="flex justify-start items-center gap-3">
+                <IoMdMail className="sm:text-2xl text-xl" />
+                <div className="flex_start flex-col">
+                  <span className="sm:text-sm text-xs">{t("mail")}</span>
+                  <p className="font-medium sm:text-base text-sm">
+                    {getContactByType("EMAIL") || "info@epu.edu.iq"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex justify-start items-center gap-3">
+                <FaPhoneAlt className="sm:text-2xl text-xl" />
+                <div className="flex_start flex-col">
+                  <span className="sm:text-sm text-xs">
+                    {t("phone_number")}
+                  </span>
+                  <p className="change_direction font-medium sm:text-base text-sm">
+                    {getContactByType("PHONE") || "0750 123 4567"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex justify-start items-center gap-3">
+                <IoLocationSharp className="sm:text-2xl text-xl flex-shrink-0" />
+                <div className="flex_start flex-col">
+                  <span className="sm:text-sm text-xs">{t("location")}</span>
+                  <p className="font-medium max-w-[240px] truncate sm:text-base text-sm">
+                    {collegeData?.addresses?.[0]?.location ||
+                      "Karkuk St, Erbil 44001"}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
-        <SubHeader title={t("contact")} alt={false} />
-
-        <div className="w-full sm:h-[530px] h-[380px] relative flex justify-center items-start">
-          {mapData ? (
-            <CollegeMapComponent
-              lat={mapData.lat}
-              lng={mapData.lng}
-              title={mapData.title}
-              address={mapData.address}
-            />
-          ) : (
-            <Image
-              src={
-                collegeData?.galleries?.[0]?.image?.original ||
-                "/images/map.png"
-              }
-              alt="College Map"
-              fill
-              priority
-              className="w-full h-full object-cover rounded-lg"
-            />
-          )}
-          <div className="bg-primary grid sm:grid-cols-3 absolute grid-cols-1 sm:gap-5 gap-2 sm:rounded-3xl rounded-xl sm:py-5 p-2 lg:px-8 px-5 lg:w-[85%] w-[95%] text-white z-10 sm:mt-10 mt-5">
-            <div className="flex justify-start items-center gap-3">
-              <IoMdMail className="sm:text-2xl text-xl" />
-              <div className="flex_start flex-col">
-                <span className="sm:text-sm text-xs">{t("mail")}</span>
-                <p className="font-medium sm:text-base text-sm">
-                  {getContactByType("EMAIL") || "info@epu.edu.iq"}
-                </p>
-              </div>
-            </div>
-            <div className="flex justify-start items-center gap-3">
-              <FaPhoneAlt className="sm:text-2xl text-xl" />
-              <div className="flex_start flex-col">
-                <span className="sm:text-sm text-xs">{t("phone_number")}</span>
-                <p className="change_direction font-medium sm:text-base text-sm">
-                  {getContactByType("PHONE") || "0750 123 4567"}
-                </p>
-              </div>
-            </div>
-            <div className="flex justify-start items-center gap-3">
-              <IoLocationSharp className="sm:text-2xl text-xl flex-shrink-0" />
-              <div className="flex_start flex-col">
-                <span className="sm:text-sm text-xs">{t("location")}</span>
-                <p className="font-medium max-w-[240px] truncate sm:text-base text-sm">
-                  {collegeData?.addresses?.[0]?.location ||
-                    "Karkuk St, Erbil 44001"}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

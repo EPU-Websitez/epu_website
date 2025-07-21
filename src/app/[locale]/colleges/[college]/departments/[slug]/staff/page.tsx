@@ -183,10 +183,6 @@ const Page = () => {
   const loading = leadsLoading && page === 1;
   const error = leadsError && page === 1;
 
-  if (loading) {
-    return <PageSkeleton />;
-  }
-
   if (error) {
     return (
       <div className="w-full flex_center flex-col sm:mb-10 mb-5 -mt-5">
@@ -218,7 +214,7 @@ const Page = () => {
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </Link>
               <Link
-                href={`/${locale}/colleges/${college}/departments/${slug}/vision-mission`}
+                href={`/${locale}/colleges/${college}/departments/${slug}/vision-and-mission`}
                 title={t("vision_mission")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
@@ -264,112 +260,117 @@ const Page = () => {
             </div>
 
             {/* Content Area */}
-            <div className="lg:border-l text-secondary border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-              <div className="md:block hidden">
-                <SubHeader title={t("department_staff")} alt={false} />
-              </div>
-              <h2 className="md:hidden block relative text-lg font-semibold ">
-                <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
-                <span className="z-10 relative">{t("department_staff")}</span>
-              </h2>
 
-              {/* Department Head Section */}
-              {departmentHead ? (
-                <div className="flex_center gap-10 sm:w-auto w-full border sm:border-none sm:p-0 p-5 sm:rounded-none rounded-3xl border-lightBorder">
-                  <div className="sm:w-[200px] w-[125px] sm:h-[190px] h-[125px] relative">
-                    <Image
-                      src={
-                        departmentHead.teacher.profile_image?.md ||
+            {loading ? (
+              <PageSkeleton />
+            ) : (
+              <div className="lg:border-l text-secondary border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
+                <div className="md:block hidden">
+                  <SubHeader title={t("department_staff")} alt={false} />
+                </div>
+                <h2 className="md:hidden block relative text-lg font-semibold ">
+                  <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
+                  <span className="z-10 relative">{t("department_staff")}</span>
+                </h2>
+
+                {/* Department Head Section */}
+                {departmentHead ? (
+                  <div className="flex_start gap-10 sm:w-auto w-full border sm:border-none sm:p-0 p-5 sm:rounded-none rounded-3xl border-lightBorder">
+                    <div className="sm:w-[200px] w-[125px] sm:h-[190px] h-[125px] relative">
+                      <Image
+                        src={
+                          departmentHead.teacher.profile_image?.md ||
+                          "/images/president-alt.png"
+                        }
+                        alt={departmentHead.teacher.full_name}
+                        fill
+                        priority
+                        className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
+                      />
+                    </div>
+                    <div className="flex_start flex-col gap-5">
+                      <h3 className="text-golden sm:text-lg text-sm font-semibold">
+                        {departmentHead.role}
+                      </h3>
+                      <h1 className="max-w-[250px] lg:text-xl sm:text-lg text-xs font-semibold relative">
+                        <span className="relative z-10">
+                          {departmentHead.teacher.full_name}
+                        </span>
+                        <span className="absolute ltr:left-0 rtl:right-0 -bottom-3 w-[80%] h-6">
+                          <Image
+                            src="/images/title-shape.svg"
+                            alt="shape"
+                            fill
+                            priority
+                          />
+                        </span>
+                      </h1>
+                      {departmentHead.teacher.title && (
+                        <p className="text-sm text-gray-600 font-medium">
+                          {departmentHead.teacher.title}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  // Show message if no department head found
+                  <div className="text-gray-500 text-center w-full py-5">
+                    {t("no_department_head_found")}
+                  </div>
+                )}
+
+                {/* Other Staff Members Grid */}
+                <div className="grid w-full lg:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-8">
+                  {otherLeads.map((lead) => (
+                    <MemberCard
+                      key={lead.id}
+                      description={lead.role}
+                      image={
+                        lead.teacher.profile_image?.md ||
                         "/images/president-alt.png"
                       }
-                      alt={departmentHead.teacher.full_name}
-                      fill
-                      priority
-                      className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
+                      link={`/${locale}/academic-staff/${lead.teacher.id}`}
+                      staticText={t("view_profile")}
+                      title={lead.teacher.full_name}
                     />
-                  </div>
-                  <div className="flex_start flex-col gap-5">
-                    <h3 className="text-golden sm:text-lg text-sm font-semibold">
-                      {departmentHead.role}
-                    </h3>
-                    <h1 className="max-w-[250px] lg:text-xl sm:text-lg text-xs font-semibold relative">
-                      <span className="relative z-10">
-                        {departmentHead.teacher.full_name}
-                      </span>
-                      <span className="absolute ltr:left-0 rtl:right-0 -bottom-3 w-[80%] h-6">
-                        <Image
-                          src="/images/title-shape.svg"
-                          alt="shape"
-                          fill
-                          priority
-                        />
-                      </span>
-                    </h1>
-                    {departmentHead.teacher.title && (
-                      <p className="text-sm text-gray-600 font-medium">
-                        {departmentHead.teacher.title}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                // Show message if no department head found
-                <div className="text-gray-500 text-center w-full py-5">
-                  {t("no_department_head_found")}
-                </div>
-              )}
-
-              {/* Other Staff Members Grid */}
-              <div className="grid w-full lg:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-8">
-                {otherLeads.map((lead) => (
-                  <MemberCard
-                    key={lead.id}
-                    description={lead.role}
-                    image={
-                      lead.teacher.profile_image?.md ||
-                      "/images/president-alt.png"
-                    }
-                    link={`/${locale}/academic-staff/${lead.teacher.id}`}
-                    staticText={t("view_profile")}
-                    title={lead.teacher.full_name}
-                  />
-                ))}
-
-                {/* Loading skeletons while fetching more data */}
-                {leadsLoading &&
-                  page > 1 &&
-                  Array.from({ length: 2 }).map((_, i) => (
-                    <MemberCardSkeleton key={`skeleton-${i}`} />
                   ))}
+
+                  {/* Loading skeletons while fetching more data */}
+                  {leadsLoading &&
+                    page > 1 &&
+                    Array.from({ length: 2 }).map((_, i) => (
+                      <MemberCardSkeleton key={`skeleton-${i}`} />
+                    ))}
+                </div>
+
+                {/* Load More Button */}
+                {leadsData && leads.length < leadsData.total && (
+                  <div className="flex_center w-full my-5">
+                    <button
+                      onClick={handleLoadMore}
+                      disabled={leadsLoading}
+                      className="sm:text-base text-sm border border-primary px-8 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors"
+                    >
+                      {leadsLoading ? t("loading") : t("see_more")}
+                    </button>
+                  </div>
+                )}
+
+                {/* Error State for Load More */}
+                {leadsError && page > 1 && (
+                  <div className="text-red-500 text-center w-full">
+                    {t("error_loading_data")}
+                  </div>
+                )}
+
+                {/* No Data State */}
+                {!loading && leadsData && leads.length === 0 && (
+                  <div className="text-gray-500 text-center w-full py-10">
+                    {t("no_department_staff_found")}
+                  </div>
+                )}
               </div>
-
-              {/* Load More Button */}
-              {leadsData && leads.length < leadsData.total && (
-                <div className="flex_center w-full my-5">
-                  <button
-                    onClick={handleLoadMore}
-                    disabled={leadsLoading}
-                    className="sm:text-base text-sm border border-primary px-8 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors"
-                  >
-                    {leadsLoading ? t("loading") : t("see_more")}
-                  </button>
-                </div>
-              )}
-
-              {/* Error State for Load More */}
-              {leadsError && page > 1 && (
-                <div className="text-red-500 text-center w-full">
-                  {t("error_loading_data")}
-                </div>
-              )}
-
-              {/* No Data State */}
-              {!loading && leadsData && leads.length === 0 && (
-                <div className="text-gray-500 text-center w-full py-10">
-                  {t("no_department_staff_found")}
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </div>
       </div>
