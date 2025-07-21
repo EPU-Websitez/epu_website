@@ -305,11 +305,11 @@ const Page = () => {
                           />
                         </span>
                       </h1>
-                      {departmentHead.teacher.title && (
+                      {/* {departmentHead.teacher.title && (
                         <p className="text-sm text-gray-600 font-medium">
                           {departmentHead.teacher.title}
                         </p>
-                      )}
+                      )} */}
                     </div>
                   </div>
                 ) : (

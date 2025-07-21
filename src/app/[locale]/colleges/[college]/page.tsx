@@ -58,34 +58,41 @@ interface Department {
   id: number;
   college_id: number;
   slug: string;
-  title_en: string;
-  title_ku: string;
-  title_ar: string;
-  subtitle_en: string;
-  subtitle_ku: string;
-  subtitle_ar: string;
-  about_en: string;
-  about_ku: string;
-  about_ar: string;
-  vision_en: string;
-  vision_ku: string;
-  vision_ar: string;
-  mission_en: string;
-  mission_ku: string;
-  mission_ar: string;
-  priority: number;
-  created_at: string;
-  updated_at: string;
-  college: {
-    id: number;
-    subdomain: string;
-    title: string;
-  };
   title: string;
   subtitle: string;
   about: string;
   vision: string;
   mission: string;
+  priority: number;
+  created_at: string;
+  updated_at: string;
+  student_number: string;
+  college: {
+    id: number;
+    subdomain: string;
+    slug: string | null;
+    title: string;
+    description: string;
+    news_title: string;
+    news_subtitle: string;
+    college_title: string;
+    college_subtitle: string;
+    teacher_title: string;
+    teacher_subtitle: string;
+    event_title: string;
+    event_subtitle: string;
+    about_title: string;
+    about_content: string;
+    student_number: string;
+    vision: string;
+    mission: string;
+    logo_image_id: number;
+    priority: number;
+    created_at: string;
+    updated_at: string;
+  };
+  staffCount: number;
+  leadCount: number;
 }
 
 interface DepartmentsResponse {
@@ -219,6 +226,15 @@ interface News {
   author: string;
   published_at: string;
   cover_image_id: number;
+  CoverImage: {
+    id: number;
+    original: string;
+    lg: string;
+    md: string;
+    sm: string;
+    created_at: string;
+    updated_at: string;
+  };
 }
 
 interface NewsResponse {
@@ -242,18 +258,21 @@ const Page = () => {
 
   const { data: departmentsData, loading: departmentsLoading } =
     useFetch<DepartmentsResponse>(
-      `${API_URL}/website/colleges/${college}/departments?page=1&limit=2`
+      `${API_URL}/website/departments?page=1&limit=2&college_subdomain=${college}`
     );
   // Fetch news data
   const { data: newsData, loading: newsLoading } = useFetch<NewsResponse>(
     `${API_URL}/website/news?page=1&limit=20&collegeSlug=${college}`
   );
 
-  // Get localized content function
-  const getLocalizedContent = (item: any, field: string) => {
-    const suffix = locale === "ku" ? "_ku" : locale === "ar" ? "_ar" : "_en";
-    return item[`${field}${suffix}`] || item[`${field}_en`] || "";
+  // Get department content (no localization needed since API returns processed content)
+  const getDepartmentContent = (
+    department: Department,
+    field: keyof Department
+  ) => {
+    return department[field] || "";
   };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString(locale, {
@@ -261,6 +280,16 @@ const Page = () => {
       month: "short",
       year: "numeric",
     });
+  };
+
+  // Get image with fallback logic
+  const getNewsImage = (news: News) => {
+    return (
+      news.CoverImage?.md ||
+      news.CoverImage?.lg ||
+      news.CoverImage?.original ||
+      "/images/news.png"
+    );
   };
 
   if (error) {
@@ -308,8 +337,8 @@ const Page = () => {
               .map((news, i) => (
                 <NewsCard
                   key={i}
-                  image={`${API_URL}/images/${news.cover_image_id}`}
-                  link={`/news/${news.slug}`}
+                  image={getNewsImage(news)}
+                  link={`/${locale}/news/${news.slug}`}
                   author={news.author}
                   createdAt={formatDate(news.published_at)}
                   description={news.excerpt}
@@ -342,7 +371,7 @@ const Page = () => {
             ]}
           </div>
 
-          {/* Departments Section */}
+          {/* Departments Section - Updated to handle the new data format */}
           <div className="w-full flex_center gap-10 md:my-24 my-10 md:flex-row flex-col-reverse">
             <div className="grid grid-cols-2 md:gap-10 gap-3 lg:w-1/2 md:w-[60%] w-full flex-shrink-0">
               {departmentsData?.data?.slice(0, 2).map((department, index) => (
@@ -353,7 +382,7 @@ const Page = () => {
                   } p-2 flex_center flex-col gap-3 text-center`}
                 >
                   <Link
-                    href={`/departments/${department.slug}`}
+                    href={`/${locale}/colleges/${college}/departments/${department.slug}`}
                     className={`w-full h-[165px] relative overflow-hidden ${
                       index === 0 ? "rounded-2xl" : "rounded-3xl"
                     }`}
@@ -373,10 +402,10 @@ const Page = () => {
                     />
                   </Link>
                   <Link
-                    href={`/departments/${department.slug}`}
+                    href={`/${locale}/colleges/${college}/departments/${department.slug}`}
                     className="sm:text-sm text-[10px] font-semibold px-2 text-center"
                   >
-                    {getLocalizedContent(department, "title")}
+                    {department.title}
                   </Link>
                   <div className="flex_center gap-8 w-full">
                     <div className="flex_center gap-2">
@@ -384,11 +413,19 @@ const Page = () => {
                         <GoBriefcase />
                       </div>
                       <div className="flex_start flex-col">
-                        <small className="font-semibold sm:text-[10px] text-[8px]">
-                          +12.4 K
+                        <small
+                          className={`font-semibold ${
+                            index === 0
+                              ? "sm:text-[10px] text-[8px]"
+                              : "text-xs"
+                          }`}
+                        >
+                          {index === 0
+                            ? `+${department.staffCount}`
+                            : `+${department.staffCount}`}
                         </small>
                         <small className="sm:text-[8px] text-[6px] text-black opacity-60">
-                          Teachers
+                          {t("teachers")}
                         </small>
                       </div>
                     </div>
@@ -404,12 +441,12 @@ const Page = () => {
                               : "text-xs"
                           }`}
                         >
-                          {index === 0
-                            ? collegeData?.student_number || "+12.4 K"
-                            : "+15.1 K"}
+                          {department.student_number ||
+                            collegeData?.student_number ||
+                            "+0"}
                         </small>
                         <small className="sm:text-[8px] text-[6px] text-black opacity-60">
-                          {index === 0 ? "Students" : "Students"}
+                          {t("students")}
                         </small>
                       </div>
                     </div>
@@ -468,7 +505,7 @@ const Page = () => {
                           {collegeData?.student_number || "+12.4 K"}
                         </small>
                         <small className="sm:text-[8px] text-[6px] text-black opacity-60">
-                          Students
+                          {t("students")}
                         </small>
                       </div>
                     </div>
@@ -532,7 +569,7 @@ const Page = () => {
               ]}
             </div>
             <div className="flex_start gap-5 flex-col lg:w-1/2 md:w-[40%] w-full">
-              <h1 className="md:max-w-[280px] max-w-full leading-snug font-semibold lg:text-title text-titleNormal relative">
+              <h1 className="md:max-w-[310px] max-w-full leading-snug font-semibold lg:text-title text-titleNormal relative">
                 <span>
                   {collegeData?.college_title || t("college_departments")}
                 </span>
@@ -549,7 +586,7 @@ const Page = () => {
                 {collegeData?.college_subtitle || t("college_departments_text")}
               </p>
               <Link
-                href={""}
+                href={`/${locale}/colleges/${college}/departments`}
                 className="flex_center gap-5 bg-gradient-to-r from-blue to-primary rounded-3xl lg:py-3 text-sm py-2 lg:px-10 px-5 text-white"
               >
                 <span>{t("see_all_departments")}</span>
@@ -619,7 +656,7 @@ const Page = () => {
           {/* Events Section */}
           <div className="max-w-[1040px] w-full flex-col flex_start gap-8 mt-10 px-3">
             <Link
-              href={"events"}
+              href={`/${locale}/colleges/${college}/events`}
               className="flex_center gap-5 text-primary font-semibold"
             >
               <div className="relative">

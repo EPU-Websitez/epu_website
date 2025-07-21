@@ -196,7 +196,7 @@ const Page = () => {
                 />
                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-[#1B417B8A] to-transparent z-10 group-hover:bg-primary duration-200 group-hover:bg-opacity-40"></div>
                 <Link
-                  href={`/${locale}/colleges/labs/${lab.slug}`}
+                  href={`/${locale}/colleges/${college}/labs/${lab.slug}`}
                   title={lab.name}
                   className="flex_center text-sm rounded-lg border border-white gap-3 z-20 absolute ltr:left-10 rtl:right-10 bottom-5 px-4 py-2 opacity-0 group-hover:opacity-100 duration-300"
                 >

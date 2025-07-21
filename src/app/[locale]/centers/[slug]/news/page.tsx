@@ -9,36 +9,59 @@ import { API_URL } from "@/libs/env";
 import useFetch from "@/libs/hooks/useFetch";
 import { useEffect, useState } from "react";
 
+interface Image {
+  id: number;
+  original: string;
+  lg: string;
+  md: string;
+  sm: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Gallery {
+  id: number;
+  news_id: number;
+  image_id: number;
+  created_at: string;
+  updated_at: string;
+  Image: Image;
+}
+
+interface CoverImage {
+  id: number;
+  original: string;
+  lg: string;
+  md: string;
+  sm: string;
+  created_at: string;
+  updated_at: string;
+}
+
 interface NewsItem {
   id: number;
   slug: string;
-  [`title_en`]: string;
-  [`title_ku`]: string;
-  [`title_ar`]: string;
-  [`excerpt_en`]: string;
-  [`excerpt_ku`]: string;
-  [`excerpt_ar`]: string;
-  [`author_en`]: string;
-  [`author_ku`]: string;
-  [`author_ar`]: string;
-  created_at: string;
-  CoverImage: {
-    lg: string;
-  };
+  title: string;
+  excerpt: string;
+  content: string;
+  author: string;
+  published_at: string;
+  cover_image_id: number;
+  Gallery: Gallery[];
+  CoverImage: CoverImage;
 }
 
 interface NewsResponse {
-  data: NewsItem[];
   total: number;
   page: number;
   limit: number;
-  total_pages: number;
+  data: NewsItem[];
 }
 
 const Page = () => {
   const t = useTranslations("Centers");
   const params = useParams();
-  const locale = params?.locale as "en" | "ku" | "ar";
+  const locale = params?.locale as string;
   const slug = params?.slug as string;
   const [centers, setCenters] = useState<NewsItem[]>([]);
   const [page, setPage] = useState(1);
@@ -47,6 +70,29 @@ const Page = () => {
     `${API_URL}/website/news?page=${page}&limit=${limit}&centerSlug=${slug}`
   );
   const isInitialLoading = loading && page === 1;
+
+  // Get image with fallback logic
+  const getNewsImage = (news: NewsItem) => {
+    return (
+      news.CoverImage?.md ||
+      news.CoverImage?.lg ||
+      news.CoverImage?.original ||
+      news.Gallery?.[0]?.Image?.md ||
+      news.Gallery?.[0]?.Image?.lg ||
+      news.Gallery?.[0]?.Image?.original ||
+      "/images/news.png"
+    );
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(locale, {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
   // Append new data
   useEffect(() => {
     if (data?.data) {
@@ -119,14 +165,12 @@ const Page = () => {
               {centers.map((item) => (
                 <NewsCard
                   key={item.id}
-                  image={`${API_URL}/${item.CoverImage?.lg}`}
+                  image={getNewsImage(item)}
                   link={`/${locale}/news/${item.slug}`}
-                  title={item[`title_${locale}`]}
-                  description={item[`excerpt_${locale}`]}
-                  createdAt={new Date(item.created_at).toLocaleDateString(
-                    locale
-                  )}
-                  author={item[`author_${locale}`]}
+                  title={item.title}
+                  description={item.excerpt}
+                  createdAt={formatDate(item.published_at)}
+                  author={item.author}
                 />
               ))}
             </div>

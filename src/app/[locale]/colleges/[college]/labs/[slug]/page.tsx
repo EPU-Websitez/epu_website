@@ -261,7 +261,7 @@ const Page = () => {
         </div>
 
         {/* Additional Sections */}
-        {labData.sections && labData.sections.length > 1 && (
+        {/* {labData.sections && labData.sections.length > 1 && (
           <div className="flex_start flex-col gap-8">
             {labData.sections.slice(1).map((section, index) => (
               <div key={section.id} className="flex_start flex-col gap-5">
@@ -274,7 +274,7 @@ const Page = () => {
               </div>
             ))}
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

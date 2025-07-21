@@ -14,10 +14,31 @@ import { API_URL } from "@/libs/env";
 import useFetch from "@/libs/hooks/useFetch";
 
 // Interfaces
+interface Image {
+  id: number;
+  original: string;
+  lg: string;
+  md: string;
+  sm: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Gallery {
+  id: number;
+  department_id: number;
+  image_id: number;
+  created_at: string;
+  updated_at: string;
+  image: Image;
+}
+
 interface College {
   id: number;
   subdomain: string;
+  slug: string | null;
   title: string;
+  description: string;
   news_title: string;
   news_subtitle: string;
   college_title: string;
@@ -49,7 +70,11 @@ interface Department {
   priority: number;
   created_at: string;
   updated_at: string;
+  student_number: string;
   college: College;
+  galleries: Gallery[];
+  staffCount: number;
+  leadCount: number;
 }
 
 interface DepartmentsResponse {
@@ -134,17 +159,14 @@ const Page = () => {
     setPage((prev) => prev + 1);
   };
 
-  // Generate random numbers for stats (since not provided in API)
-  const generateStats = (id: number) => {
-    // Use department ID to generate consistent random numbers
-    const seed = id * 1000;
-    const teachers = Math.floor((seed % 50) + 15); // 15-65 teachers
-    const students = Math.floor((seed % 200) + 100); // 100-300 students
-
-    return {
-      teachers: teachers < 100 ? teachers : Math.floor(teachers / 10),
-      students: students < 1000 ? students : Math.floor(students / 10),
-    };
+  // Get department image with fallback
+  const getDepartmentImage = (department: Department) => {
+    return (
+      department.galleries?.[0]?.image?.md ||
+      department.galleries?.[0]?.image?.lg ||
+      department.galleries?.[0]?.image?.original ||
+      `/images/campus.png`
+    );
   };
 
   if (error && page === 1) {
@@ -173,74 +195,71 @@ const Page = () => {
           <SubHeader title={t("departments")} alt={false} />
 
           <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-5 w-full flex-shrink-0">
-            {departments.map((department, i) => {
-              const stats = generateStats(department.id);
-              return (
-                <div
-                  key={i}
-                  className="relative border border-lightBorder rounded-3xl p-2 flex_center flex-col gap-3 text-center"
+            {departments.map((department, i) => (
+              <div
+                key={department.id}
+                className="relative border border-lightBorder rounded-3xl p-2 flex_center flex-col gap-3 text-center"
+              >
+                <Link
+                  href={`/${locale}/colleges/${college}/departments/${department.slug}`}
+                  title={department.title}
+                  className="w-full h-[165px] relative overflow-hidden rounded-3xl group"
                 >
-                  <Link
-                    href={`/${locale}/colleges/${college}/departments/${department.slug}`}
-                    title={department.title}
-                    className="w-full h-[165px] relative overflow-hidden rounded-3xl group"
-                  >
-                    <div className="text-secondary bg-white h-4 w-4 flex_center rounded-full z-10 absolute top-2 ltr:right-2 rtl:left-2 text-sm transition-all group-hover:scale-110">
-                      <IoArrowForwardOutline className="rtl:rotate-180" />
+                  <div className="text-secondary bg-white h-4 w-4 flex_center rounded-full z-10 absolute top-2 ltr:right-2 rtl:left-2 text-sm transition-all group-hover:scale-110">
+                    <IoArrowForwardOutline className="rtl:rotate-180" />
+                  </div>
+                  <Image
+                    src={getDepartmentImage(department)}
+                    className="object-cover transition-transform group-hover:scale-105"
+                    alt={department.title}
+                    fill
+                    priority
+                  />
+                </Link>
+                <Link
+                  href={`/${locale}/colleges/${college}/departments/${department.slug}`}
+                  className="sm:text-sm text-[10px] font-semibold px-2 text-center hover:text-primary transition-colors"
+                  title={department.title}
+                >
+                  {department.title}
+                </Link>
+                <div className="flex_center gap-8 w-full">
+                  <div className="flex_center gap-2">
+                    <div className="w-5 text-xs h-5 rounded-full bg-blue bg-opacity-30 flex_center">
+                      <GoBriefcase />
                     </div>
-                    <Image
-                      src={`/images/campus.png`}
-                      className="object-cover transition-transform group-hover:scale-105"
-                      alt={department.title}
-                      fill
-                      priority
-                    />
-                  </Link>
-                  <Link
-                    href={`/${locale}/colleges/${college}/departments/${department.slug}`}
-                    className="sm:text-sm text-[10px] font-semibold px-2 text-center hover:text-primary transition-colors"
-                    title={department.title}
-                  >
-                    {department.title}
-                  </Link>
-                  <div className="flex_center gap-8 w-full">
-                    <div className="flex_center gap-2">
-                      <div className="w-5 text-xs h-5 rounded-full bg-blue bg-opacity-30 flex_center">
-                        <GoBriefcase />
-                      </div>
-                      <div className="flex_start flex-col">
-                        <small className="font-medium sm:text-[10px] text-[8px]">
-                          +{stats.teachers}
-                        </small>
-                        <small className="sm:text-[8px] text-[6px] text-black opacity-60">
-                          {t("teachers")}
-                        </small>
-                      </div>
+                    <div className="flex_start flex-col">
+                      <small className="font-medium sm:text-[10px] text-[8px]">
+                        +{department.staffCount}
+                      </small>
+                      <small className="sm:text-[8px] text-[6px] text-black opacity-60">
+                        {t("teachers")}
+                      </small>
                     </div>
-                    <div className="flex_center gap-2">
-                      <div className="w-5 text-xs h-5 rounded-full bg-blue bg-opacity-30 flex_center">
-                        <PiStudent />
-                      </div>
-                      <div className="flex_start flex-col">
-                        <small className="font-medium sm:text-[10px] text-[8px]">
-                          +{stats.students}
-                        </small>
-                        <small className="sm:text-[8px] text-[6px] text-black opacity-60">
-                          {t("students")}
-                        </small>
-                      </div>
+                  </div>
+                  <div className="flex_center gap-2">
+                    <div className="w-5 text-xs h-5 rounded-full bg-blue bg-opacity-30 flex_center">
+                      <PiStudent />
+                    </div>
+                    <div className="flex_start flex-col">
+                      <small className="font-medium sm:text-[10px] text-[8px]">
+                        +{department.student_number || 0}
+                      </small>
+                      <small className="sm:text-[8px] text-[6px] text-black opacity-60">
+                        {t("students")}
+                      </small>
                     </div>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
 
             {/* Loading skeletons during pagination */}
-            {/* {loading &&
-            page > 1 &&
-            Array.from({ length: 4 }).map((_, i) => (
-              <DepartmentCardSkeleton key={`skeleton-${i}`} />
-            ))} */}
+            {loading &&
+              page > 1 &&
+              Array.from({ length: 4 }).map((_, i) => (
+                <DepartmentCardSkeleton key={`skeleton-${i}`} />
+              ))}
           </div>
 
           {/* Load More Button */}
@@ -265,15 +284,15 @@ const Page = () => {
 
           {/* No Data State */}
           {/* {!loading && departmentsData && departments.length === 0 && (
-          <div className="text-gray-500 text-center w-full py-10">
-            <div className="flex_center flex-col gap-4">
-              <div className="text-4xl">🏢</div>
-              <h3 className="text-lg font-medium">
-                {t("no_departments_found")}
-              </h3>
+            <div className="text-gray-500 text-center w-full py-10">
+              <div className="flex_center flex-col gap-4">
+                <div className="text-4xl">🏢</div>
+                <h3 className="text-lg font-medium">
+                  {t("no_departments_found")}
+                </h3>
+              </div>
             </div>
-          </div>
-        )} */}
+          )} */}
         </div>
       )}
     </div>

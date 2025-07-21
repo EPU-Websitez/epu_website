@@ -226,16 +226,16 @@ const Page = () => {
                     />
                   </span>
                 </h1>
-                {dean.teacher.title && (
+                {/* {dean.teacher.title && (
                   <p className="text-sm text-gray-600 font-medium">
                     {dean.teacher.title}
                   </p>
-                )}
-                {dean.teacher.specific_spec && (
+                )} */}
+                {/* {dean.teacher.specific_spec && (
                   <p className="text-xs text-gray-500">
                     {dean.teacher.specific_spec}
                   </p>
-                )}
+                )} */}
               </div>
             </div>
           ) : (

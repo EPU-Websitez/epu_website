@@ -86,6 +86,9 @@ interface Department {
   priority: number;
   created_at: string;
   updated_at: string;
+  student_number: string;
+  staffCount: string;
+  leadCount: string;
   college: College;
   galleries: Gallery[];
   contacts: Contact[];
@@ -262,7 +265,7 @@ const Page = () => {
                         <PiStudent />
                       </span>
                       <h1 className="sm:text-title text-xl font-medium">
-                        + {stats.students}K
+                        + {departmentData?.student_number || 0}
                       </h1>
                       <p className="sm:text-base text-sm font-medium">
                         {t("students")}
@@ -273,7 +276,7 @@ const Page = () => {
                         <IoBriefcaseOutline />
                       </span>
                       <h1 className="sm:text-title text-xl font-medium">
-                        + {stats.teachers}
+                        + {departmentData?.staffCount || 0}
                       </h1>
                       <p className="sm:text-base text-sm font-medium">
                         {t("teachers")}
@@ -284,7 +287,7 @@ const Page = () => {
                         <LuUsers />
                       </span>
                       <h1 className="sm:text-title text-xl font-medium">
-                        + {stats.staff}
+                        + {departmentData?.leadCount || 0}
                       </h1>
                       <p className="sm:text-base text-sm font-medium">
                         {t("staff_members")}

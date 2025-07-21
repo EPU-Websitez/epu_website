@@ -106,6 +106,8 @@ interface CollegeData {
   about_title: string;
   about_content: string;
   student_number: string;
+  departments_count: string;
+  staff_count: string;
   vision: string;
   mission: string;
   logo_image_id: number;
@@ -282,7 +284,7 @@ const Page = () => {
                 <IoBriefcaseOutline />
               </span>
               <h1 className="sm:text-title text-smallTitle font-semibold">
-                + 239
+                + {extractNumber(collegeData?.staff_count || "3.12K")}
               </h1>
               <p className="font-medium text-black text-opacity-60 sm:text-base text-sm">
                 {t("teachers")}
@@ -293,7 +295,7 @@ const Page = () => {
                 <HiOutlineBuildingOffice />
               </span>
               <h1 className="sm:text-title text-smallTitle font-semibold">
-                + 300
+                + {extractNumber(collegeData?.departments_count || "3.12K")}
               </h1>
               <p className="font-medium text-black text-opacity-60 sm:text-base text-sm">
                 {t("departments")}

@@ -91,7 +91,7 @@ const CenterHeader = () => {
                   <div className="triangle -mt-14 rotate-90"></div>
                 </div>
                 <Image
-                  src={`${API_URL}/${slide.image.lg}`}
+                  src={slide.image.lg}
                   alt={data.title}
                   fill
                   priority
