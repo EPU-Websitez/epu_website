@@ -255,7 +255,7 @@ const Page = () => {
       params.append("categorySlug", selectedCategory);
     }
 
-    return `${API_URL}/website/news?${params.toString()}`;
+    return `${API_URL}/website/colleges/${college}/news?${params.toString()}`;
   };
 
   // Fetch news data

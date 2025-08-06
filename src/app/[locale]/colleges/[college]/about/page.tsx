@@ -106,6 +106,7 @@ interface CollegeData {
   about_title: string;
   about_content: string;
   student_number: string;
+  all_teachers_count: string;
   departments_count: string;
   staff_count: string;
   vision: string;
@@ -116,7 +117,7 @@ interface CollegeData {
   updated_at: string;
   galleries: Gallery[];
   contacts: Contact[];
-  addresses: Address[];
+  address: any;
   logo: Image;
 }
 
@@ -202,19 +203,16 @@ const Page = () => {
 
   // Set map data when college data is available
   useEffect(() => {
-    if (
-      collegeData?.addresses?.[0]?.latitude &&
-      collegeData?.addresses?.[0]?.longitude
-    ) {
-      const lat = parseFloat(collegeData.addresses[0].latitude);
-      const lng = parseFloat(collegeData.addresses[0].longitude);
+    if (collegeData?.address.latitude && collegeData?.address.longitude) {
+      const lat = parseFloat(collegeData?.address?.latitude);
+      const lng = parseFloat(collegeData?.address?.longitude);
 
       if (!isNaN(lat) && !isNaN(lng)) {
         setMapData({
           lat,
           lng,
           title: collegeData.title,
-          address: collegeData.addresses[0].location,
+          address: collegeData?.address?.location,
         });
       }
     }
@@ -273,7 +271,7 @@ const Page = () => {
                 <PiStudent />
               </span>
               <h1 className="sm:text-title text-smallTitle font-semibold">
-                + {extractNumber(collegeData?.student_number || "3.12K")}
+                + {collegeData?.student_number || "0"}
               </h1>
               <p className="font-medium text-black text-opacity-60 sm:text-base text-sm">
                 {t("students")}
@@ -284,7 +282,7 @@ const Page = () => {
                 <IoBriefcaseOutline />
               </span>
               <h1 className="sm:text-title text-smallTitle font-semibold">
-                + {extractNumber(collegeData?.staff_count || "3.12K")}
+                + {collegeData?.all_teachers_count || "0"}
               </h1>
               <p className="font-medium text-black text-opacity-60 sm:text-base text-sm">
                 {t("teachers")}
@@ -295,7 +293,7 @@ const Page = () => {
                 <HiOutlineBuildingOffice />
               </span>
               <h1 className="sm:text-title text-smallTitle font-semibold">
-                + {extractNumber(collegeData?.departments_count || "3.12K")}
+                + {collegeData?.departments_count || "0"}
               </h1>
               <p className="font-medium text-black text-opacity-60 sm:text-base text-sm">
                 {t("departments")}
@@ -351,8 +349,7 @@ const Page = () => {
                 <div className="flex_start flex-col">
                   <span className="sm:text-sm text-xs">{t("location")}</span>
                   <p className="font-medium max-w-[240px] truncate sm:text-base text-sm">
-                    {collegeData?.addresses?.[0]?.location ||
-                      "Karkuk St, Erbil 44001"}
+                    {collegeData?.address?.location || "Karkuk St, Erbil 44001"}
                   </p>
                 </div>
               </div>

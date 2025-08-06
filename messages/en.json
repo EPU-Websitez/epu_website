@@ -382,7 +382,9 @@
     "no_council_members_found": "No Council Members Found",
     "no_laboratories_found": "No Laboratories Found",
     "no_department_staff_found": "No Department Staff Found",
-    "no_department_head_found": "No Department Head Found"
+    "no_department_head_found": "No Department Head Found",
+    "no_dean_found": "No Dean Found",
+    "no_teachers_found": "No Teachers Found"
   },
   "Directorate": {
     "university_directory": "University Directory",

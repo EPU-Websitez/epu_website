@@ -73,6 +73,7 @@ const Navbar = () => {
     if (normalizedPath.includes("colleges")) {
       setIsCollege(true);
     }
+    setNavIsOpen(false);
   }, [locale, normalizedPath]);
 
   const handleNav = () => {

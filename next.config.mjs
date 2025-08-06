@@ -11,6 +11,10 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "api-dev-v1-file.epu.edu.iq",
+      },
+      {
+        protocol: "https",
         hostname: "plus.unsplash.com",
       },
       {

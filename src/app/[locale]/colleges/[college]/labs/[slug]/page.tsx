@@ -11,7 +11,7 @@ import { HiOutlineBuildingOffice } from "react-icons/hi2";
 import { PiFlaskLight } from "react-icons/pi";
 import { RiDashboardHorizontalLine } from "react-icons/ri";
 
-// Interfaces
+// --- INTERFACES ---
 interface Image {
   id: number;
   original: string;
@@ -26,9 +26,21 @@ interface Section {
   id: number;
   laboratory_id: number;
   title: string;
-  content: string;
-  created_at: string;
-  updated_at: string;
+  description: string; // The API uses 'description', not 'content'
+  images: Image[]; // Each section has its own images
+}
+
+interface LabDepartment {
+  department: {
+    id: number;
+    title: string;
+  };
+}
+
+// Wrapper for the main laboratory images array
+interface LabImage {
+  id: number;
+  image: Image;
 }
 
 interface Laboratory {
@@ -38,13 +50,12 @@ interface Laboratory {
   lab_number: string;
   equipped_with: string;
   description: string;
-  created_at: string;
-  updated_at: string;
-  images: Image[];
+  departments: LabDepartment[]; // Added departments array
+  images: LabImage[]; // Corrected image array structure
   sections: Section[];
 }
 
-// Skeleton Components
+// --- SKELETON COMPONENTS ---
 const InfoCardSkeleton = () => (
   <div className="w-full flex justify-between md:items-center items-start md:flex-row flex-col gap-5 p-5 rounded-3xl bg-gray-300 animate-pulse">
     <div className="flex_center gap-3">
@@ -96,14 +107,14 @@ const PageSkeleton = () => (
   </div>
 );
 
+// --- MAIN PAGE COMPONENT ---
 const Page = () => {
   const t = useTranslations("Colleges");
   const params = useParams();
   const slug = params?.slug as string;
-  const college = params?.college as string;
   const locale = params?.locale as string;
+  const college = params?.college as string;
 
-  // Fetch laboratory data
   const {
     data: labData,
     loading: labLoading,
@@ -111,6 +122,10 @@ const Page = () => {
   } = useFetch<Laboratory>(
     `${API_URL}/website/colleges/${college}/laboratories/${slug}`
   );
+
+  if (labLoading) {
+    return <PageSkeleton />;
+  }
 
   if (labError) {
     return (
@@ -146,50 +161,45 @@ const Page = () => {
         <CollegeHeader />
         <SubHeader title={labData.name} alt={false} />
 
-        {labLoading ? (
-          <PageSkeleton />
-        ) : (
-          <div className="w-full flex justify-between md:items-center items-start md:flex-row flex-col gap-5 p-5 rounded-3xl bg-golden text-white">
-            <div className="flex_center gap-3">
-              <span className="w-[60px] h-[60px] flex-shrink-0 rounded-lg flex_center bg-white bg-opacity-30">
-                <HiOutlineBuildingOffice className="text-4xl" />
-              </span>
-              <div className="flex-start flex-col">
-                <small className="text-xs">{t("belongs_to")}</small>
-                <h4 className="md:text-lg text-base font-medium">
-                  {labData.name}
-                </h4>
-              </div>
-            </div>
-            <div className="flex_center gap-3">
-              <span className="w-[60px] h-[60px] flex-shrink-0 rounded-lg flex_center bg-white bg-opacity-30">
-                <PiFlaskLight className="text-4xl" />
-              </span>
-              <div className="flex-start flex-col">
-                <small className="text-xs">{t("lab_number")}</small>
-                <h4 className="md:text-lg text-base font-medium">
-                  {labData.lab_number || "N/A"}
-                </h4>
-              </div>
-            </div>
-            <div className="flex_center gap-3">
-              <span className="w-[60px] h-[60px] flex-shrink-0 rounded-lg flex_center bg-white bg-opacity-30">
-                <RiDashboardHorizontalLine className="text-4xl" />
-              </span>
-              <div className="flex-start flex-col">
-                <small className="text-xs">{t("equipped_with")}</small>
-                <h4 className="md:text-lg text-base font-medium">
-                  {labData.equipped_with || t("specialized_instruments")}
-                </h4>
-              </div>
+        {/* Info Card */}
+        <div className="w-full flex justify-between md:items-center items-start md:flex-row flex-col gap-5 p-5 rounded-3xl bg-golden text-white">
+          <div className="flex_center gap-3">
+            <span className="w-[60px] h-[60px] flex-shrink-0 rounded-lg flex_center bg-white bg-opacity-30">
+              <HiOutlineBuildingOffice className="text-4xl" />
+            </span>
+            <div className="flex-start flex-col">
+              <small className="text-xs">{t("belongs_to")}</small>
+              <h4 className="md:text-lg text-base font-medium">
+                {labData.departments?.[0]?.department?.title || labData.name}
+              </h4>
             </div>
           </div>
-        )}
+          <div className="flex_center gap-3">
+            <span className="w-[60px] h-[60px] flex-shrink-0 rounded-lg flex_center bg-white bg-opacity-30">
+              <PiFlaskLight className="text-4xl" />
+            </span>
+            <div className="flex-start flex-col">
+              <small className="text-xs">{t("lab_number")}</small>
+              <h4 className="md:text-lg text-base font-medium">
+                {labData.lab_number || "N/A"}
+              </h4>
+            </div>
+          </div>
+          <div className="flex_center gap-3">
+            <span className="w-[60px] h-[60px] flex-shrink-0 rounded-lg flex_center bg-white bg-opacity-30">
+              <RiDashboardHorizontalLine className="text-4xl" />
+            </span>
+            <div className="flex-start flex-col">
+              <small className="text-xs">{t("equipped_with")}</small>
+              <h4 className="md:text-lg text-base font-medium">
+                {labData.equipped_with || t("specialized_instruments")}
+              </h4>
+            </div>
+          </div>
+        </div>
 
         {/* Laboratory Description */}
         <p className="opacity-70">{labData.description || t("lab_text")}</p>
-
-        {/* Main Content Section */}
         <div className="flex_center gap-10 w-full mt-5 md:flex-row flex-col">
           <div className="flex_start md:w-auto w-full flex-col gap-5">
             <div className="h-10 flex_center gap-2">
@@ -219,8 +229,8 @@ const Page = () => {
           <div className="md:h-[360px] h-[260px] md:w-[695px] w-full relative rounded-3xl overflow-hidden">
             <Image
               src={
-                labData.images?.[0]?.md ||
-                labData.images?.[0]?.original ||
+                labData.images?.[0]?.image?.lg ||
+                labData.images?.[0]?.image?.original ||
                 "/images/lab.png"
               }
               className="object-cover"
@@ -234,47 +244,37 @@ const Page = () => {
           </div>
         </div>
 
-        {/* Additional Content Section */}
-        <div className="w-full flex_center gap-10 md:flex-row flex-col-reverse">
-          <div className="lg:w-[595px] md:w-[410px] w-full lg:h-[590px] md:h-[420px] h-[340px] relative flex-shrink-0">
-            <Image
-              src={
-                labData.images?.[1]?.md ||
-                labData.images?.[1]?.original ||
-                "/images/lab-1.png"
-              }
-              className="object-cover"
-              alt={labData.name}
-              fill
-              priority
-            />
+        {/* DYNAMIC SECTIONS with alternating layout */}
+        {labData.sections?.map((section, index) => (
+          <div
+            key={section.id}
+            className={`w-full flex_center gap-10 md:flex-row flex-col-reverse ${
+              index % 2 !== 0 ? "md:flex-row-reverse" : "" // Alternates layout on desktop
+            }`}
+          >
+            <div className="lg:w-[555px] md:w-[410px] w-full lg:h-[500px] md:h-[420px] h-[340px] relative flex-shrink-0">
+              <Image
+                src={
+                  section.images?.[0]?.md ||
+                  section.images?.[0]?.original ||
+                  "/images/lab-1.png" // Fallback image
+                }
+                className="object-cover rounded-3xl"
+                alt={section.title}
+                fill
+                priority
+              />
+            </div>
+            <div className="flex_start flex-col gap-5">
+              <h1 className="md:text-[32px] text-xl font-semibold">
+                {section.title}
+              </h1>
+              <p className="md:text-base text-sm opacity-70">
+                {section.description}
+              </p>
+            </div>
           </div>
-          <div className="flex_start flex-col gap-5">
-            <h1 className="md:text-[32px] text-xl font-semibold">
-              {labData.sections?.[0]?.title || t("ensuring_campus_safety")}
-            </h1>
-            <p className="md:text-base text-sm">
-              {labData.sections?.[0]?.content ||
-                t("ensuring_campus_safety_text")}
-            </p>
-          </div>
-        </div>
-
-        {/* Additional Sections */}
-        {/* {labData.sections && labData.sections.length > 1 && (
-          <div className="flex_start flex-col gap-8">
-            {labData.sections.slice(1).map((section, index) => (
-              <div key={section.id} className="flex_start flex-col gap-5">
-                <h2 className="md:text-2xl text-xl font-semibold">
-                  {section.title}
-                </h2>
-                <p className="md:text-base text-sm opacity-70">
-                  {section.content}
-                </p>
-              </div>
-            ))}
-          </div>
-        )} */}
+        ))}
       </div>
     </div>
   );

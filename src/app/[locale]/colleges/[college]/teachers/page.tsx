@@ -174,9 +174,9 @@ const Page = () => {
 
           {/* Teachers Grid */}
           <div className="grid w-full lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-8">
-            {staffMembers.map((member) => (
+            {staffMembers.map((member, i) => (
               <MemberCard
-                key={member.id}
+                key={i}
                 description={member.role_in_college}
                 image={
                   member.teacher.profile_image?.md ||

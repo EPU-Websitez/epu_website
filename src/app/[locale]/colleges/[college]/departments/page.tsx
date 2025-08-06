@@ -162,8 +162,8 @@ const Page = () => {
   // Get department image with fallback
   const getDepartmentImage = (department: Department) => {
     return (
-      department.galleries?.[0]?.image?.md ||
       department.galleries?.[0]?.image?.lg ||
+      department.galleries?.[0]?.image?.md ||
       department.galleries?.[0]?.image?.original ||
       `/images/campus.png`
     );
@@ -197,7 +197,7 @@ const Page = () => {
           <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-5 w-full flex-shrink-0">
             {departments.map((department, i) => (
               <div
-                key={department.id}
+                key={i}
                 className="relative border border-lightBorder rounded-3xl p-2 flex_center flex-col gap-3 text-center"
               >
                 <Link

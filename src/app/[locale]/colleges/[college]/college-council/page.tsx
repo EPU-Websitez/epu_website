@@ -247,9 +247,9 @@ const Page = () => {
 
           {/* Council Members Grid - All other leads */}
           <div className="grid w-full lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-8">
-            {otherLeads.map((lead) => (
+            {otherLeads.map((lead, i) => (
               <MemberCard
-                key={lead.id}
+                key={i}
                 description={lead.role}
                 image={
                   lead.teacher.profile_image?.md || "/images/president-alt.png"

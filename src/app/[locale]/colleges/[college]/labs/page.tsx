@@ -124,7 +124,7 @@ const Page = () => {
 
   const [laboratories, setLaboratories] = useState<Laboratory[]>([]);
   const [page, setPage] = useState(1);
-  const limit = 8;
+  const limit = 1;
 
   // Fetch laboratories
   const {
@@ -195,14 +195,10 @@ const Page = () => {
                   priority
                 />
                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-[#1B417B8A] to-transparent z-10 group-hover:bg-primary duration-200 group-hover:bg-opacity-40"></div>
-                <Link
-                  href={`/${locale}/colleges/${college}/labs/${lab.slug}`}
-                  title={lab.name}
-                  className="flex_center text-sm rounded-lg border border-white gap-3 z-20 absolute ltr:left-10 rtl:right-10 bottom-5 px-4 py-2 opacity-0 group-hover:opacity-100 duration-300"
-                >
+                <div className="flex_center text-sm rounded-lg border border-white gap-3 z-20 absolute ltr:left-10 rtl:right-10 bottom-5 px-4 py-2 opacity-0 group-hover:opacity-100 duration-300">
                   <span>{t("read_more")}</span>
                   <FaArrowRight className="text-lg rtl:rotate-180" />
-                </Link>
+                </div>
                 <h3 className="z-20 absolute ltr:left-5 rtl:right-5 bottom-5 leading-normal md:group-hover:bottom-[70%] group-hover:bottom-[60%] px-4 py-2 md:text-smallTitle text-base group-hover:text-titleNormal group-hover:max-w-[200px] duration-300">
                   {lab.name}
                 </h3>
