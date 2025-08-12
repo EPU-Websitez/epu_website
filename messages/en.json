@@ -391,7 +391,8 @@
     "no_teachers_found": "No Teachers Found",
     "no_departments_found": "No Departments Found",
     "email": "Email",
-    "phone": "Phone Number"
+    "phone": "Phone Number",
+    "no_news_found": "No News Found"
   },
   "Directorate": {
     "university_directory": "University Directory",
