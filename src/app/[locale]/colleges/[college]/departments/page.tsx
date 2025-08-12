@@ -134,13 +134,12 @@ const Page = () => {
 
   const [departments, setDepartments] = useState<Department[]>([]);
   const [page, setPage] = useState(1);
-  const limit = 20;
+  const limit = 12; // Increased limit for better user experience
 
   const {
     data: departmentsData,
     loading,
     error,
-    refetch,
   } = useFetch<DepartmentsResponse>(
     `${API_URL}/website/departments?page=${page}&limit=${limit}&college_subdomain=${college}`
   );
@@ -153,7 +152,7 @@ const Page = () => {
         setDepartments((prev) => [...prev, ...departmentsData.data]);
       }
     }
-  }, [departmentsData, page]);
+  }, [departmentsData]); // Removed `page` from dependency array to prevent double renders
 
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
@@ -169,7 +168,8 @@ const Page = () => {
     );
   };
 
-  if (error && page === 1) {
+  // This condition handles initial load error
+  if (error && page === 1 && !loading) {
     return (
       <div className="w-full flex_center flex-col sm:my-10 my-5">
         <div className="max-w-[1024px] px-3 text-center">
@@ -182,22 +182,25 @@ const Page = () => {
     );
   }
 
+  // This condition shows the skeleton ONLY on the first page load
+  if (loading && page === 1) {
+    return <PageSkeleton />;
+  }
+
   return (
     <div className="w-full flex_center flex-col sm:my-10 my-5">
       <div className="max-w-[1379px] px-3 flex_start w-full">
         <CollegeHeader />
       </div>
 
-      {loading && page === 1 ? (
-        <PageSkeleton />
-      ) : (
-        <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full sm:mt-14 mt-10">
-          <SubHeader title={t("departments")} alt={false} />
+      <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full sm:mt-14 mt-10">
+        <SubHeader title={t("departments")} alt={false} />
 
-          <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-5 w-full flex-shrink-0">
+        {departments.length > 0 ? (
+          <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 sm:gap-5 gap-2 w-full flex-shrink-0">
             {departments.map((department, i) => (
               <div
-                key={i}
+                key={`${department.id}-${i}`}
                 className="relative border border-lightBorder rounded-3xl p-2 flex_center flex-col gap-3 text-center"
               >
                 <Link
@@ -213,7 +216,7 @@ const Page = () => {
                     className="object-cover transition-transform group-hover:scale-105"
                     alt={department.title}
                     fill
-                    priority
+                    priority={i < 4} // Only prioritize loading first few images
                   />
                 </Link>
                 <Link
@@ -230,7 +233,7 @@ const Page = () => {
                     </div>
                     <div className="flex_start flex-col">
                       <small className="font-medium sm:text-[10px] text-[8px]">
-                        +{department.staffCount}
+                        +{department.staffCount || "0"}
                       </small>
                       <small className="sm:text-[8px] text-[6px] text-black opacity-60">
                         {t("teachers")}
@@ -253,48 +256,38 @@ const Page = () => {
                 </div>
               </div>
             ))}
-
-            {/* Loading skeletons during pagination */}
-            {loading &&
-              page > 1 &&
-              Array.from({ length: 4 }).map((_, i) => (
-                <DepartmentCardSkeleton key={`skeleton-${i}`} />
-              ))}
           </div>
-
-          {/* Load More Button */}
-          {departmentsData && departments.length < departmentsData.total && (
-            <div className="flex_center w-full my-5">
-              <button
-                onClick={handleLoadMore}
-                disabled={loading}
-                className="sm:text-base text-sm border border-primary px-8 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors disabled:opacity-50"
-              >
-                {loading ? t("loading") : t("see_more")}
-              </button>
+        ) : (
+          <div className="text-gray-500 text-center w-full py-10">
+            <div className="flex_center flex-col gap-4">
+              <div className="text-4xl">🏢</div>
+              <h3 className="text-lg font-medium">
+                {t("no_departments_found")}
+              </h3>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Error State for Load More */}
-          {error && page > 1 && (
-            <div className="text-red-500 text-center w-full">
-              {t("error_loading_data")}
-            </div>
-          )}
+        {/* Load More Button */}
+        {departmentsData && departments.length < departmentsData.total && (
+          <div className="flex_center w-full my-5">
+            <button
+              onClick={handleLoadMore}
+              disabled={loading}
+              className="sm:text-base text-sm border border-primary px-8 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors disabled:opacity-50"
+            >
+              {loading ? t("loading") : t("see_more")}
+            </button>
+          </div>
+        )}
 
-          {/* No Data State */}
-          {/* {!loading && departmentsData && departments.length === 0 && (
-            <div className="text-gray-500 text-center w-full py-10">
-              <div className="flex_center flex-col gap-4">
-                <div className="text-4xl">🏢</div>
-                <h3 className="text-lg font-medium">
-                  {t("no_departments_found")}
-                </h3>
-              </div>
-            </div>
-          )} */}
-        </div>
-      )}
+        {/* Error State for Load More */}
+        {error && page > 1 && (
+          <div className="text-red-500 text-center w-full">
+            {t("error_loading_data")}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

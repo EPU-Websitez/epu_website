@@ -1,41 +1,27 @@
 "use client";
-
-import CollegeHeader from "@/components/collegeHeader";
+import React, { useState, useEffect } from "react";
 import DepartmentHeader from "@/components/departmentHeader";
-import EventCard from "@/components/eventCards";
 import NewsCard from "@/components/newsCard";
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
-import Link from "next/link";
 import { useParams } from "next/navigation";
-import { FaChevronRight } from "react-icons/fa6";
-import { GoArrowRight, GoBriefcase } from "react-icons/go";
-import { HiOutlineBuildingOffice } from "react-icons/hi2";
-import { IoArrowForwardOutline, IoBriefcaseOutline } from "react-icons/io5";
-import { LuUsers } from "react-icons/lu";
+import Link from "next/link";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { PiStudent } from "react-icons/pi";
 import { API_URL } from "@/libs/env";
 import useFetch from "@/libs/hooks/useFetch";
 
+// --- Updated Interfaces to match new API response ---
 interface Image {
   id: number;
   original: string;
   lg: string;
   md: string;
   sm: string;
-  created_at: string;
-  updated_at: string;
 }
 
-interface Gallery {
+interface GalleryItem {
   id: number;
-  news_id: number;
-  image_id: number;
-  created_at: string;
-  updated_at: string;
-  Image: Image;
+  image: Image; // Changed from 'Image' to 'image'
 }
 
 interface CoverImage {
@@ -44,8 +30,6 @@ interface CoverImage {
   lg: string;
   md: string;
   sm: string;
-  created_at: string;
-  updated_at: string;
 }
 
 interface News {
@@ -53,12 +37,10 @@ interface News {
   slug: string;
   title: string;
   excerpt: string;
-  content: string;
   author: string;
   published_at: string;
-  cover_image_id: number;
-  Gallery: Gallery[];
-  CoverImage: CoverImage;
+  cover_image: CoverImage;
+  gallery: GalleryItem[]; // Changed from 'Gallery' to 'gallery'
 }
 
 interface NewsResponse {
@@ -68,7 +50,7 @@ interface NewsResponse {
   data: News[];
 }
 
-// News Skeleton Component
+// --- Skeleton Component ---
 const NewsSkeleton = () => (
   <div className="grid lg:grid-cols-1 md:grid-cols-2 grid-cols-1 w-full gap-8">
     {[1, 2].map((i) => (
@@ -90,10 +72,37 @@ const Page = () => {
   const slug = params?.slug as string;
   const college = params?.college as string;
 
-  // Fetch news data for this department
-  const { data: newsData, loading: newsLoading } = useFetch<NewsResponse>(
-    `${API_URL}/website/news?page=1&departmentSlug=${slug}&limit=100`
+  // --- State for pagination and data aggregation ---
+  const [news, setNews] = useState<News[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalNews, setTotalNews] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const limit = 4; // You can adjust how many items to load per page
+
+  const {
+    data: newsData,
+    loading: newsLoading,
+    error,
+  } = useFetch<NewsResponse>(
+    `${API_URL}/website/news?page=${currentPage}&departmentSlug=${slug}&limit=${limit}`
   );
+
+  // --- Effect to handle incoming data and append for pagination ---
+  useEffect(() => {
+    if (newsData?.data) {
+      // Append new data to the existing list for subsequent pages
+      setNews((prevNews) =>
+        currentPage === 1 ? newsData.data : [...prevNews, ...newsData.data]
+      );
+      setTotalNews(newsData.total);
+    }
+    setLoadingMore(false);
+  }, [newsData]);
+
+  const handleLoadMore = () => {
+    setLoadingMore(true);
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -104,29 +113,31 @@ const Page = () => {
     });
   };
 
-  // Get image with fallback logic
+  // --- Updated image getter with correct property names ---
   const getNewsImage = (news: News) => {
     return (
-      news.CoverImage?.md ||
-      news.CoverImage?.lg ||
-      news.CoverImage?.original ||
-      news.Gallery?.[0]?.Image?.md ||
-      news.Gallery?.[0]?.Image?.lg ||
-      news.Gallery?.[0]?.Image?.original ||
+      news.cover_image?.md ||
+      news.cover_image?.lg ||
+      news.cover_image?.original ||
+      news.gallery?.[0]?.image?.md || // Corrected from Gallery and Image
+      news.gallery?.[0]?.image?.lg ||
+      news.gallery?.[0]?.image?.original ||
       "/images/news.png"
     );
   };
 
+  const isInitialLoading = newsLoading && news.length === 0;
+
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 -mt-5">
       <DepartmentHeader />
-      <div className="max-w-[1040px] px-3 flex_start w-full">
+      <div className="max-w-[1040px] flex_start w-full">
         <div className="w-full border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
           <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
+            {/* Sidebar Navigation */}
             <div className="flex_start flex-col gap-4 flex-shrink-0 lg:w-auto w-full">
               <Link
                 href={`/${locale}/colleges/${college}/departments/${slug}`}
-                title={t("about_button")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("about_button")}</span>
@@ -134,7 +145,6 @@ const Page = () => {
               </Link>
               <Link
                 href={`/${locale}/colleges/${college}/departments/${slug}/vision-and-mission`}
-                title={t("vision_mission")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("vision_mission")}</span>
@@ -142,7 +152,6 @@ const Page = () => {
               </Link>
               <Link
                 href={`/${locale}/colleges/${college}/departments/${slug}/staff`}
-                title={t("council_staff")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("council_staff")}</span>
@@ -154,7 +163,6 @@ const Page = () => {
               </div>
               <Link
                 href={`/${locale}/colleges/${college}/departments/${slug}/researches`}
-                title={t("researches")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("researches")}</span>
@@ -162,7 +170,6 @@ const Page = () => {
               </Link>
               <Link
                 href={`/${locale}/colleges/${college}/departments/${slug}/course-subjects`}
-                title={t("course_subjects")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("course_subjects")}</span>
@@ -170,7 +177,6 @@ const Page = () => {
               </Link>
               <Link
                 href={`/${locale}/colleges/${college}/departments/${slug}/guide-lines`}
-                title={t("guide_lines")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("guide_lines")}</span>
@@ -178,55 +184,46 @@ const Page = () => {
               </Link>
             </div>
 
-            <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-              <div className="md:block hidden">
-                <SubHeader title={t("news_button")} alt={false} />
-              </div>
-              <h2 className="md:hidden block relative text-lg font-semibold ">
-                <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
-                <span className="z-10 relative">{t("news_button")}</span>
-              </h2>
+            {/* Content Area */}
+            <div className="lg:border-l border-l-none lg:border-b-0 border-b lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
+              <SubHeader title={t("news_button")} alt={false} />
 
-              {/* Dynamic News Section */}
-              {newsLoading ? (
+              {isInitialLoading ? (
                 <NewsSkeleton />
-              ) : (
+              ) : error ? (
+                <div className="text-red-500 text-center w-full">
+                  Failed to load news.
+                </div>
+              ) : news.length > 0 ? (
                 <div className="grid lg:grid-cols-1 md:grid-cols-2 grid-cols-1 w-full gap-8">
-                  {newsData?.data && newsData.data.length > 0 ? (
-                    newsData.data
-                      .slice(0, 2)
-                      .map((news) => (
-                        <NewsCard
-                          key={news.id}
-                          image={getNewsImage(news)}
-                          link={`/${locale}/news/${news.slug}`}
-                          author={news.author}
-                          createdAt={formatDate(news.published_at)}
-                          description={news.excerpt}
-                          title={news.title}
-                        />
-                      ))
-                  ) : (
-                    // Fallback to static news if no data
-                    <>
-                      <NewsCard
-                        image="/images/news.png"
-                        link="/"
-                        author="Craig Bator"
-                        createdAt="27 Dec 2020"
-                        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Faucibus lobortis augue condimentum maecenas. Metus at in fames vitae posuere ut vel vulputate ..."
-                        title="Solskjaer dismisses Klopp comments on Man Utd penalty record"
-                      />
-                      <NewsCard
-                        image="/images/news.png"
-                        link="/"
-                        author="Craig Bator"
-                        createdAt="27 Dec 2020"
-                        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Faucibus lobortis augue condimentum maecenas. Metus at in fames vitae posuere ut vel vulputate ..."
-                        title="Solskjaer dismisses Klopp comments on Man Utd penalty record"
-                      />
-                    </>
-                  )}
+                  {news.map((newsItem) => (
+                    <NewsCard
+                      key={newsItem.id}
+                      image={getNewsImage(newsItem)}
+                      link={`/${locale}/news/${newsItem.slug}`}
+                      author={newsItem.author}
+                      createdAt={formatDate(newsItem.published_at)}
+                      description={newsItem.excerpt}
+                      title={newsItem.title}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-gray-500 text-center w-full py-10">
+                  {t("no_news_found")}
+                </div>
+              )}
+
+              {/* "See More" Button */}
+              {!newsLoading && news.length < totalNews && (
+                <div className="flex_center w-full mt-8">
+                  <button
+                    onClick={handleLoadMore}
+                    disabled={loadingMore}
+                    className="sm:text-base text-sm border border-primary px-8 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors disabled:opacity-50 disabled:cursor-wait"
+                  >
+                    {loadingMore ? t("loading") : t("see_more")}
+                  </button>
                 </div>
               )}
             </div>

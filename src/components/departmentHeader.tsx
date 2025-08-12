@@ -1,38 +1,40 @@
 "use client";
 import Image from "next/image";
-import SubHeader from "./subHeader";
-import { IoMdMail } from "react-icons/io";
-import { IoLocationSharp } from "react-icons/io5";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { API_URL } from "@/libs/env";
 import useSWR from "swr";
 
+// --- Import necessary icons ---
+import { IoMdMail } from "react-icons/io";
+import { FaPhoneAlt } from "react-icons/fa";
+import { IoLocationSharp } from "react-icons/io5";
+import { ReactNode } from "react";
+
+// --- Updated Interfaces to match the API response ---
 interface Contact {
   id: number;
-  college_id: number;
-  type: string;
+  department_id: number;
+  type: "EMAIL" | "PHONE" | string; // Use union types for better type safety
   value: string;
-  created_at: string;
-  updated_at: string;
 }
 
 interface Address {
   id: number;
-  college_id: number;
   latitude: string;
   longitude: string;
   location: string;
-  created_at: string;
-  updated_at: string;
+  department_id: number;
 }
+
 interface Response {
   id: number;
   slug: string;
   title: string;
   subtitle: string;
   contacts: Contact[];
-  addresses: Address[];
+  address: Address; // Changed from addresses array to a single object
+  galleries: any[]; // Kept as any for brevity, can be typed fully if needed
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -61,26 +63,31 @@ const DepartmentHeader = () => {
       revalidateOnFocus: false,
     }
   );
-  // Helper function to get contact by type
-  const getContactByType = (type: string) => {
-    return (
-      data?.contacts?.find(
-        (contact) => contact.type.toLowerCase() === type.toLowerCase()
-      )?.value || ""
-    );
+
+  // --- Helper function to get an icon based on contact type ---
+  const getContactIcon = (type: string): ReactNode => {
+    switch (type.toUpperCase()) {
+      case "EMAIL":
+        return <IoMdMail className="text-2xl" />;
+      case "PHONE":
+        return <FaPhoneAlt className="text-xl" />; // Phone icon is slightly smaller
+      default:
+        return <IoMdMail className="text-2xl" />; // Default icon
+    }
   };
 
-  if (isLoading || !data) return <CenterSkeleton />;
-  if (error)
+  if (isLoading) return <CenterSkeleton />;
+  if (error || !data)
     return <div className="text-center text-red-500">Failed to load data.</div>;
+
   return (
-    <div className="flex justify-center items-center py-10 md:gap-10 md:h-[405px] h-[335px] overflow-hidden relative w-full">
+    <div className="flex justify-center items-center py-10 md:gap-10 md:h-[405px] h-auto min-h-[335px] overflow-hidden relative w-full">
       <Image
         src="/images/bg.png"
         alt="title"
         fill
         priority
-        className="w-full h-auto md:block hidden"
+        className="w-full h-auto md:block hidden object-cover"
       />
       <Image
         src="/images/bg-small.png"
@@ -96,26 +103,38 @@ const DepartmentHeader = () => {
             {data.title}
           </h2>
         </div>
-        <p className="md:texr-sm text-xs">{data.subtitle}</p>
-        <div className="flex_start gap-5  sm:flex-row flex-col">
-          <div className="flex justify-start items-center gap-3">
-            <IoMdMail className="text-2xl" />
-            <div className="flex_start flex-col">
-              <span className="text-xs opacity-50">{t("mail")}</span>
-              <p className="text-sm">
-                {getContactByType("EMAIL") || "info@epu.edu.iq"}
-              </p>
+        <p className="md:text-sm text-xs">{data.subtitle}</p>
+
+        {/* --- DYNAMIC CONTACTS & LOCATION SECTION --- */}
+        <div className="flex_start gap-5 sm:flex-row flex-col">
+          {/* Map through contacts from the API */}
+          {data.contacts?.map((contact) => (
+            <div
+              key={contact.id}
+              className="flex justify-start items-center gap-3"
+            >
+              {getContactIcon(contact.type)}
+              <div className="flex_start flex-col">
+                <span className="text-xs opacity-50 capitalize">
+                  {t(contact.type.toLowerCase())}
+                </span>
+                <p className="text-sm">{contact.value}</p>
+              </div>
             </div>
-          </div>
-          <div className="flex justify-start items-center gap-3">
-            <IoLocationSharp className="text-2xl" />
-            <div className="flex_start flex-col">
-              <span className="text-xs opacity-50">{t("location")}</span>
-              <p className="text-sm">
-                {data?.addresses?.[0]?.location || "Karkuk St, Erbil 44001"}
-              </p>
+          ))}
+
+          {/* Display Address */}
+          {data.address?.location && (
+            <div className="flex justify-start items-center gap-3">
+              <IoLocationSharp className="text-2xl" />
+              <div className="flex_start flex-col">
+                <span className="text-xs opacity-50">{t("location")}</span>
+                <p className="text-sm">
+                  {data.address.location || "Karkuk St, Erbil 44001"}
+                </p>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

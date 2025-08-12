@@ -187,7 +187,7 @@ const Page = () => {
 
       <div className="max-w-[1040px] px-3 flex_start w-full">
         <div className="w-full border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
-          <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
+          <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] lg:flex-row flex-col-reverse">
             {/* Navigation Sidebar */}
             <div className="flex_start flex-col gap-4 flex-shrink-0 lg:w-auto w-full">
               <Link

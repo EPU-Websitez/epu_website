@@ -152,7 +152,7 @@ const Page = () => {
     return (
       <div className="w-full flex_center flex-col sm:mb-10 mb-5 -mt-5">
         <DepartmentHeader />
-        <div className="max-w-[1040px] px-3 flex_start w-full">
+        <div className="max-w-[1040px] flex_start w-full">
           <div className="w-full border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
             <div className="text-center py-20">
               <h1 className="text-2xl font-bold text-red-500 mb-4">
@@ -171,7 +171,7 @@ const Page = () => {
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 -mt-5">
       <DepartmentHeader />
-      <div className="max-w-[1040px] px-3 flex_start w-full">
+      <div className="max-w-[1040px] flex_start w-full">
         <div className="w-full border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
           <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
             {/* Navigation Sidebar - Static */}
@@ -189,7 +189,7 @@ const Page = () => {
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </Link>
               <Link
-                href={`/${locale}/colleges/${college}/departments/${slug}/council-staff`}
+                href={`/${locale}/colleges/${college}/departments/${slug}/staff`}
                 title={t("council_staff")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder hover:opacity-100 transition-opacity"
               >
