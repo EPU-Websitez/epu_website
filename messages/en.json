@@ -392,7 +392,8 @@
     "no_departments_found": "No Departments Found",
     "email": "Email",
     "phone": "Phone Number",
-    "no_news_found": "No News Found"
+    "no_news_found": "No News Found",
+    "ects": "Etc"
   },
   "Directorate": {
     "university_directory": "University Directory",

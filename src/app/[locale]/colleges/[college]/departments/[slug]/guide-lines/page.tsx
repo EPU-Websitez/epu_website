@@ -21,6 +21,34 @@ import { PiStudent } from "react-icons/pi";
 import { API_URL } from "@/libs/env";
 import useFetch from "@/libs/hooks/useFetch";
 
+// Updated CollegeDetails interface to match the new response
+interface CollegeDetails {
+  id: number;
+  subdomain: string;
+  slug: string | null;
+  type: string;
+  title: string;
+  description: string;
+  news_title: string;
+  news_subtitle: string;
+  college_title: string;
+  college_subtitle: string;
+  teacher_title: string;
+  teacher_subtitle: string;
+  event_title: string;
+  event_subtitle: string;
+  about_title: string;
+  about_content: string;
+  student_number: string;
+  vision: string;
+  mission: string;
+  logo_image_id: number;
+  priority: number;
+  created_at: string;
+  updated_at: string;
+}
+
+// Updated Department interface
 interface Department {
   id: number;
   college_id: number;
@@ -34,15 +62,7 @@ interface Department {
   created_at: string;
   updated_at: string;
   student_number: string;
-  college: {
-    id: number;
-    subdomain: string;
-    slug: string | null;
-    title: string;
-    description: string;
-  };
-  staffCount: number;
-  leadCount: number;
+  college: CollegeDetails; // Using the updated, more detailed interface
 }
 
 interface File {
@@ -113,13 +133,13 @@ const Page = () => {
   const slug = params?.slug as string;
   const college = params?.college as string;
 
-  // Fetch graduation guides data
+  // Fetch graduation guides data with the UPDATED endpoint
   const {
     data: guidesData,
     loading: guidesLoading,
     error: guidesError,
   } = useFetch<GraduationGuideResponse>(
-    `${API_URL}/website/departments/${slug}/graduation-project-guides?page=1&limit=8`
+    `${API_URL}/website/departments/${slug}/graduation-guides?page=1&limit=10`
   );
 
   // Helper functions
@@ -129,20 +149,58 @@ const Page = () => {
     return fileName || "guide.pdf";
   };
 
-  const handleFileDownload = (filePath: string, fileName: string) => {
-    // Handle file download/view logic here
-    window.open(`${API_URL}${filePath}`, "_blank");
+  // FIXED: robust cross-origin download via blob
+  const handleFileDownload = async (
+    filePath: string,
+    suggestedName?: string
+  ) => {
+    try {
+      const fileUrl = new URL(filePath, API_URL).href;
+
+      const res = await fetch(fileUrl, { mode: "cors" });
+      if (!res.ok) throw new Error(`Failed to fetch file: ${res.status}`);
+
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+
+      // build a safe filename, preserving/adding extension
+      const pathName = filePath.split("?")[0];
+      const extFromPath = pathName.includes(".")
+        ? `.${pathName.split(".").pop()!}`
+        : "";
+      const cleanSuggested = suggestedName?.trim();
+      const hasExt =
+        !!cleanSuggested && /\.[a-z0-9]{1,8}$/i.test(cleanSuggested);
+      const fileName =
+        (hasExt && (cleanSuggested as string)) ||
+        (cleanSuggested && `${cleanSuggested}${extFromPath}`) ||
+        pathName.split("/").pop() ||
+        "download";
+
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(objectUrl);
+    } catch (err) {
+      console.error(err);
+      alert("Sorry, the file couldn't be downloaded.");
+    }
   };
 
+  // FIXED: safer absolute URL for preview
   const handleFilePreview = (filePath: string) => {
-    // Handle file preview logic here
-    window.open(`${API_URL}${filePath}`, "_blank");
+    const fileUrl = new URL(filePath, API_URL).href;
+    window.open(fileUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 -mt-5">
       <DepartmentHeader />
-      <div className="max-w-[1040px] px-3 flex_start w-full">
+      <div className="max-w-[1040px] flex_start w-full">
         <div className="w-full border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
           <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
             <div className="flex_start flex-col gap-4 flex-shrink-0 lg:w-auto w-full">
@@ -260,7 +318,7 @@ const Page = () => {
                                   <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
                                     <HiOutlineLink />
                                   </span>
-                                  <span className="text-secondary text-opacity-70 lg:max-w-[200px] sm:max-w-full max-w-[130px] truncate">
+                                  <span className="text-secondary text-opacity-70 lg:max-w-[200px] sm:max-w-full max-w-[130px] truncate sm:text-base text-sm">
                                     {fileItem.title}
                                   </span>
                                   <span className="w-5 flex_center h-5 rounded-full border border-golden text-golden text-sm">
@@ -275,7 +333,7 @@ const Page = () => {
                                       fileItem.title
                                     )
                                   }
-                                  className="py-2 sm:text-sm text-xs sm:px-5 px-2 rounded-md flex_center gap-3 bg-gradient-to-r from-primary to-blue text-white hover:from-primary/90 hover:to-blue/90 transition-all"
+                                  className="py-2 sm:text-sm text-xs sm:px-5 px-1 rounded-md flex_center gap-3 bg-gradient-to-r from-primary to-blue text-white hover:from-primary/90 hover:to-blue/90 transition-all"
                                 >
                                   <p>{t("download")}</p>
                                   <HiOutlineDownload />

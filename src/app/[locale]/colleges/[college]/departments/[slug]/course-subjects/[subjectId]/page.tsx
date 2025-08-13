@@ -1,114 +1,14 @@
 "use client";
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { GrLinkNext } from "react-icons/gr";
 import { HiOutlineLink } from "react-icons/hi2";
 import { API_URL } from "@/libs/env";
 import useFetch from "@/libs/hooks/useFetch";
 
-interface Department {
-  id: number;
-  college_id: number;
-  slug: string;
-  title: string;
-  subtitle: string;
-  about: string;
-  vision: string;
-  mission: string;
-  priority: number;
-  created_at: string;
-  updated_at: string;
-  student_number: string;
-  college: {
-    id: number;
-    subdomain: string;
-    slug: string | null;
-    title: string;
-    description: string;
-  };
-  staffCount: number;
-  leadCount: number;
-}
-
-interface CourseInfo {
-  id: number;
-  subject_id: number;
-  stage: string | null;
-  semester: string | null;
-  course_type: string | null;
-  credit: string;
-  code: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface AssessmentScheme {
-  id: number;
-  subject_id: number;
-  attendance: string;
-  class_tests_quizzes: string;
-  midterm_exam: string;
-  practical_exam: string;
-  final_exam: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface SubjectSchedule {
-  id: number;
-  subject_id: number;
-  duration: string;
-  lectures: string;
-  language: string;
-  hours_per_week: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface File {
-  id: number;
-  path: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface LectureFile {
-  id: number;
-  lecture_id: number;
-  file_id: number;
-  title: string;
-  created_at: string;
-  updated_at: string;
-  file: File;
-}
-
-interface PdfLecture {
-  id: number;
-  subject_id: number;
-  week_title: string;
-  created_at: string;
-  updated_at: string;
-  files: LectureFile[];
-}
-
-interface Subject {
-  id: number;
-  department_id: number;
-  name: string;
-  description: string;
-  created_at: string;
-  updated_at: string;
-  department: Department;
-  courseInfo: CourseInfo;
-  assessmentScheme: AssessmentScheme;
-  subjectSchedule: SubjectSchedule;
-  pdfLectures: PdfLecture[];
-}
-
-// Skeleton Components
+// ---------------- Skeleton ----------------
 const SubjectDetailSkeleton = () => (
   <div className="w-full flex_start flex-col gap-5 bg-backgroundSecondary border border-lightBorder rounded-3xl p-5">
     <div className="animate-pulse space-y-4">
@@ -126,7 +26,7 @@ const SubjectDetailSkeleton = () => (
         <div
           key={i}
           className="animate-pulse bg-gray-200 rounded-3xl p-5 h-64"
-        ></div>
+        />
       ))}
     </div>
     <div className="animate-pulse h-4 bg-gray-300 rounded w-1/4"></div>
@@ -135,76 +35,196 @@ const SubjectDetailSkeleton = () => (
         <div
           key={i}
           className="animate-pulse bg-gray-200 rounded-3xl p-5 h-32"
-        ></div>
+        />
       ))}
     </div>
   </div>
 );
 
+// ---------------- Types (aligned with new API) ----------------
+interface College {
+  id: number;
+  subdomain: string;
+  slug: string | null;
+  type: string;
+  title: string;
+  description: string;
+  news_title: string;
+  news_subtitle: string;
+  college_title: string;
+  college_subtitle: string;
+  teacher_title: string;
+  teacher_subtitle: string;
+  event_title: string;
+  event_subtitle: string;
+  about_title: string;
+  about_content: string;
+  student_number: string;
+  vision: string;
+  mission: string;
+  logo_image_id: number;
+  priority: number;
+  created_at: string;
+  updated_at: string;
+}
+
+interface DepartmentLite {
+  id: number;
+  college_id: number;
+  slug: string;
+  title: string;
+  subtitle: string;
+  about: string;
+  vision: string;
+  mission: string;
+  priority: number;
+  created_at: string;
+  updated_at: string;
+  student_number: string;
+  college: College;
+}
+
+interface CurriculumLite {
+  id: number;
+  department_id: number;
+  title: string;
+  created_at: string;
+  updated_at: string;
+  department: DepartmentLite;
+}
+
+interface SemesterLite {
+  id: number;
+  curriculum_id: number;
+  title: string;
+  created_at: string;
+  updated_at: string;
+  curriculum: CurriculumLite;
+}
+
+// The subject is now flattened (no courseInfo/assessmentScheme/subjectSchedule wrappers)
+interface Subject {
+  id: number;
+  semester_id: number;
+  name: string;
+  description: string;
+  code: string;
+  credit: string;
+  ects: string;
+  stage: string; // e.g., "STAGE_1"
+  course_type: string; // e.g., "CORSAT" | "BOLOGNA"
+  theory_hours: string;
+  practical_hours: string;
+  duration: string;
+  lectures: string;
+  language: string; // e.g., "English"
+  hours_per_week: string;
+  attendance: string;
+  class_tests_quizzes: string;
+  midterm_exam: string;
+  practical_exam: string;
+  final_exam: string;
+  module_description: string;
+  created_at: string;
+  updated_at: string;
+  semester: SemesterLite;
+  // API returns array; shape for files not shown, so keep it flexible
+  pdf_lectures?: Array<{
+    id: number;
+    week_title?: string;
+    title?: string;
+    // files may be present, keep optional + minimal
+    files?: Array<{
+      id: number;
+      title?: string;
+      file?: { id: number; path: string };
+      // some APIs may inline path
+      path?: string;
+    }>;
+  }>;
+}
+
+// ---------------- Page ----------------
 const Page = () => {
   const t = useTranslations("Colleges");
   const params = useParams();
-  const locale = params?.locale as string;
   const subjectId = params?.subjectId as string;
-  const slug = params?.slug as string;
 
   const [showFullDescription, setShowFullDescription] = useState(false);
 
-  // Fetch subject data
+  // New endpoint: /website/departments/subject/{subjectId}
+  const subjectUrl = useMemo(
+    () => `${API_URL}/website/departments/subject/${subjectId}`,
+    [subjectId]
+  );
+
   const {
     data: subjectData,
     loading: subjectLoading,
     error: subjectError,
-  } = useFetch<Subject>(
-    `${API_URL}/website/departments/${slug}/course-subjects/${subjectId}`
-  );
+  } = useFetch<Subject>(subjectUrl);
 
-  // Helper functions
-  const formatStage = (stage: string | null | undefined) => {
-    if (!stage) return "N/A";
-    return stage.replace("STAGE_", "Stage ");
-  };
+  // Helpers
+  const formatStage = (stage?: string | null) =>
+    !stage ? "N/A" : stage.replace("STAGE_", "Stage ");
 
-  const formatSemester = (semester: string | null | undefined) => {
-    if (!semester) return "N/A";
-    const semesterMap: { [key: string]: string } = {
-      FIRST: "First",
-      SECOND: "Second",
-      THIRD: "Third",
-      FOURTH: "Fourth",
-      FIFTH: "Fifth",
-      SIXTH: "Sixth",
-      SEVENTH: "Seventh",
-      EIGHTH: "Eighth",
-      NINTH: "Ninth",
-      TENTH: "Tenth",
-    };
-    return semesterMap[semester] || semester;
-  };
+  const formatCourseType = (ct?: string | null) =>
+    !ct ? "N/A" : ct === "CORSAT" ? "Coursat" : ct;
 
-  const formatCourseType = (courseType: string | null | undefined) => {
-    if (!courseType) return "N/A";
-    return courseType === "CORSAT" ? "Coursat" : courseType;
-  };
+  const truncate = (text?: string, max = 200) =>
+    !text || text.length <= max ? text || "" : text.slice(0, max) + "...";
 
-  const getFileName = (filePath: string) => {
-    const parts = filePath.split("/");
-    const fileName = parts[parts.length - 1];
-    return fileName || "lecture.pdf";
-  };
-
-  const truncateDescription = (
-    text: string | undefined,
-    maxLength: number = 200
+  // Robust cross-origin file download via Blob
+  const handleFileDownload = async (
+    filePath?: string,
+    suggestedName?: string
   ) => {
-    if (!text || text.length <= maxLength) return text || "";
-    return text.substring(0, maxLength) + "...";
+    if (!filePath) return;
+    try {
+      const fileUrl = new URL(filePath, API_URL).href;
+      const res = await fetch(fileUrl, { mode: "cors" });
+      if (!res.ok) throw new Error(`Failed to fetch file: ${res.status}`);
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+
+      const pathName = filePath.split("?")[0];
+      const ext = pathName.includes(".")
+        ? `.${pathName.split(".").pop()!}`
+        : "";
+      const clean = suggestedName?.trim();
+      const hasExt = !!clean && /\.[a-z0-9]{1,8}$/i.test(clean);
+      const fileName =
+        (hasExt && (clean as string)) ||
+        (clean && `${clean}${ext}`) ||
+        pathName.split("/").pop() ||
+        "download";
+
+      const a = document.createElement("a");
+      a.href = objectUrl;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(objectUrl);
+    } catch (e) {
+      console.error(e);
+      // Fallback: open in new tab
+      const fileUrl = new URL(filePath, API_URL).href;
+      window.open(fileUrl, "_blank", "noopener,noreferrer");
+    }
   };
 
-  const handleFileDownload = (filePath: string, fileName: string) => {
-    // Handle file download/view logic here
-    window.open(`${API_URL}${filePath}`, "_blank");
-  };
+  // Normalize pdf_lectures to a renderable structure
+  const normalizedLectures = (subjectData?.pdf_lectures || []).map((lec) => {
+    const title = lec.week_title || lec.title || "Lecture";
+    const files =
+      lec.files?.map((f) => ({
+        id: f.id,
+        title: f.title || "File",
+        path: f.file?.path || f.path || "",
+      })) || [];
+    return { id: lec.id, title, files };
+  });
 
   if (subjectError) {
     return (
@@ -243,21 +263,23 @@ const Page = () => {
           <SubjectDetailSkeleton />
         ) : (
           <div className="w-full flex_start flex-col gap-5 bg-backgroundSecondary border border-lightBorder rounded-3xl p-5">
+            {/* Names & Description */}
             <h5 className="text-opacity-25 text-black font-semibold">
               {t("subject_name")}
             </h5>
             <h4 className="font-medium">{subjectData?.name}</h4>
+
             <h5 className="text-opacity-25 text-black font-semibold">
               {t("subject_description")}
             </h5>
             <p>
               {showFullDescription
                 ? subjectData?.description
-                : truncateDescription(subjectData?.description || "")}
+                : truncate(subjectData?.description)}
               {subjectData?.description &&
                 subjectData.description.length > 200 && (
                   <button
-                    onClick={() => setShowFullDescription(!showFullDescription)}
+                    onClick={() => setShowFullDescription((s) => !s)}
                     className="text-golden font-semibold ml-1"
                   >
                     {showFullDescription ? "...Less" : "...More"}
@@ -265,184 +287,156 @@ const Page = () => {
                 )}
             </p>
 
+            {/* Cards */}
             <div className="grid lg:grid-cols-3 grid-cols-1 w-full gap-5">
-              {/* Course Info */}
+              {/* Course Info (flattened) */}
               <div className="flex_start flex-col gap-5 bg-white rounded-3xl p-5">
                 <h3 className="pb-5 text-golden text-sm font-semibold border-b border-b-lightBorder w-full">
                   {t("course_info")}
                 </h3>
                 <div className="flex_start lg:flex-col flex-row lg:gap-5 sm:gap-20 gap-10 w-full sm:flex-nowrap flex-wrap">
-                  <div className="flex_start flex-col gap-1">
-                    <h5 className="text-opacity-25 text-black font-semibold">
-                      {t("stage")}
-                    </h5>
-                    <h4 className="font-medium">
-                      {formatStage(subjectData?.courseInfo?.stage)}
-                    </h4>
-                  </div>
-                  <div className="flex_start flex-col gap-1">
-                    <h5 className="text-opacity-25 text-black font-semibold">
-                      {t("semester")}
-                    </h5>
-                    <h4 className="font-medium">
-                      {formatSemester(subjectData?.courseInfo?.semester)}
-                    </h4>
-                  </div>
-                  <div className="flex_start flex-col gap-1">
-                    <h5 className="text-opacity-25 text-black font-semibold">
-                      {t("course_type")}
-                    </h5>
-                    <h4 className="font-medium">
-                      {formatCourseType(subjectData?.courseInfo?.course_type)}
-                    </h4>
-                  </div>
-                  <div className="flex_start flex-col gap-1">
-                    <h5 className="text-opacity-25 text-black font-semibold">
-                      {t("credit")}
-                    </h5>
-                    <h4 className="font-medium">
-                      {subjectData?.courseInfo?.credit || "N/A"}
-                    </h4>
-                  </div>
-                  <div className="flex_start flex-col gap-1">
-                    <h5 className="text-opacity-25 text-black font-semibold">
-                      {t("code")}
-                    </h5>
-                    <h4 className="font-medium">
-                      {subjectData?.courseInfo?.code || "N/A"}
-                    </h4>
-                  </div>
+                  <LabeledValue
+                    label={t("stage")}
+                    value={formatStage(subjectData?.stage)}
+                  />
+                  <LabeledValue
+                    label={t("semester")}
+                    value={subjectData?.semester?.title || "N/A"}
+                  />
+                  <LabeledValue
+                    label={t("course_type")}
+                    value={formatCourseType(subjectData?.course_type)}
+                  />
+                  <LabeledValue
+                    label={t("credit")}
+                    value={subjectData?.credit || "N/A"}
+                  />
+                  <LabeledValue
+                    label={t("code")}
+                    value={subjectData?.code || "N/A"}
+                  />
+                  <LabeledValue
+                    label={t("ects")}
+                    value={subjectData?.ects || "N/A"}
+                  />
                 </div>
               </div>
 
-              {/* Assessment Scheme */}
+              {/* Assessment Scheme (flattened) */}
               <div className="flex_start flex-col gap-5 bg-white rounded-3xl p-5">
                 <h3 className="pb-5 text-golden text-sm font-semibold border-b border-b-lightBorder w-full">
                   {t("assessment_scheme")}
                 </h3>
                 <div className="flex_start lg:flex-col flex-row lg:gap-5 sm:gap-20 gap-10 w-full sm:flex-nowrap flex-wrap">
-                  <div className="flex_start flex-col gap-1">
-                    <h5 className="text-opacity-25 text-black font-semibold">
-                      {t("attendance")}
-                    </h5>
-                    <h4 className="font-medium">
-                      {subjectData?.assessmentScheme?.attendance || "N/A"}
-                    </h4>
-                  </div>
-                  <div className="flex_start flex-col gap-1">
-                    <h5 className="text-opacity-25 text-black font-semibold">
-                      {t("class_tests")}
-                    </h5>
-                    <h4 className="font-medium">
-                      {subjectData?.assessmentScheme?.class_tests_quizzes ||
-                        "N/A"}
-                    </h4>
-                  </div>
-                  <div className="flex_start flex-col gap-1">
-                    <h5 className="text-opacity-25 text-black font-semibold">
-                      {t("midterm_exam")}
-                    </h5>
-                    <h4 className="font-medium">
-                      {subjectData?.assessmentScheme?.midterm_exam || "N/A"}
-                    </h4>
-                  </div>
-                  <div className="flex_start flex-col gap-1">
-                    <h5 className="text-opacity-25 text-black font-semibold">
-                      {t("practical_exam")}
-                    </h5>
-                    <h4 className="font-medium">
-                      {subjectData?.assessmentScheme?.practical_exam || "N/A"}
-                    </h4>
-                  </div>
-                  <div className="flex_start flex-col gap-1">
-                    <h5 className="text-opacity-25 text-black font-semibold">
-                      {t("final_exam")}
-                    </h5>
-                    <h4 className="font-medium">
-                      {subjectData?.assessmentScheme?.final_exam || "N/A"}
-                    </h4>
-                  </div>
+                  <LabeledValue
+                    label={t("attendance")}
+                    value={subjectData?.attendance || "N/A"}
+                  />
+                  <LabeledValue
+                    label={t("class_tests")}
+                    value={subjectData?.class_tests_quizzes || "N/A"}
+                  />
+                  <LabeledValue
+                    label={t("midterm_exam")}
+                    value={subjectData?.midterm_exam || "N/A"}
+                  />
+                  <LabeledValue
+                    label={t("practical_exam")}
+                    value={subjectData?.practical_exam || "N/A"}
+                  />
+                  <LabeledValue
+                    label={t("final_exam")}
+                    value={subjectData?.final_exam || "N/A"}
+                  />
                 </div>
               </div>
 
-              {/* Subject Schedule */}
+              {/* Subject Schedule (flattened) */}
               <div className="flex_start flex-col gap-5 bg-white rounded-3xl p-5">
                 <h3 className="pb-5 text-golden text-sm font-semibold border-b border-b-lightBorder w-full">
                   {t("subject_schedule")}
                 </h3>
                 <div className="flex_start lg:flex-col flex-row lg:gap-5 sm:gap-20 gap-10 w-full sm:flex-nowrap flex-wrap">
-                  <div className="flex_start flex-col gap-1">
-                    <h5 className="text-opacity-25 text-black font-semibold">
-                      {t("duration")}
-                    </h5>
-                    <h4 className="font-medium">
-                      {subjectData?.subjectSchedule?.duration || "N/A"}
-                    </h4>
-                  </div>
-                  <div className="flex_start flex-col gap-1">
-                    <h5 className="text-opacity-25 text-black font-semibold">
-                      {t("lectures")}
-                    </h5>
-                    <h4 className="font-medium">
-                      {subjectData?.subjectSchedule?.lectures || "N/A"}
-                    </h4>
-                  </div>
-                  <div className="flex_start flex-col gap-1">
-                    <h5 className="text-opacity-25 text-black font-semibold">
-                      {t("language")}
-                    </h5>
-                    <h4 className="font-medium">
-                      {subjectData?.subjectSchedule?.language || "N/A"}
-                    </h4>
-                  </div>
-                  <div className="flex_start flex-col gap-1">
-                    <h5 className="text-opacity-25 text-black font-semibold">
-                      {t("hours_per_week")}
-                    </h5>
-                    <h4 className="font-medium">
-                      {subjectData?.subjectSchedule?.hours_per_week || "N/A"}
-                    </h4>
-                  </div>
+                  <LabeledValue
+                    label={t("duration")}
+                    value={subjectData?.duration || "N/A"}
+                  />
+                  <LabeledValue
+                    label={t("lectures")}
+                    value={subjectData?.lectures || "N/A"}
+                  />
+                  <LabeledValue
+                    label={t("language")}
+                    value={subjectData?.language || "N/A"}
+                  />
+                  <LabeledValue
+                    label={t("hours_per_week")}
+                    value={subjectData?.hours_per_week || "N/A"}
+                  />
+                  <LabeledValue
+                    label={t("theory_hours")}
+                    value={subjectData?.theory_hours || "N/A"}
+                  />
+                  <LabeledValue
+                    label={t("practical_hours")}
+                    value={subjectData?.practical_hours || "N/A"}
+                  />
                 </div>
               </div>
             </div>
+
+            {/* Module Description (optional long text from API) */}
+            {subjectData?.module_description && (
+              <>
+                <h5 className="text-opacity-25 text-black font-semibold">
+                  Module Description
+                </h5>
+                <p className="text-sm text-black/70">
+                  {subjectData.module_description}
+                </p>
+              </>
+            )}
 
             {/* PDF Lectures */}
             <h5 className="text-opacity-25 text-black font-semibold">
               {t("PDF_lectures")}
             </h5>
             <div className="grid md:grid-cols-2 grid-cols-1 w-full gap-5">
-              {subjectData?.pdfLectures &&
-              subjectData.pdfLectures.length > 0 ? (
-                subjectData.pdfLectures.map((lecture) => (
+              {normalizedLectures.length > 0 ? (
+                normalizedLectures.map((lecture) => (
                   <div
                     key={lecture.id}
                     className="flex_start flex-col gap-5 p-5 rounded-3xl bg-background w-full"
                   >
                     <h4 className="font-semibold text-sm text-golden">
-                      {lecture.week_title}
+                      {lecture.title}
                     </h4>
-                    {lecture.files.map((file) => (
-                      <button
-                        key={file.id}
-                        onClick={() =>
-                          handleFileDownload(file.file.path, file.title)
-                        }
-                        className="flex justify-between items-center gap-4 w-full hover:bg-white hover:rounded-lg hover:p-2 transition-all"
-                      >
-                        <span className="bg-[#81B1CE] text-white flex_center flex-shrink-0 w-7 h-7 rounded-full">
-                          <HiOutlineLink />
-                        </span>
-                        <span className="text-secondary text-opacity-70 text-sm text-start max-w-[200px] truncate">
-                          {file.title}
-                        </span>
-                        <div className="flex-1 flex justify-end">
-                          <span className="w-5 flex_center h-5 rounded-full border border-golden text-golden text-sm">
-                            <GrLinkNext className="-rotate-45" />
+
+                    {lecture.files.length > 0 ? (
+                      lecture.files.map((file) => (
+                        <button
+                          key={file.id}
+                          onClick={() =>
+                            handleFileDownload(file.path, file.title)
+                          }
+                          className="flex justify-between items-center gap-4 w-full hover:bg-white hover:rounded-lg hover:p-2 transition-all"
+                        >
+                          <span className="bg-[#81B1CE] text-white flex_center flex-shrink-0 w-7 h-7 rounded-full">
+                            <HiOutlineLink />
                           </span>
-                        </div>
-                      </button>
-                    ))}
+                          <span className="text-secondary text-opacity-70 text-sm text-start max-w-[200px] truncate">
+                            {file.title || "File"}
+                          </span>
+                          <div className="flex-1 flex justify-end">
+                            <span className="w-5 flex_center h-5 rounded-full border border-golden text-golden text-sm">
+                              <GrLinkNext className="-rotate-45" />
+                            </span>
+                          </div>
+                        </button>
+                      ))
+                    ) : (
+                      <span className="text-sm text-black/50">No files</span>
+                    )}
                   </div>
                 ))
               ) : (
@@ -459,5 +453,15 @@ const Page = () => {
     </div>
   );
 };
+
+// Small helper for consistent label/value rendering
+function LabeledValue({ label, value }: { label: string; value?: string }) {
+  return (
+    <div className="flex_start flex-col gap-1">
+      <h5 className="text-opacity-25 text-black font-semibold">{label}</h5>
+      <h4 className="font-medium">{value || "N/A"}</h4>
+    </div>
+  );
+}
 
 export default Page;

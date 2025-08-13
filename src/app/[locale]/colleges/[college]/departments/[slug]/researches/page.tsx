@@ -9,7 +9,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { CiCalendar, CiSearch } from "react-icons/ci";
 import {
   FaArrowRightLong,
@@ -18,6 +18,7 @@ import {
 } from "react-icons/fa6";
 import { GoArrowRight, GoBriefcase } from "react-icons/go";
 import { HiOutlineBuildingOffice, HiOutlineLink } from "react-icons/hi2";
+import { HiOutlineDownload } from "react-icons/hi";
 import { IoMdClose } from "react-icons/io";
 import { IoArrowForwardOutline, IoBriefcaseOutline } from "react-icons/io5";
 import { LuUsers } from "react-icons/lu";
@@ -85,7 +86,6 @@ interface ResearchResponse {
   data: Research[];
 }
 
-// Date Picker Component Types
 interface DateRange {
   from: string;
   to: string;
@@ -117,14 +117,8 @@ const DatePicker = ({
         onToggle(false);
       }
     };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    if (isOpen) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen, onToggle]);
 
   const handleApply = () => {
@@ -188,7 +182,7 @@ const DatePicker = ({
   );
 };
 
-// Research Skeleton Component
+// Skeleton
 const ResearchSkeleton = () => (
   <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
     {[1, 2, 3, 4].map((i) => (
@@ -222,11 +216,13 @@ const Page = () => {
   const slug = params?.slug as string;
   const college = params?.college as string;
 
-  // State management
+  // Modal state
   const [modalId, setModalId] = useState<number | null>(null);
   const [selectedResearch, setSelectedResearch] = useState<Research | null>(
     null
   );
+
+  // Filters
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [appliedSearchQuery, setAppliedSearchQuery] = useState<string>("");
   const [selectedDates, setSelectedDates] = useState<DateRange>({
@@ -234,63 +230,116 @@ const Page = () => {
     to: "",
   });
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false);
-  const [currentPage, setCurrentPage] = useState<number>(1);
 
-  // Build API URL with filters
-  const buildApiUrl = () => {
-    const params = new URLSearchParams({
-      page: currentPage.toString(),
-      limit: "15",
-    });
+  // Pagination (see more)
+  const [page, setPage] = useState<number>(1);
+  const pageSize = 10;
+  const [items, setItems] = useState<Research[]>([]);
+  const [total, setTotal] = useState<number>(0);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
+  const seenIdsRef = useRef<Set<number>>(new Set());
 
-    if (appliedSearchQuery.trim()) {
-      params.append("search", appliedSearchQuery.trim());
+  // ---- File helpers ----
+  const buildFileUrl = (path: string) => {
+    // Supports absolute or relative paths
+    try {
+      return path.startsWith("http") ? path : new URL(path, API_URL).href;
+    } catch {
+      return `${API_URL}${path}`;
     }
-
-    if (selectedDates.from) {
-      params.append("date_from", selectedDates.from);
-    }
-
-    if (selectedDates.to) {
-      params.append("date_to", selectedDates.to);
-    }
-
-    return `${API_URL}/website/departments/${slug}/researches?${params.toString()}`;
   };
 
-  // Fetch research data
-  const {
-    data: researchData,
-    loading: researchLoading,
-    refetch,
-  } = useFetch<ResearchResponse>(buildApiUrl());
+  const getFileName = (filePath: string) => {
+    const parts = filePath.split("/");
+    const fileName = parts[parts.length - 1];
+    return fileName.replace(/^\d+-\d+\./, "") || "research.pdf";
+  };
 
-  // Handle modal
+  const handleFileDownload = (path: string) => {
+    const url = buildFileUrl(path);
+    const fileName = getFileName(path);
+    const a = document.createElement("a");
+    a.href = url;
+    a.setAttribute("download", fileName);
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  // Build URL (new endpoint)
+  const url = useMemo(() => {
+    const qs = new URLSearchParams({
+      page: String(page),
+      limit: String(pageSize),
+    });
+    if (appliedSearchQuery.trim()) qs.set("search", appliedSearchQuery.trim());
+    if (selectedDates.from) qs.set("date_from", selectedDates.from);
+    if (selectedDates.to) qs.set("date_to", selectedDates.to);
+
+    return `${API_URL}/website/departments/${slug}/research?${qs.toString()}`;
+  }, [
+    slug,
+    page,
+    pageSize,
+    appliedSearchQuery,
+    selectedDates.from,
+    selectedDates.to,
+  ]);
+
+  const { data, loading, error } = useFetch<ResearchResponse>(url);
+
+  // Merge page results
+  useEffect(() => {
+    if (!data) return;
+    if (typeof data.total === "number") setTotal(data.total);
+
+    const incoming = data.data ?? [];
+    const newOnes = incoming.filter((r) => !seenIdsRef.current.has(r.id));
+    if (newOnes.length) {
+      setItems((prev) => [...prev, ...newOnes]); // append to END
+      newOnes.forEach((r) => seenIdsRef.current.add(r.id));
+    }
+
+    if (page === 1) setInitialLoading(false);
+    setLoadingMore(false);
+  }, [data, page]);
+
+  const hasMore = items.length < total;
+
+  // Handlers
   const handleModal = (research: Research | null) => {
     setSelectedResearch(research);
     setModalId(research?.id || null);
   };
 
-  // Handle search - only when button is clicked
   const handleSearch = () => {
     setAppliedSearchQuery(searchQuery);
-    setCurrentPage(1);
-    setTimeout(() => refetch(), 100);
+    setPage(1);
+    setItems([]);
+    setTotal(0);
+    seenIdsRef.current.clear();
+    setInitialLoading(true);
   };
 
-  // Handle date change
   const handleDateChange = (dates: DateRange) => {
     setSelectedDates(dates);
-    setCurrentPage(1);
-    // Auto-refetch when dates change
-    setTimeout(() => refetch(), 100);
+    setPage(1);
+    setItems([]);
+    setTotal(0);
+    seenIdsRef.current.clear();
+    setInitialLoading(true);
   };
 
-  // Handle Enter key in search input
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
+    if (e.key === "Enter") handleSearch();
+  };
+
+  const loadMore = () => {
+    if (!hasMore || loadingMore) return;
+    setLoadingMore(true);
+    setPage((p) => p + 1);
   };
 
   const formatDate = (dateString: string) => {
@@ -302,23 +351,29 @@ const Page = () => {
     });
   };
 
-  // Get file name from path
-  const getFileName = (filePath: string) => {
-    const parts = filePath.split("/");
-    const fileName = parts[parts.length - 1];
-    // Remove timestamp prefix and return clean filename
-    const cleanName = fileName.replace(/^\d+-\d+\./, "");
-    return cleanName || "research.pdf";
-  };
-
-  // Clear all filters
   const clearAllFilters = () => {
     setSearchQuery("");
     setAppliedSearchQuery("");
     setSelectedDates({ from: "", to: "" });
-    setCurrentPage(1);
-    setTimeout(() => refetch(), 100);
+    setPage(1);
+    setItems([]);
+    setTotal(0);
+    seenIdsRef.current.clear();
+    setInitialLoading(true);
   };
+
+  if (error) {
+    return (
+      <div className="w-full flex_center my-10">
+        <div className="max-w-[1024px] px-3 w-full flex_start flex-col gap-8 text-center">
+          <h1 className="text-2xl font-bold text-red-500 mb-4">
+            {t("error_loading") || "Error Loading Research"}
+          </h1>
+          <p className="text-gray-600">Please try again later.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 -mt-5">
@@ -390,7 +445,7 @@ const Page = () => {
                 <span className="z-10 relative">{t("researches")}</span>
               </h2>
 
-              {/* Search and Filter Section */}
+              {/* Search & Filters */}
               <div className="w-full flex_center gap-5">
                 {/* Date Picker */}
                 <div className="relative lg:w-[20%] sm:w-[33%] w-14 text-sm flex-shrink-0 sm:border-none border border-lightBorder sm:p-0 p-2 rounded-md">
@@ -422,7 +477,7 @@ const Page = () => {
                   />
                 </div>
 
-                {/* Search Input */}
+                {/* Search */}
                 <div className="relative w-full">
                   <span className="pointer-events-none text-black opacity-50 absolute ltr:left-2 rtl:right-2 top-1/2 -translate-y-1/2 z-10 text-xl">
                     <CiSearch />
@@ -437,7 +492,6 @@ const Page = () => {
                   />
                 </div>
 
-                {/* Search Button */}
                 <button
                   onClick={handleSearch}
                   className="sm:px-6 px-2 flex-shrink-0 py-2 sm:rounded-xl rounded-md bg-primary text-white hover:bg-primary/90 transition-colors"
@@ -446,101 +500,113 @@ const Page = () => {
                 </button>
               </div>
 
-              {/* Results Info */}
-              {/* {!researchLoading && researchData && (
-                <div className="text-sm text-gray-600">
-                  Showing {researchData.data.length} of {researchData.total}{" "}
-                  results
-                  {appliedSearchQuery && ` for "${appliedSearchQuery}"`}
-                  {(selectedDates.from || selectedDates.to) &&
-                    " in selected date range"}
-                </div>
-              )} */}
-
-              {/* Research Grid */}
-              {researchLoading ? (
+              {/* First-load skeleton only */}
+              {initialLoading ? (
                 <ResearchSkeleton />
               ) : (
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
-                  {researchData?.data && researchData.data.length > 0 ? (
-                    researchData.data.map((research) => (
-                      <div
-                        key={research.id}
-                        className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full"
-                      >
-                        <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
-                          <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-lg">
-                            <CiSearch className="text-2xl" />
-                          </div>
-                          <div className="flex_start flex-col">
-                            <h4 className="font-medium">{research.title}</h4>
-                            <span className="text-black opacity-60 text-sm">
-                              {formatDate(research.date)}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex_start w-full gap-5 lg:flex-row flex-col">
-                          <div className="flex_start flex-col w-full">
-                            <span className="text-black opacity-60 text-xs">
-                              {t("attachment")}
-                            </span>
-                            <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm mb-3">
-                              <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                                <HiOutlineLink />
+                <>
+                  {/* Research Grid */}
+                  <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
+                    {items.length > 0 ? (
+                      items.map((research) => (
+                        <div
+                          key={research.id}
+                          className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full"
+                        >
+                          <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
+                            <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-lg">
+                              <CiSearch className="text-2xl" />
+                            </div>
+                            <div className="flex_start flex-col">
+                              <h4 className="font-medium">{research.title}</h4>
+                              <span className="text-black opacity-60 text-sm">
+                                {formatDate(research.date)}
                               </span>
-                              <span>{getFileName(research.file.path)}</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleModal(research)}
-                              className="flex justify-between items-center w-full gap-4 px-2 text-sm text-golden border-t border-t-lightBorder py-3"
-                            >
-                              <p>{t("read_more")}</p>
-                              <FaArrowRightLong className="rtl:rotate-180" />
-                            </button>
+                            </div>
+                          </div>
+                          <div className="flex_start w-full gap-5 lg:flex-row flex-col">
+                            <div className="flex_start flex-col w-full">
+                              <span className="text-black opacity-60 text-xs">
+                                {t("attachment")}
+                              </span>
+
+                              {/* File pill */}
+                              <div className="flex items-center gap-2 mb-3">
+                                <button
+                                  type="button"
+                                  className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm"
+                                  onClick={() =>
+                                    window.open(
+                                      buildFileUrl(research.file.path),
+                                      "_blank",
+                                      "noopener"
+                                    )
+                                  }
+                                >
+                                  <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
+                                    <HiOutlineLink />
+                                  </span>
+                                  <span>{getFileName(research.file.path)}</span>
+                                </button>
+
+                                {/* Download button */}
+                                {/* <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleFileDownload(research.file.path)
+                                  }
+                                  className="rounded-3xl flex_center gap-2 px-3 py-1.5 text-sm border border-lightBorder hover:bg-gray-50"
+                                  title={t("download") || "Download"}
+                                >
+                                  <HiOutlineDownload />
+                                  <span className="hidden sm:inline">
+                                    {t("download") || "Download"}
+                                  </span>
+                                </button> */}
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={() => handleModal(research)}
+                                className="flex justify-between items-center w-full gap-4 px-2 text-sm text-golden border-t border-t-lightBorder py-3"
+                              >
+                                <p>{t("read_more")}</p>
+                                <FaArrowRightLong className="rtl:rotate-180" />
+                              </button>
+                            </div>
                           </div>
                         </div>
+                      ))
+                    ) : (
+                      <div className="col-span-full text-center py-10">
+                        <p className="text-gray-500 text-lg">
+                          No research found matching your criteria.
+                        </p>
+                        <button
+                          onClick={clearAllFilters}
+                          className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+                        >
+                          Clear Filters
+                        </button>
                       </div>
-                    ))
-                  ) : (
-                    <div className="col-span-full text-center py-10">
-                      <p className="text-gray-500 text-lg">
-                        No research found matching your criteria.
-                      </p>
+                    )}
+                  </div>
+
+                  {/* See more (centered) */}
+                  {items.length < total && (
+                    <div className="w-full flex justify-center mt-8">
                       <button
-                        onClick={clearAllFilters}
-                        className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+                        onClick={loadMore}
+                        disabled={loadingMore}
+                        className="px-6 py-2 rounded-lg border border-lightBorder hover:bg-gray-50 disabled:opacity-60"
                       >
-                        Clear Filters
+                        {loadingMore
+                          ? t("loading") || "Loading..."
+                          : t("see_more") || "See more"}
                       </button>
                     </div>
                   )}
-                </div>
-              )}
-
-              {/* Pagination */}
-              {researchData && researchData.total > 15 && (
-                <div className="flex_center gap-2 mt-8">
-                  {Array.from(
-                    { length: Math.ceil(researchData.total / 15) },
-                    (_, i) => i + 1
-                  ).map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => {
-                        setCurrentPage(page);
-                        setTimeout(() => refetch(), 100);
-                      }}
-                      className={`px-3 py-2 rounded-lg ${
-                        currentPage === page
-                          ? "bg-primary text-white"
-                          : "border border-lightBorder hover:bg-gray-50"
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                </div>
+                </>
               )}
             </div>
           </div>
@@ -588,13 +654,40 @@ const Page = () => {
                 <p className="text-secondary font-medium">
                   {formatDate(selectedResearch.date)}
                 </p>
-                <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                  <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                    <HiOutlineLink />
-                  </span>
-                  <span>{getFileName(selectedResearch.file.path)}</span>
-                </button>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm"
+                    onClick={() =>
+                      window.open(
+                        buildFileUrl(selectedResearch.file.path),
+                        "_blank",
+                        "noopener"
+                      )
+                    }
+                  >
+                    <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
+                      <HiOutlineLink />
+                    </span>
+                    <span>{getFileName(selectedResearch.file.path)}</span>
+                  </button>
+
+                  {/* <button
+                    type="button"
+                    onClick={() =>
+                      handleFileDownload(selectedResearch.file.path)
+                    }
+                    className="rounded-3xl flex_center gap-2 px-3 py-1.5 text-sm border border-lightBorder hover:bg-gray-50"
+                    title={t("download") || "Download"}
+                  >
+                    <HiOutlineDownload />
+                    <span className="hidden sm:inline">
+                      {t("download") || "Download"}
+                    </span>
+                  </button> */}
+                </div>
               </div>
+
               <div className="flex_start gap-1 flex-col">
                 <span className="text-black opacity-60 text-sm">
                   {t("students")}
