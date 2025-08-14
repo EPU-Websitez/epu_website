@@ -1,233 +1,251 @@
 "use client";
 
+import InternationalRelationsHeader from "@/components/InternationalRelationsHeader";
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState } from "react";
-import { BiMinus } from "react-icons/bi";
+import { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa6";
 import { FiArrowRight } from "react-icons/fi";
-import { GoBook, GoPlus } from "react-icons/go";
+import { GoBook } from "react-icons/go";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
+import { API_URL } from "@/libs/env";
+import useFetch from "@/libs/hooks/useFetch";
+
+// -------- Interfaces --------
+
+interface Image {
+  id: number;
+  original: string;
+  lg: string;
+  md: string;
+  sm: string;
+}
+
+interface InternationalRelation {
+  id: number;
+  slug: string;
+  about: string;
+  bg_image: Image;
+  bg_title: string;
+  bg_description: string;
+}
+
+interface InternationalRelationResponse {
+  total: number;
+  page: number;
+  limit: number;
+  data: InternationalRelation[];
+}
+
+interface Unit {
+  id: number;
+  title: string;
+  description: string;
+}
+
+interface UnitsResponse {
+  total: number;
+  page: number;
+  limit: number;
+  data: Unit[];
+}
+
+interface SectionList {
+  id: number;
+  title: string;
+  description: string;
+}
+
+interface Section {
+  id: number;
+  title: string;
+  description: string;
+  lists: SectionList[];
+}
+
+interface SectionsResponse {
+  total: number;
+  page: number;
+  limit: number;
+  data: Section[];
+}
+
+// -------- Granular Skeleton Components --------
+
+const AboutTextSkeleton = () => (
+  <div className="space-y-3 animate-pulse">
+    <div className="h-4 bg-gray-200 rounded w-full"></div>
+    <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+    <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+  </div>
+);
+
+const AccordionSkeleton = () => (
+  <div className="w-full h-16 bg-gray-200 rounded-2xl animate-pulse"></div>
+);
+
+const ProgramCardSkeleton = () => (
+  <div className="w-full h-[180px] bg-gray-200 rounded-3xl animate-pulse"></div>
+);
 
 const Page = () => {
   const t = useTranslations("International");
   const params = useParams();
   const locale = params?.locale as string;
-  const id = params?.id as string;
-  const [openedAccordion, setOpenedAccordion] = useState(0);
-  const handleAccordion = (e: any) => {
-    if (e !== openedAccordion) {
-      setOpenedAccordion(e);
+
+  const [openedAccordion, setOpenedAccordion] = useState<number | null>(null);
+  const [internationalRelationId, setInternationalRelationId] = useState<
+    number | null
+  >(null);
+
+  const handleAccordion = (id: number) => {
+    if (id !== openedAccordion) {
+      setOpenedAccordion(id);
     } else {
-      setOpenedAccordion(0);
+      setOpenedAccordion(null);
     }
   };
+
+  // 1. Fetch main International Relations data to get the ID
+  const {
+    data: relationData,
+    loading: relationLoading,
+    error: relationError,
+  } = useFetch<InternationalRelationResponse>(
+    `${API_URL}/website/international-relations?page=1&limit=2`
+  );
+
+  // Set the ID once the main data is fetched
+  useEffect(() => {
+    if (relationData?.data?.[1]?.id) {
+      setInternationalRelationId(relationData.data[1].id);
+    }
+  }, [relationData]);
+
+  // 2. Fetch Units data using the ID from the first call
+  const {
+    data: unitsData,
+    loading: unitsLoading,
+    error: unitsError,
+  } = useFetch<UnitsResponse>(
+    internationalRelationId
+      ? `${API_URL}/website/international-relations/international-relation/${internationalRelationId}/units`
+      : ""
+  );
+
+  // 3. Fetch Sections data using the ID from the first call
+  const {
+    data: sectionsData,
+    loading: sectionsLoading,
+    error: sectionsError,
+  } = useFetch<SectionsResponse>(
+    internationalRelationId
+      ? `${API_URL}/website/international-relations/international-relation/${internationalRelationId}/sections`
+      : ""
+  );
+
+  const isLoading = relationLoading || unitsLoading || sectionsLoading;
+  const hasError = relationError || unitsError || sectionsError;
+  const mainRelation = relationData?.data?.[0];
+  const units = unitsData?.data || [];
+  const sections = sectionsData?.data || [];
+
+  if (hasError) {
+    return (
+      <div className="w-full flex_center my-20">
+        <p className="text-red-500">{t("error_loading_data")}</p>
+      </div>
+    );
+  }
+
+  // This check ensures we don't render a blank page if the initial fetch fails after loading
+  if (!isLoading && !mainRelation) {
+    return (
+      <div className="w-full flex_center my-20">
+        <p>{t("no_data_found")}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
       <div className="max-w-[1045px] px-3 w-full flex_start flex-col gap-8">
         <SubHeader title={t("international_relations")} alt={false} />
-        <div className="w-full lg:h-[400px] sm:h-[300px] h-[220px] relative overflow-hidden rounded-3xl">
-          <Image
-            src={"/images/international-lg.png"}
-            alt="My Image"
-            fill
-            priority
-            className="w-full h-full"
-          />
-          <div className="ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary to-transparent absolute top-0 left-0 w-full h-full z-10"></div>
-          <h3 className="absolute z-20 text-white top-10 ltr:left-10 rtl:right-10 lg:text-[28px] text-sm max-w-[710px]">
-            {t("international_strategy_text")}
-          </h3>
-          <div className="absolute z-20 text-white bottom-14 ltr:left-10 rtl:right-10 sm:flex hidden justify-center items-center gap-5">
-            <span>{t("about")}</span>
-            <span className="h-[20px] w-[1px] bg-white"></span>
-            <Link
-              href={`/${locale}/international-relations/directory-structure`}
-              title={t("directory_structure")}
-            >
-              {t("directory_structure")}
-            </Link>
-            <span className="h-[20px] w-[1px] bg-white"></span>
-            <Link
-              href={`/${locale}/international-relations/office-staff`}
-              title={t("office_staff")}
-            >
-              {t("office_staff")}
-            </Link>
-            <span className="h-[20px] w-[1px] bg-white"></span>
-            <Link
-              href={`/${locale}/international-relations/contact`}
-              title={t("contact")}
-            >
-              {t("contact")}
-            </Link>
-          </div>
-        </div>
+        <InternationalRelationsHeader />
         <h2 className="relative sm:text-[32px] text-lg font-semibold ">
           <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
           <span className="z-10 relative">{t("about")}</span>
         </h2>
-        <p className="text-opacity-70 text-secondary text-sm sm:rounded-none rounded-lg sm:border-none border border-lightBorder sm:p-0 p-3">
-          {t("international_relations_about_text")}
-        </p>
-        <div className="flex_center w-full gap-5 mt-5">
-          <span className="bg-lightBorder w-full h-[1px]"></span>
-          <h3 className="text-secondary text-xl font-medium">{t("units")}</h3>
-          <span className="bg-lightBorder w-full h-[1px]"></span>
-        </div>
+
+        {/* About Text: Skeleton vs Content */}
+        {isLoading ? (
+          <AboutTextSkeleton />
+        ) : (
+          <p className="text-opacity-70 text-secondary text-sm sm:rounded-none rounded-lg sm:border-none border border-lightBorder sm:p-0 p-3">
+            {mainRelation?.about}
+          </p>
+        )}
+
+        {/* Units Section */}
+        {units.length > 0 && (
+          <div className="flex_center w-full gap-5 mt-5">
+            <span className="bg-lightBorder w-full h-[1px]"></span>
+            <h3 className="text-secondary text-xl font-medium">{t("units")}</h3>
+            <span className="bg-lightBorder w-full h-[1px]"></span>
+          </div>
+        )}
         <div className="flex_start flex-col gap-5 w-full">
-          <div
-            className={`w-full flex_start flex-col rounded-2xl text-secondary border ${
-              openedAccordion === 1 ? "border-golden" : "border-lightBorder"
-            }`}
-          >
-            <button
-              type="button"
-              onClick={() => handleAccordion(1)}
-              className="flex justify-between items-center w-full p-5"
-            >
-              <div className="flex_center gap-4">
-                <span className="w-6 h-6 bg-golden flex-shrink-0 rounded-full relative block"></span>
-                <h3 className="font-semibold">Grand and Fundraising</h3>
-              </div>
-              <FaChevronDown
-                className={`duration-200 ${
-                  openedAccordion === 1 ? "rotate-180" : ""
+          {isLoading ? (
+            <>
+              <AccordionSkeleton />
+              <AccordionSkeleton />
+            </>
+          ) : (
+            units.map((unit) => (
+              <div
+                key={unit.id}
+                className={`w-full flex_start flex-col rounded-2xl text-secondary border ${
+                  openedAccordion === unit.id
+                    ? "border-golden"
+                    : "border-lightBorder"
                 }`}
-              />
-            </button>
-            <div
-              className={`flex_start duration-300 flex-col gap-5 ${
-                openedAccordion === 1
-                  ? "max-h-[700px] p-5"
-                  : "max-h-0 overflow-y-hidden"
-              }`}
-            >
-              <p className="sm:text-base text-sm opacity-70">
-                The mission of this section is to support the academic staff or
-                the alumni to study abroad through participation in quality
-                programs in a wide range of disciplines. Also to enable the
-                faculty staff to participate in training and scientific
-                researches. Furthermore, to arrange all issues which are related
-                to participation of faculty and staff members in conferences,
-                workshops and training courses. Moreover, the purpose of this
-                section is to develop the ability of the academic staff of the
-                university internationally, by increasing the awareness and
-                understanding and enrich curricula on every campus of the
-                university, as well as to expand educational opportunities
-                abroad for students from diverse backgrounds. As the most
-                effective and dramatic experience by which students and staff
-                can achieve international and intercultural learning, study
-                abroad will contribute significantly to careers in all fields of
-                specialization and should be an integral part of an education at
-                Erbil Polytechnic University.
-              </p>
-            </div>
-          </div>
-          <div
-            className={`w-full flex_start flex-col rounded-2xl text-secondary border ${
-              openedAccordion === 2 ? "border-golden" : "border-lightBorder"
-            }`}
-          >
-            <button
-              type="button"
-              onClick={() => handleAccordion(2)}
-              className="flex justify-between items-center w-full p-5"
-            >
-              <div className="flex_center gap-4">
-                <span className="w-6 h-6 bg-golden flex-shrink-0 rounded-full relative block"></span>
-                <h3 className="font-semibold">
-                  Cultural and Academic Relations
-                </h3>
+              >
+                <button
+                  type="button"
+                  onClick={() => handleAccordion(unit.id)}
+                  className="flex justify-between items-center w-full p-5 text-left"
+                >
+                  <div className="flex_center gap-4">
+                    <span className="w-6 h-6 bg-golden flex-shrink-0 rounded-full relative block"></span>
+                    <h3 className="font-semibold">{unit.title}</h3>
+                  </div>
+                  <FaChevronDown
+                    className={`duration-200 flex-shrink-0 ${
+                      openedAccordion === unit.id ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                <div
+                  className={`flex_start duration-300 flex-col gap-5 ${
+                    openedAccordion === unit.id
+                      ? "max-h-[700px] p-5 pt-0"
+                      : "max-h-0 overflow-y-hidden"
+                  }`}
+                >
+                  <p className="sm:text-base text-sm opacity-70">
+                    {unit.description}
+                  </p>
+                </div>
               </div>
-              <FaChevronDown
-                className={`duration-200 ${
-                  openedAccordion === 2 ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-            <div
-              className={`flex_start duration-300 flex-col gap-5 ${
-                openedAccordion === 2
-                  ? "max-h-[700px] p-5"
-                  : "max-h-0 overflow-y-hidden"
-              }`}
-            >
-              <p className="sm:text-base text-sm opacity-70">
-                The mission of this section is to support the academic staff or
-                the alumni to study abroad through participation in quality
-                programs in a wide range of disciplines. Also to enable the
-                faculty staff to participate in training and scientific
-                researches. Furthermore, to arrange all issues which are related
-                to participation of faculty and staff members in conferences,
-                workshops and training courses. Moreover, the purpose of this
-                section is to develop the ability of the academic staff of the
-                university internationally, by increasing the awareness and
-                understanding and enrich curricula on every campus of the
-                university, as well as to expand educational opportunities
-                abroad for students from diverse backgrounds. As the most
-                effective and dramatic experience by which students and staff
-                can achieve international and intercultural learning, study
-                abroad will contribute significantly to careers in all fields of
-                specialization and should be an integral part of an education at
-                Erbil Polytechnic University.
-              </p>
-            </div>
-          </div>
-          <div
-            className={`w-full flex_start flex-col rounded-2xl text-secondary border ${
-              openedAccordion === 3 ? "border-golden" : "border-lightBorder"
-            }`}
-          >
-            <button
-              type="button"
-              onClick={() => handleAccordion(3)}
-              className="flex justify-between items-center w-full p-5"
-            >
-              <div className="flex_center gap-4">
-                <span className="w-6 h-6 bg-golden flex-shrink-0 rounded-full relative block"></span>
-                <h3 className="font-semibold">
-                  Delegation and Hospitality Unit
-                </h3>
-              </div>
-              <FaChevronDown
-                className={`duration-200 ${
-                  openedAccordion === 2 ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-            <div
-              className={`flex_start duration-300 flex-col gap-5 ${
-                openedAccordion === 3
-                  ? "max-h-[700px] p-5"
-                  : "max-h-0 overflow-y-hidden"
-              }`}
-            >
-              <p className="sm:text-base text-sm opacity-70">
-                The mission of this section is to support the academic staff or
-                the alumni to study abroad through participation in quality
-                programs in a wide range of disciplines. Also to enable the
-                faculty staff to participate in training and scientific
-                researches. Furthermore, to arrange all issues which are related
-                to participation of faculty and staff members in conferences,
-                workshops and training courses. Moreover, the purpose of this
-                section is to develop the ability of the academic staff of the
-                university internationally, by increasing the awareness and
-                understanding and enrich curricula on every campus of the
-                university, as well as to expand educational opportunities
-                abroad for students from diverse backgrounds. As the most
-                effective and dramatic experience by which students and staff
-                can achieve international and intercultural learning, study
-                abroad will contribute significantly to careers in all fields of
-                specialization and should be an integral part of an education at
-                Erbil Polytechnic University.
-              </p>
-            </div>
-          </div>
+            ))
+          )}
+        </div>
+
+        {/* Programs Section */}
+        {sections.length > 0 && (
           <div className="flex_center w-full gap-5 mt-5">
             <span className="bg-lightBorder w-full h-[1px]"></span>
             <h3 className="text-secondary text-xl font-medium">
@@ -235,107 +253,74 @@ const Page = () => {
             </h3>
             <span className="bg-lightBorder w-full h-[1px]"></span>
           </div>
-          <div className="w-full grid sm:grid-cols-2 grid-cols-1 gap-5">
-            <Link
-              href={`/${locale}/international-relations/exchange-programs`}
-              title={t("exchange_programs")}
-              className="flex_start gap-5 rounded-3xl p-5 bg-primary text-white"
-            >
-              <span className="flex-shrink-0 text-xl w-10 h-10 rounded-full lg:flex hidden justify-center items-center bg-white text-secondary">
-                <GoBook />
-              </span>
-              <div className="flex_start flex-col gap-3">
-                <h3 className="lg:text-xl text-lg">{t("exchange_programs")}</h3>
-                <div className="flex_center gap-3">
-                  <span className="w-[10px] h-[10px] flex-shrink-0 rounded-full bg-golden"></span>
-                  <small className="text-xs">
-                    {t("student_exchange_programs")}
-                  </small>
-                  <FiArrowRight className="text-golden text-lg rtl:rotate-180" />
-                </div>
-                <div className="flex_center gap-3">
-                  <span className="w-[10px] h-[10px] flex-shrink-0 rounded-full bg-golden"></span>
-                  <small className="text-xs">
-                    {t("academic_exchange_programs")}
-                  </small>
-                  <FiArrowRight className="text-golden text-lg rtl:rotate-180" />
-                </div>
-                <div className="flex_center gap-3">
-                  <span className="w-[10px] h-[10px] flex-shrink-0 rounded-full bg-golden"></span>
-                  <small className="text-xs">
-                    {t("schools_exchange_programs")}
-                  </small>
-                  <FiArrowRight className="text-golden text-lg rtl:rotate-180" />
-                </div>
-                <div className="flex_center gap-3">
-                  <span className="w-[10px] h-[10px] flex-shrink-0 rounded-full bg-golden"></span>
-                  <small className="text-xs">
-                    {t("staff_exchange_programs")}
-                  </small>
-                  <FiArrowRight className="text-golden text-lg rtl:rotate-180" />
+        )}
+        <div className="w-full grid sm:grid-cols-2 grid-cols-1 gap-5">
+          {isLoading ? (
+            <>
+              <ProgramCardSkeleton />
+              <ProgramCardSkeleton />
+            </>
+          ) : (
+            sections.map((section) => (
+              <div
+                key={section.id}
+                className="flex_start gap-5 rounded-3xl p-5 bg-primary text-white"
+              >
+                <span className="flex-shrink-0 text-xl w-10 h-10 rounded-full lg:flex hidden justify-center items-center bg-white text-secondary">
+                  <GoBook />
+                </span>
+                <div className="flex_start flex-col gap-3 w-full">
+                  <h3 className="lg:text-xl text-lg">{section.title}</h3>
+                  {section.lists.map((item) => (
+                    <Link
+                      href={`/${locale}/international-relations/exchange-programs`} // Assuming this is a generic link, adjust if needed
+                      title={item.title}
+                      key={item.id}
+                      className="flex items-center gap-3 w-full justify-between hover:text-golden transition-colors"
+                    >
+                      <div className="flex_center gap-3">
+                        <span className="w-[10px] h-[10px] flex-shrink-0 rounded-full bg-golden"></span>
+                        <small className="text-xs">{item.title}</small>
+                      </div>
+                      <FiArrowRight className="text-golden text-lg rtl:rotate-180" />
+                    </Link>
+                  ))}
                 </div>
               </div>
-            </Link>
-            <Link
-              href={`/${locale}/international-relations/exchange-programs`}
-              title={t("programs_staff_researchers")}
-              className="flex_start gap-5 rounded-3xl p-5 bg-primary text-white"
-            >
-              <span className="flex-shrink-0 text-xl w-10 h-10 rounded-full lg:flex hidden justify-center items-center bg-white text-secondary">
-                <GoBook />
-              </span>
-              <div className="flex_start flex-col gap-3">
-                <h3 className="lg:text-xl text-lg">
-                  {t("programs_staff_researchers")}
-                </h3>
-                <div className="flex_center gap-3">
-                  <span className="w-[10px] h-[10px] flex-shrink-0 rounded-full bg-golden"></span>
-                  <small className="text-xs">{t("scholarship")}</small>
-                  <FiArrowRight className="text-golden text-lg rtl:rotate-180" />
-                </div>
-                <div className="flex_center gap-3">
-                  <span className="w-[10px] h-[10px] flex-shrink-0 rounded-full bg-golden"></span>
-                  <small className="text-xs">{t("fellowship")}</small>
-                  <FiArrowRight className="text-golden text-lg rtl:rotate-180" />
-                </div>
-                <div className="flex_center gap-3">
-                  <span className="w-[10px] h-[10px] flex-shrink-0 rounded-full bg-golden"></span>
-                  <small className="text-xs">{t("internship")}</small>
-                  <FiArrowRight className="text-golden text-lg rtl:rotate-180" />
-                </div>
-              </div>
-            </Link>
+            ))
+          )}
+        </div>
+
+        {/* Static Mobile Navigation */}
+        <div className="sm:hidden flex justify-start items-start flex-col gap-4 flex-shrink-0 w-full sm:border-none border-t border-t-lightBorder sm:pt-0 pt-5">
+          <div className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-primary border-primary">
+            <span>{t("about")}</span>
+            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
           </div>
-          <div className="sm:hidden flex justify-start items-start flex-col gap-4 flex-shrink-0 w-full sm:border-none border-t border-t-lightBorder sm:pt-0 pt-5">
-            <div className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-primary border-primary">
-              <span>{t("about")}</span>
-              <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-            </div>
-            <Link
-              href={`/${locale}/international-relations/directory-structure`}
-              title={t("directory_structure")}
-              className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
-            >
-              <span>{t("directory_structure")}</span>
-              <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-            </Link>
-            <Link
-              href={`/${locale}/international-relations/office-staff`}
-              title={t("office_staff")}
-              className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
-            >
-              <span>{t("office_staff")}</span>
-              <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-            </Link>
-            <Link
-              href={`/${locale}/international-relations/contact`}
-              title={t("contact")}
-              className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
-            >
-              <span>{t("contact")}</span>
-              <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-            </Link>
-          </div>
+          <Link
+            href={`/${locale}/international-relations/directory-structure?id=${mainRelation?.id}`}
+            title={t("directory_structure")}
+            className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+          >
+            <span>{t("directory_structure")}</span>
+            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+          </Link>
+          <Link
+            href={`/${locale}/international-relations/office-staff?id=${mainRelation?.id}`}
+            title={t("office_staff")}
+            className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+          >
+            <span>{t("office_staff")}</span>
+            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+          </Link>
+          <Link
+            href={`/${locale}/international-relations/contact?id=${mainRelation?.id}`}
+            title={t("contact")}
+            className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+          >
+            <span>{t("contact")}</span>
+            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+          </Link>
         </div>
       </div>
     </div>

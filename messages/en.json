@@ -446,12 +446,20 @@
     "scholarship": "Scholarship",
     "fellowship": "Fellowship",
     "internship": "Internship",
+    "no_data_found": "No Data Found",
+    "no_staff_found": "No Staff Found",
+    "see_more": "See More",
+    "loading": "Loading...",
+    "email_not_available": "Email Not Available",
     "exchange_programs_text": "This unit focuses on promoting cross-cultural understanding and cooperation. Its responsibilities include organizing cultural events, facilitating student exchange, summer training, and internship program. In addition to fostering partnerships with international institutions and communities. The cultural relations unit works to enhance intercultural communication and collaboration, aiming to build strong relationships and mutual understanding between individuals from different cultural backgrounds The mission of this section is to support the academic staff or the alumni to study abroad through participation in quality programs in a wide range of disciplines. Also to enable the faculty staff to participate in training and scientific researches. Furthermore, to arrange all issues which are related to participation of faculty and staff members in conferences, workshops and training courses. Moreover, the purpose of this section is to develop the ability of the academic staff of the university internationally, by increasing the awareness and understanding and enrich curricula on every campus of the university, as well as to expand educational opportunities abroad for students from diverse backgrounds. As the most effective and dramatic experience by which students and staff can achieve international and intercultural learning, study abroad will contribute significantly to careers in all fields of specialization and should be an integral part of an education at Erbil Polytechnic University"
   },
   "MemorandumOfUnderstanding": {
     "head": "Memorandum Of Understanding",
     "local_universities": "Local Universities And Institutes",
-    "international_universities": "International Universities And Institutes"
+    "international_universities": "International Universities And Institutes",
+    "no_mous_found": "No Mous Found",
+    "loading": "Loading...",
+    "see_more": "See More"
   },
   "ResearchesAndPublications": {
     "head": "Researches And Publications",
