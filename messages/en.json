@@ -262,6 +262,7 @@
     "teach": "Teach.",
     "learn": "Learn.",
     "grow": "Grow.",
+    "no_data_found": "No Data Found",
     "learning": "Learning",
     "collaboration": "Collaboration",
     "student_achievement": "Our Student’s Achievements",
@@ -534,6 +535,7 @@
     "register": "Register",
     "see_programs": "See Programs",
     "application_requirements": "Application Requirements",
-    "application_form": "Application For Higher Diploma"
+    "application_form": "Application For Higher Diploma",
+    "see_details": "See Details"
   }
 }

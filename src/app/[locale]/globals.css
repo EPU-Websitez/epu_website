@@ -290,3 +290,16 @@ small {
 .leaflet-popup-content-wrapper {
   border-radius: 8px;
 }
+.img_custom_shape {
+  clip-path: polygon(
+    50% 0%,
+    83% 4%,
+    100% 43%,
+    88% 88%,
+    68% 100%,
+    32% 100%,
+    10% 90%,
+    4% 34%,
+    17% 12%
+  );
+}
