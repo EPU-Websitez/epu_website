@@ -410,7 +410,9 @@
     "view_profile": "View Profile",
     "registry_university": "Registry Of The University President",
     "university_secrtariat": "University secrtariat",
-    "staff_members": "Staff Members"
+    "staff_members": "Staff Members",
+    "see_more": "See More",
+    "loading": "Loading..."
   },
   "International": {
     "international_strategy": "International Strategy",
