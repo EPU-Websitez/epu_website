@@ -11,6 +11,7 @@ import { CiCalendar, CiSearch } from "react-icons/ci";
 import { FaChevronDown } from "react-icons/fa6";
 import { useState, useRef, useEffect } from "react";
 
+// --- (All TypeScript Interfaces and the DatePicker Component remain the same) ---
 interface Image {
   id: number;
   original: string;
@@ -184,7 +185,7 @@ const DatePicker = ({
   );
 };
 
-// Skeleton Components
+// --- (Skeleton Components remain the same) ---
 const NewsSkeleton = () => (
   <div className="grid md:grid-cols-2 grid-cols-1 w-full gap-8">
     {[1, 2, 3, 4].map((i) => (
@@ -227,6 +228,11 @@ const Page = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
+  // New states for "See More" functionality
+  const [allNews, setAllNews] = useState<News[]>([]);
+  const [totalNews, setTotalNews] = useState<number>(0);
+  const [isAppending, setIsAppending] = useState<boolean>(false);
+
   // Fetch categories
   const { data: categoriesData, loading: categoriesLoading } =
     useFetch<CategoryResponse>(`${API_URL}/website/news/categories`);
@@ -235,26 +241,22 @@ const Page = () => {
   const buildApiUrl = () => {
     const params = new URLSearchParams({
       page: currentPage.toString(),
-      limit: "20",
+      limit: "8", // Fetch 8 items per page
       collegeSlug: college,
     });
 
     if (appliedSearchQuery.trim()) {
       params.append("search", appliedSearchQuery.trim());
     }
-
     if (selectedDates.from) {
       params.append("date_from", selectedDates.from);
     }
-
     if (selectedDates.to) {
       params.append("date_to", selectedDates.to);
     }
-
     if (selectedCategory !== "all") {
       params.append("categorySlug", selectedCategory);
     }
-
     return `${API_URL}/website/colleges/${college}/news?${params.toString()}`;
   };
 
@@ -265,33 +267,69 @@ const Page = () => {
     refetch,
   } = useFetch<NewsResponse>(buildApiUrl());
 
-  // Handle search - only when button is clicked
+  // Effect to handle appending or resetting news
+  useEffect(() => {
+    if (newsData?.data) {
+      setTotalNews(newsData.total);
+      if (currentPage === 1) {
+        setAllNews(newsData.data);
+      } else {
+        setAllNews((prevNews) => [...prevNews, ...newsData.data]);
+      }
+      setIsAppending(false);
+    }
+  }, [newsData]);
+
+  // Effect to refetch when filters or page change
+  useEffect(() => {
+    // Prevent refetch on initial mount if not necessary
+    if (
+      currentPage > 1 ||
+      appliedSearchQuery ||
+      selectedDates.from ||
+      selectedCategory !== "all"
+    ) {
+      refetch();
+    }
+  }, [
+    appliedSearchQuery,
+    selectedDates,
+    currentPage,
+    selectedCategory,
+    refetch,
+  ]);
+
+  // Handlers for filters
+  const handleFilterChange = () => {
+    if (currentPage === 1) {
+      refetch();
+    } else {
+      setCurrentPage(1);
+    }
+  };
+
   const handleSearch = () => {
     setAppliedSearchQuery(searchQuery);
-    setCurrentPage(1);
-    setTimeout(() => refetch(), 100);
+    handleFilterChange();
   };
 
-  // Handle date change
   const handleDateChange = (dates: DateRange) => {
     setSelectedDates(dates);
-    setCurrentPage(1);
-    // Auto-refetch when dates change
-    setTimeout(() => refetch(), 100);
+    handleFilterChange();
   };
 
-  // Handle category change
   const handleCategoryChange = (categorySlug: string) => {
     setSelectedCategory(categorySlug);
-    setCurrentPage(1);
-    setTimeout(() => refetch(), 100);
+    handleFilterChange();
   };
 
-  // Handle Enter key in search input
+  const handleSeeMore = () => {
+    setIsAppending(true);
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
+    if (e.key === "Enter") handleSearch();
   };
 
   const formatDate = (dateString: string) => {
@@ -303,7 +341,6 @@ const Page = () => {
     });
   };
 
-  // Get image with fallback logic
   const getNewsImage = (news: News) => {
     return (
       news.CoverImage?.md ||
@@ -316,15 +353,19 @@ const Page = () => {
     );
   };
 
-  // Clear all filters
   const clearAllFilters = () => {
     setSearchQuery("");
     setAppliedSearchQuery("");
     setSelectedDates({ from: "", to: "" });
     setSelectedCategory("all");
-    setCurrentPage(1);
-    setTimeout(() => refetch(), 100);
+    if (currentPage === 1) {
+      refetch();
+    } else {
+      setCurrentPage(1);
+    }
   };
+
+  const showInitialSkeleton = newsLoading && allNews.length === 0;
 
   return (
     <div className="w-full flex_center flex-col sm:my-10 my-5">
@@ -334,7 +375,7 @@ const Page = () => {
       <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full sm:mt-14 mt-10">
         <SubHeader title={t("news")} alt={false} />
 
-        {/* Search and Filter Section */}
+        {/* --- (Search and Filter Section remains the same) --- */}
         <div className="w-full flex_center gap-5">
           {/* Date Picker */}
           <div className="relative lg:w-[20%] sm:w-[33%] w-14 text-sm flex-shrink-0 sm:border-none border border-lightBorder sm:p-0 p-2 rounded-md">
@@ -390,7 +431,7 @@ const Page = () => {
           </button>
         </div>
 
-        {/* Category Filter */}
+        {/* --- (Category Filter Section remains the same) --- */}
         {categoriesLoading ? (
           <CategoriesSkeleton />
         ) : (
@@ -423,43 +464,18 @@ const Page = () => {
                   title={category.description}
                 >
                   {category.name}
-                  {/* {category.newsCount > 0 && (
-                    <span className="ml-1 text-xs opacity-75">
-                      ({category.newsCount})
-                    </span>
-                  )} */}
                 </button>
               ))}
           </div>
         )}
 
-        {/* Results Info */}
-        {/* {!newsLoading && newsData && (
-          <div className="text-sm text-gray-600">
-            Showing {newsData.data.length} of {newsData.total} results
-            {appliedSearchQuery && ` for "${appliedSearchQuery}"`}
-            {selectedCategory !== "all" && (
-              <span>
-                {" "}
-                in category "
-                {categoriesData?.data?.find(
-                  (cat) => cat.slug === selectedCategory
-                )?.name || selectedCategory}
-                "
-              </span>
-            )}
-            {(selectedDates.from || selectedDates.to) &&
-              " in selected date range"}
-          </div>
-        )} */}
-
         {/* News Section */}
-        {newsLoading ? (
+        {showInitialSkeleton ? (
           <NewsSkeleton />
         ) : (
           <div className="grid md:grid-cols-2 grid-cols-1 w-full gap-8">
-            {newsData?.data && newsData.data.length > 0 ? (
-              newsData.data.map((news, i) => (
+            {allNews.length > 0 ? (
+              allNews.map((news) => (
                 <NewsCard
                   key={news.id}
                   image={getNewsImage(news)}
@@ -486,28 +502,16 @@ const Page = () => {
           </div>
         )}
 
-        {/* Pagination */}
-        {newsData && newsData.total > 20 && (
-          <div className="flex_center gap-2 mt-8">
-            {Array.from(
-              { length: Math.ceil(newsData.total / 20) },
-              (_, i) => i + 1
-            ).map((page) => (
-              <button
-                key={page}
-                onClick={() => {
-                  setCurrentPage(page);
-                  setTimeout(() => refetch(), 100);
-                }}
-                className={`px-3 py-2 rounded-lg ${
-                  currentPage === page
-                    ? "bg-primary text-white"
-                    : "border border-lightBorder hover:bg-gray-50"
-                }`}
-              >
-                {page}
-              </button>
-            ))}
+        {/* "See More" Button */}
+        {!showInitialSkeleton && allNews.length < totalNews && (
+          <div className="w-full flex_center mt-8">
+            <button
+              onClick={handleSeeMore}
+              disabled={isAppending}
+              className="border border-primary text-primary px-8 py-2 rounded-md hover:bg-primary hover:text-white transition-colors disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 disabled:cursor-wait"
+            >
+              {isAppending ? `${t("search")}...` : t("see_more")}
+            </button>
           </div>
         )}
       </div>

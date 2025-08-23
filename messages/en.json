@@ -85,6 +85,8 @@
     "head": "The Message from the President of the University.",
     "name": "Prof. Dr. Edrees Muhammad Harki",
     "header": "Welcome to Erbil Polytechnic University!",
+    "see_more": "See More",
+    "loading": "Loading...",
     "text": "Since my selection to lead EPU in April 2022, I have focused on understanding our university's environment and developing it to meet community needs. We emphasize practical learning, high-quality technical education, and a safe environment for students and faculty. Our goal is to translate classroom theory into practical applications, allowing students to make a positive impact on the world. We strive to enhance EPU's environment so everyone feels proud and valued. Our success depends on the growth and achievements of our faculty, students, and staff, supported by our generous partners and stakeholders. EPU is a thriving community attracting national and international students, instructors, and academic leaders. Together, we can enhance research results and drive positive change. We are committed to fostering an engaged learning environment, cultivating a sense of belonging, and expanding our academic relations through joint research, training, and exchanges. EPU aims to educate and equip Gen Z students with 21st-century skills for effective communication and creative thinking. With six technical colleges, six technical institutes, 629 academic staff, and around 11,000 students, we are dedicated to providing inclusive technical education based on labor market needs in Kurdistan. We prepare learners for personal responsibility in their education and careers, developing critical thinking and teamwork skills demanded by employers. Our collaborations with partners in various sectors ensure we contribute to the success of Kurdistan as we move towards a bright future."
   },
   "Vision": {
@@ -110,7 +112,9 @@
     "head": "Tutorials",
     "search": "Search for tutorials ...",
     "search_button": "Search",
-    "watch": "Watch On Youtube"
+    "watch": "Watch On Youtube",
+    "see_more": "See More",
+    "loading": "Loading..."
   },
   "UniversityBoard": {
     "head": "University Board",
@@ -510,7 +514,8 @@
   "Anniversary": {
     "head": "Anniversary",
     "conference": "Conference",
-    "latest_anniversary": "Latest Anniversary"
+    "latest_anniversary": "Latest Anniversary",
+    "see_more": "See More"
   },
   "Journal": {
     "head": "EPU Journals",

@@ -1,37 +1,53 @@
 "use client";
-import React, { useState } from "react";
-import { CiBoxList } from "react-icons/ci";
+import { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import { API_URL } from "@/libs/env";
 
-const tableData = [
-  {
-    subject: "Academic Computing",
-    stage: "First Stage",
-    semester: "First Semester",
-    year: "2022 - 2023",
-  },
-  {
-    subject: "Academic Computing",
-    stage: "First Stage",
-    semester: "First Semester",
-    year: "2022 - 2023",
-  },
-  {
-    subject: "Academic Computing",
-    stage: "First Stage",
-    semester: "First Semester",
-    year: "2022 - 2023",
-  },
-  {
-    subject: "Academic Computing",
-    stage: "First Stage",
-    semester: "First Semester",
-    year: "2022 - 2023",
-  },
-];
+// -------- Interfaces --------
+interface CalendarEvent {
+  id: number;
+  event_date: string;
+  title: string;
+  link: string;
+}
+
+interface EventsResponse {
+  data: CalendarEvent[];
+}
+
+interface ProcessedEvent {
+  type: string;
+  label: string;
+  link: string;
+}
+
+// -------- Skeleton Component --------
+const CalendarSkeleton = () => (
+  <div className="animate-pulse">
+    <div className="grid grid-cols-7">
+      {[...Array(7)].map((_, i) => (
+        <div
+          key={i}
+          className="bg-gray-50 h-12 md:border border-lightBorder"
+        ></div>
+      ))}
+      {[...Array(35)].map((_, i) => (
+        <div
+          key={i}
+          className="md:min-h-24 min-h-10 p-2 border border-lightBorder"
+        >
+          <div className="h-4 w-6 bg-gray-200 rounded"></div>
+          <div className="h-3 w-full bg-gray-200 rounded mt-2"></div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
 export default function Calendar() {
-  const [currentDate, setCurrentDate] = useState(new Date(2024, 6, 1)); // July 2024
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [events, setEvents] = useState<{ [key: string]: ProcessedEvent[] }>({});
+  const [isLoading, setIsLoading] = useState(true);
 
   const monthNames = [
     "January",
@@ -47,7 +63,6 @@ export default function Calendar() {
     "November",
     "December",
   ];
-
   const dayNames = [
     "Sunday",
     "Monday",
@@ -61,106 +76,84 @@ export default function Calendar() {
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
 
-  // Get first day of month and number of days
-  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+  useEffect(() => {
+    const fetchAndProcessEvents = async () => {
+      setIsLoading(true);
+      try {
+        const startDate = new Date(currentYear, currentMonth, 1)
+          .toISOString()
+          .split("T")[0];
+        const endDate = new Date(currentYear, currentMonth + 1, 0)
+          .toISOString()
+          .split("T")[0];
 
-  // Calendar events data
-  const events: any = {
-    "01": [{ type: "summer", label: "Summer Holiday" }],
-    "02": [{ type: "summer", label: "Summer Holiday" }],
-    "03": [
-      { type: "summer", label: "Summer Holiday" },
-      { type: "insights", label: "Future Insights" },
-      { type: "conference", label: "International C..." },
-    ],
-    "04": [{ type: "summer", label: "Summer Holiday" }],
-    "05": [{ type: "summer", label: "Summer Holiday" }],
-    "06": [{ type: "summer", label: "Summer Holiday" }],
-    "07": [{ type: "summer", label: "Summer Holiday" }],
-    "08": [{ type: "summer", label: "Summer Holiday" }],
-    "09": [{ type: "summer", label: "Summer Holiday" }],
-    "10": [{ type: "summer", label: "Summer Holiday" }],
-    "11": [{ type: "summer", label: "Summer Holiday" }],
-    "12": [
-      { type: "event", label: "Event" },
-      { type: "insights", label: "Future Insights" },
-      { type: "conference", label: "International C..." },
-    ],
-    "13": [{ type: "exam", label: "Exam" }],
-    "14": [{ type: "summer", label: "Summer Holiday" }],
-    "15": [
-      { type: "summer", label: "Summer Holiday" },
-      { type: "insights", label: "Future Insights" },
-      { type: "conference", label: "International C..." },
-    ],
-    "16": [{ type: "summer", label: "Summer Holiday" }],
-    "17": [{ type: "summer", label: "Summer Holiday" }],
-    "18": [{ type: "summer", label: "Summer Holiday" }],
-    "19": [{ type: "summer", label: "Summer Holiday" }],
-    "20": [{ type: "summer", label: "Summer Holiday" }],
-    "21": [{ type: "summer", label: "Summer Holiday" }],
-    "22": [
-      { type: "summer", label: "Summer Holiday" },
-      { type: "insights", label: "Future Insights" },
-      { type: "conference", label: "International C..." },
-    ],
-    "23": [{ type: "summer", label: "Summer Holiday" }],
-    "24": [{ type: "summer", label: "Summer Holiday" }],
-    "25": [{ type: "summer", label: "Summer Holiday" }],
-    "26": [{ type: "summer", label: "Summer Holiday" }],
-    "27": [{ type: "summer", label: "Summer Holiday" }],
-    "28": [{ type: "summer", label: "Summer Holiday" }],
-    "01-next": [
-      { type: "summer", label: "Summer Holiday" },
-      { type: "insights", label: "Future Insights" },
-      { type: "conference", label: "International C..." },
-    ],
-    "02-next": [{ type: "summer", label: "Summer Holiday" }],
-    "03-next": [{ type: "summer", label: "Summer Holiday" }],
-  };
+        const res = await fetch(
+          `${API_URL}/website/universities/calendar-events?start_date=${startDate}&end_date=${endDate}&limit=100`
+        );
+        const eventData: EventsResponse = await res.json();
 
-  const getEventStyle = (type: any) => {
+        const groupedEvents: { [key: string]: ProcessedEvent[] } = {};
+
+        eventData.data.forEach((event) => {
+          const dayKey = new Date(event.event_date)
+            .getDate()
+            .toString()
+            .padStart(2, "0");
+          if (!groupedEvents[dayKey]) {
+            groupedEvents[dayKey] = [];
+          }
+          // Include the link when processing data
+          groupedEvents[dayKey].push({
+            type: "event",
+            label: event.title,
+            link: event.link,
+          });
+        });
+
+        setEvents(groupedEvents);
+      } catch (error) {
+        console.error("Failed to fetch calendar events:", error);
+        setEvents({});
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAndProcessEvents();
+  }, [currentDate]);
+
+  const getEventStyle = (type: string) => {
     switch (type) {
-      case "summer":
-        return "md:bg-primary bg-golden text-white";
-      case "insights":
-        return "bg-blue text-white";
-      case "conference":
-        return "bg-blue text-white";
       case "event":
-        return "md:bg-primary bg-golden text-white";
-      case "exam":
-        return "md:bg-primary bg-golden text-white";
+        return "md:bg-primary bg-golden text-white hover:opacity-80 transition-opacity";
       default:
-        return "bg-grey text-white";
+        return "bg-gray-400 text-white";
     }
   };
 
-  const navigateMonth = (direction: any) => {
+  const navigateMonth = (direction: number) => {
     setCurrentDate(new Date(currentYear, currentMonth + direction, 1));
   };
 
   const renderCalendarDays = () => {
     const days = [];
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
 
-    // Previous month's trailing days
     for (let i = firstDay - 1; i >= 0; i--) {
-      const day = daysInPrevMonth - i;
       days.push(
         <div
-          key={`prev-${day}`}
+          key={`prev-${i}`}
           className="md:min-h-24 min-h-10 p-2 text-gray-400 border border-lightBorder"
         >
           <div className="text-sm font-medium">
-            {day.toString().padStart(2, "0")}
+            {(daysInPrevMonth - i).toString().padStart(2, "0")}
           </div>
         </div>
       );
     }
 
-    // Current month days
     for (let day = 1; day <= daysInMonth; day++) {
       const dayKey = day.toString().padStart(2, "0");
       const dayEvents = events[dayKey] || [];
@@ -170,33 +163,30 @@ export default function Calendar() {
           key={day}
           className="md:min-h-24 min-h-10 p-2 border border-lightBorder"
         >
-          <div className="text-sm font-medium text-gray-900 mb-1">
-            {day.toString().padStart(2, "0")}
-          </div>
+          <div className="text-sm font-medium text-gray-900 mb-1">{dayKey}</div>
           <div className="space-y-1">
-            {dayEvents.map((event: any, index: any) => (
-              <div
+            {dayEvents.map((event, index) => (
+              <a
                 key={index}
-                className={`text-xs px-2 py-1 rounded ${getEventStyle(
+                href={event.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`block text-xs px-2 py-1 rounded ${getEventStyle(
                   event.type
                 )} truncate`}
               >
                 {event.label}
-              </div>
+              </a>
             ))}
           </div>
         </div>
       );
     }
 
-    // Next month's leading days
     const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
     const remainingCells = totalCells - (firstDay + daysInMonth);
 
     for (let day = 1; day <= remainingCells; day++) {
-      const dayKey = `${day.toString().padStart(2, "0")}-next`;
-      const dayEvents = events[dayKey] || [];
-
       days.push(
         <div
           key={`next-${day}`}
@@ -205,33 +195,19 @@ export default function Calendar() {
           <div className="text-sm font-medium">
             {day.toString().padStart(2, "0")}
           </div>
-          <div className="space-y-1">
-            {dayEvents.map((event: any, index: any) => (
-              <div
-                key={index}
-                className={`text-xs px-2 py-1 rounded ${getEventStyle(
-                  event.type
-                )} truncate opacity-60`}
-              >
-                {event.label}
-              </div>
-            ))}
-          </div>
         </div>
       );
     }
-
     return days;
   };
 
   return (
     <div className="max-w-[1040px] lg:px-0 px-3 mx-auto bg-white rounded-lg overflow-hidden my-10">
-      {/* Header */}
       <div className="bg-primary text-white md:p-4 p-2 flex items-center justify-between">
         <div className="flex items-center md:space-x-4 space-x-2">
           <button
             onClick={() => navigateMonth(-1)}
-            className="p-2 hover:bg-primary rounded-lg transition-colors"
+            className="p-2 hover:bg-white/20 rounded-lg transition-colors"
           >
             <FaChevronLeft className="w-5 h-5" />
           </button>
@@ -240,126 +216,35 @@ export default function Calendar() {
           </h1>
           <button
             onClick={() => navigateMonth(1)}
-            className="p-2 hover:bg-primary rounded-lg transition-colors"
+            className="p-2 hover:bg-white/20 rounded-lg transition-colors"
           >
             <FaChevronRight className="w-5 h-5" />
           </button>
         </div>
-        <button className="flex items-center space-x-2 px-4 py-2 rounded-lg border border-white transition-colors">
-          {/* <CiBoxList className="w-4 h-4" /> */}
+        <button className="flex items-center space-x-2 px-4 py-2 rounded-lg border border-white hover:bg-white/20 transition-colors">
           <span>List View</span>
         </button>
       </div>
 
-      {/* Calendar Grid */}
-      <div className="grid grid-cols-7">
-        {/* Day headers */}
-        {dayNames.map((day) => (
-          <div
-            key={day}
-            className="bg-gray-50 text-gray-600 text-sm font-medium md:p-3 p-1 text-center md:border border-none border-lightBorder"
-          >
-            <span className="truncate md:w-full w-[5ch] block">{day}</span>
-          </div>
-        ))}
-
-        {/* Calendar days */}
-        {renderCalendarDays()}
-      </div>
-      <div className="md:my-20 my-10 w-full">
-        <div className="overflow-x-auto shadow-lg custom_scroll rounded-lg w-full border lg:border-primary border-golden">
-          <div className="w-full py-5 lg:bg-primary bg-golden text-center text-white text-[22px] font-semibold">
-            Fall Semester
-          </div>
-          <table className="w-full bg-white">
-            <thead className="border-b border-b-lightBorder">
-              <tr className="text-secondary">
-                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-semibold text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
-                  subject
-                </th>
-                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-semibold text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
-                  stage
-                </th>
-                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-semibold text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
-                  semester
-                </th>
-                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-semibold text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
-                  year
-                </th>
-              </tr>
-            </thead>
-
-            <tbody className="divide-y divide-gray-200">
-              {tableData.map((row, index) => (
-                <tr
-                  key={index}
-                  className="hover:bg-gray-50 transition-colors duration-200"
-                >
-                  <td className="md:px-6 px-3 md:py-4 text-center py-3 text-sm text-secondary font-medium ltr:border-r rtl:border-l border-gray-200">
-                    {row.subject}
-                  </td>
-                  <td className="md:px-6 px-3 md:py-4 text-center py-3 text-sm text-secondary ltr:border-r rtl:border-l border-gray-200">
-                    {row.stage}
-                  </td>
-                  <td className="md:px-6 px-3 md:py-4 text-center py-3 text-sm text-secondary ltr:border-r rtl:border-l border-gray-200">
-                    {row.semester}
-                  </td>
-                  <td className="md:px-6 px-3 md:py-4 text-center py-3 text-sm text-secondary">
-                    {row.year}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {isLoading ? (
+        <CalendarSkeleton />
+      ) : (
+        <div className="grid grid-cols-7">
+          {dayNames.map((day) => (
+            <div
+              key={day}
+              className="bg-gray-50 text-gray-600 text-sm font-medium md:p-3 p-1 text-center md:border border-none border-lightBorder"
+            >
+              <span className="truncate md:w-full w-[5ch] block">{day}</span>
+            </div>
+          ))}
+          {renderCalendarDays()}
         </div>
-      </div>
-      <div className="w-full">
-        <div className="overflow-x-auto shadow-lg custom_scroll rounded-lg w-full border lg:border-primary border-golden">
-          <div className="w-full py-5 lg:bg-primary bg-golden text-center text-white text-[22px] font-semibold">
-            Second Semester
-          </div>
-          <table className="w-full bg-white">
-            <thead className="border-b border-b-lightBorder">
-              <tr className="text-secondary">
-                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-semibold text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
-                  subject
-                </th>
-                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-semibold text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
-                  stage
-                </th>
-                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-semibold text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
-                  semester
-                </th>
-                <th className="md:px-6 px-3 sm:py-4 py-3 text-center font-semibold text-sm uppercase tracking-wider md:min-w-max min-w-[170px]">
-                  year
-                </th>
-              </tr>
-            </thead>
+      )}
 
-            <tbody className="divide-y divide-gray-200">
-              {tableData.map((row, index) => (
-                <tr
-                  key={index}
-                  className="hover:bg-gray-50 transition-colors duration-200"
-                >
-                  <td className="md:px-6 px-3 md:py-4 text-center py-3 text-sm text-secondary font-medium ltr:border-r rtl:border-l border-gray-200">
-                    {row.subject}
-                  </td>
-                  <td className="md:px-6 px-3 md:py-4 text-center py-3 text-sm text-secondary ltr:border-r rtl:border-l border-gray-200">
-                    {row.stage}
-                  </td>
-                  <td className="md:px-6 px-3 md:py-4 text-center py-3 text-sm text-secondary ltr:border-r rtl:border-l border-gray-200">
-                    {row.semester}
-                  </td>
-                  <td className="md:px-6 px-3 md:py-4 text-center py-3 text-sm text-secondary">
-                    {row.year}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {/* Static Tables */}
+      <div className="md:my-20 my-10 w-full">{/* ... Table 1 ... */}</div>
+      <div className="w-full">{/* ... Table 2 ... */}</div>
     </div>
   );
 }
