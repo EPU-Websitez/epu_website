@@ -161,10 +161,10 @@ const Page = () => {
   };
 
   const handleOpenModal = (item: SliderItem | GridItem) => {
-    /* ... */
+    setModalItem(item);
   };
   const handleCloseModal = () => {
-    /* ... */
+    setModalItem(null);
   };
   const formatDate = (dateString: string) =>
     new Date(dateString).toLocaleDateString(locale, {
@@ -197,7 +197,7 @@ const Page = () => {
                 pagination={{ clickable: true }}
                 loop={anniversaryData.sliders.length > 1}
               >
-                {anniversaryData.sliders.map((slide) => (
+                {anniversaryData.sliders.slice(0, 10).map((slide) => (
                   <SwiperSlide key={slide.id}>
                     <button
                       onClick={() => handleOpenModal(slide)}

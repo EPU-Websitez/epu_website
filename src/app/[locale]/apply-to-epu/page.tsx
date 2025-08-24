@@ -18,6 +18,7 @@ interface QuestionSection {
   id: number;
   title: string;
   description: string;
+  icon_image: ImageFile;
 }
 interface ListItem {
   id: number;
@@ -108,7 +109,14 @@ const Page = () => {
                   } sm:pb-0`}
                 >
                   <div className="flex_center gap-4">
-                    {reasonIcons[index]}
+                    <span className="relative sm:w-12 sm:h-12 w-9 h-9">
+                      <Image
+                        src={reason.icon_image.lg}
+                        alt="shape"
+                        fill
+                        priority
+                      />
+                    </span>
                     <p className="font-medium lg:text-sm text-xs">
                       {reason.title}
                     </p>

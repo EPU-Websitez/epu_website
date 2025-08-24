@@ -124,7 +124,7 @@ const Page = () => {
 
   const [laboratories, setLaboratories] = useState<Laboratory[]>([]);
   const [page, setPage] = useState(1);
-  const limit = 1;
+  const limit = 12; // Increased limit for a better user experience
 
   // Fetch laboratories
   const {
@@ -135,24 +135,30 @@ const Page = () => {
     `${API_URL}/website/colleges/${college}/laboratories?page=${page}&limit=${limit}`
   );
 
+  // FIX: Removed `page` from the dependency array.
+  // This effect now only runs when `labsData` changes, preventing
+  // the old data from being appended when the page number is incremented.
   useEffect(() => {
     if (labsData?.data) {
+      // When new data arrives, check the page number to decide
+      // whether to replace the list or append to it.
       if (page === 1) {
         setLaboratories(labsData.data);
       } else {
         setLaboratories((prev) => [...prev, ...labsData.data]);
       }
     }
-  }, [labsData, page]);
+  }, [labsData]);
 
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
   };
 
-  const loading = labsLoading && page === 1;
-  const error = labsError && page === 1;
+  // Determines if the initial page skeleton should be shown
+  const showInitialSkeleton = labsLoading && page === 1;
+  const initialError = labsError && page === 1;
 
-  if (error) {
+  if (initialError) {
     return (
       <div className="w-full flex_center flex-col sm:my-10 my-5">
         <div className="max-w-[1024px] px-3 text-center">
@@ -165,6 +171,11 @@ const Page = () => {
     );
   }
 
+  // Display skeleton for the initial load
+  if (showInitialSkeleton) {
+    return <PageSkeleton />;
+  }
+
   return (
     <div className="w-full flex_center flex-col sm:my-10 my-5">
       <div className="max-w-[1379px] px-3 flex_start w-full">
@@ -172,47 +183,45 @@ const Page = () => {
       </div>
       <div className="max-w-[1024px] sm:mt-14 mt-10 px-3 text-secondary flex_start flex-col gap-10 w-full">
         <SubHeader title={t("labs")} alt={false} />
-        {loading ? (
-          <PageSkeleton />
-        ) : (
-          <div className="grid w-full md:grid-cols-2 grid-cols-1 gap-5">
-            {laboratories.map((lab, i) => (
-              <Link
-                key={i}
-                href={`/${locale}/colleges/${college}/labs/${lab.slug}`}
-                title={lab.name}
-                className="w-full text-white group lg:h-[385px] md:h-[320px] h-[240px] relative rounded-3xl overflow-hidden"
-              >
-                <Image
-                  src={
-                    lab.images?.[0]?.md ||
-                    lab.images?.[0]?.original ||
-                    "/images/lab.png"
-                  }
-                  className="object-cover"
-                  alt={lab.name}
-                  fill
-                  priority
-                />
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-[#1B417B8A] to-transparent z-10 group-hover:bg-primary duration-200 group-hover:bg-opacity-40"></div>
-                <div className="flex_center text-sm rounded-lg border border-white gap-3 z-20 absolute ltr:left-10 rtl:right-10 bottom-5 px-4 py-2 opacity-0 group-hover:opacity-100 duration-300">
-                  <span>{t("read_more")}</span>
-                  <FaArrowRight className="text-lg rtl:rotate-180" />
-                </div>
-                <h3 className="z-20 absolute ltr:left-5 rtl:right-5 bottom-5 leading-normal md:group-hover:bottom-[70%] group-hover:bottom-[60%] px-4 py-2 md:text-smallTitle text-base group-hover:text-titleNormal group-hover:max-w-[200px] duration-300">
-                  {lab.name}
-                </h3>
-              </Link>
-            ))}
 
-            {/* Loading skeletons while fetching more data */}
-            {labsLoading &&
-              page > 1 &&
-              Array.from({ length: 2 }).map((_, i) => (
-                <LabCardSkeleton key={`skeleton-${i}`} />
-              ))}
-          </div>
-        )}
+        <div className="grid w-full md:grid-cols-2 grid-cols-1 gap-5">
+          {laboratories.map((lab) => (
+            <Link
+              key={lab.id} // Use a stable key like lab.id instead of index
+              href={`/${locale}/colleges/${college}/labs/${lab.slug}`}
+              title={lab.name}
+              className="w-full text-white group lg:h-[385px] md:h-[320px] h-[240px] relative rounded-3xl overflow-hidden"
+            >
+              <Image
+                src={
+                  lab.images?.[0]?.md ||
+                  lab.images?.[0]?.original ||
+                  "/images/lab.png"
+                }
+                className="object-cover w-full h-full"
+                alt={lab.name}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                priority
+              />
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-[#1B417B8A] to-transparent z-10 group-hover:bg-primary duration-200 group-hover:bg-opacity-40"></div>
+              <div className="flex_center text-sm rounded-lg border border-white gap-3 z-20 absolute ltr:left-10 rtl:right-10 bottom-5 px-4 py-2 opacity-0 group-hover:opacity-100 duration-300">
+                <span>{t("read_more")}</span>
+                <FaArrowRight className="text-lg rtl:rotate-180" />
+              </div>
+              <h3 className="z-20 absolute ltr:left-5 rtl:right-5 bottom-5 leading-normal md:group-hover:bottom-[70%] group-hover:bottom-[60%] px-4 py-2 md:text-smallTitle text-base group-hover:text-titleNormal group-hover:max-w-[250px] duration-300">
+                {lab.name}
+              </h3>
+            </Link>
+          ))}
+
+          {/* Skeletons for "load more" state */}
+          {labsLoading &&
+            page > 1 &&
+            Array.from({ length: 2 }).map((_, i) => (
+              <LabCardSkeleton key={`skeleton-${i}`} />
+            ))}
+        </div>
 
         {/* Load More Button */}
         {labsData && laboratories.length < labsData.total && (
@@ -220,7 +229,7 @@ const Page = () => {
             <button
               onClick={handleLoadMore}
               disabled={labsLoading}
-              className="sm:text-base text-sm border border-primary px-8 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors"
+              className="sm:text-base text-sm border border-primary px-8 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors disabled:opacity-50 disabled:cursor-wait"
             >
               {labsLoading ? t("loading") : t("see_more")}
             </button>
@@ -235,7 +244,7 @@ const Page = () => {
         )}
 
         {/* No Data State */}
-        {!loading && labsData && laboratories.length === 0 && (
+        {!labsLoading && laboratories.length === 0 && (
           <div className="text-gray-500 text-center w-full py-10">
             {t("no_laboratories_found")}
           </div>

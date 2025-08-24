@@ -65,7 +65,7 @@ const Page = () => {
   const slug = params?.slug as string;
   const [centers, setCenters] = useState<NewsItem[]>([]);
   const [page, setPage] = useState(1);
-  const limit = 1;
+  const limit = 12;
   const { data, loading } = useFetch<NewsResponse>(
     `${API_URL}/website/news?page=${page}&limit=${limit}&centerSlug=${slug}`
   );

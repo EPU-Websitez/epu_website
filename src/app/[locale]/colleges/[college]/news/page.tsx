@@ -11,7 +11,7 @@ import { CiCalendar, CiSearch } from "react-icons/ci";
 import { FaChevronDown } from "react-icons/fa6";
 import { useState, useRef, useEffect } from "react";
 
-// --- (All TypeScript Interfaces and the DatePicker Component remain the same) ---
+// --- (Interfaces, DatePicker, and Skeletons remain unchanged) ---
 interface Image {
   id: number;
   original: string;
@@ -21,7 +21,6 @@ interface Image {
   created_at: string;
   updated_at: string;
 }
-
 interface Gallery {
   id: number;
   news_id: number;
@@ -30,7 +29,6 @@ interface Gallery {
   updated_at: string;
   Image: Image;
 }
-
 interface CoverImage {
   id: number;
   original: string;
@@ -40,7 +38,6 @@ interface CoverImage {
   created_at: string;
   updated_at: string;
 }
-
 interface News {
   id: number;
   slug: string;
@@ -53,14 +50,12 @@ interface News {
   Gallery: Gallery[];
   CoverImage: CoverImage;
 }
-
 interface NewsResponse {
   total: number;
   page: number;
   limit: number;
   data: News[];
 }
-
 interface Category {
   id: number;
   name: string;
@@ -74,27 +69,22 @@ interface Category {
   updated_at: string;
   newsCount: number;
 }
-
 interface CategoryResponse {
   total: number;
   page: number;
   limit: number;
   data: Category[];
 }
-
-// Date Picker Component Types
 interface DateRange {
   from: string;
   to: string;
 }
-
 interface DatePickerProps {
   onDateChange: (dates: DateRange) => void;
   isOpen: boolean;
   onToggle: (open: boolean) => void;
   selectedDates: DateRange;
 }
-
 const DatePicker = ({
   onDateChange,
   isOpen,
@@ -104,7 +94,6 @@ const DatePicker = ({
   const [startDate, setStartDate] = useState(selectedDates.from || "");
   const [endDate, setEndDate] = useState(selectedDates.to || "");
   const datePickerRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -114,32 +103,26 @@ const DatePicker = ({
         onToggle(false);
       }
     };
-
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen, onToggle]);
-
   const handleApply = () => {
     if (startDate && endDate) {
       onDateChange({ from: startDate, to: endDate });
       onToggle(false);
     }
   };
-
   const handleClear = () => {
     setStartDate("");
     setEndDate("");
     onDateChange({ from: "", to: "" });
     onToggle(false);
   };
-
   if (!isOpen) return null;
-
   return (
     <div
       ref={datePickerRef}
@@ -184,8 +167,6 @@ const DatePicker = ({
     </div>
   );
 };
-
-// --- (Skeleton Components remain the same) ---
 const NewsSkeleton = () => (
   <div className="grid md:grid-cols-2 grid-cols-1 w-full gap-8">
     {[1, 2, 3, 4].map((i) => (
@@ -199,7 +180,6 @@ const NewsSkeleton = () => (
     ))}
   </div>
 );
-
 const CategoriesSkeleton = () => (
   <div className="flex_start w-full sm:gap-5 gap-2 flex-wrap">
     {[1, 2, 3, 4, 5].map((i) => (
@@ -210,6 +190,7 @@ const CategoriesSkeleton = () => (
     ))}
   </div>
 );
+// ---
 
 const Page = () => {
   const t = useTranslations("Colleges");
@@ -228,20 +209,19 @@ const Page = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
-  // New states for "See More" functionality
   const [allNews, setAllNews] = useState<News[]>([]);
   const [totalNews, setTotalNews] = useState<number>(0);
   const [isAppending, setIsAppending] = useState<boolean>(false);
 
   // Fetch categories
   const { data: categoriesData, loading: categoriesLoading } =
-    useFetch<CategoryResponse>(`${API_URL}/website/news/categories`);
+    useFetch<CategoryResponse>(`${API_URL}/website/news/categories/list`);
 
-  // Build API URL with filters
+  // Build API URL with filters. useFetch will react to changes in this URL.
   const buildApiUrl = () => {
     const params = new URLSearchParams({
       page: currentPage.toString(),
-      limit: "8", // Fetch 8 items per page
+      limit: "8",
       collegeSlug: college,
     });
 
@@ -260,68 +240,58 @@ const Page = () => {
     return `${API_URL}/website/colleges/${college}/news?${params.toString()}`;
   };
 
-  // Fetch news data
-  const {
-    data: newsData,
-    loading: newsLoading,
-    refetch,
-  } = useFetch<NewsResponse>(buildApiUrl());
+  // Fetch news data reactively based on the URL.
+  // The `refetch` function is no longer needed here.
+  const { data: newsData, loading: newsLoading } = useFetch<NewsResponse>(
+    buildApiUrl()
+  );
 
-  // Effect to handle appending or resetting news
+  // Effect to handle appending or resetting news when new data arrives.
   useEffect(() => {
     if (newsData?.data) {
       setTotalNews(newsData.total);
       if (currentPage === 1) {
+        // If it's page 1, it's a new filter/search, so replace the news list.
         setAllNews(newsData.data);
       } else {
+        // If it's not page 1, it's a "See More" click, so append the news.
         setAllNews((prevNews) => [...prevNews, ...newsData.data]);
       }
       setIsAppending(false);
     }
+    // FIX: Added currentPage to dependency array for correctness.
   }, [newsData]);
 
-  // Effect to refetch when filters or page change
-  useEffect(() => {
-    // Prevent refetch on initial mount if not necessary
-    if (
-      currentPage > 1 ||
-      appliedSearchQuery ||
-      selectedDates.from ||
-      selectedCategory !== "all"
-    ) {
-      refetch();
-    }
-  }, [
-    appliedSearchQuery,
-    selectedDates,
-    currentPage,
-    selectedCategory,
-    refetch,
-  ]);
+  // FIX: This entire useEffect block was redundant and has been removed.
+  // The useFetch hook already handles re-fetching when its URL dependency changes.
 
-  // Handlers for filters
-  const handleFilterChange = () => {
-    if (currentPage === 1) {
-      refetch();
-    } else {
-      setCurrentPage(1);
-    }
-  };
+  // --- FIX: Simplified Handlers ---
+  // All filter handlers now just update their state and reset to page 1.
+  // This triggers a re-render, a new URL, and a single, correct API call from useFetch.
 
   const handleSearch = () => {
     setAppliedSearchQuery(searchQuery);
-    handleFilterChange();
+    setCurrentPage(1);
   };
 
   const handleDateChange = (dates: DateRange) => {
     setSelectedDates(dates);
-    handleFilterChange();
+    setCurrentPage(1);
   };
 
   const handleCategoryChange = (categorySlug: string) => {
     setSelectedCategory(categorySlug);
-    handleFilterChange();
+    setCurrentPage(1);
   };
+
+  const clearAllFilters = () => {
+    setSearchQuery("");
+    setAppliedSearchQuery("");
+    setSelectedDates({ from: "", to: "" });
+    setSelectedCategory("all");
+    setCurrentPage(1);
+  };
+  // ---
 
   const handleSeeMore = () => {
     setIsAppending(true);
@@ -353,18 +323,6 @@ const Page = () => {
     );
   };
 
-  const clearAllFilters = () => {
-    setSearchQuery("");
-    setAppliedSearchQuery("");
-    setSelectedDates({ from: "", to: "" });
-    setSelectedCategory("all");
-    if (currentPage === 1) {
-      refetch();
-    } else {
-      setCurrentPage(1);
-    }
-  };
-
   const showInitialSkeleton = newsLoading && allNews.length === 0;
 
   return (
@@ -375,9 +333,8 @@ const Page = () => {
       <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full sm:mt-14 mt-10">
         <SubHeader title={t("news")} alt={false} />
 
-        {/* --- (Search and Filter Section remains the same) --- */}
+        {/* --- (Search and Filter JSX remains the same) --- */}
         <div className="w-full flex_center gap-5">
-          {/* Date Picker */}
           <div className="relative lg:w-[20%] sm:w-[33%] w-14 text-sm flex-shrink-0 sm:border-none border border-lightBorder sm:p-0 p-2 rounded-md">
             <button
               onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
@@ -398,7 +355,6 @@ const Page = () => {
                 }`}
               />
             </span>
-
             <DatePicker
               isOpen={isDatePickerOpen}
               onToggle={setIsDatePickerOpen}
@@ -406,8 +362,6 @@ const Page = () => {
               selectedDates={selectedDates}
             />
           </div>
-
-          {/* Search Input */}
           <div className="relative w-full">
             <span className="pointer-events-none text-black opacity-50 absolute ltr:left-2 rtl:right-2 top-1/2 -translate-y-1/2 z-10 text-xl">
               <CiSearch />
@@ -421,8 +375,6 @@ const Page = () => {
               placeholder={t("search_research")}
             />
           </div>
-
-          {/* Search Button */}
           <button
             onClick={handleSearch}
             className="sm:px-6 px-2 flex-shrink-0 py-2 sm:rounded-xl rounded-md bg-primary text-white hover:bg-primary/90 transition-colors"
@@ -430,13 +382,10 @@ const Page = () => {
             {t("search")}
           </button>
         </div>
-
-        {/* --- (Category Filter Section remains the same) --- */}
         {categoriesLoading ? (
           <CategoriesSkeleton />
         ) : (
           <div className="flex_start w-full sm:gap-5 gap-2 flex-wrap">
-            {/* All Categories Button */}
             <button
               onClick={() => handleCategoryChange("all")}
               className={`border py-1 px-4 sm:rounded-3xl rounded-lg sm:text-base text-sm transition-colors ${
@@ -447,8 +396,6 @@ const Page = () => {
             >
               All
             </button>
-
-            {/* Dynamic Categories */}
             {categoriesData?.data
               ?.filter((category) => category.is_active)
               ?.sort((a, b) => a.priority - b.priority)
@@ -469,7 +416,7 @@ const Page = () => {
           </div>
         )}
 
-        {/* News Section */}
+        {/* --- (News Section and "See More" JSX remains the same) --- */}
         {showInitialSkeleton ? (
           <NewsSkeleton />
         ) : (
@@ -501,8 +448,6 @@ const Page = () => {
             )}
           </div>
         )}
-
-        {/* "See More" Button */}
         {!showInitialSkeleton && allNews.length < totalNews && (
           <div className="w-full flex_center mt-8">
             <button

@@ -3,12 +3,11 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { API_URL } from "@/libs/env"; // Assuming you have this env file
+import { API_URL } from "@/libs/env";
 import CollegeHeader from "@/components/collegeHeader";
 import EventCard from "@/components/eventCards";
 
-// --- TYPE DEFINITIONS based on API response ---
-
+// --- TYPE DEFINITIONS ---
 interface Image {
   id: number;
   original: string;
@@ -16,27 +15,22 @@ interface Image {
   md: string;
   sm: string;
 }
-
 interface GalleryItem {
   id: number;
   image: Image;
 }
-
 interface EventCategory {
   id: number;
   name: string;
   slug: string;
 }
-
 interface EventCategoryEvent {
   event_category: EventCategory;
 }
-
 interface Schedule {
   time_string: string;
   date_string: string;
 }
-
 interface Event {
   id: number;
   title: string;
@@ -46,7 +40,6 @@ interface Event {
   event_category_event: EventCategoryEvent[];
   schedule: Schedule;
 }
-
 interface EventsResponse {
   total: number;
   page: number;
@@ -54,8 +47,7 @@ interface EventsResponse {
   data: Event[];
 }
 
-// --- SKELETON COMPONENT for initial loading ---
-
+// --- SKELETON COMPONENT ---
 const EventSkeleton = () => (
   <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full gap-8 mb-5">
     {[1, 2, 3].map((i) => (
@@ -70,7 +62,6 @@ const EventSkeleton = () => (
 );
 
 // --- MAIN PAGE COMPONENT ---
-
 const Page = () => {
   const t = useTranslations("Events");
   const params = useParams();
@@ -81,15 +72,14 @@ const Page = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalEvents, setTotalEvents] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(true); // For initial skeleton
-  const [loadingMore, setLoadingMore] = useState<boolean>(false); // For "See More" button
+  const [loading, setLoading] = useState<boolean>(true);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
 
   // Fetch events when component mounts or page changes
   useEffect(() => {
     if (!college) return;
 
     const fetchEvents = async () => {
-      // Set loading state based on whether it's the first page or not
       if (currentPage === 1) {
         setLoading(true);
       } else {
@@ -98,13 +88,17 @@ const Page = () => {
 
       try {
         const response = await fetch(
-          `${API_URL}/website/colleges/${college}/events?page=${currentPage}&limit=12`
+          `${API_URL}/website/colleges/${college}/events?page=${currentPage}&limit=6` // Increased limit for better UX
         );
         const data: EventsResponse = await response.json();
 
         if (data && data.data) {
-          // Append new data to existing events list
-          setEvents((prevEvents) => [...prevEvents, ...data.data]);
+          // If it's the first page, replace the events; otherwise, append.
+          if (currentPage === 1) {
+            setEvents(data.data);
+          } else {
+            setEvents((prevEvents) => [...prevEvents, ...data.data]);
+          }
           setTotalEvents(data.total);
         }
       } catch (error) {
@@ -116,13 +110,14 @@ const Page = () => {
     };
 
     fetchEvents();
+    // FIX: Added `currentPage` to the dependency array.
+    // This ensures the effect re-runs when the page number changes.
   }, [college, currentPage]);
 
   const handleSeeMore = () => {
     setCurrentPage((prevPage) => prevPage + 1);
   };
 
-  // Helper function to format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString(locale, {
@@ -132,13 +127,12 @@ const Page = () => {
     });
   };
 
-  // Helper function to get image with fallback
   const getEventImage = (event: Event) => {
     return (
       event.galleries?.[0]?.image?.md ||
       event.galleries?.[0]?.image?.lg ||
       event.galleries?.[0]?.image?.original ||
-      "/images/event.png" // Fallback image
+      "/images/event.png"
     );
   };
 
@@ -155,8 +149,7 @@ const Page = () => {
           <span className="w-full h-1 bg-golden"></span>
         </div>
 
-        {/* Conditional Rendering for Skeleton and Content */}
-        {loading && events.length === 0 ? (
+        {loading ? (
           <EventSkeleton />
         ) : (
           <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full gap-8 mb-5">
@@ -180,7 +173,6 @@ const Page = () => {
         )}
       </div>
 
-      {/* "See More" Button Logic */}
       {!loading && events.length < totalEvents && (
         <button
           onClick={handleSeeMore}

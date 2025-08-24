@@ -15,7 +15,7 @@ import { IoMdMail } from "react-icons/io";
 import { IoBriefcaseOutline, IoLocationSharp } from "react-icons/io5";
 import { PiStudent } from "react-icons/pi";
 
-// Interfaces
+// --- (Interfaces and Skeletons remain the same) ---
 interface ProfileImage {
   id: number;
   original: string;
@@ -25,7 +25,6 @@ interface ProfileImage {
   created_at: string;
   updated_at: string;
 }
-
 interface Teacher {
   id: number;
   user_id: number;
@@ -42,7 +41,6 @@ interface Teacher {
   profile_image: ProfileImage;
   bg_image: ProfileImage;
 }
-
 interface College {
   id: number;
   subdomain: string;
@@ -65,7 +63,6 @@ interface College {
   created_at: string;
   updated_at: string;
 }
-
 interface StaffMember {
   id: number;
   college_id: number;
@@ -76,15 +73,12 @@ interface StaffMember {
   college: College;
   teacher: Teacher;
 }
-
 interface StaffResponse {
   total: number;
   page: number;
   limit: number;
   data: StaffMember[];
 }
-
-// Skeleton Components
 const MemberCardSkeleton = () => (
   <div className="animate-pulse">
     <div className="w-full h-48 bg-gray-300 rounded-lg mb-4"></div>
@@ -93,7 +87,6 @@ const MemberCardSkeleton = () => (
     <div className="h-3 bg-gray-200 rounded w-1/2"></div>
   </div>
 );
-
 const PageSkeleton = () => (
   <div className="w-full flex_center flex-col sm:my-10 my-5">
     <div className="max-w-[1379px] px-3 flex_start w-full">
@@ -122,7 +115,6 @@ const Page = () => {
   const [page, setPage] = useState(1);
   const limit = 12;
 
-  // Fetch staff members
   const {
     data: staffData,
     loading: staffLoading,
@@ -139,7 +131,7 @@ const Page = () => {
         setStaffMembers((prev) => [...prev, ...staffData.data]);
       }
     }
-  }, [staffData, page]);
+  }, [staffData]);
 
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
@@ -172,11 +164,10 @@ const Page = () => {
         <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full sm:mt-14 mt-10">
           <SubHeader title={t("teachers")} alt={false} />
 
-          {/* Teachers Grid */}
           <div className="grid w-full lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-8">
-            {staffMembers.map((member, i) => (
+            {staffMembers.map((member) => (
               <MemberCard
-                key={i}
+                key={member.id}
                 description={member.role_in_college}
                 image={
                   member.teacher.profile_image?.md ||
@@ -188,15 +179,9 @@ const Page = () => {
               />
             ))}
 
-            {/* Loading skeletons while fetching more data */}
-            {staffLoading &&
-              page > 1 &&
-              Array.from({ length: 3 }).map((_, i) => (
-                <MemberCardSkeleton key={`skeleton-${i}`} />
-              ))}
+            {/* FIX: This section has been removed to prevent skeletons on "See More" */}
           </div>
 
-          {/* Load More Button */}
           {staffData && staffMembers.length < staffData.total && (
             <div className="flex_center w-full my-5">
               <button
@@ -209,14 +194,12 @@ const Page = () => {
             </div>
           )}
 
-          {/* Error State for Load More */}
           {staffError && page > 1 && (
             <div className="text-red-500 text-center w-full">
               {t("error_loading_data")}
             </div>
           )}
 
-          {/* No Data State */}
           {!loading && staffData && staffMembers.length === 0 && (
             <div className="text-gray-500 text-center w-full py-10">
               {t("no_teachers_found")}

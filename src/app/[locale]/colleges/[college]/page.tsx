@@ -319,7 +319,6 @@ const Page = () => {
   const { data: staffData, loading: staffLoading } = useFetch<StaffApiResponse>(
     `${API_URL}/website/colleges/${college}/staff`
   );
-  console.log(staffData);
   const [currentIndex, setCurrentIndex] = useState(0);
   useEffect(() => {
     // Only run the interval if there is data to display

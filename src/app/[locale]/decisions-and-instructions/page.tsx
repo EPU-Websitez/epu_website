@@ -1,4 +1,5 @@
 "use client";
+
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -9,29 +10,36 @@ import { HiOutlineLink } from "react-icons/hi2";
 import { API_URL } from "@/libs/env";
 import useFetch from "@/libs/hooks/useFetch";
 
-// -------- Interfaces --------
+// -------- FIX 1: Updated Interfaces to match the new API response --------
 interface ImageFile {
   id: number;
   original: string;
   lg: string;
 }
 
-interface FileItem {
+// Represents the nested 'file' object with the path
+interface FileDetails {
   id: number;
   path: string;
+}
+
+// Represents the item inside the 'files' array
+interface FileItem {
+  id: number;
+  file: FileDetails;
 }
 
 interface DecisionListItem {
   id: number;
   title: string;
   description: string;
-  files: FileItem[];
+  files: FileItem[]; // Updated
 }
 
 interface DecisionSection {
   id: number;
   title: string;
-  section_type: "DECISION" | "INSTRUCTION";
+  section_type: "DECISION" | "INSTRUCTION" | "GUIDELINE" | "POLICY"; // Added new types
   lists: DecisionListItem[];
 }
 
@@ -41,17 +49,15 @@ interface DecisionType {
   sections: DecisionSection[];
 }
 
+// This is now the top-level response type
 interface DecisionsData {
   id: number;
   bg_image: ImageFile;
   types: DecisionType[];
 }
+// --------------------------------------------------------------------------
 
-interface DecisionsResponse {
-  data: DecisionsData[];
-}
-
-// -------- Skeleton Component --------
+// -------- Skeleton Component (Unchanged) --------
 const PageSkeleton = () => (
   <div className="my-10 flex_center w-full animate-pulse">
     <div className="max-w-[1024px] px-3 w-full flex_start flex-col gap-8">
@@ -75,10 +81,11 @@ const Page = () => {
     number | null
   >(null);
 
-  const { data: responseData, loading: isLoading } =
-    useFetch<DecisionsResponse>(
-      `${API_URL}/website/universities/decisions-and-instructions?page=1&limit=2`
-    );
+  // -------- FIX 2: Changed the generic type for useFetch --------
+  const { data: mainData, loading: isLoading } = useFetch<DecisionsData>(
+    `${API_URL}/website/universities/decisions-and-instructions?page=1&limit=2`
+  );
+  // -----------------------------------------------------------------
 
   const handleAccordion = (id: number, type: "instruction" | "decision") => {
     if (type === "instruction") {
@@ -88,9 +95,11 @@ const Page = () => {
     }
   };
 
-  const mainData = responseData?.data?.[1];
+  // -------- FIX 3: Simplified data access --------
   const activeType =
     tab === "higherEdu" ? mainData?.types?.[0] : mainData?.types?.[1];
+  // -----------------------------------------------
+
   const instructions =
     activeType?.sections.filter((s) => s.section_type === "INSTRUCTION") || [];
   const decisions =
@@ -125,6 +134,7 @@ const Page = () => {
                   : "ltr:left-1/2 rtl:right-1/2"
               }`}
             ></span>
+            {/* -------- FIX 4: Corrected Tab Titles -------- */}
             <button
               type="button"
               onClick={() => setTab("higherEdu")}
@@ -132,7 +142,7 @@ const Page = () => {
                 tab === "higherEdu" ? "text-white" : "text-secondary opacity-70"
               }`}
             >
-              {activeType?.title || t("higher_edu")}
+              {mainData.types?.[0]?.title || t("higher_edu")}
             </button>
             <button
               type="button"
@@ -143,6 +153,7 @@ const Page = () => {
             >
               {mainData.types?.[1]?.title || t("uni")}
             </button>
+            {/* ------------------------------------------- */}
           </div>
         </div>
 
@@ -189,9 +200,10 @@ const Page = () => {
                       }`}
                     >
                       <p className="opacity-70">{item.description}</p>
-                      {item.files[0] && (
+                      {/* -------- FIX 5: Updated File Path Access -------- */}
+                      {item.files[0]?.file && (
                         <a
-                          href={item.files[0].path}
+                          href={item.files[0].file.path}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="bg-backgroundSecondary rounded-3xl flex_center gap-4 p-2 max-w-fit"
@@ -200,13 +212,14 @@ const Page = () => {
                             <HiOutlineLink />
                           </span>
                           <span className="text-sm">
-                            {getFileName(item.files[0].path)}
+                            {getFileName(item.files[0].file.path)}
                           </span>
                           <span className="w-5 flex_center h-5 rounded-full border border-golden text-golden text-sm">
                             <GrLinkNext className="-rotate-45" />
                           </span>
                         </a>
                       )}
+                      {/* ----------------------------------------------- */}
                     </div>
                   </div>
                 ))
@@ -260,9 +273,10 @@ const Page = () => {
                       }`}
                     >
                       <p className="opacity-70">{item.description}</p>
-                      {item.files[0] && (
+                      {/* -------- FIX 5: Updated File Path Access -------- */}
+                      {item.files[0]?.file && (
                         <a
-                          href={item.files[0].path}
+                          href={item.files[0].file.path}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="bg-backgroundSecondary rounded-3xl flex_center gap-4 p-2 max-w-fit"
@@ -271,13 +285,14 @@ const Page = () => {
                             <HiOutlineLink />
                           </span>
                           <span className="text-sm">
-                            {getFileName(item.files[0].path)}
+                            {getFileName(item.files[0].file.path)}
                           </span>
                           <span className="w-5 flex_center h-5 rounded-full border border-golden text-golden text-sm">
                             <GrLinkNext className="-rotate-45" />
                           </span>
                         </a>
                       )}
+                      {/* ----------------------------------------------- */}
                     </div>
                   </div>
                 ))

@@ -294,7 +294,7 @@ const Navbar = () => {
                         {t("about_us")}
                       </Link>
                       <Link
-                        href={`/${locale}/colleges/${college}/vision-mission`}
+                        href={`/${locale}/colleges/${college}/vision-and-mission`}
                         className="block text-sm text-gray-600"
                       >
                         {t("vision_mission")}

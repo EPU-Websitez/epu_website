@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { API_URL } from "@/libs/env";
 import useFetch from "@/libs/hooks/useFetch";
 
-// Interfaces
+// --- (Interfaces and Skeletons remain the same) ---
 interface ProfileImage {
   id: number;
   original: string;
@@ -20,7 +20,6 @@ interface ProfileImage {
   created_at: string;
   updated_at: string;
 }
-
 interface Teacher {
   id: number;
   user_id: number;
@@ -37,7 +36,6 @@ interface Teacher {
   profile_image: ProfileImage;
   bg_image: ProfileImage;
 }
-
 interface College {
   id: number;
   subdomain: string;
@@ -60,7 +58,6 @@ interface College {
   created_at: string;
   updated_at: string;
 }
-
 interface Lead {
   id: number;
   college_id: number;
@@ -72,15 +69,12 @@ interface Lead {
   college: College;
   teacher: Teacher;
 }
-
 interface LeadsResponse {
   total: number;
   page: number;
   limit: number;
   data: Lead[];
 }
-
-// Skeleton Components
 const MemberCardSkeleton = () => (
   <div className="animate-pulse">
     <div className="w-full h-48 bg-gray-300 rounded-lg mb-4"></div>
@@ -89,7 +83,6 @@ const MemberCardSkeleton = () => (
     <div className="h-3 bg-gray-200 rounded w-1/2"></div>
   </div>
 );
-
 const DeanSkeleton = () => (
   <div className="flex md:justify-start justify-center md:items-start items-center gap-10 w-full border p-5 rounded-3xl border-lightBorder animate-pulse">
     <div className="sm:w-[310px] w-[125px] sm:h-[285px] h-[125px] bg-gray-300 rounded-3xl"></div>
@@ -99,7 +92,6 @@ const DeanSkeleton = () => (
     </div>
   </div>
 );
-
 const PageSkeleton = () => (
   <div className="w-full flex_center flex-col sm:my-10 my-5">
     <div className="max-w-[1379px] px-3 flex_start w-full">
@@ -129,7 +121,6 @@ const Page = () => {
   const [page, setPage] = useState(1);
   const limit = 15;
 
-  // Fetch college leads with pagination
   const {
     data: leadsData,
     loading: leadsLoading,
@@ -146,26 +137,26 @@ const Page = () => {
         setLeads((prev) => [...prev, ...leadsData.data]);
       }
     }
-  }, [leadsData, page]);
+    // FIX: Removed `page` from the dependency array to prevent data duplication.
+  }, [leadsData]);
 
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
   };
 
-  // Get the dean from leads data
   const dean = leads.find(
     (lead) =>
       lead.role.toLowerCase().includes("dean") ||
       lead.role.toLowerCase().includes("عميد")
   );
 
-  // Get other leads (excluding the dean)
   const otherLeads = leads.filter(
     (lead) =>
       !lead.role.toLowerCase().includes("dean") &&
       !lead.role.toLowerCase().includes("عميد")
   );
 
+  // This logic correctly shows the full skeleton ONLY on the first page load.
   const loading = leadsLoading && page === 1;
   const error = leadsError && page === 1;
 
@@ -194,7 +185,6 @@ const Page = () => {
         <div className="max-w-[1024px] sm:mt-14 mt-10 px-3 text-secondary flex_start flex-col gap-10 w-full">
           <SubHeader title={t("college_council")} alt={false} />
 
-          {/* Dean Section - Only show if dean exists in leads */}
           {dean ? (
             <div className="flex justify-start md:items-start items-center gap-10 w-full border p-5 rounded-3xl border-lightBorder">
               <div className="sm:w-[310px] w-[125px] sm:h-[285px] h-[125px] relative">
@@ -226,30 +216,18 @@ const Page = () => {
                     />
                   </span>
                 </h1>
-                {/* {dean.teacher.title && (
-                  <p className="text-sm text-gray-600 font-medium">
-                    {dean.teacher.title}
-                  </p>
-                )} */}
-                {/* {dean.teacher.specific_spec && (
-                  <p className="text-xs text-gray-500">
-                    {dean.teacher.specific_spec}
-                  </p>
-                )} */}
               </div>
             </div>
           ) : (
-            // Show message if no dean found
             <div className="text-gray-500 text-center w-full py-5">
               {t("no_dean_found")}
             </div>
           )}
 
-          {/* Council Members Grid - All other leads */}
           <div className="grid w-full lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-8">
-            {otherLeads.map((lead, i) => (
+            {otherLeads.map((lead) => (
               <MemberCard
-                key={i}
+                key={lead.id} // Use a stable key like lead.id
                 description={lead.role}
                 image={
                   lead.teacher.profile_image?.md || "/images/president-alt.png"
@@ -260,7 +238,6 @@ const Page = () => {
               />
             ))}
 
-            {/* Loading skeletons while fetching more data */}
             {leadsLoading &&
               page > 1 &&
               Array.from({ length: 3 }).map((_, i) => (
@@ -268,7 +245,6 @@ const Page = () => {
               ))}
           </div>
 
-          {/* Load More Button */}
           {leadsData && leads.length < leadsData.total && (
             <div className="flex_center w-full my-5">
               <button
@@ -281,14 +257,12 @@ const Page = () => {
             </div>
           )}
 
-          {/* Error State for Load More */}
           {leadsError && page > 1 && (
             <div className="text-red-500 text-center w-full">
               {t("error_loading_data")}
             </div>
           )}
 
-          {/* No Data State */}
           {!loading && leadsData && leads.length === 0 && (
             <div className="text-gray-500 text-center w-full py-10">
               {t("no_council_members_found")}

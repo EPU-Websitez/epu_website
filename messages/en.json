@@ -515,7 +515,8 @@
     "head": "Anniversary",
     "conference": "Conference",
     "latest_anniversary": "Latest Anniversary",
-    "see_more": "See More"
+    "see_more": "See More",
+    "loading": "Loading..."
   },
   "Journal": {
     "head": "EPU Journals",

@@ -156,19 +156,10 @@ const Page = () => {
                   </div>
                 </div>
                 <div className="flex_center lg:w-auto w-full">
-                  <div className="lg:w-[220px] w-1/2 h-[330px] relative">
+                  <div className="lg:w-[440px] w-full h-[330px] relative">
                     <Image
                       src={aboutData.timeline_image.lg}
                       alt="Timeline Image 1"
-                      fill
-                      priority
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="lg:w-[220px] w-1/2 h-[330px] relative">
-                    <Image
-                      src={"/images/about-stage-2.png"}
-                      alt="Timeline Image 2"
                       fill
                       priority
                       className="w-full h-full object-cover"
@@ -204,7 +195,7 @@ const Page = () => {
                 <PiStudent />
               </span>
               <h1 className="sm:text-title text-titleNormal font-bold">
-                + {statsData.student_number}
+                + {statsData.student_number || 0}
               </h1>
               <p className="font-medium">{t("students")}</p>
             </div>
@@ -213,7 +204,7 @@ const Page = () => {
                 <IoBriefcaseOutline />
               </span>
               <h1 className="sm:text-title text-titleNormal font-bold">
-                + {statsData.teacher_number}
+                + {statsData.teacher_number || 0}
               </h1>
               <p className="font-medium">{t("teachers")}</p>
             </div>
@@ -222,7 +213,7 @@ const Page = () => {
                 <HiOutlineBuildingOffice />
               </span>
               <h1 className="sm:text-title text-titleNormal font-bold">
-                + {statsData.academic_number}
+                + {statsData.academic_number || 0}
               </h1>
               <p className="font-medium">{t("academics")}</p>
             </div>
@@ -231,7 +222,7 @@ const Page = () => {
                 <LuUsers />
               </span>
               <h1 className="sm:text-title text-titleNormal font-bold">
-                + {statsData.staff_member}
+                + {statsData.staff_member || 0}
               </h1>
               <p className="font-medium">{t("staff_members")}</p>
             </div>

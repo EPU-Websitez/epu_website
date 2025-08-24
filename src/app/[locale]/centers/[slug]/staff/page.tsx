@@ -95,7 +95,7 @@ const Page = () => {
 
   const [centers, setCenters] = useState<StaffMember[]>([]);
   const [page, setPage] = useState(1);
-  const limit = 1;
+  const limit = 12;
 
   const { data, loading } = useFetch<StaffResponse>(
     `${API_URL}/website/centers/${slug}/staff?page=${page}&limit=${limit}`
