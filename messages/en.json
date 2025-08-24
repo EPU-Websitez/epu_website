@@ -121,11 +121,15 @@
     "title": "Head of the University Council",
     "name": "Prof. Dr. Edreed Muhammed Harki",
     "council_members": "Council Members",
-    "view_profile": "View Profile"
+    "view_profile": "View Profile",
+    "see_more": "See More",
+    "loading": "Loading..."
   },
   "AcademicStaff": {
     "head": "Academic Staff",
     "search": "Search",
+    "journal": "Journal",
+    "no_data": "No data found",
     "select_position": "Select Position",
     "select_department": "Select Department",
     "select_academics": "Select Academics",

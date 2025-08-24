@@ -1,126 +1,102 @@
 "use client";
-import Breadcrumb from "@/components/breadcrumb";
-import SubHeader from "@/components/subHeader";
-import { useTranslations } from "next-intl";
-import Image from "next/image";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { FaFacebookF, FaGoogleScholar, FaResearchgate } from "react-icons/fa6";
-import { HiOutlineLink } from "react-icons/hi2";
-import { IoMdArrowUp } from "react-icons/io";
+import { useTranslations } from "next-intl";
 
+// Components & Icons
+import AcademicStaffHeader from "@/components/AcademicStaffHeader";
+import SubHeader from "@/components/subHeader";
+
+// Utilities
+import { API_URL } from "@/libs/env";
+
+// --- TYPE DEFINITIONS ---
+interface Teaching {
+  id: number;
+  subject: string;
+  stage: string;
+  semester: string;
+  year_from: number;
+  year_to: number;
+}
+interface TeachingsResponse {
+  total: number;
+  data: Teaching[];
+}
+
+// --- SKELETON LOADER ---
+const TableSkeleton = () => (
+  <div className="w-full animate-pulse">
+    <div className="overflow-x-auto shadow-lg w-full sm:mt-0 -mt-4">
+      <div className="w-full bg-gray-200 h-[300px] rounded-lg"></div>
+    </div>
+  </div>
+);
+
+// --- MAIN COMPONENT ---
 const Page = () => {
   const t = useTranslations("AcademicStaff");
   const params = useParams();
   const id = params?.id as string;
   const locale = params?.locale as string;
-  const tableData = [
-    {
-      subject: "Academic Computing",
-      stage: "First Stage",
-      semester: "First Semester",
-      year: "2022 - 2023",
-    },
-    {
-      subject: "Academic Computing",
-      stage: "First Stage",
-      semester: "First Semester",
-      year: "2022 - 2023",
-    },
-    {
-      subject: "Academic Computing",
-      stage: "First Stage",
-      semester: "First Semester",
-      year: "2022 - 2023",
-    },
-    {
-      subject: "Academic Computing",
-      stage: "First Stage",
-      semester: "First Semester",
-      year: "2022 - 2023",
-    },
-  ];
+
+  // --- STATE MANAGEMENT ---
+  const [teachings, setTeachings] = useState<Teaching[]>([]);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const LIMIT = 10;
+
+  // --- DATA FETCHING ---
+  useEffect(() => {
+    // Fetch the first page of data when the component mounts
+    fetchTeachings(1);
+  }, [id]); // Re-fetch if the teacher ID changes
+
+  const fetchTeachings = async (pageNum: number) => {
+    if (pageNum > 1) {
+      setIsLoadingMore(true);
+    } else {
+      setIsInitialLoading(true);
+    }
+
+    try {
+      const res = await fetch(
+        `${API_URL}/website/teachers/${id}/teachings?page=${pageNum}&limit=${LIMIT}`
+      );
+      if (!res.ok) throw new Error("Failed to fetch data");
+      const newData: TeachingsResponse = await res.json();
+
+      if (newData.data) {
+        // Append new data for "See More", or set it for the initial load
+        setTeachings((prev) =>
+          pageNum === 1 ? newData.data : [...prev, ...newData.data]
+        );
+        setTotal(newData.total);
+      }
+    } catch (error) {
+      console.error("Failed to fetch teaching records:", error);
+      // Optionally set an error state here to show a message to the user
+    } finally {
+      setIsInitialLoading(false);
+      setIsLoadingMore(false);
+    }
+  };
+
+  const handleLoadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchTeachings(nextPage);
+  };
+
   return (
     <div className="flex_center w-full flex-col">
-      <div className="max-w-[1380px] w-full relative flex_center flex-col gap-5 sm:px-2 px-5 text-secondary">
-        <div className="relative w-full h-[276px]">
-          <div className="absolute left-5 top-5 z-10">
-            <Breadcrumb title="" alt={false} />
-          </div>
-          <Image
-            src="/images/academic-bg.png"
-            alt="title"
-            fill
-            priority
-            className="w-full h-auto rounded-2xl"
-          />
-        </div>
-        <div className="flex_start lg:w-[1024px] w-auto absolute lg:left-1/2 md:left-[12%] sm:left-[18%] left-[22%] -translate-x-1/2 sm:top-[180px] top-[220px]">
-          <div className="sm:w-[215px] w-[115px] sm:h-[215px] h-[115px] flex_center relative rounded-full bg-white">
-            <div className="flex_center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:w-[200px] w-[100px] sm:h-[200px] h-[100px] rounded-full">
-              <Image
-                src="/images/president-alt.png"
-                alt="title"
-                fill
-                priority
-                className="w-full h-auto object-cover rounded-full"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="flex_start max-w-[1024px] px-2 sm:mt-32 mt-16 w-full flex-col gap-4">
-          <span className="text-sm font-medium">
-            Assistant Professor Doctor
-          </span>
-          <h3 className="text-xl font-semibold">Kayhan Zrar Ghafoor</h3>
-          <div className="flex w-full justify-between lg:items-center items-start lg:gap-2 xl:gap-6 gap-3 mt-3 lg:flex-row flex-col">
-            <div className="flex sm:justify-center flex-shrink-0 justify-start sm:items-center items-start gap-3 sm:flex-row flex-col">
-              <div className="flex_center gap-3 rounded-xl border-golden border text-golden px-3 py-1.5">
-                <span className="w-2 h-2 rounded-full flex-shrink-0 bg-golden"></span>
-                <p className="text-sm">Vice President for Scientific</p>
-              </div>
-              <div className="flex_center gap-3 flex-shrink-0 rounded-xl border-golden border text-golden px-3 py-1.5">
-                <span className="w-2 h-2 rounded-full flex-shrink-0 bg-golden text-sm"></span>
-                <p className="text-sm"> Postgraduate Affairs</p>
-              </div>
-            </div>
-            <div className="flex sm:justify-center justify-start sm:items-center items-start gap-3 sm:flex-nowrap flex-wrap">
-              <Link
-                href=""
-                className="flex_center gap-2 rounded-xl sm:px-3 px-2 py-1.5 border border-lightBorder text-sm"
-              >
-                <span>Academic Staff Portal</span>
-                <IoMdArrowUp className="rotate-45" />
-              </Link>
-              <a
-                href=""
-                className="rounded-xl sm:px-3 px-2 py-1.5 border border-lightBorder text-sm"
-              >
-                botan@epu.edu.iq
-              </a>
-              <a
-                href=""
-                className="rounded-full flex_center w-10 h-10 border border-lightBorder hover:bg-lightBorder"
-              >
-                <FaFacebookF />
-              </a>
-              <a
-                href=""
-                className="rounded-full flex_center w-10 h-10 border border-lightBorder hover:bg-lightBorder"
-              >
-                <FaGoogleScholar />
-              </a>
-              <a
-                href=""
-                className="rounded-full flex_center w-10 h-10 border border-lightBorder hover:bg-lightBorder"
-              >
-                <FaResearchgate />
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+      <AcademicStaffHeader />
       <div className="mt-14 w-full flex_center flex-col text-secondary">
+        {/* Navigation Tabs */}
         <div className="max-w-[1024px] w-full flex_start sm:gap-5 gap-3 overflow-x-auto hide_scroll sm:px-0 px-5">
           <Link
             href={`/${locale}/academic-staff/${id}`}
@@ -129,32 +105,34 @@ const Page = () => {
           >
             {t("about")}
           </Link>
-          <p className=" border-b border-b-secondary px-3 sm:text-base text-sm flex-shrink-0 font-medium">
+          <p className="border-b border-b-secondary px-3 sm:text-base text-sm flex-shrink-0 font-medium">
             {t("teaching")}
           </p>
           <Link
             href={`/${locale}/academic-staff/${id}/education`}
             title={t("education")}
-            className=" opacity-70 px-3 sm:text-base text-sm flex-shrink-0"
+            className="opacity-70 px-3 sm:text-base text-sm flex-shrink-0"
           >
             {t("education")}
           </Link>
           <Link
             href={`/${locale}/academic-staff/${id}/professional-engagement`}
             title={t("professional_engagement")}
-            className=" opacity-70 px-3 sm:text-base text-sm flex-shrink-0"
+            className="opacity-70 px-3 sm:text-base text-sm flex-shrink-0"
           >
             {t("professional_engagement")}
           </Link>
           <Link
             href={`/${locale}/academic-staff/${id}/academics`}
             title={t("academics")}
-            className="  opacity-70 px-3 sm:text-base text-sm flex-shrink-0"
+            className="opacity-70 px-3 sm:text-base text-sm flex-shrink-0"
           >
             {t("academics")}
           </Link>
         </div>
-        <div className="w-full bg-backgroundSecondary border-t-lightBorder border-t pb-20 flex_center  sm:px-0 px-5">
+
+        {/* Main Content Area */}
+        <div className="w-full bg-backgroundSecondary border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
           <div className="sm:mt-10 mt-5 flex_start flex-col gap-10 max-w-[1024px] w-full px-2">
             <div className="lg:block hidden">
               <SubHeader title={t("teaching")} alt={true} />
@@ -162,52 +140,83 @@ const Page = () => {
             <div className="lg:hidden block">
               <SubHeader title={t("teaching")} alt={false} />
             </div>
-            <div className="overflow-x-auto shadow-lg w-full sm:mt-0 -mt-4 custom_scroll">
-              <table className="w-full bg-white">
-                <thead>
-                  <tr className="lg:bg-primary bg-golden text-white">
-                    <th className="md:px-6 px-3 sm:py-4 py-3 font-medium lg:text-base text-xs text-center tracking-wider ltr:border-r rtl:border-l border-blue-700 md:min-w-max min-w-[170px]">
-                      {t("subject")}
-                    </th>
-                    <th className="md:px-6 px-3 sm:py-4 py-3 font-medium lg:text-base text-xs text-center tracking-wider ltr:border-r rtl:border-l border-blue-700 md:min-w-max min-w-[170px]">
-                      {t("stage")}
-                    </th>
-                    <th className="md:px-6 px-3 sm:py-4 py-3 font-medium lg:text-base text-xs text-center tracking-wider ltr:border-r rtl:border-l border-blue-700 md:min-w-max min-w-[170px]">
-                      {t("semester")}
-                    </th>
-                    <th className="md:px-6 px-3 sm:py-4 py-3 font-medium lg:text-base text-xs text-center tracking-wider md:min-w-max min-w-[170px]">
-                      {t("year")}
-                    </th>
-                  </tr>
-                </thead>
 
-                <tbody className="divide-y divide-gray-200">
-                  {tableData.map((row, index) => (
-                    <tr
-                      key={index}
-                      className="hover:bg-gray-50 transition-colors duration-200"
+            {isInitialLoading ? (
+              <TableSkeleton />
+            ) : (
+              <>
+                <div className="overflow-x-auto shadow-lg w-full sm:mt-0 -mt-4 custom_scroll">
+                  <table className="w-full bg-white min-w-[700px]">
+                    <thead>
+                      <tr className="lg:bg-primary bg-golden text-white">
+                        <th className="md:px-6 px-3 sm:py-4 py-3 font-medium lg:text-base text-xs text-start tracking-wider ltr:border-r rtl:border-l border-blue-700">
+                          {t("subject")}
+                        </th>
+                        <th className="md:px-6 px-3 sm:py-4 py-3 font-medium lg:text-base text-xs text-center tracking-wider ltr:border-r rtl:border-l border-blue-700">
+                          {t("stage")}
+                        </th>
+                        <th className="md:px-6 px-3 sm:py-4 py-3 font-medium lg:text-base text-xs text-center tracking-wider ltr:border-r rtl:border-l border-blue-700">
+                          {t("semester")}
+                        </th>
+                        <th className="md:px-6 px-3 sm:py-4 py-3 font-medium lg:text-base text-xs text-center tracking-wider">
+                          {t("year")}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {teachings.length > 0 ? (
+                        teachings.map((row) => (
+                          <tr
+                            key={row.id}
+                            className="hover:bg-gray-50 transition-colors duration-200"
+                          >
+                            <td className="md:px-6 px-3 md:py-4 py-3 lg:text-sm text-xs font-medium ltr:border-r rtl:border-l border-gray-200">
+                              {row.subject}
+                            </td>
+                            <td className="md:px-6 px-3 md:py-4 py-3 lg:text-sm text-xs text-center ltr:border-r rtl:border-l border-gray-200">
+                              {row.stage}
+                            </td>
+                            <td className="md:px-6 px-3 md:py-4 py-3 lg:text-sm text-xs text-center ltr:border-r rtl:border-l border-gray-200">
+                              {row.semester}
+                            </td>
+                            <td className="md:px-6 px-3 md:py-4 py-3 lg:text-sm text-xs text-center">
+                              {`${row.year_from} - ${row.year_to}`}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan={4}
+                            className="text-center py-10 text-gray-500"
+                          >
+                            {t("no_teaching_records")}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* "See More" Button */}
+                {teachings.length < total && (
+                  <div className="w-full flex justify-center mt-6">
+                    <button
+                      onClick={handleLoadMore}
+                      disabled={isLoadingMore}
+                      className="border border-primary text-primary px-8 py-2 rounded-md disabled:opacity-50 disabled:cursor-wait"
                     >
-                      <td className="md:px-6 px-3 md:py-4 py-3 lg:text-sm text-xs text-center font-medium ltr:border-r rtl:border-l border-gray-200">
-                        {row.subject}
-                      </td>
-                      <td className="md:px-6 px-3 md:py-4 py-3 lg:text-sm text-xs text-center ltr:border-r rtl:border-l border-gray-200">
-                        {row.stage}
-                      </td>
-                      <td className="md:px-6 px-3 md:py-4 py-3 lg:text-sm text-xs text-center ltr:border-r rtl:border-l border-gray-200">
-                        {row.semester}
-                      </td>
-                      <td className="md:px-6 px-3 md:py-4 py-3 lg:text-sm text-xs text-center">
-                        {row.year}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                      {isLoadingMore ? t("loading") : t("see_more")}
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
 };
+
 export default Page;

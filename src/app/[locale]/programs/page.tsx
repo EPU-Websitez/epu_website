@@ -180,7 +180,7 @@ const Page = () => {
               </div>
               <div className="relative md:h-[276px] h-[192px] md:w-[420px] w-full">
                 <Image
-                  src={mainProgramInfo.bg_image.lg}
+                  src={mainProgramInfo?.bg_image?.lg}
                   alt={mainProgramInfo.description}
                   fill
                   priority

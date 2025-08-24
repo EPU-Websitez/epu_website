@@ -204,7 +204,7 @@ const Page = () => {
           )}
 
           {/* Error State for Load More */}
-          {error && page > 1 && (
+          {error && !loading && page > 1 && (
             <div className="text-red-500 text-center w-full">
               error loading data
             </div>

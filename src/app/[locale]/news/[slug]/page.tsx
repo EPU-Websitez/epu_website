@@ -59,7 +59,6 @@ interface NewsListResponse {
 
 const Page = () => {
   const t = useTranslations("News");
-  const tCommon = useTranslations("Common");
   const params = useParams();
   const locale = params?.locale as string;
   const slug = params?.slug as string;
@@ -310,7 +309,7 @@ const Page = () => {
               disabled={listLoading}
               className="sm:text-base text-sm border border-primary px-8 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {listLoading ? tCommon("loading") : tCommon("see_more")}
+              {listLoading ? t("loading") : t("see_more")}
             </button>
           </div>
         )}

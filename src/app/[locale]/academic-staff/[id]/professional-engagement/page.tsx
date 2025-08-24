@@ -132,7 +132,7 @@ const Page = () => {
                 <span>{t("activities")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </button>
-              <button
+              {/* <button
                 type="button"
                 onClick={() => handleTab("researchEvaluation")}
                 className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
@@ -155,7 +155,7 @@ const Page = () => {
               >
                 <span>{t("committees_evaluation")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-              </button>
+              </button> */}
               <button
                 type="button"
                 onClick={() => handleTab("grants")}

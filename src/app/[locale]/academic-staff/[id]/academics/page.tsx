@@ -1,20 +1,133 @@
 "use client";
-import Breadcrumb from "@/components/breadcrumb";
+import AcademicStaffHeader from "@/components/AcademicStaffHeader";
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+// Icons
 import { AiOutlineRise } from "react-icons/ai";
 import { BsBook } from "react-icons/bs";
 import { CiSearch } from "react-icons/ci";
-import { FaFacebookF, FaGoogleScholar, FaResearchgate } from "react-icons/fa6";
 import { FiUsers } from "react-icons/fi";
-import { GoArrowRight, GoBriefcase } from "react-icons/go";
+import { GoArrowRight } from "react-icons/go";
 import { HiOutlineLink } from "react-icons/hi2";
-import { IoMdArrowUp, IoMdClose } from "react-icons/io";
+import { IoMdClose } from "react-icons/io";
 import { MdCoPresent, MdKeyboardDoubleArrowRight } from "react-icons/md";
+
+// Utilities
+import { API_URL } from "@/libs/env";
+
+// --- TYPE DEFINITIONS ---
+interface File {
+  id: number;
+  path: string;
+}
+interface FileEntry {
+  id: number;
+  file: File;
+}
+
+// Data types for each tab
+interface Book {
+  id: number;
+  name: string;
+  year: string;
+  file: File | null;
+}
+interface Publication {
+  id: number;
+  title: string;
+  published_date: string;
+  journal_title: string;
+  impact_factor: string;
+  doi_link: string | null;
+  files: FileEntry[];
+}
+interface Research {
+  id: number;
+  title: string;
+  created_at: string;
+  file: File | null;
+}
+interface Student {
+  id: number;
+  name: string;
+}
+interface SupervisingResearch {
+  id: number;
+  title: string;
+  year_from: string;
+  year_to: string;
+  files: FileEntry[];
+  students: Student[];
+}
+interface Seminar {
+  id: number;
+  title: string;
+  year: string;
+  attendance_number: number;
+  files: FileEntry[];
+}
+interface Conference {
+  id: number;
+  title: string;
+  year: string;
+  attendance_number: number;
+  files: FileEntry[];
+}
+interface Training {
+  id: number;
+  title: string;
+  year: string;
+  level: string;
+  type: string;
+  files: FileEntry[];
+}
+
+// A union type for all possible data items
+type DataItem =
+  | Book
+  | Publication
+  | Research
+  | SupervisingResearch
+  | Seminar
+  | Conference
+  | Training;
+
+// --- SKELETON LOADER ---
+const CardSkeleton = () => (
+  <div className="flex flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full animate-pulse">
+    <div className="flex items-center gap-3 border-b border-b-lightBorder pb-4 w-full">
+      <div className="w-10 h-10 rounded-lg bg-gray-300"></div>
+      <div className="flex flex-col gap-2 w-full">
+        <div className="h-4 w-3/4 bg-gray-300 rounded"></div>
+        <div className="h-3 w-1/2 bg-gray-200 rounded"></div>
+      </div>
+    </div>
+    <div className="grid grid-cols-2 gap-4 mt-2">
+      <div className="flex flex-col gap-2">
+        <div className="h-3 w-1/2 bg-gray-200 rounded"></div>
+        <div className="h-4 w-3/4 bg-gray-300 rounded"></div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <div className="h-3 w-1/2 bg-gray-200 rounded"></div>
+        <div className="h-4 w-3/4 bg-gray-300 rounded"></div>
+      </div>
+    </div>
+  </div>
+);
+const SectionSkeleton = ({ cardCount = 4 }) => (
+  <div className="w-full">
+    <div className="grid lg:max-w-[710px] w-full lg:grid-cols-2 gap-5">
+      {[...Array(cardCount)].map((_, i) => (
+        <CardSkeleton key={i} />
+      ))}
+    </div>
+  </div>
+);
 
 const Page = () => {
   const t = useTranslations("AcademicStaff");
@@ -23,96 +136,146 @@ const Page = () => {
   const locale = params?.locale as string;
 
   const [tab, setTab] = useState("books");
-  const handleTab = (e: string) => {
-    setTab(e);
+  const [modalId, setModalId] = useState<number | null>(null);
+  const LIMIT = 6;
+
+  // --- UNIFIED STATE MANAGEMENT ---
+  const [data, setData] = useState<DataItem[]>([]);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  // --- UNIFIED DATA FETCHING ---
+  useEffect(() => {
+    const activeTabs = [
+      "books",
+      "publications",
+      "researchIntrest",
+      "supervisingResearch",
+      "seminars",
+      "conferences",
+      "trainings",
+    ];
+    if (activeTabs.includes(tab)) {
+      setData([]);
+      setPage(1);
+      setTotal(0);
+      fetchData(1, tab);
+    }
+  }, [tab, id]);
+
+  useEffect(() => {
+    if (page > 1) {
+      fetchData(page, tab);
+    }
+  }, [page]);
+
+  const fetchData = async (pageNum: number, currentTab: string) => {
+    const endpoints: { [key: string]: string } = {
+      books: "books",
+      publications: "research-papers",
+      researchIntrest: "researches",
+      supervisingResearch: "supervising-researches",
+      seminars: "seminars",
+      conferences: "conferences",
+      trainings: "trainings",
+    };
+    const endpoint = endpoints[currentTab];
+    if (!endpoint) return;
+
+    if (pageNum === 1) setIsLoading(true);
+    else setIsLoadingMore(true);
+
+    try {
+      const res = await fetch(
+        `${API_URL}/website/teachers/${id}/${endpoint}?page=${pageNum}&limit=${LIMIT}`
+      );
+      if (!res.ok) throw new Error(`Failed to fetch ${currentTab}`);
+      const newData = await res.json();
+      if (newData.data) {
+        setData((prev) => {
+          const existingIds = new Set(prev.map((item) => item.id));
+          const newItems = newData.data.filter(
+            (item: DataItem) => !existingIds.has(item.id)
+          );
+          return pageNum === 1 ? newData.data : [...prev, ...newItems];
+        });
+        setTotal(newData.total);
+      }
+    } catch (error) {
+      console.error(`Error fetching ${currentTab}:`, error);
+    } finally {
+      setIsLoading(false);
+      setIsLoadingMore(false);
+    }
   };
 
-  const [modalId, setModalId] = useState(null);
-  const handleModal = (id: any) => {
-    setModalId(id);
+  const handleLoadMore = () => setPage((p) => p + 1);
+
+  // --- HELPERS & MODAL ---
+  const handleModal = (researchId: number | null) => setModalId(researchId);
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString(locale, {
+      year: "numeric",
+      month: "long",
+    });
+  const formatYearRange = (from: string, to: string) =>
+    `${new Date(from).getFullYear()} - ${new Date(to).getFullYear()}`;
+  const getFileName = (path: string | undefined) =>
+    path ? path.substring(path.lastIndexOf("/") + 1) : "document.pdf";
+  const selectedItemForModal =
+    modalId && (tab === "supervisingResearch" || tab === "researchIntrest")
+      ? (data.find((item) => item.id === modalId) as
+          | SupervisingResearch
+          | Research
+          | undefined)
+      : undefined;
+
+  const handleFileDownload = async (
+    filePath?: string,
+    suggestedName?: string
+  ) => {
+    if (!filePath) return;
+    try {
+      const fileUrl = new URL(filePath, API_URL).href;
+      const res = await fetch(fileUrl, { mode: "cors" });
+      if (!res.ok) throw new Error(`Failed to fetch file: ${res.status}`);
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+
+      const pathName = filePath.split("?")[0];
+      const ext = pathName.includes(".")
+        ? `.${pathName.split(".").pop()!}`
+        : "";
+      const clean = suggestedName?.trim();
+      const hasExt = !!clean && /\.[a-z0-9]{1,8}$/i.test(clean);
+      const fileName =
+        (hasExt && (clean as string)) ||
+        (clean && `${clean}${ext}`) ||
+        pathName.split("/").pop() ||
+        "download";
+
+      const a = document.createElement("a");
+      a.href = objectUrl;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(objectUrl);
+    } catch (e) {
+      console.error(e);
+      // Fallback: open in new tab
+      const fileUrl = new URL(filePath, API_URL).href;
+      window.open(fileUrl, "_blank", "noopener,noreferrer");
+    }
   };
 
   return (
     <div className="flex_center w-full flex-col">
-      <div className="max-w-[1380px] w-full relative flex_center flex-col gap-5 sm:px-2 px-5 text-secondary">
-        <div className="relative w-full h-[276px]">
-          <div className="absolute ltr:left-5 rtl:right-5 top-5 z-10">
-            <Breadcrumb title="" alt={false} />
-          </div>
-          <Image
-            src="/images/academic-bg.png"
-            alt="title"
-            fill
-            priority
-            className="w-full h-auto rounded-2xl"
-          />
-        </div>
-        <div className="flex_start lg:w-[1024px] w-auto absolute lg:left-1/2 md:left-[12%] sm:left-[18%] left-[22%] -translate-x-1/2 sm:top-[180px] top-[220px]">
-          <div className="sm:w-[215px] w-[115px] sm:h-[215px] h-[115px] flex_center relative rounded-full bg-white">
-            <div className="flex_center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:w-[200px] w-[100px] sm:h-[200px] h-[100px] rounded-full">
-              <Image
-                src="/images/president-alt.png"
-                alt="title"
-                fill
-                priority
-                className="w-full h-auto object-cover rounded-full"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="flex_start max-w-[1024px] px-2 sm:mt-32 mt-16 w-full flex-col gap-4">
-          <span className="text-sm font-medium">
-            Assistant Professor Doctor
-          </span>
-          <h3 className="text-xl font-semibold">Kayhan Zrar Ghafoor</h3>
-          <div className="flex w-full justify-between lg:items-center items-start lg:gap-2 gap-6 mt-3 lg:flex-row flex-col">
-            <div className="flex sm:justify-center justify-start sm:items-center items-start gap-3 sm:flex-row flex-col">
-              <div className="flex_center gap-3 rounded-xl border-golden border text-golden px-3 py-1.5">
-                <span className="w-2 h-2 rounded-full flex-shrink-0 bg-golden text-sm"></span>
-                <p>Vice President for Scientific</p>
-              </div>
-              <div className="flex_center gap-3 rounded-xl border-golden border text-golden px-3 py-1.5">
-                <span className="w-2 h-2 rounded-full flex-shrink-0 bg-golden text-sm"></span>
-                <p> Postgraduate Affairs</p>
-              </div>
-            </div>
-            <div className="flex sm:justify-center justify-start sm:items-center items-start gap-3 sm:flex-nowrap flex-wrap">
-              <Link
-                href=""
-                className="flex_center gap-2 rounded-xl sm:px-3 px-2 py-1.5 border border-lightBorder text-sm"
-              >
-                <span>Academic Staff Portal</span>
-                <IoMdArrowUp className="rotate-45" />
-              </Link>
-              <a
-                href=""
-                className="rounded-xl sm:px-3 px-2 py-1.5 border border-lightBorder text-sm"
-              >
-                botan@epu.edu.iq
-              </a>
-              <a
-                href=""
-                className="rounded-full flex_center w-10 h-10 border border-lightBorder hover:bg-lightBorder"
-              >
-                <FaFacebookF />
-              </a>
-              <a
-                href=""
-                className="rounded-full flex_center w-10 h-10 border border-lightBorder hover:bg-lightBorder"
-              >
-                <FaGoogleScholar />
-              </a>
-              <a
-                href=""
-                className="rounded-full flex_center w-10 h-10 border border-lightBorder hover:bg-lightBorder"
-              >
-                <FaResearchgate />
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+      <AcademicStaffHeader />
       <div className="mt-14 w-full flex_center flex-col text-secondary">
+        {/* Navigation */}
         <div className="max-w-[1024px] w-full flex_start sm:gap-5 gap-3 overflow-x-auto hide_scroll sm:px-0 px-5">
           <Link
             href={`/${locale}/academic-staff/${id}`}
@@ -137,7 +300,6 @@ const Page = () => {
           </Link>
           <Link
             href={`/${locale}/academic-staff/${id}/professional-engagement`}
-            title={t("professional_engagement")}
             className=" opacity-70 px-3 sm:text-base text-sm flex-shrink-0"
           >
             {t("professional_engagement")}
@@ -146,13 +308,15 @@ const Page = () => {
             {t("academics")}
           </p>
         </div>
+
         <div className="w-full bg-backgroundSecondary border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
           <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
+            {/* Tab Buttons */}
             <div className="flex_start flex-col gap-4 flex-shrink-0 lg:w-auto w-full">
               <button
                 type="button"
-                onClick={() => handleTab("books")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
+                onClick={() => setTab("books")}
+                className={`lg:w-[250px] w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-xl transition-all ${
                   tab === "books"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -163,8 +327,8 @@ const Page = () => {
               </button>
               <button
                 type="button"
-                onClick={() => handleTab("publications")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
+                onClick={() => setTab("publications")}
+                className={`lg:w-[250px] w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-xl transition-all ${
                   tab === "publications"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -175,8 +339,8 @@ const Page = () => {
               </button>
               <button
                 type="button"
-                onClick={() => handleTab("researchIntrest")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
+                onClick={() => setTab("researchIntrest")}
+                className={`lg:w-[250px] w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-xl transition-all ${
                   tab === "researchIntrest"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -187,8 +351,8 @@ const Page = () => {
               </button>
               <button
                 type="button"
-                onClick={() => handleTab("supervisingResearch")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
+                onClick={() => setTab("supervisingResearch")}
+                className={`lg:w-[250px] w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-xl transition-all ${
                   tab === "supervisingResearch"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -199,8 +363,8 @@ const Page = () => {
               </button>
               <button
                 type="button"
-                onClick={() => handleTab("seminars")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
+                onClick={() => setTab("seminars")}
+                className={`lg:w-[250px] w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-xl transition-all ${
                   tab === "seminars"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -209,22 +373,11 @@ const Page = () => {
                 <span>{t("seminars")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </button>
+              {/* <button type="button" onClick={() => setTab("workshops")} className={`lg:w-[250px] w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-xl transition-all ${tab === "workshops" ? "text-primary border-primary" : "text-secondary opacity-70 border-transparent"}`}><span>{t("workshops")}</span><MdKeyboardDoubleArrowRight className="rtl:rotate-180" /></button> */}
               <button
                 type="button"
-                onClick={() => handleTab("workshops")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
-                  tab === "workshops"
-                    ? "text-primary border-primary"
-                    : "text-secondary opacity-70 border-transparent"
-                }`}
-              >
-                <span>{t("workshops")}</span>
-                <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-              </button>
-              <button
-                type="button"
-                onClick={() => handleTab("conferences")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
+                onClick={() => setTab("conferences")}
+                className={`lg:w-[250px] w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-xl transition-all ${
                   tab === "conferences"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -235,8 +388,8 @@ const Page = () => {
               </button>
               <button
                 type="button"
-                onClick={() => handleTab("trainings")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
+                onClick={() => setTab("trainings")}
+                className={`lg:w-[250px] w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-xl transition-all ${
                   tab === "trainings"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -245,10 +398,10 @@ const Page = () => {
                 <span>{t("trainings")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </button>
-              <button
+              {/* <button
                 type="button"
-                onClick={() => handleTab("awards")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
+                onClick={() => setTab("awards")}
+                className={`lg:w-[250px] w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-xl transition-all ${
                   tab === "awards"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -259,8 +412,8 @@ const Page = () => {
               </button>
               <button
                 type="button"
-                onClick={() => handleTab("professionalActs")}
-                className={`lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl ${
+                onClick={() => setTab("professionalActs")}
+                className={`lg:w-[250px] w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-xl transition-all ${
                   tab === "professionalActs"
                     ? "text-primary border-primary"
                     : "text-secondary opacity-70 border-transparent"
@@ -268,396 +421,532 @@ const Page = () => {
               >
                 <span>{t("professional_acts")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-              </button>
+              </button> */}
             </div>
-            {tab === "books" && (
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("books")} alt={false} />
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
-                  <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
-                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-lg">
-                        <BsBook className="text-2xl" />
-                      </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
-                          25 - 06 - 1992
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex_start w-full gap-5 lg:flex-row flex-col">
-                      <div className="flex_start flex-col lg:w-1/2 w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("attachment")}
-                        </span>
-                        <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                          <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                            <HiOutlineLink />
-                          </span>
-                          <span>botancv.PDF</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            {tab === "publications" && (
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("publications")} alt={false} />
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
-                  <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
-                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-lg">
-                        <CiSearch className="text-2xl" />
-                      </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
-                          25 - 06 - 1992
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex_start w-full gap-5 lg:flex-row flex-col">
-                      <div className="flex_start flex-col lg:w-1/2 w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("attachment")}
-                        </span>
-                        <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                          <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                            <HiOutlineLink />
-                          </span>
-                          <span>botancv.PDF</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            {tab === "researchIntrest" && (
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("research_intrest")} alt={false} />
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
-                  <div className="flex_start flex-col gap-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full px-3 pt-3">
-                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl">
-                        <CiSearch className="text-2xl" />
-                      </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
-                          25 - 06 - 1992
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex_start w-full gap-5 lg:flex-row flex-col px-3">
-                      <div className="flex_start flex-col lg:w-1/2 w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("attachment")}
-                        </span>
-                        <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                          <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                            <HiOutlineLink />
-                          </span>
-                          <span>botancv.PDF</span>
-                        </button>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleModal(1)}
-                      className="w-full py-3 text-golden border-t border-lightBorder flex justify-between items-center px-3"
-                    >
-                      <span className="text-sm">{t("read_more")}</span>
-                      <GoArrowRight className="text-xl rtl:rotate-180" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-            {tab === "supervisingResearch" && (
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("supervising_research")} alt={false} />
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
-                  <div className="flex_start flex-col gap-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full px-3 pt-3">
-                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl">
-                        <CiSearch className="text-2xl" />
-                      </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
-                          25 - 06 - 1992
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex_start w-full gap-5 lg:flex-row flex-col px-3">
-                      <div className="flex_start flex-col lg:w-1/2 w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("attachment")}
-                        </span>
-                        <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                          <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                            <HiOutlineLink />
-                          </span>
-                          <span>botancv.PDF</span>
-                        </button>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleModal(1)}
-                      className="w-full py-3 text-golden border-t border-lightBorder flex justify-between items-center px-3"
-                    >
-                      <span className="text-sm">{t("read_more")}</span>
-                      <GoArrowRight className="text-xl rtl:rotate-180" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-            {tab === "seminars" && (
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("seminars")} alt={false} />
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
-                  <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
-                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl">
-                        <div className="h-6 w-6 relative">
-                          <Image
-                            src="/images/seminar.svg"
-                            alt="title"
-                            fill
-                            priority
-                            className="w-full h-auto"
-                          />
+
+            {/* Content Area */}
+            <div className="lg:border-l lg:pl-10 w-full min-h-[400px]">
+              {isLoading ? (
+                <SectionSkeleton />
+              ) : (
+                <>
+                  <div className="grid lg:max-w-[710px] w-full lg:grid-cols-2 gap-5">
+                    {/* --- Books --- */}
+                    {tab === "books" &&
+                      (data as Book[]).map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex flex-col gap-3 p-3 rounded-3xl bg-background text-secondary"
+                        >
+                          <div className="flex items-center gap-3 border-b pb-4">
+                            <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-2xl shrink-0">
+                              <BsBook />
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-sm">
+                                {item.name}
+                              </h4>
+                              <span className="text-black/60 text-xs">
+                                {formatDate(item.year)}
+                              </span>
+                            </div>
+                          </div>
+                          {item.file && (
+                            <div className="flex">
+                              <div className="flex flex-col">
+                                <span className="text-black/60 text-xs">
+                                  {t("attachment")}
+                                </span>
+                                {/* <a
+                                  href={item.file.path}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  download
+                                  className="border rounded-full flex_center gap-2 px-2 py-1.5 text-xs mt-1 hover:bg-gray-50"
+                                >
+                                  <span className="bg-[#81B1CE] text-white flex_center w-5 h-5 rounded-full">
+                                    <HiOutlineLink />
+                                  </span>
+                                  <span className="max-w-[20ch] truncate">
+                                    {getFileName(item.file.path)}
+                                  </span>
+                                </a> */}
+                                <button
+                                  onClick={() =>
+                                    handleFileDownload(
+                                      item?.file?.path,
+                                      item?.file?.path
+                                    )
+                                  }
+                                  className="border rounded-full flex_center gap-2 px-2 py-1.5 text-xs mt-1 hover:bg-gray-50"
+                                >
+                                  <span className="bg-[#81B1CE] text-white flex_center w-5 h-5 rounded-full">
+                                    <HiOutlineLink />
+                                  </span>
+                                  <span className="max-w-[20ch] truncate">
+                                    {getFileName(item.file.path)}
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                          )}
                         </div>
-                      </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
-                          25 - 06 - 1992
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex_start w-full gap-5 lg:flex-row flex-col">
-                      <div className="flex_start flex-col lg:w-1/2 w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("number_of_audience")}
-                        </span>
-                        <p className="lg:text-base text-sm">+ 325 Audience</p>
-                      </div>
-                      <div className="flex_start flex-col lg:w-1/2 w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("attachment")}
-                        </span>
-                        <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                          <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                            <HiOutlineLink />
-                          </span>
-                          <span>botancv.PDF</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            {tab === "workshops" && (
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("workshops")} alt={false} />
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
-                  <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
-                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl">
-                        <MdCoPresent className="text-2xl" />
-                      </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
-                          25 - 06 - 1992
-                        </span>
-                      </div>
-                    </div>
-                    <div className="grid lg:grid-cols-2 grid-cols-1 w-full gap-5">
-                      <div className="flex_start flex-col w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("type")}
-                        </span>
-                        <p className="lg:text-base text-sm">International</p>
-                      </div>
+                      ))}
 
-                      <div className="flex_start flex-col w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("attachment")}
-                        </span>
-                        <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                          <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                            <HiOutlineLink />
-                          </span>
-                          <span>botancv.PDF</span>
-                        </button>
-                      </div>
-                      <div className="flex_start flex-col w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("number_of_audience")}
-                        </span>
-                        <p className="lg:text-base text-sm">+ 325 Audience</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            {tab === "conferences" && (
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("conferences")} alt={false} />
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
-                  <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
-                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl">
-                        <FiUsers className="text-2xl" />
-                      </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
-                          25 - 06 - 1992
-                        </span>
-                      </div>
-                    </div>
-                    <div className="grid lg:grid-cols-2 grid-cols-1 w-full gap-5">
-                      <div className="flex_start flex-col w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("number_of_present")}
-                        </span>
-                        <p className="lg:text-base text-sm">+ 25 Presents</p>
-                      </div>
+                    {/* --- Publications --- */}
+                    {tab === "publications" &&
+                      (data as Publication[]).map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex flex-col gap-3 p-3 rounded-3xl bg-background text-secondary"
+                        >
+                          <div className="flex items-center gap-3 border-b pb-4">
+                            <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-2xl shrink-0">
+                              <CiSearch />
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-sm">
+                                {item.title}
+                              </h4>
+                              <span className="text-black/60 text-xs">
+                                {formatDate(item.published_date)}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 w-full gap-y-3 gap-x-2 text-xs">
+                            <div className="flex flex-col">
+                              <span className="opacity-60">{t("journal")}</span>
+                              <p className="font-medium text-sm">
+                                {item.journal_title}
+                              </p>
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="opacity-60">
+                                {t("impact_factor")}
+                              </span>
+                              <p className="font-medium text-sm">
+                                {item.impact_factor}
+                              </p>
+                            </div>
+                            {item.doi_link && (
+                              <a
+                                href={item.doi_link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="border rounded-full flex_center gap-2 px-2 py-1.5 mt-1 hover:bg-gray-50 w-fit"
+                              >
+                                <span className="bg-[#81B1CE] text-white flex_center w-5 h-5 rounded-full">
+                                  <HiOutlineLink />
+                                </span>
+                                <span className="max-w-[15ch] truncate">
+                                  DOI Link
+                                </span>
+                              </a>
+                            )}
+                            {item.files?.[0]?.file && (
+                              // <a
+                              //   href={item.files[0].file.path}
+                              //   target="_blank"
+                              //   rel="noopener noreferrer"
+                              //   download
+                              //   className="border rounded-full flex_center gap-2 px-2 py-1.5 mt-1 hover:bg-gray-50 w-fit"
+                              // >
+                              //   <span className="bg-[#81B1CE] text-white flex_center w-5 h-5 rounded-full">
+                              //     <HiOutlineLink />
+                              //   </span>
+                              //   <span className="max-w-[15ch] truncate">
+                              //     {getFileName(item.files[0].file.path)}
+                              //   </span>
+                              // </a>
+                              <button
+                                onClick={() =>
+                                  handleFileDownload(
+                                    item.files[0].file.path,
+                                    getFileName(item.files[0].file.path)
+                                  )
+                                }
+                                className="border rounded-full flex_center gap-2 px-2 py-1.5 mt-1 hover:bg-gray-50 w-fit"
+                              >
+                                <span className="bg-[#81B1CE] text-white flex_center w-5 h-5 rounded-full">
+                                  <HiOutlineLink />
+                                </span>
+                                <span className="max-w-[15ch] truncate">
+                                  {getFileName(item.files[0].file.path)}
+                                </span>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
 
-                      <div className="flex_start flex-col w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("attachment")}
-                        </span>
-                        <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                          <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                            <HiOutlineLink />
-                          </span>
-                          <span>botancv.PDF</span>
-                        </button>
-                      </div>
-                      <div className="flex_start flex-col w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("number_of_audience")}
-                        </span>
-                        <p className="lg:text-base text-sm">+ 325 Audience</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            {tab === "trainings" && (
-              <div className="lg:border-l border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
-                <SubHeader title={t("trainings")} alt={false} />
-                <div className="grid lg:max-w-[710px] max-w-full lg:grid-cols-2 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-5">
-                  <div className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full">
-                    <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
-                      <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl">
-                        <AiOutlineRise className="text-2xl" />
-                      </div>
-                      <div className="flex_start flex-col">
-                        <h4 className="font-medium">University Of Mosul</h4>
-                        <span className="text-black opacity-60 text-sm">
-                          25 - 06 - 1992
-                        </span>
-                      </div>
-                    </div>
-                    <div className="grid lg:grid-cols-2 grid-cols-1 w-full gap-5">
-                      <div className="flex_start flex-col w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("level")}
-                        </span>
-                        <p className="lg:text-base text-sm">International</p>
-                      </div>
+                    {/* --- Research Interest --- */}
+                    {tab === "researchIntrest" &&
+                      (data as Research[]).map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex flex-col gap-3 rounded-3xl bg-background text-secondary"
+                        >
+                          <div className="flex items-center gap-3 border-b pb-4 w-full px-3 pt-3">
+                            <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl shrink-0">
+                              <CiSearch className="text-2xl" />
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-sm">
+                                {item.title}
+                              </h4>
+                              <span className="text-black/60 text-xs">
+                                {formatDate(item.created_at)}
+                              </span>
+                            </div>
+                          </div>
+                          {item.file && (
+                            <div className="flex w-full p-3">
+                              <div className="flex flex-col">
+                                <span className="text-black/60 text-xs">
+                                  {t("attachment")}
+                                </span>
+                                {/* <a
+                                  href={item.file.path}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  download
+                                  className="border rounded-full flex_center gap-2 px-2 py-1.5 text-xs mt-1 hover:bg-gray-50"
+                                >
+                                  <span className="bg-[#81B1CE] text-white flex_center w-5 h-5 rounded-full">
+                                    <HiOutlineLink />
+                                  </span>
+                                  <span className="max-w-[20ch] truncate">
+                                    {getFileName(item.file.path)}
+                                  </span>
+                                </a> */}
+                                <button
+                                  onClick={() =>
+                                    handleFileDownload(
+                                      item?.file?.path,
+                                      getFileName(item?.file?.path)
+                                    )
+                                  }
+                                  className="border rounded-full flex_center gap-2 px-2 py-1.5 text-xs mt-1 hover:bg-gray-50"
+                                >
+                                  <span className="bg-[#81B1CE] text-white flex_center w-5 h-5 rounded-full">
+                                    <HiOutlineLink />
+                                  </span>
+                                  <span className="max-w-[15ch] truncate">
+                                    {getFileName(item?.file?.path)}
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                          <button
+                            onClick={() => handleModal(item.id)}
+                            className="w-full mt-auto py-3 text-golden border-t flex justify-between items-center px-3 hover:bg-gray-50"
+                          >
+                            <span className="text-sm">{t("read_more")}</span>
+                            <GoArrowRight className="text-xl rtl:rotate-180" />
+                          </button>
+                        </div>
+                      ))}
 
-                      <div className="flex_start flex-col w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("attachment")}
-                        </span>
-                        <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                          <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                            <HiOutlineLink />
-                          </span>
-                          <span>botancv.PDF</span>
-                        </button>
-                      </div>
-                      <div className="flex_start flex-col w-full">
-                        <span className="text-black opacity-60 text-xs">
-                          {t("type")}
-                        </span>
-                        <p className="lg:text-base text-sm">Online Course</p>
-                      </div>
-                    </div>
+                    {/* --- Supervising Research --- */}
+                    {tab === "supervisingResearch" &&
+                      (data as SupervisingResearch[]).map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex flex-col gap-3 rounded-3xl bg-background text-secondary"
+                        >
+                          <div className="flex items-center gap-3 border-b pb-4 w-full px-3 pt-3">
+                            <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl shrink-0">
+                              <CiSearch className="text-2xl" />
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-sm">
+                                {item.title}
+                              </h4>
+                              <span className="text-black/60 text-xs">
+                                {formatYearRange(item.year_from, item.year_to)}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex w-full p-3 h-16 items-center">
+                            <span className="text-black/60 text-sm">
+                              {item?.students?.length || 0} {t("students")}
+                            </span>
+                          </div>
+                          <button
+                            onClick={() => handleModal(item.id)}
+                            className="w-full mt-auto py-3 text-golden border-t flex justify-between items-center px-3 hover:bg-gray-50"
+                          >
+                            <span className="text-sm">{t("read_more")}</span>
+                            <GoArrowRight className="text-xl rtl:rotate-180" />
+                          </button>
+                        </div>
+                      ))}
+
+                    {/* --- Seminars --- */}
+                    {tab === "seminars" &&
+                      (data as Seminar[]).map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex flex-col gap-3 p-3 rounded-3xl bg-background text-secondary"
+                        >
+                          <div className="flex items-center gap-3 border-b pb-4 w-full">
+                            <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-xl shrink-0">
+                              <div className="h-6 w-6 relative">
+                                <Image
+                                  src="/images/seminar.svg"
+                                  alt="seminar icon"
+                                  fill
+                                  priority
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-sm">
+                                {item.title}
+                              </h4>
+                              <span className="text-black/60 text-xs">
+                                {formatDate(item.year)}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 w-full gap-y-3 gap-x-2 text-xs">
+                            <div className="flex flex-col">
+                              <span className="opacity-60">
+                                {t("number_of_audience")}
+                              </span>
+                              <p className="font-medium text-sm">
+                                + {item.attendance_number}
+                              </p>
+                            </div>
+                            {item.files?.[0]?.file && (
+                              <div className="flex flex-col">
+                                <span className="opacity-60">
+                                  {t("attachment")}
+                                </span>
+                                <a
+                                  href={item.files[0].file.path}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  download
+                                  className="border rounded-full flex_center gap-2 px-2 py-1.5 mt-1 hover:bg-gray-50 w-fit"
+                                >
+                                  <span className="bg-[#81B1CE] text-white flex_center w-5 h-5 rounded-full">
+                                    <HiOutlineLink />
+                                  </span>
+                                  <span className="max-w-[15ch] truncate">
+                                    {getFileName(item.files[0].file.path)}
+                                  </span>
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+
+                    {/* --- Conferences --- */}
+                    {tab === "conferences" &&
+                      (data as Conference[]).map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex flex-col gap-3 p-3 rounded-3xl bg-background text-secondary"
+                        >
+                          <div className="flex items-center gap-3 border-b pb-4 w-full">
+                            <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-2xl shrink-0">
+                              <FiUsers />
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-sm">
+                                {item.title}
+                              </h4>
+                              <span className="text-black/60 text-xs">
+                                {formatDate(item.year)}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 w-full gap-y-3 gap-x-2 text-xs">
+                            <div className="flex flex-col">
+                              <span className="opacity-60">
+                                {t("number_of_audience")}
+                              </span>
+                              <p className="font-medium text-sm">
+                                + {item.attendance_number}
+                              </p>
+                            </div>
+                            {item.files?.[0]?.file && (
+                              <div className="flex flex-col">
+                                <span className="opacity-60">
+                                  {t("attachment")}
+                                </span>
+                                <a
+                                  href={item.files[0].file.path}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  download
+                                  className="border rounded-full flex_center gap-2 px-2 py-1.5 mt-1 hover:bg-gray-50 w-fit"
+                                >
+                                  <span className="bg-[#81B1CE] text-white flex_center w-5 h-5 rounded-full">
+                                    <HiOutlineLink />
+                                  </span>
+                                  <span className="max-w-[15ch] truncate">
+                                    {getFileName(item.files[0].file.path)}
+                                  </span>
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+
+                    {/* --- Trainings --- */}
+                    {tab === "trainings" &&
+                      (data as Training[]).map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex flex-col gap-3 p-3 rounded-3xl bg-background text-secondary"
+                        >
+                          <div className="flex items-center gap-3 border-b pb-4 w-full">
+                            <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-2xl shrink-0">
+                              <AiOutlineRise />
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-sm">
+                                {item.title}
+                              </h4>
+                              <span className="text-black/60 text-xs">
+                                {formatDate(item.year)}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 w-full gap-y-3 gap-x-2 text-xs">
+                            <div className="flex flex-col">
+                              <span className="opacity-60">{t("level")}</span>
+                              <p className="font-medium text-sm">
+                                {item.level}
+                              </p>
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="opacity-60">{t("type")}</span>
+                              <p className="font-medium text-sm">{item.type}</p>
+                            </div>
+                            {item.files?.[0]?.file && (
+                              <div className="flex flex-col col-span-2">
+                                <span className="opacity-60">
+                                  {t("attachment")}
+                                </span>
+                                <a
+                                  href={item.files[0].file.path}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  download
+                                  className="border rounded-full flex_center gap-2 px-2 py-1.5 mt-1 hover:bg-gray-50 w-fit"
+                                >
+                                  <span className="bg-[#81B1CE] text-white flex_center w-5 h-5 rounded-full">
+                                    <HiOutlineLink />
+                                  </span>
+                                  <span className="max-w-[20ch] truncate">
+                                    {getFileName(item.files[0].file.path)}
+                                  </span>
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
                   </div>
-                </div>
-              </div>
-            )}
+
+                  {data.length < total && (
+                    <div className="w-full flex justify-center mt-8">
+                      <button
+                        onClick={handleLoadMore}
+                        disabled={isLoadingMore}
+                        className="border border-primary text-primary px-8 py-2 rounded-md disabled:opacity-50 disabled:cursor-wait"
+                      >
+                        {isLoadingMore ? t("loading") : t("see_more")}
+                      </button>
+                    </div>
+                  )}
+
+                  {!isLoading && data.length === 0 && (
+                    <p className="text-center text-gray-500 py-10 w-full">
+                      {t("no_data")}
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
-      {modalId && (
-        <div className="flex_center fixed top-0 left-0 w-full h-full">
-          <div className="bg-white flex_start flex-col gap-5 z-10 sm:w-[550px] w-[90%] rounded-3xl overflow-hidden">
-            <div className="flex justify-between items-center gap-2 w-full bg-golden text-white p-6">
-              <h3 className="text-smallTitle font-semibold">Research Detail</h3>
+
+      {/* DYNAMIC MODAL */}
+      {selectedItemForModal && (
+        <div className="flex_center fixed inset-0 z-50 bg-black/60 p-4">
+          <div className="bg-white flex flex-col gap-5 z-10 sm:w-[550px] w-full rounded-3xl overflow-hidden max-h-[90vh]">
+            <div className="flex justify-between items-center gap-2 w-full bg-golden text-white p-6 shrink-0">
+              <h3 className="text-lg font-medium">Research Detail</h3>
               <button
                 type="button"
                 onClick={() => handleModal(null)}
-                className="text-3xl"
+                className="text-2xl"
               >
                 <IoMdClose />
               </button>
             </div>
-            <div className="flex_start flex-col gap-5 w-full p-6">
-              <div className="flex_start gap-1 flex-col">
-                <span className="text-black opacity-60 text-sm">
-                  {"research_title"}
+            <div className="flex flex-col gap-5 w-full p-6 overflow-y-auto">
+              <div className="flex flex-col gap-1">
+                <span className="text-black/60 text-sm">
+                  {t("research_title")}
                 </span>
                 <p className="text-secondary font-medium">
-                  Innovative Approaches to Renewable Energy Integration in Urban
-                  Infrastructure
+                  {selectedItemForModal.title}
                 </p>
               </div>
-              <div className="flex_start gap-1 flex-col">
-                <span className="text-black opacity-60 text-sm">
-                  {t("students")}
-                </span>
-                <li className="text-secondary font-medium list-disc">
-                  Sanarya Hamakarim Ali
-                </li>
-                <li className="text-secondary font-medium list-disc">
-                  Sanarya Hamakarim Ali
-                </li>
-                <li className="text-secondary font-medium list-disc">
-                  Sanarya Hamakarim Ali
-                </li>
-              </div>
-              <div className="flex_start gap-1 flex-col">
-                <span className="text-black opacity-60 text-sm">
-                  {t("attachment")}
-                </span>
-                <p className="text-secondary font-medium">2018 - 2019</p>
-                <button className="border border-lightBorder rounded-3xl flex_center gap-4 px-2 py-1.5 text-sm">
-                  <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                    <HiOutlineLink />
-                  </span>
-                  <span>botancv.PDF</span>
-                </button>
-              </div>
+              {"students" in selectedItemForModal &&
+                (selectedItemForModal.students?.length || 0) > 0 && (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-black/60 text-sm">
+                      {t("students")}
+                    </span>
+                    <ul className="list-disc pl-5 text-secondary font-medium">
+                      {selectedItemForModal.students.map((s) => (
+                        <li key={s.id}>{s.name}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              {"files" in selectedItemForModal &&
+                (selectedItemForModal.files?.length || 0) > 0 && (
+                  <div className="flex flex-col gap-2">
+                    <span className="text-black/60 text-sm">
+                      {t("attachment")}
+                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedItemForModal.files.map((f) => (
+                        <a
+                          key={f.id}
+                          href={f.file.path}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          download
+                          className="border rounded-full flex_center gap-2 px-2 py-1.5 text-xs mt-1 hover:bg-gray-50"
+                        >
+                          <span className="bg-[#81B1CE] text-white flex_center w-5 h-5 rounded-full">
+                            <HiOutlineLink />
+                          </span>
+                          <span className="max-w-[20ch] truncate">
+                            {getFileName(f.file.path)}
+                          </span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
             </div>
           </div>
           <button
             onClick={() => handleModal(null)}
-            className="w-full fixed h-full left-0 top-0 bg-black bg-opacity-60"
+            className="w-full h-full fixed left-0 top-0"
           ></button>
         </div>
       )}

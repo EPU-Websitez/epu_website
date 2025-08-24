@@ -218,7 +218,7 @@ const Page = () => {
                   <div className="w-full flex_center gap-8 mt-10">
                     <span className="w-full h-[1px] bg-lightBorder"></span>
                     <h2 className="md:text-xl text-sm font-medium text-secondary flex-shrink-0 text-center">
-                      {t("requirements")}{" "}
+                      {t("application_requirements")}{" "}
                       {/* Using translation key for title */}
                     </h2>
                     <span className="w-full h-[1px] bg-lightBorder"></span>

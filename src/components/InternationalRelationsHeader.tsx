@@ -73,14 +73,14 @@ const InternationalRelationsHeader = () => {
         className="w-full h-full object-cover" // Added object-cover for better image scaling
       />
       <div className="ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary to-transparent absolute top-0 left-0 w-full h-full z-10"></div>
-      <h3 className="absolute z-20 text-white top-10 sm:ltr:left-10 ltr:left-5 sm:rtl:right-10 rtl:right-5 lg:text-[28px] text-sm max-w-[710px]">
+      <h3 className="absolute leading-relaxed z-20 text-white top-10 sm:ltr:left-10 ltr:left-5 sm:rtl:right-10 rtl:right-5 lg:text-[28px] text-sm max-w-[710px]">
         {bgDescription}
       </h3>
       <div className="absolute z-20 text-white bottom-14 ltr:left-10 rtl:right-10 sm:flex hidden justify-center items-center gap-5">
         <span>{t("about")}</span>
         <span className="h-[20px] w-[1px] bg-white"></span>
         <Link
-          href={`/${locale}/international-relations/directory-structure?id=id=${headerData.id}`}
+          href={`/${locale}/international-relations/directory-structure?id=${headerData.id}`}
           title={t("directory_structure")}
         >
           {t("directory_structure")}
@@ -92,13 +92,13 @@ const InternationalRelationsHeader = () => {
         >
           {t("office_staff")}
         </Link>
-        <span className="h-[20px] w-[1px] bg-white"></span>
+        {/* <span className="h-[20px] w-[1px] bg-white"></span>
         <Link
           href={`/${locale}/international-relations/contact?id=${headerData.id}`}
           title={t("contact")}
         >
           {t("contact")}
-        </Link>
+        </Link> */}
       </div>
     </div>
   );

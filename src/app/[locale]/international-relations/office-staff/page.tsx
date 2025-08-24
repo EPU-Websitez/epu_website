@@ -10,6 +10,7 @@ import { CiMail } from "react-icons/ci";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { API_URL } from "@/libs/env";
 import useFetch from "@/libs/hooks/useFetch";
+import InternationalRelationsHeader from "@/components/InternationalRelationsHeader";
 
 // -------- Interfaces --------
 
@@ -120,45 +121,7 @@ const Page = () => {
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
       <div className="max-w-[1045px] px-3 w-full flex_start flex-col gap-8">
         <SubHeader title={t("international_relations")} alt={false} />
-        <div className="w-full lg:h-[400px] sm:h-[300px] h-[220px] relative overflow-hidden rounded-3xl">
-          <Image
-            src={"/images/international-lg.png"}
-            alt="International Relations"
-            fill
-            priority
-            className="w-full h-full object-cover"
-          />
-          <div className="ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary to-transparent absolute top-0 left-0 w-full h-full z-10"></div>
-          <h3 className="absolute z-20 text-white top-10 ltr:left-10 rtl:right-10 lg:text-[28px] text-sm max-w-[710px]">
-            {t("international_strategy_text")}
-          </h3>
-          <div className="absolute z-20 text-white bottom-14 ltr:left-10 rtl:right-10 sm:flex hidden justify-center items-center gap-5">
-            <Link
-              href={`/${locale}/international-relations?id=${id}`}
-              title={t("about")}
-            >
-              {t("about")}
-            </Link>
-            <span className="h-[20px] w-[1px] bg-white"></span>
-            <Link
-              href={`/${locale}/international-relations/directory-structure?id=${id}`}
-              title={t("directory_structure")}
-            >
-              {t("directory_structure")}
-            </Link>
-            <span className="h-[20px] w-[1px] bg-white"></span>
-            <span className="text-golden font-semibold">
-              {t("office_staff")}
-            </span>
-            <span className="h-[20px] w-[1px] bg-white"></span>
-            <Link
-              href={`/${locale}/international-relations/contact?id=${id}`}
-              title={t("contact")}
-            >
-              {t("contact")}
-            </Link>
-          </div>
-        </div>
+        <InternationalRelationsHeader />
         <h2 className="relative sm:text-titleNormal text-lg text-secondary font-semibold ">
           <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
           <span className="z-10 relative">{t("office_staff")}</span>
@@ -253,14 +216,14 @@ const Page = () => {
             <span>{t("office_staff")}</span>
             <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
           </div>
-          <Link
+          {/* <Link
             href={`/${locale}/international-relations/contact?id=${id}`}
             title={t("contact")}
             className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-80 border-lightBorder"
           >
             <span>{t("contact")}</span>
             <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-          </Link>
+          </Link> */}
         </div>
       </div>
     </div>

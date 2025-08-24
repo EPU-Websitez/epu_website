@@ -94,7 +94,7 @@ const InternationalStrategyHeader = () => {
         className="w-full h-full object-cover"
       />
       <div className="ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary to-transparent absolute top-0 left-0 w-full h-full z-10"></div>
-      <h3 className="absolute z-20 text-white top-10 sm:ltr:left-10 ltr:left-3 sm:rtl:right-10 rtl:right-3 lg:text-[28px] text-sm max-w-[710px]">
+      <h3 className="absolute leading-relaxed z-20 text-white top-10 sm:ltr:left-10 ltr:left-3 sm:rtl:right-10 rtl:right-3 lg:text-[28px] text-sm max-w-[710px]">
         {bgDescription}
       </h3>
     </div>
