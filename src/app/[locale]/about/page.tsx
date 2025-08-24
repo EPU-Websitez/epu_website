@@ -43,7 +43,15 @@ interface AboutUsData {
   content_lists: ContentListItem[];
 }
 
-// -------- Skeletons --------
+// Interface for the new university statistics API
+interface UniversityStatsData {
+  student_number: string;
+  teacher_number: string;
+  academic_number: string;
+  staff_member: string;
+}
+
+// -------- Skeletons (Unchanged) --------
 const HeroSkeleton = () => (
   <div className="w-full lg:h-[500px] sm:h-[400px] h-[300px] bg-gray-200 rounded-lg animate-pulse"></div>
 );
@@ -67,8 +75,14 @@ const ContentSkeleton = () => (
 const Page = () => {
   const t = useTranslations("About");
 
+  // Fetch for main "About Us" content
   const { data: aboutData, loading: isLoading } = useFetch<AboutUsData>(
     `${API_URL}/website/universities/about-us`
+  );
+
+  // New fetch for university statistics
+  const { data: statsData } = useFetch<UniversityStatsData>(
+    `${API_URL}/website/universities`
   );
 
   // Sort timeline items by year
@@ -182,39 +196,47 @@ const Page = () => {
           )
         )}
 
-        {/* Static Data Section */}
-        <div className="grid sm:grid-cols-4 grid-cols-2 lg:gap-5 sm:gap-2 gap-5 justify-between w-full my-10 lg:px-10 px-3 text-secondary">
-          <div className="flex_center flex-col gap-2">
-            <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
-              <PiStudent />
-            </span>
-            <h1 className="sm:text-title text-titleNormal font-bold">
-              + 3.12K
-            </h1>
-            <p className="font-medium">{t("students")}</p>
+        {/* Dynamic Data Section */}
+        {statsData && (
+          <div className="grid sm:grid-cols-4 grid-cols-2 lg:gap-5 sm:gap-2 gap-5 justify-between w-full my-10 lg:px-10 px-3 text-secondary">
+            <div className="flex_center flex-col gap-2">
+              <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
+                <PiStudent />
+              </span>
+              <h1 className="sm:text-title text-titleNormal font-bold">
+                + {statsData.student_number}
+              </h1>
+              <p className="font-medium">{t("students")}</p>
+            </div>
+            <div className="flex_center flex-col gap-2">
+              <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
+                <IoBriefcaseOutline />
+              </span>
+              <h1 className="sm:text-title text-titleNormal font-bold">
+                + {statsData.teacher_number}
+              </h1>
+              <p className="font-medium">{t("teachers")}</p>
+            </div>
+            <div className="flex_center flex-col gap-2">
+              <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
+                <HiOutlineBuildingOffice />
+              </span>
+              <h1 className="sm:text-title text-titleNormal font-bold">
+                + {statsData.academic_number}
+              </h1>
+              <p className="font-medium">{t("academics")}</p>
+            </div>
+            <div className="flex_center flex-col gap-2">
+              <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
+                <LuUsers />
+              </span>
+              <h1 className="sm:text-title text-titleNormal font-bold">
+                + {statsData.staff_member}
+              </h1>
+              <p className="font-medium">{t("staff_members")}</p>
+            </div>
           </div>
-          <div className="flex_center flex-col gap-2">
-            <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
-              <IoBriefcaseOutline />
-            </span>
-            <h1 className="sm:text-title text-titleNormal font-bold">+ 239</h1>
-            <p className="font-medium">{t("teachers")}</p>
-          </div>
-          <div className="flex_center flex-col gap-2">
-            <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
-              <HiOutlineBuildingOffice />
-            </span>
-            <h1 className="sm:text-title text-titleNormal font-bold">+ 300</h1>
-            <p className="font-medium">{t("academics")}</p>
-          </div>
-          <div className="flex_center flex-col gap-2">
-            <span className="w-[50px] h-[50px] rounded-full flex_center bg-blue bg-opacity-30 text-xl">
-              <LuUsers />
-            </span>
-            <h1 className="sm:text-title text-titleNormal font-bold">+ 2.4K</h1>
-            <p className="font-medium">{t("staff_members")}</p>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

@@ -5,12 +5,12 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FaAngleRight, FaAward, FaChevronDown } from "react-icons/fa6";
 import { API_URL } from "@/libs/env";
 import useFetch from "@/libs/hooks/useFetch";
 
-// -------- Interfaces --------
+// -------- Updated Interfaces --------
 interface ImageFile {
   id: number;
   original: string;
@@ -32,19 +32,27 @@ interface ProgramSection {
   items: ProgramItem[];
 }
 
+// Interface for the new requirements data
+interface RequirementItem {
+  id: number;
+  title: string;
+  description: string;
+}
+
 interface PostgraduateProgram {
   id: number;
   title: string;
   description: string;
   bg_image: ImageFile;
   sections: ProgramSection[];
+  requirements: RequirementItem[]; // Added requirements array
 }
 
 interface PostgraduateResponse {
   data: PostgraduateProgram[];
 }
 
-// -------- Granular Skeleton Components --------
+// -------- Granular Skeleton Components (Unchanged) --------
 const HeaderSkeleton = () => (
   <div className="w-full h-[276px] bg-gray-200 animate-pulse rounded-3xl"></div>
 );
@@ -74,7 +82,7 @@ const Page = () => {
   const t = useTranslations("Programs");
   const params = useParams();
   const [openedAccordion, setOpenedAccordion] = useState<number | null>(null);
-
+  const programsListRef = useRef<HTMLDivElement>(null);
   const { data: programsData, loading: isLoading } =
     useFetch<PostgraduateResponse>(
       `${API_URL}/website/programs/postgraduate?page=1&limit=1&is_active=true`
@@ -83,12 +91,15 @@ const Page = () => {
   const handleAccordion = (id: number) => {
     setOpenedAccordion(openedAccordion === id ? null : id);
   };
+  const handleScrollToPrograms = () => {
+    programsListRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const programInfo = programsData?.data?.[0];
+
+  // Updated data handling: all sections are for the grid, requirements are for the accordion
   const allSections = programInfo?.sections || [];
-  const normalSections = allSections.length > 1 ? allSections.slice(0, -1) : [];
-  const accordionSection =
-    allSections.length > 0 ? allSections[allSections.length - 1] : null;
+  const requirements = programInfo?.requirements || [];
 
   return (
     <div className="my-10 flex_center w-full flex-col gap-10">
@@ -120,8 +131,8 @@ const Page = () => {
                     </div>
                   </div>
                   <div className="md:w-auto w-full">
-                    <Link
-                      href="#"
+                    <button
+                      onClick={handleScrollToPrograms}
                       className="mt-5 rounded-3xl md:h-10 h-8 flex_center px-3 gap-2 bg-white max-w-fit"
                     >
                       <span className="text-primary font-bold md:text-sm text-xs mx-2">
@@ -130,7 +141,7 @@ const Page = () => {
                       <span className="md:w-6 w-5 md:h-6 h-5 flex_center bg-primary text-white rounded-full">
                         <FaAngleRight className="rtl:rotate-180" />
                       </span>
-                    </Link>
+                    </button>
                   </div>
                 </div>
                 <div className="relative md:h-[276px] h-[192px] md:w-[420px] w-full">
@@ -150,10 +161,13 @@ const Page = () => {
         {isLoading ? (
           <ProgramsSectionSkeleton />
         ) : (
-          <div className="w-full bg-backgroundSecondary flex_center text-secondary mt-10">
+          <div
+            ref={programsListRef}
+            className="w-full bg-backgroundSecondary flex_center text-secondary mt-10"
+          >
             <div className="w-full flex_center mb-10 lg:px-0 px-3 max-w-[1040px] flex-col gap-10 py-10">
-              {/* Render all sections except the last one as normal grids */}
-              {normalSections.map((section) => (
+              {/* Render all sections as normal grids */}
+              {allSections.map((section) => (
                 <div
                   key={section.id}
                   className="w-full flex flex-col items-center"
@@ -198,18 +212,19 @@ const Page = () => {
                 </div>
               ))}
 
-              {/* Render the last section as an accordion */}
-              {accordionSection && (
+              {/* Render the requirements as an accordion */}
+              {requirements && requirements.length > 0 && (
                 <div className="w-full flex flex-col items-center">
                   <div className="w-full flex_center gap-8 mt-10">
                     <span className="w-full h-[1px] bg-lightBorder"></span>
                     <h2 className="md:text-xl text-sm font-medium text-secondary flex-shrink-0 text-center">
-                      {accordionSection.title}
+                      {t("requirements")}{" "}
+                      {/* Using translation key for title */}
                     </h2>
                     <span className="w-full h-[1px] bg-lightBorder"></span>
                   </div>
                   <div className="flex_start flex-col gap-5 w-full mt-8">
-                    {accordionSection.items.map((item) => (
+                    {requirements.map((item) => (
                       <div
                         key={item.id}
                         className={`w-full flex_start flex-col rounded-2xl text-secondary border ${

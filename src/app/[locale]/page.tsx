@@ -233,14 +233,14 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="max-w-[1000px] w-full relative sm:mt-20 mt-10">
+        {/* <div className="max-w-[1000px] w-full relative sm:mt-20 mt-10">
           <div className="w-full sm:h-[400px] h-[200px] relative rounded-3xl overflow-hidden">
             <button className="flex_center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 sm:w-20 w-10 sm:h-20 h-10 text-white rounded-full sm:text-xl text-base bg-gradient-to-r from-[#DCC48C] to-[#FFA64D] z-10">
               <FaPlay />
             </button>
             <Image src={`/images/park.png`} alt="park" fill priority />
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* latest news */}
