@@ -172,7 +172,8 @@ const Page = () => {
 
   const { data: directorateData, loading: isLoading } =
     useFetch<DirectorateDetail>(
-      id ? `${API_URL}/website/directorates/${id}` : ""
+      `${API_URL}/website/directorates/${id}`,
+      locale
     );
 
   const handleOpenStaff = () => setStaffIsOpen(!staffIsOpen);
@@ -197,7 +198,13 @@ const Page = () => {
     <>
       <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
         <div className="max-w-[1045px] px-3 w-full flex_start flex-col gap-8">
-          <SubHeader title={t("university_directory")} alt={false} />
+          <SubHeader
+            title={
+              directorateData?.directorate_type?.name ||
+              t("university_directory")
+            }
+            alt={false}
+          />
           <DirectorateHeader />
 
           {isLoading ? (
@@ -231,14 +238,12 @@ const Page = () => {
                       </Link>
                     </div>
 
-                    <div className="lg:border-l border-l-none lg:border-b-0 border-b text-secondary border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
+                    <div className="lg:border-l w-full border-l-none lg:border-b-0 border-b text-secondary border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7">
                       <h2 className="relative sm:text-titleNormal text-lg font-semibold ">
                         <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
-                        <span className="z-10 relative">
-                          {directorateData.directorate_type.name}
-                        </span>
+                        <span className="z-10 relative">{t("about")}</span>
                       </h2>
-                      <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder">
+                      <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full">
                         <p className="text-opacity-70 text-secondary text-sm">
                           {directorateData.about}
                         </p>

@@ -7,7 +7,7 @@ import { API_URL } from "@/libs/env";
 import Image from "next/image";
 import Link from "next/link";
 import { CiMail } from "react-icons/ci";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import CenterHeader from "@/components/CenterHeader";
 
@@ -38,6 +38,17 @@ interface Teacher {
   profile_image: ImageType;
   bg_image: ImageType;
 }
+
+// --- ADDED: Interfaces for Lead Member ---
+interface LeadItem {
+  role: string;
+  teacher: Teacher;
+}
+
+interface LeadsResponse {
+  data: LeadItem[];
+}
+// --- END ---
 
 interface Center {
   id: number;
@@ -71,18 +82,21 @@ interface StaffResponse {
 
 // ========== Skeleton Loader ==========
 const StaffSkeleton = () => (
-  <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 w-full animate-pulse">
-    {[...Array(3)].map((_, i) => (
-      <div
-        key={i}
-        className="rounded-3xl border border-lightBorder p-5 flex flex-col items-center gap-4"
-      >
-        <div className="w-[80px] h-[80px] sm:w-[120px] sm:h-[120px] rounded-full border-[5px] border-primary bg-gray-300"></div>
-        <div className="h-5 w-40 bg-gray-300 rounded"></div>
-        <div className="h-4 w-48 bg-gray-200 rounded"></div>
-        <div className="w-full h-10 bg-gray-100 rounded mt-2"></div>
-      </div>
-    ))}
+  <div className="flex flex-col gap-10 w-full animate-pulse">
+    {/* Skeleton for Lead Member Card */}
+    <div className="w-full h-48 bg-gray-200 rounded-3xl"></div>
+    {/* Skeleton for Staff Grid */}
+    <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 w-full">
+      {[...Array(3)].map((_, i) => (
+        <div
+          key={i}
+          className="rounded-3xl border border-lightBorder p-5 flex flex-col items-center gap-4 h-64"
+        >
+          <div className="w-[80px] h-[80px] sm:w-[120px] sm:h-[120px] rounded-full border-[5px] border-primary bg-gray-300"></div>
+          <div className="h-5 w-40 bg-gray-300 rounded"></div>
+        </div>
+      ))}
+    </div>
   </div>
 );
 
@@ -97,13 +111,24 @@ const Page = () => {
   const [page, setPage] = useState(1);
   const limit = 12;
 
+  // Fetch for regular staff
   const { data, loading } = useFetch<StaffResponse>(
-    `${API_URL}/website/centers/${slug}/staff?page=${page}&limit=${limit}`
+    slug
+      ? `${API_URL}/website/centers/${slug}/staff?page=${page}&limit=${limit}`
+      : "",
+    locale
   );
+
+  // --- ADDED: Fetch for Lead Member ---
+  const { data: leadsData } = useFetch<LeadsResponse>(
+    slug ? `${API_URL}/website/centers/${slug}/leads?page=1&limit=1` : "",
+    locale
+  );
+  // --- END ---
 
   const isInitialLoading = loading && page === 1;
 
-  // Append new data
+  // Append new data for regular staff
   useEffect(() => {
     if (data?.data) {
       setCenters((prev) => {
@@ -121,6 +146,10 @@ const Page = () => {
   }, [slug, locale]);
 
   const handleLoadMore = () => setPage((prev) => prev + 1);
+
+  // --- ADDED: Extract Lead Member from data ---
+  const leadMember = leadsData?.data?.[0];
+  // --- END ---
 
   return (
     <div className="w-full flex justify-center items-start sm:my-10 my-6 min-h-screen">
@@ -153,52 +182,95 @@ const Page = () => {
           {isInitialLoading ? (
             <StaffSkeleton />
           ) : (
-            <div className="w-full grid lg:grid-cols-3 md:grid-cols-2 gap-5 text-secondary text-center">
-              {centers.map((item) => {
-                const email = `${item.teacher.full_name
-                  .replace(/\s+/g, "")
-                  .toLowerCase()}@epu.edu.iq`;
+            <>
+              {/* --- ADDED: Display Lead Member Card --- */}
+              {leadMember && (
+                <Link
+                  href={`/${locale}/academic-staff/${leadMember.teacher.id}`}
+                  className="flex justify-start items-center sm:gap-10 gap-5 w-full border p-5 rounded-3xl border-lightBorder"
+                >
+                  <div className="sm:w-[200px] w-[125px] sm:h-[190px] h-[125px] relative flex-shrink-0">
+                    <Image
+                      src={
+                        leadMember.teacher.profile_image?.lg ||
+                        leadMember.teacher.profile_image?.original ||
+                        "/images/placeholder.svg"
+                      }
+                      alt={leadMember.teacher.full_name}
+                      fill
+                      priority
+                      className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
+                    />
+                  </div>
+                  <div className="flex_start flex-col gap-5 text-secondary">
+                    <h3 className="text-golden sm:text-lg text-sm font-semibold">
+                      {leadMember.role}
+                    </h3>
+                    <h1 className="max-w-[250px] lg:text-xl sm:text-lg text-xs font-semibold relative">
+                      <span className="relative z-10">
+                        {leadMember.teacher.full_name}
+                      </span>
+                      <span className="absolute ltr:left-0 rtl:right-0 -bottom-3 w-[80%] h-6">
+                        <Image
+                          src="/images/title-shape.svg"
+                          alt="shape"
+                          fill
+                          priority
+                        />
+                      </span>
+                    </h1>
+                  </div>
+                </Link>
+              )}
+              {/* --- END --- */}
 
-                return (
-                  <div
-                    key={item.id}
-                    className="rounded-3xl flex_center flex-col gap-4 border border-lightBorder"
-                  >
-                    <div className="sm:w-[120px] w-[80px] mt-5 sm:h-[120px] h-[80px] border-[5px] border-primary rounded-full flex_center">
+              <div className="w-full grid lg:grid-cols-3 md:grid-cols-2 gap-5 text-secondary text-center">
+                {centers.map((item) => {
+                  const email = `${item.teacher.full_name
+                    .replace(/\s+/g, "")
+                    .toLowerCase()}@epu.edu.iq`;
+
+                  return (
+                    <div
+                      key={item.id}
+                      className="rounded-3xl flex_center flex-col gap-4 border border-lightBorder"
+                    >
+                      <div className="sm:w-[120px] w-[80px] mt-5 sm:h-[120px] h-[80px] border-[5px] border-primary rounded-full flex_center">
+                        <Link
+                          href={`/${locale}/academic-staff/${item.teacher.id}`}
+                          title={item.teacher.full_name}
+                          className="sm:w-[100px] w-[65px] sm:h-[100px] h-[65px] relative"
+                        >
+                          <Image
+                            src={item.teacher.profile_image.lg}
+                            alt={item.teacher.full_name}
+                            fill
+                            className="w-full h-full rounded-full object-cover"
+                          />
+                        </Link>
+                      </div>
                       <Link
                         href={`/${locale}/academic-staff/${item.teacher.id}`}
                         title={item.teacher.full_name}
-                        className="sm:w-[100px] w-[65px] sm:h-[100px] h-[65px] relative"
+                        className="text-lg font-semibold px-5"
                       >
-                        <Image
-                          src={item.teacher.profile_image.lg}
-                          alt={item.teacher.full_name}
-                          fill
-                          className="w-full h-full rounded-full object-cover"
-                        />
+                        {item.teacher.full_name}
                       </Link>
+                      <span className="opacity-70 mb-3 px-5 text-sm">
+                        {item.role_in_center}
+                      </span>
+                      <a
+                        href={`mailto:${email}`}
+                        className="flex_center gap-3 w-full py-5 px-5 border-t border-t-lightBorder"
+                      >
+                        <CiMail className="text-xl" />
+                        <span className="text-sm opacity-70">{email}</span>
+                      </a>
                     </div>
-                    <Link
-                      href={`/${locale}/academic-staff/${item.teacher.id}`}
-                      title={item.teacher.full_name}
-                      className="text-lg font-semibold px-5"
-                    >
-                      {item.teacher.full_name}
-                    </Link>
-                    <span className="opacity-70 mb-3 px-5 text-sm">
-                      {item.role_in_center}
-                    </span>
-                    <a
-                      href={`mailto:${email}`}
-                      className="flex_center gap-3 w-full py-5 px-5 border-t border-t-lightBorder"
-                    >
-                      <CiMail className="text-xl" />
-                      <span className="text-sm opacity-70">{email}</span>
-                    </a>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            </>
           )}
 
           {!isInitialLoading && data && centers.length < data.total && (

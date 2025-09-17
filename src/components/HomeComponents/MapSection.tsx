@@ -1,5 +1,3 @@
-// /components/MapSection.tsx
-
 "use client";
 
 import { useTranslations } from "next-intl";
@@ -8,19 +6,26 @@ import Link from "next/link";
 import React, { useEffect, useState, useRef } from "react";
 import { GoArrowRight } from "react-icons/go";
 import { IoArrowForwardOutline, IoBriefcaseOutline } from "react-icons/io5";
-import { LuBookOpen } from "react-icons/lu";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
 import type { Map, Marker } from "leaflet";
 import { API_URL } from "@/libs/env";
+import { useParams } from "next/navigation";
+
+// --- Swiper Imports ---
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperCore } from "swiper/types";
+import "swiper/css";
+import { LuBookOpen } from "react-icons/lu";
 
 // --------------------------------------------------------------------------
-// 1. TYPE DEFINITION
+// 1. TYPE DEFINITION (Unchanged)
 // --------------------------------------------------------------------------
 export interface College {
   id: number;
   slug: string;
   title: string;
+  subdomain: string;
   description: string;
   student_number: string;
   address: {
@@ -44,7 +49,7 @@ export interface College {
 }
 
 // --------------------------------------------------------------------------
-// 2. INTERACTIVE MAP COMPONENT
+// 2. INTERACTIVE MAP COMPONENT (MODIFIED for mobile view)
 // --------------------------------------------------------------------------
 interface InteractiveMapProps {
   colleges: College[];
@@ -63,52 +68,43 @@ const InteractiveMap = ({
   const mapInstance = useRef<Map | null>(null);
   const markersRef = useRef<{ [key: number]: Marker }>({});
 
-  // Effect for initializing the map
   useEffect(() => {
     let isMounted = true;
-
     const initMap = async () => {
       if (!mapRef.current || mapInstance.current) return;
-
       const L = await import("leaflet");
-      // Load CSS if not already loaded
+
       if (!document.querySelector('link[href*="leaflet.css"]')) {
         const link = document.createElement("link");
         link.rel = "stylesheet";
         link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
         document.head.appendChild(link);
-
-        // Wait for CSS to load
         await new Promise((resolve) => {
           link.onload = resolve;
           setTimeout(resolve, 1000); // Fallback timeout
         });
       }
 
-      delete (L.Icon.Default.prototype as any)._getIconUrl;
-      L.Icon.Default.mergeOptions({
-        iconRetinaUrl:
-          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-        shadowUrl:
-          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-      });
-
-      const initialCenter: [number, number] = [36.1911, 44.0091];
+      // ✅ CHANGE: Adjust map center based on screen size for better visibility
+      const isMobile = window.innerWidth < 768;
+      const initialCenter: [number, number] = isMobile
+        ? [36.25, 44.0091] // Pushed higher for mobile
+        : [36.1911, 44.0091]; // Default for desktop
 
       if (!isMounted || !mapRef.current) return;
-
       mapInstance.current = L.map(mapRef.current, {
         center: initialCenter,
         zoom: 12,
       });
 
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      }).addTo(mapInstance.current);
+      L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+        {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        }
+      ).addTo(mapInstance.current);
     };
-
     initMap();
 
     return () => {
@@ -120,79 +116,55 @@ const InteractiveMap = ({
     };
   }, []);
 
-  // Effect for adding/updating markers when colleges data changes
+  // Effect for adding/updating markers (unchanged)
   useEffect(() => {
     if (!mapInstance.current || !colleges) return;
-
     const L = require("leaflet");
-
-    const defaultIcon = L.icon({
-      iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowUrl:
-        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-      shadowSize: [41, 41],
-    });
-
     Object.values(markersRef.current).forEach((marker) => marker.remove());
     markersRef.current = {};
-
+    const dotIcon = L.divIcon({
+      className: "gold-dot",
+      html: "",
+      iconSize: [14, 14],
+      iconAnchor: [7, 14],
+    });
     colleges.forEach((college) => {
       if (college.address) {
         const lat = parseFloat(college.address.latitude);
         const lng = parseFloat(college.address.longitude);
-
         if (!isNaN(lat) && !isNaN(lng)) {
-          const marker = L.marker([lat, lng], {
-            icon: defaultIcon,
-          }).addTo(mapInstance.current!);
-
-          marker.on("click", () => {
-            onMarkerClick(college);
-          });
-
+          const marker = L.marker([lat, lng], { icon: dotIcon }).addTo(
+            mapInstance.current!
+          );
+          marker.on("click", () => onMarkerClick(college));
           markersRef.current[college.id] = marker;
         }
       }
     });
   }, [colleges, onMarkerClick]);
 
-  // Effect to update icons and fly to the active marker
+  // Effect to update icons and fly to active marker (unchanged)
   useEffect(() => {
     if (!mapInstance.current) return;
-
     const L = require("leaflet");
-
-    const defaultIcon = L.icon({
-      iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowUrl:
-        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-      shadowSize: [41, 41],
+    const dotIcon = L.divIcon({
+      className: "gold-dot",
+      html: "",
+      iconSize: [14, 14],
+      iconAnchor: [7, 14],
     });
-
-    const activeIcon = L.icon({
-      iconUrl:
-        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowUrl:
-        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-      shadowSize: [41, 41],
+    const activeDotIcon = L.divIcon({
+      className: "gold-dot gold-dot--active",
+      html: "",
+      iconSize: [20, 20],
+      iconAnchor: [10, 20],
     });
-
     Object.values(markersRef.current).forEach((marker) =>
-      marker.setIcon(defaultIcon)
+      marker.setIcon(dotIcon)
     );
-
     if (activeCollegeId && markersRef.current[activeCollegeId]) {
       const activeMarker = markersRef.current[activeCollegeId];
-      activeMarker.setIcon(activeIcon);
+      activeMarker.setIcon(activeDotIcon);
       mapInstance.current.flyTo(activeMarker.getLatLng(), 15, {
         animate: true,
         duration: 1.5,
@@ -204,32 +176,38 @@ const InteractiveMap = ({
 };
 
 // --------------------------------------------------------------------------
-// 3. MAIN SECTION COMPONENT (DEFAULT EXPORT)
+// 3. MAIN SECTION COMPONENT (DEFAULT EXPORT) - MODIFIED
 // --------------------------------------------------------------------------
 const MapSection = () => {
   const t = useTranslations("IndexPage");
+  const params = useParams();
+  const locale = params.locale as string;
+
   const [colleges, setColleges] = useState<College[]>([]);
-  const [selectedCollege, setSelectedCollege] = useState<College | null>(null);
+  const [activeCollegeId, setActiveCollegeId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Ref to control the Swiper instance
+  const swiperRef = useRef<SwiperCore | null>(null);
 
   useEffect(() => {
     const fetchColleges = async () => {
       try {
         setIsLoading(true);
-        // IMPORTANT: Replace with your actual API endpoint
-        const response = await fetch(`${API_URL}/website/colleges/overview`);
-        if (!response.ok) {
+        const response = await fetch(`${API_URL}/website/colleges/overview`, {
+          headers: {
+            "website-language": locale || "en",
+          },
+        });
+        if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
-        }
         const data = await response.json();
-
         const mappableColleges = data.data.filter(
           (c: College) => c.address && c.address.latitude && c.address.longitude
         );
-
         setColleges(mappableColleges);
         if (mappableColleges.length > 0) {
-          setSelectedCollege(mappableColleges[0]);
+          setActiveCollegeId(mappableColleges[0].id);
         }
       } catch (error) {
         console.error("Failed to fetch colleges:", error);
@@ -237,150 +215,194 @@ const MapSection = () => {
         setIsLoading(false);
       }
     };
-
     fetchColleges();
   }, []);
 
+  // When a map marker is clicked, find its index and slide the Swiper to it
   const handleMarkerClick = (college: College) => {
-    setSelectedCollege(college);
+    const collegeIndex = colleges.findIndex((c) => c.id === college.id);
+    if (swiperRef.current && collegeIndex !== -1) {
+      swiperRef.current.slideTo(collegeIndex);
+    }
+    setActiveCollegeId(college.id);
   };
 
-  const InfoPanel = () => {
-    if (isLoading) {
-      return (
-        <div className="flex_center w-full h-full text-secondary">
-          Loading colleges...
-        </div>
-      );
+  // When the slide changes, update the active college to keep the map in sync
+  const handleSlideChange = (swiper: SwiperCore) => {
+    const currentCollege = colleges[swiper.activeIndex];
+    if (currentCollege) {
+      setActiveCollegeId(currentCollege.id);
     }
-
-    if (!selectedCollege) {
-      return (
-        <div className="flex_center w-full h-full text-secondary">
-          No college selected.
-        </div>
-      );
-    }
-
-    return (
-      <>
-        <Link
-          href={`/colleges/${selectedCollege.slug}`}
-          className="w-full flex justify-between items-center text-secondary sm:text-smallTitle text-lg font-semibold"
-        >
-          <h3>{selectedCollege.title}</h3>
-          <GoArrowRight className="rtl:rotate-180 text-lg" />
-        </Link>
-        <div className="flex justify-start items-center gap-3 text-secondary sm:text-base text-sm border-b border-b-lightBorder pb-3 w-full">
-          <MdOutlineLocationOn />
-          <p className="text-sm">{selectedCollege.address?.location}</p>
-        </div>
-        <span className="text-sm text-secondary opacity-90">
-          {selectedCollege.description.substring(0, 200)}
-          {selectedCollege.description.length > 200 && (
-            <Link
-              href={`/colleges/${selectedCollege.slug}`}
-              className="opacity-100 font-semibold"
-            >
-              .... More
-            </Link>
-          )}
-        </span>
-
-        <div className="flex_center sm:gap-14 gap-10 w-full mt-5">
-          <div className="flex_center flex-col gap-1 text-secondary">
-            <span className="sm:w-16 w-12 sm:h-16 h-12 bg-[#D5E2ED] rounded-full flex_center">
-              <LuBookOpen className="text-lg" />
-            </span>
-            <h2 className="text-lg font-semibold">
-              {selectedCollege.departments_count}
-            </h2>
-            <span className="text-sm">{t("departments")}</span>
-          </div>
-          <div className="flex_center flex-col gap-1 text-secondary">
-            <span className="sm:w-16 w-12 sm:h-16 h-12 bg-[#D5E2ED] rounded-full flex_center">
-              <IoBriefcaseOutline className="text-lg" />
-            </span>
-            <h2 className="text-lg font-semibold">
-              {selectedCollege.teachers_count}
-            </h2>
-            <span className="text-sm">{t("teachers")}</span>
-          </div>
-          <div className="flex_center flex-col gap-1 text-secondary">
-            <span className="sm:w-16 w-12 sm:h-16 h-12 bg-[#D5E2ED] rounded-full flex_center">
-              <PiStudent className="text-lg" />
-            </span>
-            <h2 className="text-lg font-semibold">
-              {selectedCollege.student_number}
-            </h2>
-            <span className=" text-sm">{t("students")}</span>
-          </div>
-        </div>
-
-        {selectedCollege.latest_news && (
-          <div className="flex_start w-full flex-col sm:gap-5 gap-3 mt-5">
-            <div className="flex justify-between items-center w-full">
-              <h2 className="sm:text-lg text-base font-medium text-secondary">
-                {t("latest_news")}
-              </h2>
-              <Link
-                href={`/colleges/${selectedCollege.slug}/news`}
-                className="border-b border-b-secondary text-secondary sm:text-sm text-xs"
-              >
-                {t("see_all")}
-              </Link>
-            </div>
-            <div className="w-full flex_start flex-col gap-4 group relative">
-              <Link
-                href={`/news/${selectedCollege.latest_news.slug}`}
-                className="relative w-full h-[190px] rounded-xl overflow-hidden bg-gray-200"
-              >
-                <div className="text-secondary bg-white h-6 w-6 flex_center rounded-full z-10 absolute top-2 right-2">
-                  <IoArrowForwardOutline />
-                </div>
-                {selectedCollege.latest_news.cover_image && (
-                  <Image
-                    src={selectedCollege.latest_news.cover_image.original}
-                    alt={selectedCollege.latest_news.title}
-                    fill
-                    className="w-full h-auto object-cover group-hover:scale-105 duration-300"
-                  />
-                )}
-              </Link>
-              <div className="flex_center gap-1 text-secondary text-sm">
-                <p>{selectedCollege.latest_news.author}</p>
-                <span className="opacity-75">-</span>
-                <span className="opacity-75">
-                  {new Date(
-                    selectedCollege.latest_news.published_at
-                  ).toLocaleDateString()}
-                </span>
-              </div>
-              <Link
-                href={`/news/${selectedCollege.latest_news.slug}`}
-                className="text-lg font-bold hover:text-primary text-secondary duration-300"
-              >
-                {selectedCollege.latest_news.title}
-              </Link>
-            </div>
-          </div>
-        )}
-      </>
-    );
   };
 
   return (
-    <div className="w-full sm:h-[760px] h-auto min-h-[900px] sm:min-h-0 relative mt-10 bg-[#e9e9e9]">
-      <div className="w-full sm:h-full h-[300px] relative">
+    <div className="relative w-full sm:h-[800px] h-[1080px] mt-10 sm:bg-[#e9e9e9] bg-white sm:overflow-y-auto overflow-y-hidden">
+      {/* Map takes up the full background */}
+      <div className="w-full sm:h-full h-1/2">
         <InteractiveMap
           colleges={colleges}
-          activeCollegeId={selectedCollege?.id || null}
+          activeCollegeId={activeCollegeId}
           onMarkerClick={handleMarkerClick}
         />
       </div>
-      <div className="absolute sm:top-0 top-64 sm:h-full overflow-y-auto sm:w-[450px] w-[90%] sm:left-10 left-1/2 sm:translate-x-0 -translate-x-1/2 bg-white bg-opacity-75 p-5 sm:gap-3 gap-2 flex_start h-auto flex-col pb-10 z-10">
-        <InfoPanel />
+
+      {/* Overlay for the content slider */}
+      <div className="absolute inset-0 pointer-events-none z-10">
+        <div className="max-w-[1042px] mx-auto w-full h-full sm:flex sm:items-start sm:justify-start flex items-start justify-center">
+          {/* Slider Panel */}
+          <div className="pointer-events-auto bg-white/90 sm:w-[450px] w-[90%] sm:mt-0 h-full mt-72 sm:ml-0">
+            {isLoading ? (
+              <div className="flex_center w-full h-full text-secondary">
+                Loading colleges...
+              </div>
+            ) : (
+              <Swiper
+                onSwiper={(swiper) => {
+                  swiperRef.current = swiper;
+                }}
+                onSlideChange={handleSlideChange}
+                spaceBetween={0}
+                slidesPerView={1}
+                className="w-full h-full"
+              >
+                {colleges.map((college) => (
+                  <SwiperSlide key={college.id} className="p-5 overflow-y-auto">
+                    {/* All the college info content goes here */}
+                    <div className="flex flex-col gap-3 h-full">
+                      <Link
+                        href={`/${locale}/colleges/${college.subdomain}`}
+                        className="w-full flex justify-between items-center text-secondary sm:text-smallTitle text-lg font-semibold"
+                      >
+                        <h3>{college.title}</h3>
+                        <GoArrowRight className="rtl:rotate-180 text-lg" />
+                      </Link>
+                      <div className="flex justify-start items-center gap-3 text-secondary sm:text-base text-sm border-b border-b-lightBorder pb-3 w-full">
+                        <MdOutlineLocationOn />
+                        <p className="text-sm">{college.address?.location}</p>
+                      </div>
+                      <span className="text-sm text-secondary opacity-90">
+                        {college?.description?.substring(0, 200)}
+                        {college?.description?.length > 200 && (
+                          <Link
+                            href={`/${locale}/colleges/${college.subdomain}`}
+                            className="opacity-100 font-semibold"
+                          >
+                            {" "}
+                            .... {t("more")}
+                          </Link>
+                        )}
+                      </span>
+
+                      <div className="flex_center sm:gap-14 gap-10 w-full mt-5">
+                        <div className="flex_center flex-col gap-1 text-secondary">
+                          <span className="sm:w-16 w-12 sm:h-16 h-12 bg-[#D5E2ED] rounded-full flex_center">
+                            <LuBookOpen className="text-lg" />
+                          </span>
+                          <h2 className="text-lg font-semibold">
+                            {college.departments_count}
+                          </h2>
+                          <span className="text-sm">{t("departments")}</span>
+                        </div>
+                        <div className="flex_center flex-col gap-1 text-secondary">
+                          <span className="sm:w-16 w-12 sm:h-16 h-12 bg-[#D5E2ED] rounded-full flex_center">
+                            <IoBriefcaseOutline className="text-lg" />
+                          </span>
+                          <h2 className="text-lg font-semibold">
+                            {college.teachers_count}
+                          </h2>
+                          <span className="text-sm">{t("teachers")}</span>
+                        </div>
+                        <div className="flex_center flex-col gap-1 text-secondary">
+                          <span className="sm:w-16 w-12 sm:h-16 h-12 bg-[#D5E2ED] rounded-full flex_center">
+                            <PiStudent className="text-lg" />
+                          </span>
+                          <h2 className="text-lg font-semibold">
+                            {college.student_number}
+                          </h2>
+                          <span className=" text-sm">{t("students")}</span>
+                        </div>
+                      </div>
+
+                      {college.latest_news && (
+                        <div className="flex_start w-full flex-col sm:gap-5 gap-3 mt-5">
+                          <div className="flex justify-between items-center w-full">
+                            <h2 className="sm:text-lg text-base font-medium text-secondary">
+                              {t("latest_news")}
+                            </h2>
+                            <Link
+                              href={`/${locale}/colleges/${college.subdomain}/news`}
+                              className="border-b border-b-secondary text-secondary sm:text-sm text-xs"
+                            >
+                              {t("see_all")}
+                            </Link>
+                          </div>
+                          <div className="w-full flex_start flex-col gap-4 group relative">
+                            <Link
+                              href={`/${locale}/news/${college.latest_news.slug}`}
+                              className="relative w-full h-[190px] rounded-xl overflow-hidden bg-gray-200"
+                            >
+                              <div className="text-secondary bg-white h-6 w-6 flex_center rounded-full z-10 absolute top-2 right-2">
+                                <IoArrowForwardOutline />
+                              </div>
+                              {college.latest_news.cover_image && (
+                                <Image
+                                  src={college.latest_news.cover_image.original}
+                                  alt={college.latest_news.title}
+                                  fill
+                                  className="w-full h-auto object-cover group-hover:scale-105 duration-300"
+                                />
+                              )}
+                            </Link>
+                            <div className="flex_center gap-1 text-secondary text-sm">
+                              <p>{college.latest_news.author}</p>
+                              <span className="opacity-75">-</span>
+                              <span className="opacity-75">
+                                {new Date(
+                                  college.latest_news.published_at
+                                ).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <Link
+                              href={`/news/${college.latest_news.slug}`}
+                              className="text-lg font-bold hover:text-primary text-secondary duration-300"
+                            >
+                              {college.latest_news.title}
+                            </Link>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            )}
+          </div>
+        </div>
       </div>
+
+      {/* Global styles for map markers and Swiper alignment */}
+      <style jsx global>{`
+        .gold-dot {
+          width: 20px !important;
+          height: 20px !important;
+          border-radius: 50%;
+          background: #dcc48c; /* base golden */
+          border: 3px solid #ffffff;
+          transform: translate(-50%, -100%);
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+        .gold-dot--active {
+          width: 30px !important;
+          height: 30px !important;
+          background: #dcc48c;
+          border: 3px solid #ffffff;
+        }
+        .swiper-slide {
+          /* Ensures slides with long content start from the top */
+          align-self: flex-start;
+        }
+      `}</style>
     </div>
   );
 };

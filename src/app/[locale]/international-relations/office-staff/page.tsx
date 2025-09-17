@@ -75,7 +75,8 @@ const Page = () => {
   } = useFetch<StaffResponse>(
     id
       ? `${API_URL}/website/international-relations/international-relation/${id}/staff?page=${page}&limit=${limit}`
-      : ""
+      : "",
+    locale
   );
 
   useEffect(() => {
@@ -140,7 +141,11 @@ const Page = () => {
                 className="rounded-3xl flex_center flex-col gap-4 border border-lightBorder overflow-hidden"
               >
                 <div className="sm:w-[120px] w-[80px] mt-5 sm:h-[120px] h-[80px] border-[5px] border-primary rounded-full flex_center flex-shrink-0">
-                  <div className="sm:w-[100px] w-[65px] sm:h-[100px] h-[65px] relative">
+                  <Link
+                    href={`/${locale}/academic-staff/${item.teacher.id}`}
+                    title={item.teacher.full_name}
+                    className="sm:w-[100px] w-[65px] sm:h-[100px] h-[65px] relative"
+                  >
                     <Image
                       src={getStaffImage(item)}
                       alt={item.teacher.full_name}
@@ -148,23 +153,34 @@ const Page = () => {
                       priority
                       className="w-full h-full rounded-full object-cover"
                     />
-                  </div>
+                  </Link>
                 </div>
                 <div className="flex_center flex-col gap-2 h-full p-5 pt-0">
-                  <h3 className="text-lg font-medium">
+                  <Link
+                    href={`/${locale}/academic-staff/${item.teacher.id}`}
+                    title={item.teacher.full_name}
+                    className="text-lg font-medium"
+                  >
                     {item.teacher.full_name}
-                  </h3>
+                  </Link>
                   <span className="opacity-80 text-sm">
                     {item.role_in_international_relations}
                   </span>
                 </div>
                 {/* Note: The API does not provide an email, so this section is omitted to avoid showing incorrect data. */}
-                <div className="flex_center gap-3 w-full py-5 px-5 border-t border-t-lightBorder text-gray-400">
+                <Link
+                  href={`/${locale}/academic-staff/${item.teacher.id}`}
+                  title={item.teacher.full_name}
+                  className="flex_center gap-3 w-full py-5 px-5 border-t border-t-lightBorder text-gray-400"
+                >
+                  <span className="text-sm opacity-80">{t("read_more")}</span>
+                </Link>
+                {/* <div className="flex_center gap-3 w-full py-5 px-5 border-t border-t-lightBorder text-gray-400">
                   <CiMail className="text-xl" />
                   <span className="text-sm opacity-80">
                     {t("email_not_available")}
                   </span>
-                </div>
+                </div> */}
               </div>
             ))
           ) : (
@@ -210,6 +226,14 @@ const Page = () => {
             className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-80 border-lightBorder"
           >
             <span>{t("directory_structure")}</span>
+            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+          </Link>
+          <Link
+            href={`/${locale}/international-relations/news?id=${id}`}
+            title={t("news")}
+            className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+          >
+            <span>{t("news")}</span>
             <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
           </Link>
           <div className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-primary border-primary">

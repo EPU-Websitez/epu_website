@@ -41,7 +41,8 @@ const Page = () => {
   const locale = params?.locale as string;
 
   const { data, loading } = useFetch<AcademicStaff>(
-    `${API_URL}/website/teachers/${id}`
+    `${API_URL}/website/teachers/${id}`,
+    locale
   );
 
   const biography = data?.biography || "Biography not available.";
@@ -97,7 +98,7 @@ const Page = () => {
                   </span>
                   <p className="text-sm font-medium">{generalSpec}</p>
                 </div>
-                <div className="sm:hidden flex flex-col gap-2">
+                {/* <div className="sm:hidden flex flex-col gap-2">
                   <span className="text-xs text-black text-opacity-60">
                     {t("curriculum_vitae")}
                   </span>
@@ -107,22 +108,22 @@ const Page = () => {
                     </span>
                     <span>botancv.PDF</span>
                   </button>
-                </div>
+                </div> */}
                 <div className="flex_start flex-col gap-2">
                   <span className="text-xs text-black text-opacity-60">
                     {t("specific_specialization")}
                   </span>
                   <p className="text-sm font-medium">{specificSpec}</p>
                 </div>
-                <div className="flex_start flex-col gap-2">
+                {/* <div className="flex_start flex-col gap-2">
                   <span className="text-xs text-black text-opacity-60">
                     {t("lecturer_at")}
                   </span>
                   <p className="text-sm font-medium">
                     Erbil Technology College - Department of Road Construction
                   </p>
-                </div>
-                <div className="sm:flex hidden flex-col gap-2">
+                </div> */}
+                {/* <div className="sm:flex hidden flex-col gap-2">
                   <span className="text-xs text-black text-opacity-60">
                     {t("curriculum_vitae")}
                   </span>
@@ -132,7 +133,7 @@ const Page = () => {
                     </span>
                     <span>botancv.PDF</span>
                   </button>
-                </div>
+                </div> */}
               </div>
 
               <div className="flex_start flex-col gap-8">

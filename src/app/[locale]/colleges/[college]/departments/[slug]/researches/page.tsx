@@ -288,7 +288,7 @@ const Page = () => {
     selectedDates.to,
   ]);
 
-  const { data, loading, error } = useFetch<ResearchResponse>(url);
+  const { data, loading, error } = useFetch<ResearchResponse>(url, locale);
 
   // Merge page results
   useEffect(() => {

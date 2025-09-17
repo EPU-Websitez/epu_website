@@ -7,6 +7,7 @@ import { HiOutlineLink } from "react-icons/hi2";
 import { API_URL } from "@/libs/env";
 import useFetch from "@/libs/hooks/useFetch";
 import { PiSealCheck } from "react-icons/pi";
+import { useParams } from "next/navigation";
 
 // Interfaces
 interface File {
@@ -71,8 +72,12 @@ const ResearchEvaluation = ({ teacherId }: AcknowledgmentProps) => {
   const [page, setPage] = useState(1);
   const limit = 10;
 
+  const params = useParams();
+  const locale = params?.locale as string;
+
   const { data, loading, error, refetch } = useFetch<AcknowledgmentResponse>(
-    `${API_URL}/website/teachers/${teacherId}/acknowledgments?page=${page}&limit=${limit}`
+    `${API_URL}/website/teachers/${teacherId}/acknowledgments?page=${page}&limit=${limit}`,
+    locale
   );
 
   useEffect(() => {

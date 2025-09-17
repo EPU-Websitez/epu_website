@@ -9,6 +9,7 @@ import useFetch from "@/libs/hooks/useFetch";
 import { PiSealCheck } from "react-icons/pi";
 import { FaUsers } from "react-icons/fa6";
 import { FiUser } from "react-icons/fi";
+import { useParams } from "next/navigation";
 
 // Interfaces
 interface File {
@@ -73,9 +74,11 @@ const Memberships = ({ teacherId }: Props) => {
   const [items, setItems] = useState<MainData[]>([]);
   const [page, setPage] = useState(1);
   const limit = 10;
+  const locale = useParams()?.locale as string;
 
   const { data, loading, error, refetch } = useFetch<Response>(
-    `${API_URL}/website/teachers/${teacherId}/memberships?page=${page}&limit=${limit}`
+    `${API_URL}/website/teachers/${teacherId}/memberships?page=${page}&limit=${limit}`,
+    locale
   );
 
   useEffect(() => {

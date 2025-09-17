@@ -128,7 +128,7 @@ const Page = () => {
     data: departmentData,
     loading,
     error,
-  } = useFetch<Department>(`${API_URL}/website/departments/${slug}`);
+  } = useFetch<Department>(`${API_URL}/website/departments/${slug}`, locale);
 
   // Generate consistent stats based on department ID
   const generateStats = (departmentId?: number) => {
@@ -204,14 +204,14 @@ const Page = () => {
                 <span>{t("news_button")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </Link>
-              <Link
+              {/* <Link
                 href={`/${locale}/colleges/${college}/departments/${slug}/researches`}
                 title={t("researches")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder hover:opacity-100 transition-opacity"
               >
                 <span>{t("researches")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-              </Link>
+              </Link> */}
               <Link
                 href={`/${locale}/colleges/${college}/departments/${slug}/course-subjects`}
                 title={t("course_subjects")}

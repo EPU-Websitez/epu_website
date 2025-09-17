@@ -8,9 +8,9 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react"; // Updated import
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
-import useSWR from "swr";
+// import useSWR from "swr"; // Removed useSWR
 import { API_URL } from "@/libs/env";
 
 // --- Type Definitions ---
@@ -29,8 +29,7 @@ interface ApiResponse {
   data: StrategyData[];
 }
 
-// --- Fetcher function for useSWR ---
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+// --- Fetcher function removed ---
 
 // --- Skeleton for dynamic content ---
 const ContentSkeleton = () => (
@@ -50,19 +49,54 @@ const Page = () => {
   const locale = params?.locale as string;
   const router = useRouter();
   const searchParams = useSearchParams();
-  const id = searchParams.get("id"); // --- Data Fetching with useSWR ---
+  const id = searchParams.get("id");
 
-  const {
-    data: response,
-    error,
-    isLoading,
-  } = useSWR<ApiResponse>(
-    `${API_URL}/website/international-strategies?page=1&limit=1`,
-    fetcher
-  );
+  // --- State management for data fetching ---
+  const [strategyData, setStrategyData] = useState<StrategyData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const strategyData = response?.data?.[0]; // --- Effect to update URL with fetched ID ---
+  // --- Data Fetching with useEffect ---
+  useEffect(() => {
+    const fetchStrategyData = async () => {
+      // Guard against running fetch if locale is not yet available
+      if (!locale) return;
 
+      setIsLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(
+          `${API_URL}/website/international-strategies?page=1&limit=1`,
+          {
+            headers: {
+              "website-language": locale,
+            },
+          }
+        );
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch strategy data.");
+        }
+
+        const response: ApiResponse = await res.json();
+        if (response.data && response.data.length > 0) {
+          setStrategyData(response.data[0]);
+        } else {
+          // No data found, can set to null or handle as an error
+          setStrategyData(null);
+        }
+      } catch (err: any) {
+        console.error(err);
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStrategyData();
+  }, [locale]);
+
+  // --- Effect to update URL with fetched ID ---
   useEffect(() => {
     if (strategyData) {
       const newId = strategyData.id;
@@ -76,11 +110,7 @@ const Page = () => {
   }, [strategyData, router, searchParams]);
 
   if (error) {
-    return (
-      <div className="text-red-500 text-center my-20">
-        Failed to load strategy data.
-      </div>
-    );
+    return <div className="text-red-500 text-center my-20">{error}</div>;
   }
 
   return (
@@ -96,6 +126,14 @@ const Page = () => {
                   <span>{t("strategy")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                 </div>
+                <Link
+                  href={`/${locale}/international-strategy/news?id=${id || ""}`}
+                  title={t("news")}
+                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
+                >
+                  <span>{t("news")}</span>
+                  <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+                </Link>
                 <Link
                   href={`/${locale}/international-strategy/goals?id=${
                     id || ""

@@ -51,10 +51,57 @@ const MapComponent = ({
           });
         }
 
+        // ★ custom gold pin CSS injector (only once)
+        if (!document.getElementById("gold-pin-css")) {
+          const style = document.createElement("style");
+          style.id = "gold-pin-css";
+          style.textContent = `
+            .gold-pin {
+              position: relative;
+              width: 20px !important;
+              height: 20px !important;
+              border-radius: 50%;
+              background: #dcc48c;
+              border: 3px solid #ffffff;
+              transform: translate(-50%, -100%);
+              box-shadow: 0 2px 10px rgba(0,0,0,.15);
+              cursor: pointer;
+              transition: transform .15s ease, box-shadow .15s ease;
+            }
+            .gold-pin--hover {
+              transform: translate(-50%, -100%) scale(1.05);
+              box-shadow: 0 4px 14px rgba(0,0,0,.18);
+            }
+            .gold-pin--active {
+              width: 28px !important;
+              height: 28px !important;
+            }
+            .gold-pin--pulse::after {
+              content: "";
+              position: absolute;
+              left: 50%;
+              top: 50%;
+              width: 28px;
+              height: 28px;
+              border-radius: 50%;
+              transform: translate(-50%, -50%);
+              background: rgba(220,196,140,0.35);
+              animation: gold-pulse 1.8s ease-out infinite;
+              pointer-events: none;
+            }
+            @keyframes gold-pulse {
+              0%   { opacity: .65; transform: translate(-50%, -50%) scale(.6); }
+              70%  { opacity: 0;   transform: translate(-50%, -50%) scale(1.6); }
+              100% { opacity: 0;   transform: translate(-50%, -50%) scale(1.6); }
+            }
+          `;
+          document.head.appendChild(style);
+        }
+
         // Check if still mounted after async operations
         if (!isMounted || !mapRef.current) return;
 
-        // Fix default markers
+        // Fix default markers (kept, harmless even though we use divIcon)
         delete (L.Icon.Default.prototype as any)._getIconUrl;
         L.Icon.Default.mergeOptions({
           iconRetinaUrl:
@@ -71,15 +118,39 @@ const MapComponent = ({
           zoom: zoom,
         });
 
-        // Add tiles
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-          maxZoom: 19,
-        }).addTo(mapInstance.current);
+        // --- CHANGE START: Updated tile layer to CARTO Positron style ---
+        L.tileLayer(
+          "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+          {
+            attribution:
+              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            maxZoom: 19,
+          }
+        ).addTo(mapInstance.current);
+        // --- CHANGE END ---
 
-        // Add marker
-        const marker = L.marker([lat, lng]).addTo(mapInstance.current);
+        // ★ custom gold pin icon
+        const goldIcon = L.divIcon({
+          className: "gold-pin gold-pin--pulse", // pulse on by default; remove if you want static
+          html: "",
+          iconSize: [20, 20],
+          iconAnchor: [10, 20],
+        });
+
+        // Add marker (with custom icon)
+        const marker = L.marker([lat, lng], { icon: goldIcon }).addTo(
+          mapInstance.current
+        );
+
+        // optional hover feedback
+        marker.on("mouseover", () => {
+          const el = (marker as any)._icon as HTMLElement | null;
+          el?.classList.add("gold-pin--hover");
+        });
+        marker.on("mouseout", () => {
+          const el = (marker as any)._icon as HTMLElement | null;
+          el?.classList.remove("gold-pin--hover");
+        });
 
         marker
           .bindPopup(

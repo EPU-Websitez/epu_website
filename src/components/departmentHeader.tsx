@@ -9,7 +9,7 @@ import useSWR from "swr";
 import { IoMdMail } from "react-icons/io";
 import { FaPhoneAlt } from "react-icons/fa";
 import { IoLocationSharp } from "react-icons/io5";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 // --- Updated Interfaces to match the API response ---
 interface Contact {
@@ -37,8 +37,6 @@ interface Response {
   galleries: any[]; // Kept as any for brevity, can be typed fully if needed
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
 const CenterSkeleton = () => (
   <div className="w-full flex justify-center items-start sm:mt-10 mt-6 min-h-screen animate-pulse">
     <div className="max-w-[1024px] px-3 text-secondary flex_center flex-col gap-5 w-full">
@@ -54,7 +52,14 @@ const DepartmentHeader = () => {
   const t = useTranslations("Colleges");
   const params = useParams();
   const slug = params?.slug as string;
-
+  const locale = params?.locale as string;
+  const fetcher = (url: string) =>
+    fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        "website-language": locale,
+      },
+    }).then((res) => res.json());
   const { data, error, isLoading } = useSWR<Response>(
     slug ? `${API_URL}/website/departments/${slug}` : null,
     fetcher,
@@ -63,6 +68,12 @@ const DepartmentHeader = () => {
       revalidateOnFocus: false,
     }
   );
+  useEffect(() => {
+    if (data) {
+      // This changes the title in the browser tab
+      document.title = `${data.title} | Department`;
+    }
+  }, [data]); // This effect runs when the data is fetched
 
   // --- Helper function to get an icon based on contact type ---
   const getContactIcon = (type: string): ReactNode => {
@@ -83,18 +94,11 @@ const DepartmentHeader = () => {
   return (
     <div className="flex justify-center items-center py-10 md:gap-10 md:h-[405px] h-auto min-h-[335px] overflow-hidden relative w-full">
       <Image
-        src="/images/bg.png"
+        src="/images/bg.svg"
         alt="title"
         fill
         priority
-        className="w-full h-auto md:block hidden object-cover"
-      />
-      <Image
-        src="/images/bg-small.png"
-        alt="title"
-        fill
-        priority
-        className="w-full h-auto md:hidden block object-cover"
+        className="w-full h-auto object-cover"
       />
       <div className="z-20 flex_start flex-col max-w-[1040px] w-full md:gap-8 gap-4 text-white px-3">
         <div className="flex_center gap-2 group relative">

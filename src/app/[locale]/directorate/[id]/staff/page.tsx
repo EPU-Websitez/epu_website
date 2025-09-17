@@ -58,6 +58,16 @@ interface DirectorateChild {
 interface DirectorateDetail {
   children: DirectorateChild[];
 }
+interface DirectorateParentInfo {
+  id: number;
+  parent_id: number | null;
+  parent?: {
+    slug: string;
+  };
+  directorate_type: {
+    name: string;
+  };
+}
 
 // -------- Skeleton Component --------
 const ContentSkeleton = () => (
@@ -98,14 +108,16 @@ const Page = () => {
   const handleOpenStaff = () => {
     setStaffIsOpen(!staffIsOpen);
   };
-  // Fetch data for sidebar units
-  const { data: directorateData } = useFetch<DirectorateDetail>(
-    id ? `${API_URL}/website/directorates/${id}` : ""
+  // Fetch parent info for sidebar navigation
+  const { data: directorateInfo } = useFetch<DirectorateParentInfo>(
+    id ? `${API_URL}/website/directorates/${id}` : "",
+    locale
   );
 
   // Fetch data for the lead member
   const { data: leadsData, loading: leadsLoading } = useFetch<LeadsResponse>(
-    id ? `${API_URL}/website/directorates/${id}/leads?page=1&limit=1` : ""
+    id ? `${API_URL}/website/directorates/${id}/leads?page=1&limit=1` : "",
+    locale
   );
 
   // Manually handle fetching for paginated staff list
@@ -120,7 +132,12 @@ const Page = () => {
     if (page > 1) setIsLoadingMore(true);
     try {
       const res = await fetch(
-        `${API_URL}/website/directorates/${id}/staff?page=${page}&limit=4`
+        `${API_URL}/website/directorates/${id}/staff?page=${page}&limit=4`,
+        {
+          headers: {
+            "website-language": locale || "en",
+          },
+        }
       );
       const newData: StaffResponse = await res.json();
       if (newData.data) {
@@ -144,11 +161,12 @@ const Page = () => {
   };
 
   const leadMember = leadsData?.data?.[0];
+  const parentTitle = directorateInfo?.directorate_type?.name || id;
 
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
       <div className="max-w-[1045px] px-3 w-full flex_start flex-col gap-8">
-        <SubHeader title={t("university_directory")} alt={false} />
+        {!isLoading && <SubHeader title={parentTitle} alt={false} />}
         <DirectorateHeader />
         <div className="flex_start w-full">
           <div className="w-full border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
@@ -187,11 +205,18 @@ const Page = () => {
                   </h2>
 
                   {leadMember && (
-                    <div className="flex justify-start items-center sm:gap-10 gap-5 sm:w-auto w-full border p-5 rounded-3xl border-lightBorder">
+                    <Link
+                      href={`/${locale}/academic-staff/${leadMember?.teacher?.id}`}
+                      className="flex justify-start items-center sm:gap-10 gap-5 w-full border p-5 rounded-3xl border-lightBorder"
+                    >
                       <div className="sm:w-[200px] w-[125px] sm:h-[190px] h-[125px] relative flex-shrink-0">
                         <Image
-                          src={leadMember.teacher.profile_image.lg}
-                          alt={leadMember.teacher.full_name}
+                          src={
+                            leadMember.teacher?.profile_image?.lg ||
+                            leadMember.teacher?.profile_image?.original ||
+                            "/images/placeholder.svg"
+                          }
+                          alt={leadMember.teacher?.full_name}
                           fill
                           priority
                           className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
@@ -203,7 +228,7 @@ const Page = () => {
                         </h3>
                         <h1 className="max-w-[250px] lg:text-xl sm:text-lg text-xs font-semibold relative">
                           <span className="relative z-10">
-                            {leadMember.teacher.full_name}
+                            {leadMember?.teacher?.full_name}
                           </span>
                           <span className="absolute ltr:left-0 rtl:right-0 -bottom-3 w-[80%] h-6">
                             <Image
@@ -215,7 +240,7 @@ const Page = () => {
                           </span>
                         </h1>
                       </div>
-                    </div>
+                    </Link>
                   )}
 
                   <div className="grid w-full lg:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-8">
@@ -223,7 +248,7 @@ const Page = () => {
                       <MemberCard
                         key={member.teacher.id}
                         description={member.role}
-                        image={member.teacher.profile_image.lg}
+                        image={member?.teacher?.profile_image?.lg}
                         link={`/${locale}/academic-staff/${member.teacher.id}`}
                         staticText={t("view_profile")}
                         title={member.teacher.full_name}
@@ -240,6 +265,11 @@ const Page = () => {
                       >
                         {isLoadingMore ? t("loading") : t("see_more")}
                       </button>
+                    </div>
+                  )}
+                  {staffList.length === 0 && !isLoading && (
+                    <div className="text-center text-gray-500">
+                      {t("no_data_found")}
                     </div>
                   )}
                 </div>

@@ -1,295 +1,77 @@
-"use client";
+// src/app/[locale]/colleges/[college]/departments/page.tsx
 
-import CollegeHeader from "@/components/collegeHeader";
-import SubHeader from "@/components/subHeader";
-import { useTranslations } from "next-intl";
-import Image from "next/image";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { GoBriefcase } from "react-icons/go";
-import { IoArrowForwardOutline } from "react-icons/io5";
-import { PiStudent } from "react-icons/pi";
-import { API_URL } from "@/libs/env";
-import useFetch from "@/libs/hooks/useFetch";
+import { Metadata } from "next";
+import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+import DepartmentsPageClient from "./DepartmentsPageClient";
 
-// Interfaces
-interface Image {
-  id: number;
-  original: string;
-  lg: string;
-  md: string;
-  sm: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface Gallery {
-  id: number;
-  department_id: number;
-  image_id: number;
-  created_at: string;
-  updated_at: string;
-  image: Image;
-}
-
-interface College {
-  id: number;
-  subdomain: string;
-  slug: string | null;
+// Interface for the data needed for metadata
+interface CollegeMetadata {
   title: string;
-  description: string;
-  news_title: string;
-  news_subtitle: string;
-  college_title: string;
-  college_subtitle: string;
-  teacher_title: string;
-  teacher_subtitle: string;
-  event_title: string;
-  event_subtitle: string;
-  about_title: string;
-  about_content: string;
-  student_number: string;
-  vision: string;
-  mission: string;
-  logo_image_id: number;
-  priority: number;
-  created_at: string;
-  updated_at: string;
+  college_subtitle: string | null;
 }
 
-interface Department {
-  id: number;
-  college_id: number;
-  slug: string;
-  title: string;
-  subtitle: string;
-  about: string;
-  vision: string;
-  mission: string;
-  priority: number;
-  created_at: string;
-  updated_at: string;
-  student_number: string;
-  college: College;
-  galleries: Gallery[];
-  staffCount: number;
-  leadCount: number;
-}
+// Fetches college data on the server to generate dynamic metadata
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; college: string }>;
+}): Promise<Metadata> {
+  try {
+    const { locale, college } = await params;
 
-interface DepartmentsResponse {
-  total: number;
-  page: number;
-  limit: number;
-  data: Department[];
-}
+    const response = await fetch(`${API_URL}/website/colleges/${college}`, {
+      headers: { "website-language": locale || "en" },
+      next: { revalidate: 3600 },
+    });
 
-// Skeleton Components
-const DepartmentCardSkeleton = () => (
-  <div className="relative border border-lightBorder rounded-3xl p-2 flex_center flex-col gap-3 text-center animate-pulse">
-    <div className="w-full h-[165px] bg-gray-300 rounded-3xl"></div>
-    <div className="h-4 bg-gray-300 rounded w-3/4"></div>
-    <div className="flex_center gap-8 w-full">
-      <div className="flex_center gap-2">
-        <div className="w-5 h-5 bg-gray-300 rounded-full"></div>
-        <div className="flex_start flex-col gap-1">
-          <div className="h-2 bg-gray-300 rounded w-8"></div>
-          <div className="h-2 bg-gray-200 rounded w-12"></div>
-        </div>
-      </div>
-      <div className="flex_center gap-2">
-        <div className="w-5 h-5 bg-gray-300 rounded-full"></div>
-        <div className="flex_start flex-col gap-1">
-          <div className="h-2 bg-gray-300 rounded w-8"></div>
-          <div className="h-2 bg-gray-200 rounded w-12"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
+    if (!response.ok) throw new Error("Failed to fetch college metadata");
 
-const PageSkeleton = () => (
-  <div className="w-full flex_center flex-col sm:my-10 my-5">
-    <div className="max-w-[1379px] px-3 flex_start w-full">
-      <div className="animate-pulse w-full h-20 bg-gray-300 rounded-lg"></div>
-    </div>
-    <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full sm:mt-14 mt-10">
-      <div className="animate-pulse">
-        <div className="h-8 bg-gray-300 rounded w-48"></div>
-      </div>
-      <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-5 w-full flex-shrink-0">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <DepartmentCardSkeleton key={i} />
-        ))}
-      </div>
-    </div>
-  </div>
-);
+    const collegeData: CollegeMetadata = await response.json();
+    const pageTitle = `${collegeData.title} Departments | EPU`;
+    const pageDescription =
+      collegeData.college_subtitle ||
+      `Explore the academic departments at ${collegeData.title}, Erbil Polytechnic University.`;
+    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
-const Page = () => {
-  const t = useTranslations("Colleges");
-  const params = useParams();
-  const locale = params?.locale as string;
-  const college = params?.college as string;
-
-  const [departments, setDepartments] = useState<Department[]>([]);
-  const [page, setPage] = useState(1);
-  const limit = 12; // Increased limit for better user experience
-
-  const {
-    data: departmentsData,
-    loading,
-    error,
-  } = useFetch<DepartmentsResponse>(
-    `${API_URL}/website/departments?page=${page}&limit=${limit}&college_subdomain=${college}`
-  );
-
-  useEffect(() => {
-    if (departmentsData?.data) {
-      if (page === 1) {
-        setDepartments(departmentsData.data);
-      } else {
-        setDepartments((prev) => [...prev, ...departmentsData.data]);
-      }
-    }
-  }, [departmentsData]); // Removed `page` from dependency array to prevent double renders
-
-  const handleLoadMore = () => {
-    setPage((prev) => prev + 1);
-  };
-
-  // Get department image with fallback
-  const getDepartmentImage = (department: Department) => {
-    return (
-      department.galleries?.[0]?.image?.lg ||
-      department.galleries?.[0]?.image?.md ||
-      department.galleries?.[0]?.image?.original ||
-      `/images/campus.png`
-    );
-  };
-
-  // This condition handles initial load error
-  if (error && page === 1 && !loading) {
-    return (
-      <div className="w-full flex_center flex-col sm:my-10 my-5">
-        <div className="max-w-[1024px] px-3 text-center">
-          <h1 className="text-2xl font-bold text-red-500 mb-4">
-            Error Loading Departments
-          </h1>
-          <p className="text-gray-600">Please try again later.</p>
-        </div>
-      </div>
-    );
+    return {
+      metadataBase: new URL(baseUrl),
+      title: pageTitle,
+      description: pageDescription,
+      openGraph: {
+        title: pageTitle,
+        description: pageDescription,
+        url: `/${locale}/colleges/${college}/departments`,
+        siteName: "Erbil Polytechnic University",
+        images: [{ url: "/small-logo.png", width: 1200, height: 630 }],
+        locale: locale,
+        type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: pageTitle,
+        description: pageDescription,
+        images: ["/small-logo.png"],
+      },
+      alternates: {
+        canonical: `/${locale}/colleges/${college}/departments`,
+        languages: {
+          en: `/en/colleges/${college}/departments`,
+          ar: `/ar/colleges/${college}/departments`,
+          ku: `/ku/colleges/${college}/departments`,
+        },
+      },
+    };
+  } catch (error) {
+    console.error("Metadata fetch failed:", error);
+    return {
+      title: "College Departments | EPU",
+      description:
+        "Explore the academic departments at Erbil Polytechnic University.",
+    };
   }
+}
 
-  // This condition shows the skeleton ONLY on the first page load
-  if (loading && page === 1) {
-    return <PageSkeleton />;
-  }
-
-  return (
-    <div className="w-full flex_center flex-col sm:my-10 my-5">
-      <div className="max-w-[1379px] px-3 flex_start w-full">
-        <CollegeHeader />
-      </div>
-
-      <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full sm:mt-14 mt-10">
-        <SubHeader title={t("departments")} alt={false} />
-
-        {departments.length > 0 ? (
-          <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 sm:gap-5 gap-2 w-full flex-shrink-0">
-            {departments.map((department, i) => (
-              <div
-                key={`${department.id}-${i}`}
-                className="relative border border-lightBorder rounded-3xl p-2 flex_center flex-col gap-3 text-center"
-              >
-                <Link
-                  href={`/${locale}/colleges/${college}/departments/${department.slug}`}
-                  title={department.title}
-                  className="w-full h-[165px] relative overflow-hidden rounded-3xl group"
-                >
-                  <div className="text-secondary bg-white h-4 w-4 flex_center rounded-full z-10 absolute top-2 ltr:right-2 rtl:left-2 text-sm transition-all group-hover:scale-110">
-                    <IoArrowForwardOutline className="rtl:rotate-180" />
-                  </div>
-                  <Image
-                    src={getDepartmentImage(department)}
-                    className="object-cover transition-transform group-hover:scale-105"
-                    alt={department.title}
-                    fill
-                    priority={i < 4} // Only prioritize loading first few images
-                  />
-                </Link>
-                <Link
-                  href={`/${locale}/colleges/${college}/departments/${department.slug}`}
-                  className="sm:text-sm text-[10px] font-semibold px-2 text-center hover:text-primary transition-colors"
-                  title={department.title}
-                >
-                  {department.title}
-                </Link>
-                <div className="flex_center gap-8 w-full">
-                  <div className="flex_center gap-2">
-                    <div className="w-5 text-xs h-5 rounded-full bg-blue bg-opacity-30 flex_center">
-                      <GoBriefcase />
-                    </div>
-                    <div className="flex_start flex-col">
-                      <small className="font-medium sm:text-[10px] text-[8px]">
-                        +{department.staffCount || "0"}
-                      </small>
-                      <small className="sm:text-[8px] text-[6px] text-black opacity-60">
-                        {t("teachers")}
-                      </small>
-                    </div>
-                  </div>
-                  <div className="flex_center gap-2">
-                    <div className="w-5 text-xs h-5 rounded-full bg-blue bg-opacity-30 flex_center">
-                      <PiStudent />
-                    </div>
-                    <div className="flex_start flex-col">
-                      <small className="font-medium sm:text-[10px] text-[8px]">
-                        +{department.student_number || 0}
-                      </small>
-                      <small className="sm:text-[8px] text-[6px] text-black opacity-60">
-                        {t("students")}
-                      </small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-gray-500 text-center w-full py-10">
-            <div className="flex_center flex-col gap-4">
-              <div className="text-4xl">🏢</div>
-              <h3 className="text-lg font-medium">
-                {t("no_departments_found")}
-              </h3>
-            </div>
-          </div>
-        )}
-
-        {/* Load More Button */}
-        {departmentsData && departments.length < departmentsData.total && (
-          <div className="flex_center w-full my-5">
-            <button
-              onClick={handleLoadMore}
-              disabled={loading}
-              className="sm:text-base text-sm border border-primary px-8 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors disabled:opacity-50"
-            >
-              {loading ? t("loading") : t("see_more")}
-            </button>
-          </div>
-        )}
-
-        {/* Error State for Load More */}
-        {error && page > 1 && (
-          <div className="text-red-500 text-center w-full">
-            {t("error_loading_data")}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-export default Page;
+// The default export simply renders the client component
+export default function DepartmentsPage() {
+  return <DepartmentsPageClient />;
+}

@@ -53,7 +53,8 @@ const Page = () => {
   const { data, error, loading } = useFetch<GoalsResponse>(
     id
       ? `${API_URL}/website/international-strategies/international-strategy/${id}/goals`
-      : ""
+      : "",
+    locale
   );
 
   const goals = data?.data || [];
@@ -82,6 +83,14 @@ const Page = () => {
                   className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                 >
                   <span>{t("strategy")}</span>
+                  <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+                </Link>
+                <Link
+                  href={`/${locale}/international-strategy/news?id=${id || ""}`}
+                  title={t("news")}
+                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
+                >
+                  <span>{t("news")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                 </Link>
                 <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-primary border-primary">

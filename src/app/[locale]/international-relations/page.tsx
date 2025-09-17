@@ -115,13 +115,14 @@ const Page = () => {
     loading: relationLoading,
     error: relationError,
   } = useFetch<InternationalRelationResponse>(
-    `${API_URL}/website/international-relations?page=1&limit=2`
+    `${API_URL}/website/international-relations?page=1&limit=1`,
+    locale
   );
 
   // Set the ID once the main data is fetched
   useEffect(() => {
-    if (relationData?.data?.[1]?.id) {
-      setInternationalRelationId(relationData.data[1].id);
+    if (relationData?.data?.[0]?.id) {
+      setInternationalRelationId(relationData.data[0].id);
     }
   }, [relationData]);
 
@@ -133,7 +134,8 @@ const Page = () => {
   } = useFetch<UnitsResponse>(
     internationalRelationId
       ? `${API_URL}/website/international-relations/international-relation/${internationalRelationId}/units`
-      : ""
+      : "",
+    locale
   );
 
   // 3. Fetch Sections data using the ID from the first call
@@ -144,7 +146,8 @@ const Page = () => {
   } = useFetch<SectionsResponse>(
     internationalRelationId
       ? `${API_URL}/website/international-relations/international-relation/${internationalRelationId}/sections`
-      : ""
+      : "",
+    locale
   );
 
   const isLoading = relationLoading || unitsLoading || sectionsLoading;
@@ -306,6 +309,14 @@ const Page = () => {
             <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
           </Link>
           <Link
+            href={`/${locale}/international-relations/news?id=${mainRelation?.id}`}
+            title={t("news")}
+            className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+          >
+            <span>{t("news")}</span>
+            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+          </Link>
+          <Link
             href={`/${locale}/international-relations/office-staff?id=${mainRelation?.id}`}
             title={t("office_staff")}
             className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
@@ -313,14 +324,6 @@ const Page = () => {
             <span>{t("office_staff")}</span>
             <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
           </Link>
-          {/* <Link
-            href={`/${locale}/international-relations/contact?id=${mainRelation?.id}`}
-            title={t("contact")}
-            className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
-          >
-            <span>{t("contact")}</span>
-            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-          </Link> */}
         </div>
       </div>
     </div>

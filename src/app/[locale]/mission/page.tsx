@@ -1,80 +1,71 @@
-"use client";
+import { Metadata } from "next";
+import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+import MissionClient from "./MissionClient";
 
-import SubHeader from "@/components/subHeader";
-import { useTranslations } from "next-intl";
-import Image from "next/image";
-import { API_URL } from "@/libs/env";
-import useFetch from "@/libs/hooks/useFetch";
-
-// -------- Interfaces --------
-interface ImageFile {
-  id: number;
-  lg: string;
-}
-
-interface UniversityData {
+// --- Interface for metadata fetching ---
+interface UniversityMetadata {
   title: string;
   mission: string;
-  vision: string;
-  intro_image: ImageFile;
+  intro_image: {
+    lg: string;
+  };
 }
 
-// -------- Skeleton Component --------
-const PageSkeleton = () => (
-  <div className="my-10 flex_center w-full animate-pulse">
-    <div className="max-w-[1024px] w-full flex_start flex-col gap-10 sm:px-3 px-5">
-      <div className="h-8 w-48 bg-gray-200 rounded-lg"></div>
-      <div className="w-full lg:h-[500px] sm:h-[400px] h-[220px] bg-gray-200 rounded-3xl"></div>
-      <div className="w-full space-y-4 mt-5">
-        <div className="h-10 w-1/3 bg-gray-200 rounded-full"></div>
-        <div className="h-4 w-full bg-gray-200 rounded"></div>
-        <div className="h-4 w-5/6 bg-gray-200 rounded"></div>
-      </div>
-      <div className="w-full space-y-4 mt-5">
-        <div className="h-10 w-1/3 bg-gray-200 rounded-full"></div>
-        <div className="h-4 w-full bg-gray-200 rounded"></div>
-        <div className="h-4 w-5/6 bg-gray-200 rounded"></div>
-      </div>
-    </div>
-  </div>
-);
+// --- Server-side function to generate dynamic metadata ---
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  try {
+    const response = await fetch(`${API_URL}/website/universities`, {
+      headers: { "website-language": locale || "en" },
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
 
-const Page = () => {
-  const t = useTranslations("Mission");
+    if (!response.ok) {
+      throw new Error("Failed to fetch university data");
+    }
 
-  // Fetch the main university data which includes mission and vision
-  const { data: uniData, loading: isLoading } = useFetch<UniversityData>(
-    `${API_URL}/website/universities`
-  );
+    const uniData: UniversityMetadata = await response.json();
+    const pageTitle = `Mission & Vision | ${uniData.title}`;
+    const pageDescription = uniData.mission.substring(0, 160).trim() + "...";
+    const imageUrl = uniData.intro_image?.lg || "/small-logo.png";
+    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
-  if (isLoading) return <PageSkeleton />;
-  if (!uniData) return <div>No data found.</div>;
+    return {
+      metadataBase: new URL(baseUrl),
+      title: pageTitle,
+      description: pageDescription,
+      openGraph: {
+        title: pageTitle,
+        description: pageDescription,
+        url: `/${locale}/mission-and-vision`, // Assuming this is the correct URL
+        siteName: uniData.title,
+        images: [
+          {
+            url: imageUrl,
+            width: 1200,
+            height: 630,
+            alt: `Intro image for ${uniData.title}`,
+          },
+        ],
+        locale: locale,
+        type: "website",
+      },
+    };
+  } catch (error) {
+    console.error("Metadata generation failed:", error);
+    // Fallback metadata in case of an error
+    return {
+      title: "Mission & Vision | EPU",
+      description: "Learn about the mission and vision of the university.",
+    };
+  }
+}
 
-  return (
-    <div className="my-10 flex_center w-full">
-      <div className="max-w-[1024px] sm:px-3 px-5 w-full flex_start flex-col gap-10">
-        <SubHeader title={t("head")} alt={false} />
-        <div className="w-full lg:h-[500px] sm:h-[400px] h-[220px] relative rounded-3xl overflow-hidden">
-          <Image
-            src={uniData.intro_image.lg}
-            alt={uniData.title}
-            fill
-            priority
-            className="w-full h-full object-cover"
-          />
-        </div>
-
-        {/* Mission Section */}
-        <div className="w-full flex flex-col items-start gap-4">
-          <h2 className="sm:text-3xl text-2xl z-10 relative font-semibold text-secondary">
-            {t("title")}
-          </h2>
-          <p className="text-secondary text-opacity-80 sm:text-base text-sm leading-relaxed">
-            {uniData.mission}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
-export default Page;
+// --- The default export that renders the client component ---
+export default function MissionPage() {
+  return <MissionClient />;
+}

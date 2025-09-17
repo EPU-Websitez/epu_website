@@ -53,7 +53,8 @@ const Page = () => {
   const slug = params?.slug as string;
 
   const { data, loading, error } = useFetch<CenterResponse>(
-    `${API_URL}/website/centers/${slug}`
+    `${API_URL}/website/centers/${slug}`,
+    locale
   );
 
   const email = data?.contacts.find((c) => c.type === "EMAIL")?.value;

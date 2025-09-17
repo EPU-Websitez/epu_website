@@ -8,7 +8,6 @@ import { PiHandHeart } from "react-icons/pi";
 import useSWR from "swr"; // Switched to useSWR for consistency and better caching
 
 // --- INTERFACES ---
-// This interface now correctly defines 'achievements' as an object that might contain a 'title'.
 interface Achievement {
   id: number;
   grant_id: number;
@@ -16,26 +15,22 @@ interface Achievement {
   created_at: string;
   updated_at: string;
 }
-
 interface FileInfo {
   id: number;
   path: string;
 }
-
 interface FileEntry {
   id: number;
   file: FileInfo;
 }
-
 interface Grant {
   id: number;
   title: string;
   year: string;
   type: string;
-  achievements: Achievement | string | null; // Can be an object, a string, or null
+  achievements: Achievement | string | null;
   files: FileEntry[];
 }
-
 interface GrantsResponse {
   total: number;
   data: Grant[];
@@ -58,8 +53,34 @@ const SkeletonCard = () => (
   </div>
 );
 
+// --- SPINNER COMPONENT ---
+const SpinnerIcon = () => (
+  <div className="flex_center w-5 h-5">
+    <svg
+      className="animate-spin h-4 w-4 text-current"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      ></circle>
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+      ></path>
+    </svg>
+  </div>
+);
+
 // --- FETCHER FOR SWR ---
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+// const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 interface Props {
   teacherId: string;
@@ -73,8 +94,17 @@ const Grants = ({ teacherId, locale = "en" }: Props) => {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [downloadingFiles, setDownloadingFiles] = useState<Set<string>>(
+    new Set()
+  );
   const limit = 6;
-
+  const fetcher = (url: string) =>
+    fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        "website-language": locale,
+      },
+    }).then((res) => res.json());
   const { data, error, isLoading } = useSWR<GrantsResponse>(
     `${API_URL}/website/teachers/${teacherId}/grants?page=${page}&limit=${limit}`,
     fetcher
@@ -82,9 +112,7 @@ const Grants = ({ teacherId, locale = "en" }: Props) => {
 
   useEffect(() => {
     if (data?.data) {
-      // Append new items for "load more" functionality
       setItems((prev) => {
-        // Create a Set of existing IDs to prevent duplicates
         const existingIds = new Set(prev.map((item) => item.id));
         const newItems = data.data.filter((item) => !existingIds.has(item.id));
         return [...prev, ...newItems];
@@ -111,6 +139,37 @@ const Grants = ({ teacherId, locale = "en" }: Props) => {
 
   const getFileName = (filePath: string) =>
     filePath.split("/").pop() || "download";
+
+  const handleFileDownload = async (filePath: string) => {
+    if (!filePath) return;
+    setDownloadingFiles((prev) => new Set(prev).add(filePath));
+    try {
+      const fileUrl = new URL(filePath, API_URL).href;
+      const res = await fetch(fileUrl, { mode: "cors" });
+      if (!res.ok) throw new Error(`Failed to fetch file: ${res.status}`);
+
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const fileName = getFileName(filePath);
+
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    } catch (e) {
+      console.error("Download failed:", e);
+      window.open(new URL(filePath, API_URL).href, "_blank");
+    } finally {
+      setDownloadingFiles((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(filePath);
+        return newSet;
+      });
+    }
+  };
 
   return (
     <div className="lg:border-l lg:pl-10 w-full flex flex-col gap-7">
@@ -150,26 +209,32 @@ const Grants = ({ teacherId, locale = "en" }: Props) => {
                         {t("attachment")}
                       </span>
                       <div className="flex flex-wrap gap-2 mt-1">
-                        {item.files.map((fileEntry) => (
-                          <a
-                            href={fileEntry.file.path}
-                            key={fileEntry.id}
-                            download
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="border border-lightBorder rounded-full flex items-center gap-2 px-2 py-1 text-xs hover:bg-gray-50 transition-colors"
-                            title={`Download ${getFileName(
-                              fileEntry.file.path
-                            )}`}
-                          >
-                            <span className="bg-[#81B1CE] text-white flex_center w-5 h-5 rounded-full">
-                              <HiOutlineLink />
-                            </span>
-                            <span className="max-w-[12ch] truncate">
-                              {getFileName(fileEntry.file.path)}
-                            </span>
-                          </a>
-                        ))}
+                        {item.files.map((fileEntry) => {
+                          const filePath = fileEntry.file.path;
+                          const isDownloading = downloadingFiles.has(filePath);
+                          return (
+                            <button
+                              key={fileEntry.id}
+                              onClick={() =>
+                                !isDownloading && handleFileDownload(filePath)
+                              }
+                              disabled={isDownloading}
+                              className="border border-lightBorder rounded-full flex items-center gap-2 px-2 py-1 text-xs hover:bg-gray-50 transition-colors disabled:opacity-70 disabled:cursor-wait"
+                              title={`Download ${getFileName(filePath)}`}
+                            >
+                              <span className="bg-[#81B1CE] text-white flex_center w-5 h-5 rounded-full">
+                                {isDownloading ? (
+                                  <SpinnerIcon />
+                                ) : (
+                                  <HiOutlineLink />
+                                )}
+                              </span>
+                              <span className="max-w-[12ch] truncate">
+                                {getFileName(filePath)}
+                              </span>
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
@@ -179,7 +244,6 @@ const Grants = ({ teacherId, locale = "en" }: Props) => {
                   <span className="text-black opacity-60 text-xs">
                     {t("achievements")}
                   </span>
-                  {/* --- THIS IS THE FIX --- */}
                   {item.achievements ? (
                     <p className="text-sm">
                       {typeof item.achievements === "object"
@@ -210,13 +274,13 @@ const Grants = ({ teacherId, locale = "en" }: Props) => {
 
       {error && (
         <div className="text-red-500 text-center w-full">
-          {t("error_loading_grants")}
+          {t("error_loading_data")}
         </div>
       )}
 
       {!isLoading && items.length === 0 && (
         <div className="text-gray-500 text-center w-full">
-          {t("no_grants_found")}
+          {t("no_data_found")}
         </div>
       )}
     </div>

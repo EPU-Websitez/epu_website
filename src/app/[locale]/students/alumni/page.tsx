@@ -1,392 +1,75 @@
-"use client";
+import { Metadata } from "next";
+import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+import AlumniClient from "./AlumniClient";
 
-import SubHeader from "@/components/subHeader";
-import { API_URL } from "@/libs/env";
-import useFetch from "@/libs/hooks/useFetch";
-import { useTranslations } from "next-intl";
-import Image from "next/image";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useRef, useState } from "react";
-import { FaAngleLeft, FaTimes } from "react-icons/fa";
-import { GoArrowRight } from "react-icons/go";
-import { Swiper as SwiperCore } from "swiper/types";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-
-// -------- Interfaces --------
-
-interface ImageFile {
-  id: number;
-  original: string;
-  lg: string;
-  md: string;
-  sm: string;
-}
-
-interface FeedbackItem {
-  id: number;
-  name: string;
-  position: string;
-  description?: string;
-  image: ImageFile;
-}
-
-interface StoryItem {
-  id: number;
-  full_name: string;
-  description: string;
-  image: ImageFile;
-}
-
-interface BgListItem {
-  id: number;
-  title: string;
-  description: string;
-}
-
-interface AlumniResponse {
-  id: number;
+// --- Interface for metadata fetching ---
+interface AlumniMetadata {
   feedback_title: string;
   feedback_description: string;
-  stories_title: string;
-  stories_description: string;
-  bg_image: ImageFile;
-  bg_title: string;
-  bg_description: string;
-  feedbacks: FeedbackItem[];
-  stories: StoryItem[];
-  bg_lists: BgListItem[];
+  bg_image: {
+    lg: string;
+  };
 }
 
-// -------- Modal Component --------
+// --- Server-side function to generate dynamic metadata ---
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  try {
+    const response = await fetch(`${API_URL}/website/alumni-students/main`, {
+      headers: { "website-language": locale || "en" },
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
 
-interface StoryModalProps {
-  story: StoryItem;
-  onClose: () => void;
+    if (!response.ok) {
+      throw new Error("Failed to fetch alumni data");
+    }
+
+    const alumniData: AlumniMetadata = await response.json();
+
+    const pageTitle = `${alumniData.feedback_title} | EPU Alumni`;
+    const pageDescription = alumniData.feedback_description
+      .substring(0, 160)
+      .trim();
+    const imageUrl = alumniData.bg_image?.lg || "/images/alumni-bg.png";
+    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+
+    return {
+      metadataBase: new URL(baseUrl),
+      title: pageTitle,
+      description: pageDescription,
+      openGraph: {
+        title: pageTitle,
+        description: pageDescription,
+        url: `/${locale}/alumni`, // Assuming this is the correct URL
+        siteName: "Erbil Polytechnic University",
+        images: [
+          {
+            url: imageUrl,
+            width: 1200,
+            height: 630,
+            alt: `EPU Alumni Community`,
+          },
+        ],
+        locale: locale,
+        type: "website",
+      },
+    };
+  } catch (error) {
+    console.error("Metadata generation failed:", error);
+    // Fallback metadata
+    return {
+      title: "Alumni | EPU",
+      description:
+        "Connect with the Erbil Polytechnic University alumni community.",
+    };
+  }
 }
 
-const StoryModal = ({ story, onClose }: StoryModalProps) => {
-  return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center"
-      onClick={onClose}
-    >
-      <div
-        className="relative bg-white rounded-2xl max-w-lg w-11/12 overflow-hidden"
-        onClick={(e) => e.stopPropagation()} // Prevent modal from closing when clicking inside
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 z-10"
-          aria-label="Close modal"
-        >
-          <FaTimes size={20} />
-        </button>
-        <div className="w-full h-64 relative">
-          <Image
-            src={story.image.lg}
-            alt={story.full_name}
-            fill
-            className="object-cover"
-          />
-        </div>
-        <div className="p-6">
-          <h2 className="text-2xl font-semibold mb-2 text-secondary">
-            {story.full_name}
-          </h2>
-          <p className="text-secondary opacity-80">{story.description}</p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// -------- Granular Skeleton Components --------
-
-const FeedbackSkeleton = () => (
-  <div className="md:w-full w-[95%] flex flex-col md:flex-row items-center gap-5 mt-10 relative md:p-0 p-5 animate-pulse">
-    <div className="lg:w-[45%] md:w-[50%] w-full h-[250px] bg-gray-200 rounded-3xl"></div>
-    <div className="lg:w-[65%] w-[55%] md:flex hidden h-[300px] bg-gray-200 rounded-3xl"></div>
-  </div>
-);
-
-const StoriesHeaderSkeleton = () => (
-  <div className="w-full flex flex-col items-center gap-3 mt-10 animate-pulse">
-    <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-  </div>
-);
-
-const StoryCardSkeleton = () => (
-  <div className="border rounded-3xl flex flex-col w-full h-[450px] bg-gray-200 animate-pulse"></div>
-);
-
-const BannerSkeleton = () => (
-  <div className="mt-10 w-full relative h-[575px] bg-gray-200 animate-pulse"></div>
-);
-
-const Page = () => {
-  const swiperRef = useRef<SwiperCore>();
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedStory, setSelectedStory] = useState<StoryItem | null>(null);
-
-  const t = useTranslations("Students");
-  const params = useParams();
-  const locale = params?.locale as string;
-
-  // Fetch all alumni page data
-  const {
-    data: alumniData,
-    loading: isLoading,
-    error: hasError,
-  } = useFetch<AlumniResponse>(`${API_URL}/website/alumni-students/main`);
-
-  if (hasError) {
-    return (
-      <div className="w-full flex_center my-20">
-        <p className="text-red-500">{t("error_loading_data")}</p>
-      </div>
-    );
-  }
-
-  if (!isLoading && !alumniData) {
-    return (
-      <div className="w-full flex_center my-20">
-        <p>{t("no_data_found")}</p>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <div className="w-full flex flex-col items-center sm:my-10 my-5">
-        <div className="max-w-[1024px] md:px-3 px-5 text-secondary w-full flex_start">
-          <SubHeader title={t("alumni")} alt={false} />
-        </div>
-
-        {/* Feedback Section */}
-        {isLoading ? (
-          <FeedbackSkeleton />
-        ) : (
-          <div className="md:w-full change_direction w-[95%] flex justify-between md:bg-transparent bg-backgroundSecondary flex-col md:flex-row items-center gap-5 mt-10 relative md:p-0 p-5 md:rounded-none rounded-3xl">
-            <div className="md:hidden text-secondary text-center flex justify-center items-center flex-col gap-5 px-5">
-              <h5 className="text-sm font-semibold">{t("feedback")}</h5>
-              <h1 className="text-titleNormal font-semibold">
-                {alumniData?.feedback_title}
-              </h1>
-              <span className="text-base">
-                {alumniData?.feedback_description}
-              </span>
-            </div>
-            {/* Swiper Slider */}
-            <div className="lg:w-[45%] md:w-[50%] w-full flex-shrink-0 z-10 md:-mr-16 mr-0">
-              <Swiper
-                spaceBetween={20}
-                breakpoints={{
-                  340: { slidesPerView: 1.1 },
-                  768: { slidesPerView: 1.5 },
-                }}
-                className="swiper_dir"
-                onBeforeInit={(swiper) => {
-                  swiperRef.current = swiper;
-                }}
-                onSlideChange={(swiper) => {
-                  setActiveIndex(swiper.realIndex);
-                }}
-              >
-                {alumniData?.feedbacks.map((slide, index) => (
-                  <SwiperSlide key={slide.id}>
-                    <div
-                      className={`rounded-3xl flex md:justify-end justify-start lg:gap-10 gap-5 md:items-end items-start lg:p-10 p-5 flex-col transition-all duration-300 ${
-                        index === activeIndex
-                          ? "bg-primary text-white"
-                          : "bg-blue bg-opacity-30 text-secondary"
-                      }`}
-                    >
-                      <div className="relative w-[50px] h-[50px]">
-                        <Image
-                          src={"/images/quote.svg"}
-                          alt="Quote Icon"
-                          fill
-                          priority
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex_center md:flex-row flex-row-reverse gap-5">
-                        <div className="flex md:justify-end justify-start md:items-end items-start flex-col gap-1">
-                          <h5 className="font-semibold">{slide.name}</h5>
-                          <small className="text-xs">{slide.position}</small>
-                        </div>
-                        <div className="relative w-[60px] h-[60px]">
-                          <Image
-                            src={slide.image.lg}
-                            alt={slide.name}
-                            fill
-                            priority
-                            className="w-full h-full object-cover rounded-full"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            </div>
-            <div className="md:hidden flex gap-4">
-              <button
-                className="bg-background flex_center rounded-full w-[30px] h-[30px] text-black border border-lightBorder"
-                onClick={() => swiperRef.current?.slidePrev()}
-              >
-                <FaAngleLeft />
-              </button>
-              <button
-                className="bg-background flex_center rounded-full w-[30px] h-[30px] text-black border border-lightBorder"
-                onClick={() => swiperRef.current?.slideNext()}
-              >
-                <FaAngleLeft className="rotate-180" />
-              </button>
-            </div>
-            {/* Desktop Feedback Section */}
-            <div className="lg:w-[65%] w-[55%] md:flex hidden bg-backgroundSecondary text-secondary lg:py-10 p-5 justify-center items-center rounded-3xl sm:-ml-10">
-              <div className="flex_start flex-col gap-7 lg:px-6 px-10">
-                <h5 className="text-sm font-semibold">{t("feedback")}</h5>
-                <h1 className="max-w-[350px] lg:text-title text-titleNormal font-semibold">
-                  {alumniData?.feedback_title}
-                </h1>
-                <span className="max-w-[460px] lg:text-lg text-base">
-                  {alumniData?.feedback_description}
-                </span>
-                <div className="flex_center gap-4">
-                  <button
-                    className="bg-background flex_center rounded-full w-[30px] h-[30px] text-black border border-lightBorder"
-                    onClick={() => swiperRef.current?.slideNext()}
-                  >
-                    <FaAngleLeft />
-                  </button>
-                  <button
-                    className="bg-background flex_center rounded-full w-[30px] h-[30px] text-black border border-lightBorder"
-                    onClick={() => swiperRef.current?.slidePrev()}
-                  >
-                    <FaAngleLeft className="rotate-180" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Success Stories Section */}
-        <div className="max-w-[1024px] text-secondary px-3 w-full flex_center flex-col gap-5 mt-10">
-          {isLoading ? (
-            <StoriesHeaderSkeleton />
-          ) : (
-            <>
-              <h1 className="text-[30px] font-semibold">
-                {alumniData?.stories_title}
-              </h1>
-              <p className="text-sm max-w-[660px] text-center">
-                {alumniData?.stories_description}
-              </p>
-            </>
-          )}
-          <div className="w-full grid md:grid-cols-2 grid-cols-1 gap-10 mt-5">
-            {isLoading ? (
-              <>
-                {" "}
-                <StoryCardSkeleton /> <StoryCardSkeleton />{" "}
-              </>
-            ) : (
-              alumniData?.stories.map((story, index) => (
-                <div
-                  key={story.id}
-                  className="border rounded-3xl flex_start flex-col w-full"
-                >
-                  <h3 className="text-title font-semibold w-full py-5 px-3 text-end">
-                    0{index + 1}
-                  </h3>
-                  <div className="w-full h-[207px] relative">
-                    <Image
-                      src={story.image.lg}
-                      alt={story.full_name}
-                      fill
-                      priority
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <h3 className="text-smallTitle font-semibold px-3 mt-5 mb-3">
-                    {story.full_name}
-                  </h3>
-                  <span className="opacity-70 text-sm px-3 mb-5 line-clamp-3">
-                    {story.description}
-                  </span>
-                  <button
-                    onClick={() => setSelectedStory(story)}
-                    className="px-3 py-4 text-golden border-t border-t-lightBorder w-full flex justify-between text-sm items-center font-semibold"
-                  >
-                    <span>{t("read_more")}</span>
-                    <GoArrowRight className="text-xl rtl:rotate-180" />
-                  </button>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* "Become Alumni" Banner */}
-        {isLoading ? (
-          <BannerSkeleton />
-        ) : (
-          <div className="mt-10 w-full relative h-[575px] flex_center">
-            <Image
-              src={alumniData?.bg_image.lg || "/images/alumni-bg.png"}
-              alt={alumniData?.bg_title || "Alumni"}
-              fill
-              priority
-              className="w-full h-full object-cover"
-            />
-            <div className="opacity-40 bg-primary absolute left-0 top-0 w-full h-full z-10"></div>
-            <div className="w-[1024px] text-white text-opacity-90 px-3 flex_start flex-col gap-5 z-20">
-              <h1 className="md:text-4xl text-2xl font-semibold z-20">
-                {alumniData?.bg_title}
-              </h1>
-              <p className="md:text-base text-sm">
-                {alumniData?.bg_description}
-              </p>
-              {alumniData?.bg_lists.map((item, index) => (
-                <div
-                  key={item.id}
-                  className="flex_start gap-5 w-full max-w-[600px] md:mt-10 mt-5"
-                >
-                  <div className="w-10 h-10 rounded-full flex_center bg-white flex-shrink-0">
-                    <span className="w-[95%] h-[90%] flex_center border-primary border flex_center rounded-full text-black">
-                      {index + 1}
-                    </span>
-                  </div>
-                  <div className="flex_start flex-col gap-2">
-                    <h2 className="md:text-smallTitle text-lg font-semibold">
-                      {item.title}
-                    </h2>
-                    <span className="opacity-90 md:text-base text-sm">
-                      {item.description}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Render the modal if a story is selected */}
-      {selectedStory && (
-        <StoryModal
-          story={selectedStory}
-          onClose={() => setSelectedStory(null)}
-        />
-      )}
-    </>
-  );
-};
-export default Page;
+// --- The default export that renders the client component ---
+export default function AlumniPage() {
+  return <AlumniClient />;
+}

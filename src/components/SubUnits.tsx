@@ -62,7 +62,13 @@ const SubUnits = () => {
     if (pageNum > 1) setIsLoadingMore(true);
     try {
       const res = await fetch(
-        `${API_URL}/website/directorates?parent_id=${pId}&page=${pageNum}&limit=5`
+        `${API_URL}/website/directorates?parent_id=${pId}&page=${pageNum}&limit=5`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "website-language": locale, // Adds the language header
+          },
+        }
       );
       const newData: UnitsResponse = await res.json();
       if (newData.data) {
@@ -127,7 +133,7 @@ const SubUnits = () => {
                   : "border-t border-t-lightBorder pt-3"
               }`}
             >
-              <span className="max-w-full truncate text-sm">
+              <span className="max-w-full text-wrap text-sm">
                 {unit.directorate_type.name}
               </span>
               <MdKeyboardDoubleArrowRight className="rtl:rotate-180 flex-shrink-0" />

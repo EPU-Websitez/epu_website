@@ -25,7 +25,6 @@ interface InternationalRelationsResponse {
 }
 
 // --- Fetcher function for useSWR ---
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 // --- Skeleton Component for Loading State ---
 const Skeleton = () => (
@@ -40,7 +39,13 @@ const InternationalStrategyHeader = () => {
   // --- 1. Initialize router and searchParams hooks ---
   const router = useRouter();
   const searchParams = useSearchParams();
-
+  const fetcher = (url: string) =>
+    fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        "website-language": locale, // Adds the language header
+      },
+    }).then((res) => res.json());
   // --- Data Fetching with useSWR ---
   const { data, error, isLoading } = useSWR<InternationalRelationsResponse>(
     `${API_URL}/website/international-strategies?page=1&limit=1`,
@@ -52,6 +57,13 @@ const InternationalStrategyHeader = () => {
   );
 
   const headerData = data?.data?.[0];
+  console.log(headerData);
+  useEffect(() => {
+    if (data) {
+      // This changes the title in the browser tab
+      document.title = `${headerData?.bg_title} | EPU`;
+    }
+  }, [data]); // This effect runs when the data is fetched
 
   // --- 2. Use an effect to update the URL when data is available ---
   useEffect(() => {
@@ -94,9 +106,11 @@ const InternationalStrategyHeader = () => {
         className="w-full h-full object-cover"
       />
       <div className="ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary to-transparent absolute top-0 left-0 w-full h-full z-10"></div>
-      <h3 className="absolute leading-relaxed z-20 text-white top-10 sm:ltr:left-10 ltr:left-3 sm:rtl:right-10 rtl:right-3 lg:text-[28px] text-sm max-w-[710px]">
-        {bgDescription}
-      </h3>
+      {bgDescription && (
+        <h3 className="absolute leading-relaxed z-20 text-white top-10 sm:ltr:left-10 ltr:left-3 sm:rtl:right-10 rtl:right-3 lg:text-[28px] text-sm max-w-[710px]">
+          {bgDescription.substring(0, 300)}...
+        </h3>
+      )}
     </div>
   );
 };

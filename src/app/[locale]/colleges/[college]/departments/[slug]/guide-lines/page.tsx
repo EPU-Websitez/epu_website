@@ -9,6 +9,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 import { FaChevronRight } from "react-icons/fa6";
 import { GoArrowRight, GoBriefcase } from "react-icons/go";
 import { GrLinkNext } from "react-icons/gr";
@@ -21,7 +22,7 @@ import { PiStudent } from "react-icons/pi";
 import { API_URL } from "@/libs/env";
 import useFetch from "@/libs/hooks/useFetch";
 
-// Updated CollegeDetails interface to match the new response
+// --- Interfaces (No Changes) ---
 interface CollegeDetails {
   id: number;
   subdomain: string;
@@ -47,8 +48,6 @@ interface CollegeDetails {
   created_at: string;
   updated_at: string;
 }
-
-// Updated Department interface
 interface Department {
   id: number;
   college_id: number;
@@ -62,16 +61,14 @@ interface Department {
   created_at: string;
   updated_at: string;
   student_number: string;
-  college: CollegeDetails; // Using the updated, more detailed interface
+  college: CollegeDetails;
 }
-
 interface File {
   id: number;
   path: string;
   created_at: string;
   updated_at: string;
 }
-
 interface GuideFile {
   id: number;
   section_id: number;
@@ -81,7 +78,6 @@ interface GuideFile {
   updated_at: string;
   file: File;
 }
-
 interface GuideSection {
   id: number;
   guide_id: number;
@@ -91,7 +87,6 @@ interface GuideSection {
   updated_at: string;
   files: GuideFile[];
 }
-
 interface GraduationGuide {
   id: number;
   department_id: number;
@@ -101,7 +96,6 @@ interface GraduationGuide {
   department: Department;
   sections: GuideSection[];
 }
-
 interface GraduationGuideResponse {
   total: number;
   page: number;
@@ -109,7 +103,7 @@ interface GraduationGuideResponse {
   data: GraduationGuide[];
 }
 
-// Skeleton Components
+// --- Skeleton Components (No Changes) ---
 const GuidesSkeleton = () => (
   <div className="w-full grid grid-cols-1 lg:max-w-[708px] max-w-full gap-5">
     {[1, 2, 3].map((i) => (
@@ -126,6 +120,30 @@ const GuidesSkeleton = () => (
   </div>
 );
 
+// --- Spinner Component ---
+const SpinnerIcon = () => (
+  <svg
+    className="animate-spin h-5 w-5 text-white"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <circle
+      className="opacity-25"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      strokeWidth="4"
+    ></circle>
+    <path
+      className="opacity-75"
+      fill="currentColor"
+      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+    ></path>
+  </svg>
+);
+
 const Page = () => {
   const t = useTranslations("Colleges");
   const params = useParams();
@@ -133,37 +151,30 @@ const Page = () => {
   const slug = params?.slug as string;
   const college = params?.college as string;
 
-  // Fetch graduation guides data with the UPDATED endpoint
+  const [downloadingFiles, setDownloadingFiles] = useState<Set<string>>(
+    new Set()
+  );
+
   const {
     data: guidesData,
     loading: guidesLoading,
     error: guidesError,
   } = useFetch<GraduationGuideResponse>(
-    `${API_URL}/website/departments/${slug}/graduation-guides?page=1&limit=10`
+    `${API_URL}/website/departments/${slug}/graduation-guides?page=1&limit=10`,
+    locale
   );
 
-  // Helper functions
-  const getFileName = (filePath: string) => {
-    const parts = filePath.split("/");
-    const fileName = parts[parts.length - 1];
-    return fileName || "guide.pdf";
-  };
-
-  // FIXED: robust cross-origin download via blob
   const handleFileDownload = async (
     filePath: string,
     suggestedName?: string
   ) => {
+    setDownloadingFiles((prev) => new Set(prev).add(filePath));
     try {
       const fileUrl = new URL(filePath, API_URL).href;
-
       const res = await fetch(fileUrl, { mode: "cors" });
       if (!res.ok) throw new Error(`Failed to fetch file: ${res.status}`);
-
       const blob = await res.blob();
       const objectUrl = URL.createObjectURL(blob);
-
-      // build a safe filename, preserving/adding extension
       const pathName = filePath.split("?")[0];
       const extFromPath = pathName.includes(".")
         ? `.${pathName.split(".").pop()!}`
@@ -176,22 +187,25 @@ const Page = () => {
         (cleanSuggested && `${cleanSuggested}${extFromPath}`) ||
         pathName.split("/").pop() ||
         "download";
-
       const link = document.createElement("a");
       link.href = objectUrl;
       link.download = fileName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
       URL.revokeObjectURL(objectUrl);
     } catch (err) {
       console.error(err);
       alert("Sorry, the file couldn't be downloaded.");
+    } finally {
+      setDownloadingFiles((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(filePath);
+        return newSet;
+      });
     }
   };
 
-  // FIXED: safer absolute URL for preview
   const handleFilePreview = (filePath: string) => {
     const fileUrl = new URL(filePath, API_URL).href;
     window.open(fileUrl, "_blank", "noopener,noreferrer");
@@ -237,14 +251,6 @@ const Page = () => {
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </Link>
               <Link
-                href={`/${locale}/colleges/${college}/departments/${slug}/researches`}
-                title={t("researches")}
-                className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-              >
-                <span>{t("researches")}</span>
-                <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-              </Link>
-              <Link
                 href={`/${locale}/colleges/${college}/departments/${slug}/course-subjects`}
                 title={t("course_subjects")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
@@ -267,7 +273,6 @@ const Page = () => {
                 <span className="z-10 relative">{t("guide_lines")}</span>
               </h2>
 
-              {/* Error Handling */}
               {guidesError && (
                 <div className="w-full text-center py-8">
                   <p className="text-red-500">
@@ -276,10 +281,8 @@ const Page = () => {
                 </div>
               )}
 
-              {/* Loading State */}
               {guidesLoading && <GuidesSkeleton />}
 
-              {/* Dynamic Guides Content */}
               {!guidesLoading && !guidesError && (
                 <div className="w-full grid grid-cols-1 lg:max-w-[708px] max-w-full gap-5">
                   {guidesData?.data && guidesData.data.length > 0 ? (
@@ -288,12 +291,9 @@ const Page = () => {
                         key={guide.id}
                         className="w-full flex_start flex-col gap-5"
                       >
-                        {/* Guide Title */}
                         <h3 className="text-lg font-semibold text-golden">
                           {guide.title}
                         </h3>
-
-                        {/* Guide Sections */}
                         {guide.sections.map((section) => (
                           <div
                             key={section.id}
@@ -302,50 +302,62 @@ const Page = () => {
                             <span className="text-sm text-black opacity-60">
                               {section.description}
                             </span>
-
-                            {/* Files for this section */}
-                            {section.files.map((fileItem) => (
-                              <div
-                                key={fileItem.id}
-                                className="w-full sm:p-5 p-2 rounded-3xl flex justify-between items-center border border-lightBorder hover:border-golden transition-colors"
-                              >
-                                <button
-                                  onClick={() =>
-                                    handleFilePreview(fileItem.file.path)
-                                  }
-                                  className="flex justify-start items-center sm:gap-4 gap-2 px-2 py-1.5 text-sm hover:bg-gray-50 rounded-lg transition-colors flex-1"
+                            {section.files.map((fileItem) => {
+                              const isDownloading = downloadingFiles.has(
+                                fileItem.file.path
+                              );
+                              return (
+                                <div
+                                  key={fileItem.id}
+                                  className="w-full sm:p-5 p-2 rounded-3xl flex justify-between items-center border border-lightBorder hover:border-golden transition-colors"
                                 >
-                                  <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
-                                    <HiOutlineLink />
-                                  </span>
-                                  <span className="text-secondary text-opacity-70 lg:max-w-[200px] sm:max-w-full max-w-[130px] truncate sm:text-base text-sm">
-                                    {fileItem.title}
-                                  </span>
-                                  <span className="w-5 flex_center h-5 rounded-full border border-golden text-golden text-sm">
-                                    <GrLinkNext className="-rotate-45" />
-                                  </span>
-                                </button>
+                                  <button
+                                    onClick={() =>
+                                      handleFilePreview(fileItem.file.path)
+                                    }
+                                    className="flex justify-start items-center sm:gap-4 gap-2 px-2 py-1.5 text-sm hover:bg-gray-50 rounded-lg transition-colors flex-1"
+                                  >
+                                    <span className="bg-[#81B1CE] text-white flex_center w-6 h-6 rounded-full">
+                                      <HiOutlineLink />
+                                    </span>
+                                    <span className="text-secondary text-opacity-70 lg:max-w-[200px] sm:max-w-full max-w-[130px] truncate sm:text-base text-sm">
+                                      {fileItem.title}
+                                    </span>
+                                    <span className="w-5 flex_center h-5 rounded-full border border-golden text-golden text-sm">
+                                      <GrLinkNext className="-rotate-45" />
+                                    </span>
+                                  </button>
 
-                                <button
-                                  onClick={() =>
-                                    handleFileDownload(
-                                      fileItem.file.path,
-                                      fileItem.title
-                                    )
-                                  }
-                                  className="py-2 sm:text-sm text-xs sm:px-5 px-1 rounded-md flex_center gap-3 bg-gradient-to-r from-primary to-blue text-white hover:from-primary/90 hover:to-blue/90 transition-all"
-                                >
-                                  <p>{t("download")}</p>
-                                  <HiOutlineDownload />
-                                </button>
-                              </div>
-                            ))}
+                                  <button
+                                    onClick={() =>
+                                      !isDownloading &&
+                                      handleFileDownload(
+                                        fileItem.file.path,
+                                        fileItem.title
+                                      )
+                                    }
+                                    disabled={isDownloading}
+                                    className="py-2 sm:text-sm text-xs sm:px-5 px-1 rounded-md flex_center gap-3 bg-gradient-to-r from-primary to-blue text-white hover:from-primary/90 hover:to-blue/90 transition-all disabled:opacity-70 disabled:cursor-wait"
+                                  >
+                                    <p>
+                                      {isDownloading
+                                        ? t("downloading")
+                                        : t("download")}
+                                    </p>
+                                    {isDownloading ? (
+                                      <SpinnerIcon />
+                                    ) : (
+                                      <HiOutlineDownload />
+                                    )}
+                                  </button>
+                                </div>
+                              );
+                            })}
                           </div>
                         ))}
                       </div>
                     ))
                   ) : (
-                    // Fallback content when no guides available
                     <div className="w-full border border-lightBorder rounded-3xl sm:p-5 p-2 flex_start flex-col gap-5">
                       <span className="text-sm text-black opacity-60">
                         Students of final stage must ensure that their project

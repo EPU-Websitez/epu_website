@@ -220,7 +220,8 @@ const Page = () => {
   // Curriculums
   const { data: curriculumsData, loading: curriculumsLoading } =
     useFetch<CurriculumResponse>(
-      `${API_URL}/website/departments/${slug}/curriculums?page=1&limit=20`
+      `${API_URL}/website/departments/${slug}/curriculums?page=1&limit=20`,
+      locale
     );
 
   // Subjects fetch
@@ -228,7 +229,7 @@ const Page = () => {
     data: subjectsData,
     loading: subjectsLoading,
     refetch,
-  } = useFetch<SubjectsResponse>(subjectsUrl);
+  } = useFetch<SubjectsResponse>(subjectsUrl, locale);
 
   // Drive refetches by URL changes
   useEffect(() => {
@@ -349,14 +350,14 @@ const Page = () => {
                 <span>{t("news_button")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
               </Link>
-              <Link
+              {/* <Link
                 href={`/${locale}/colleges/${college}/departments/${slug}/researches`}
                 title={t("researches")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("researches")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-              </Link>
+              </Link> */}
               <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-primary border-primary">
                 <span>{t("course_subjects")}</span>
                 <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -412,7 +413,22 @@ const Page = () => {
               </div>
 
               {/* Filters */}
-              <div className="w-full grid grid-cols-2 sm:grid-cols-5 gap-5">
+              <div className="w-full flex_start gap-5">
+                <input
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                  placeholder="Search subjects..."
+                  className="text-start w-full sm:px-2 px-1 sm:py-2 py-1 border border-lightBorder sm:rounded-xl rounded-md text-black text-opacity-70 focus:border-primary outline-none col-span-2 sm:col-span-1"
+                />
+                <button
+                  onClick={handleSearch}
+                  className="sm:px-6 flex px-2 flex-shrink-0 sm:py-2 py-1 sm:rounded-xl rounded-md bg-primary text-white hover:bg-primary/90 transition-colors"
+                >
+                  {t("search")}
+                </button>
+              </div>
+              <div className="w-full grid grid-cols-2 sm:grid-cols-3 gap-5">
                 <div className="relative w-full text-sm flex-shrink-0">
                   <select
                     value={selectedStage}
@@ -463,28 +479,6 @@ const Page = () => {
                     <FaChevronDown />
                   </span>
                 </div>
-
-                <button
-                  onClick={handleSearch}
-                  className="sm:px-6 sm:hidden flex px-2 flex-shrink-0 sm:py-2 py-1 sm:rounded-xl rounded-md bg-primary text-white hover:bg-primary/90 transition-colors"
-                >
-                  {t("search")}
-                </button>
-
-                <input
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  placeholder="Search subjects..."
-                  className="text-start w-full sm:px-2 px-1 sm:py-2 py-1 border border-lightBorder sm:rounded-xl rounded-md text-black text-opacity-70 focus:border-primary outline-none col-span-2 sm:col-span-1"
-                />
-
-                <button
-                  onClick={handleSearch}
-                  className="sm:px-6 sm:flex hidden px-2 flex-shrink-0 sm:py-2 py-1 sm:rounded-xl rounded-md bg-primary text-white hover:bg-primary/90 transition-colors"
-                >
-                  {t("search")}
-                </button>
               </div>
 
               {/* List */}
@@ -500,11 +494,13 @@ const Page = () => {
                           className="flex_start flex-col gap-3 p-3 rounded-3xl bg-background text-secondary w-full"
                         >
                           <div className="flex_start gap-3 border-b border-b-lightBorder pb-4 w-full">
-                            <div className="w-10 h-10 rounded-lg bg-golden flex_center text-white text-lg">
+                            <div className="w-10 h-10 flex-shrink-0 rounded-lg bg-golden flex_center text-white text-lg">
                               <BsBook className="text-2xl" />
                             </div>
                             <div className="flex_start flex-col">
-                              <h4 className="font-medium">{subject.name}</h4>
+                              <h4 className="font-medium sm:text-base text-sm">
+                                {subject.name}
+                              </h4>
                               <span className="text-black opacity-60 text-sm">
                                 {getInstructorName(subject)}
                               </span>

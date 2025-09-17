@@ -12,7 +12,7 @@ import { API_URL } from "@/libs/env";
 import useFetch from "@/libs/hooks/useFetch";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
-// --- Interfaces and Skeletons (no changes here) ---
+// --- Interfaces ---
 interface ProfileImage {
   id: number;
   original: string;
@@ -20,30 +20,40 @@ interface ProfileImage {
   md: string;
   sm: string;
 }
+
 interface Teacher {
   id: number;
   full_name: string;
   title: string;
   profile_image: ProfileImage;
 }
-interface Department {
-  id: number;
-  slug: string;
-  title: string;
-}
+
+// Lead interfaces (for department head)
 interface Lead {
   id: number;
   role: string;
-  department: Department;
   teacher: Teacher;
 }
+
 interface LeadsResponse {
-  total: number;
-  page: number;
-  limit: number;
   data: Lead[];
 }
 
+// Staff interfaces (for other members)
+interface StaffMember {
+  id: number;
+  role_in_department: string;
+  teacher: Teacher;
+}
+
+interface StaffResponse {
+  total: number;
+  page: number;
+  limit: number;
+  data: StaffMember[];
+}
+
+// --- Skeletons ---
 const MemberCardSkeleton = () => (
   <div className="animate-pulse">
     <div className="w-full h-48 bg-gray-300 rounded-lg mb-4"></div>
@@ -83,48 +93,68 @@ const DepartmentCouncilPage = ({
   locale: string;
 }) => {
   const t = useTranslations("Colleges");
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [page, setPage] = useState(1);
-  const limit = 12;
 
-  // Now, `slug` is guaranteed to be a string, so we can safely build the URL.
-  const {
-    data: leadsData,
-    loading: leadsLoading,
-    error: leadsError,
-  } = useFetch<LeadsResponse>(
-    `${API_URL}/website/departments/${slug}/leads?page=${page}&limit=${limit}`
+  // State for Department Head (from leads endpoint)
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const { data: leadsData, loading: leadsLoading } = useFetch<LeadsResponse>(
+    `${API_URL}/website/departments/${slug}/leads?page=1&limit=10`,
+    locale
   );
 
+  // State for Staff members
+  const [staff, setStaff] = useState<StaffMember[]>([]);
+  const [staffPage, setStaffPage] = useState(1);
+  const {
+    data: staffData,
+    loading: staffLoading,
+    error: staffError,
+  } = useFetch<StaffResponse>(
+    `${API_URL}/website/departments/${slug}/staff?page=${staffPage}&limit=12`,
+    locale
+  );
+
+  // Effect to process leads data
   useEffect(() => {
     if (leadsData?.data) {
-      // Logic to append data for "Load More"
-      if (leadsData.page === 1) {
-        setLeads(leadsData.data);
-      } else {
-        setLeads((prev) => [...prev, ...leadsData.data]);
-      }
+      setLeads(leadsData.data);
     }
   }, [leadsData]);
 
-  const handleLoadMore = () => {
-    setPage((prev) => prev + 1);
+  // Effect to process and append staff data
+  useEffect(() => {
+    if (staffData?.data) {
+      if (staffData.page === 1) {
+        setStaff(staffData.data);
+      } else {
+        setStaff((prev) => [...prev, ...staffData.data]);
+      }
+    }
+  }, [staffData]);
+
+  const handleLoadMoreStaff = () => {
+    setStaffPage((prev) => prev + 1);
   };
 
+  // Find the department head from the leads data
   const departmentHead = leads.find((lead) =>
-    ["head", "رئيس", "dean", "عميد"].some((role) =>
+    ["head", "رئيس", "dean", "عميد", "ڕاگر", "سەرۆک"].some((role) =>
       lead.role.toLowerCase().includes(role)
     )
   );
-  const otherLeads = leads.filter((lead) => lead.id !== departmentHead?.id);
 
-  if (leadsError && leads.length === 0) {
+  // Helper function to safely get the best available image with fallbacks
+  const getProfileImage = (teacher: Teacher | undefined) => {
+    if (!teacher?.profile_image) return "/images/president-alt.png";
     return (
-      <div className="text-center py-20 text-red-500">
-        Failed to load staff data.
-      </div>
+      teacher.profile_image.lg ||
+      teacher.profile_image.md ||
+      teacher.profile_image.original ||
+      "/images/president-alt.png"
     );
-  }
+  };
+
+  const isInitialLoading =
+    leadsLoading && staff.length === 0 && staffPage === 1;
 
   // --- JSX for the main content ---
   return (
@@ -159,13 +189,6 @@ const DepartmentCouncilPage = ({
               <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
             </Link>
             <Link
-              href={`/${locale}/colleges/${college}/departments/${slug}/researches`}
-              className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-            >
-              <span>{t("researches")}</span>
-              <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-            </Link>
-            <Link
               href={`/${locale}/colleges/${college}/departments/${slug}/course-subjects`}
               className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
             >
@@ -184,63 +207,87 @@ const DepartmentCouncilPage = ({
           {/* Content Area */}
           <div className="lg:border-l text-secondary border-l-none lg:border-b-0 border-b lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
             <SubHeader title={t("department_staff")} alt={false} />
-            {departmentHead && (
-              <div className="flex_start gap-10 sm:w-auto w-full border sm:border-none sm:p-0 p-5 sm:rounded-none rounded-3xl border-lightBorder">
-                <div className="sm:w-[200px] w-[125px] sm:h-[190px] h-[125px] relative">
-                  <Image
-                    src={
-                      departmentHead.teacher.profile_image?.md ||
-                      "/images/president-alt.png"
-                    }
-                    alt={departmentHead.teacher.full_name}
-                    fill
-                    priority
-                    className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
-                  />
-                </div>
-                <div className="flex_start flex-col gap-5">
-                  <h3 className="text-golden sm:text-lg text-sm font-semibold">
-                    {departmentHead.role}
-                  </h3>
-                  <h1 className="max-w-[250px] lg:text-xl sm:text-lg text-xs font-semibold relative">
-                    <span className="relative z-10">
-                      {departmentHead.teacher.full_name}
-                    </span>
-                    <span className="absolute ltr:left-0 rtl:right-0 -bottom-3 w-[80%] h-6">
-                      <Image
-                        src="/images/title-shape.svg"
-                        alt="shape"
-                        fill
-                        priority
-                      />
-                    </span>
-                  </h1>
-                </div>
-              </div>
+            {isInitialLoading ? (
+              <DepartmentHeadSkeleton />
+            ) : (
+              departmentHead && (
+                <Link
+                  title={departmentHead.teacher?.full_name}
+                  href={`/${locale}/academic-staff/${departmentHead.teacher?.id}`}
+                  className="flex_start gap-10 sm:w-auto w-full border sm:border-none sm:p-0 p-5 sm:rounded-none rounded-3xl border-lightBorder"
+                >
+                  <div className="sm:w-[200px] w-[125px] sm:h-[190px] h-[125px] relative">
+                    <Image
+                      src={getProfileImage(departmentHead.teacher)}
+                      alt={
+                        departmentHead.teacher?.full_name || "Department Head"
+                      }
+                      fill
+                      priority
+                      className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
+                    />
+                  </div>
+                  <div className="flex_start flex-col gap-5">
+                    <h3 className="text-golden sm:text-lg text-sm font-semibold">
+                      {departmentHead.role}
+                    </h3>
+                    <h1 className="max-w-[250px] lg:text-xl sm:text-lg text-xs font-semibold relative">
+                      <span className="relative z-10">
+                        {departmentHead.teacher?.full_name}
+                      </span>
+                      <span className="absolute ltr:left-0 rtl:right-0 -bottom-3 w-[80%] h-6">
+                        <Image
+                          src="/images/title-shape.svg"
+                          alt="shape"
+                          fill
+                          priority
+                        />
+                      </span>
+                    </h1>
+                  </div>
+                </Link>
+              )
             )}
             <div className="grid w-full lg:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-8">
-              {otherLeads.map((lead) => (
-                <MemberCard
-                  key={lead.id}
-                  description={lead.role}
-                  image={
-                    lead.teacher.profile_image?.md ||
-                    "/images/president-alt.png"
-                  }
-                  link={`/${locale}/academic-staff/${lead.teacher.id}`}
-                  staticText={t("view_profile")}
-                  title={lead.teacher.full_name}
-                />
-              ))}
+              {isInitialLoading
+                ? Array.from({ length: 4 }).map((_, i) => (
+                    <MemberCardSkeleton key={i} />
+                  ))
+                : staff.map((member) => (
+                    <MemberCard
+                      key={member.id}
+                      description={member.role_in_department}
+                      image={getProfileImage(member.teacher)}
+                      link={`/${locale}/academic-staff/${member.teacher?.id}`}
+                      staticText={t("view_profile")}
+                      title={member.teacher?.full_name}
+                    />
+                  ))}
             </div>
-            {leadsData && leads.length < leadsData.total && (
+
+            {/* No Data Found Message */}
+            {!staffLoading && staff.length === 0 && !staffError && (
+              <div className="w-full text-center py-10 text-gray-500">
+                {t("no_data_found")}
+              </div>
+            )}
+
+            {/* Error Message */}
+            {staffError && staff.length === 0 && (
+              <div className="w-full text-center py-10 text-red-500">
+                Failed to load staff members.
+              </div>
+            )}
+
+            {/* Load More Button */}
+            {staffData && staff.length < staffData.total && (
               <div className="flex_center w-full my-5">
                 <button
-                  onClick={handleLoadMore}
-                  disabled={leadsLoading}
+                  onClick={handleLoadMoreStaff}
+                  disabled={staffLoading}
                   className="sm:text-base text-sm border border-primary px-8 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors disabled:opacity-50"
                 >
-                  {leadsLoading ? t("loading") : t("see_more")}
+                  {staffLoading ? t("loading") : t("see_more")}
                 </button>
               </div>
             )}
@@ -254,7 +301,6 @@ const DepartmentCouncilPage = ({
 // --- Wrapper component that handles loading states and slug validation ---
 const Page = () => {
   const params = useParams();
-  // We get the params here but don't cast them yet.
   const slug = params?.slug;
   const college = params?.college;
   const locale = params?.locale;
@@ -271,6 +317,10 @@ const Page = () => {
               <div className="lg:border-l text-secondary border-l-none lg:border-b-0 border-b lg:pl-10 pb-10 w-full">
                 <div className="animate-pulse h-8 bg-gray-300 rounded w-48 mb-7"></div>
                 <DepartmentHeadSkeleton />
+                <div className="grid w-full lg:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-8 mt-7">
+                  <MemberCardSkeleton />
+                  <MemberCardSkeleton />
+                </div>
               </div>
             </div>
           </div>

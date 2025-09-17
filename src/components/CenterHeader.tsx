@@ -1,9 +1,9 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Swiper as SwiperCore } from "swiper/types";
-import { Pagination } from "swiper/modules";
+import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css/pagination";
 import { useParams } from "next/navigation";
 import Image from "next/image";
@@ -34,7 +34,7 @@ interface CenterResponse {
   }[];
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+// const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const CenterSkeleton = () => (
   <div className="w-full flex justify-center items-start sm:mt-10 mt-6 min-h-screen animate-pulse">
@@ -50,9 +50,16 @@ const CenterSkeleton = () => (
 const CenterHeader = () => {
   const params = useParams();
   const slug = params?.slug as string;
+  const locale = params?.locale as string;
 
   const swiperRef = useRef<SwiperCore>();
-
+  const fetcher = (url: string) =>
+    fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        "website-language": locale,
+      },
+    }).then((res) => res.json());
   const { data, error, isLoading } = useSWR<CenterResponse>(
     slug ? `${API_URL}/website/centers/${slug}` : null,
     fetcher,
@@ -61,6 +68,12 @@ const CenterHeader = () => {
       revalidateOnFocus: false,
     }
   );
+  useEffect(() => {
+    if (data) {
+      // This changes the title in the browser tab
+      document.title = `${data.title} | EPU Center`;
+    }
+  }, [data]); // This effect runs when the data is fetched
 
   if (isLoading || !data) return <CenterSkeleton />;
   if (error)
@@ -71,25 +84,30 @@ const CenterHeader = () => {
       <div className="w-full flex_start">
         <SubHeader title={data?.title || slug} alt={false} />
       </div>
-      <div className="w-full relative">
+      <div className="w-full relative sm:mt-14 mt-6">
+        {data.description && (
+          <div className="absolute lg:-top-14 top-10 ltr:left-10 right-10 sm:flex hidden flex-col max-w-[520px] z-10 p-4">
+            <h2 className="bg-primary text-white text-xl font-semibold z-10 p-5">
+              {data.description.substring(0, 150)}
+            </h2>
+            <div className="triangle -mt-14 rotate-90"></div>
+          </div>
+        )}
         <Swiper
-          modules={[Pagination]}
+          modules={[Pagination, Autoplay]}
           slidesPerView={1}
-          pagination={{ clickable: true }}
           loop={true}
+          autoplay={{
+            delay: 2500,
+            disableOnInteraction: false,
+          }}
           onBeforeInit={(swiper) => {
             swiperRef.current = swiper;
           }}
         >
           {data.galleries.map((slide, index) => (
             <SwiperSlide key={index}>
-              <div className="w-full lg:h-[500px] sm:h-[400px] h-[220px] relative sm:mt-14 mt-6">
-                <div className="absolute lg:-top-14 top-10 ltr:left-10 right-10 sm:flex hidden flex-col max-w-[520px] z-10 p-4">
-                  <h2 className="bg-primary text-white text-xl font-semibold z-10 p-5">
-                    {data.description}
-                  </h2>
-                  <div className="triangle -mt-14 rotate-90"></div>
-                </div>
+              <div className="w-full lg:h-[500px] sm:h-[400px] h-[220px] relative">
                 <Image
                   src={slide.image.lg}
                   alt={data.title}

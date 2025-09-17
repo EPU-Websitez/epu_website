@@ -6,14 +6,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BiMinus } from "react-icons/bi";
-import { GoPlus } from "react-icons/go";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { API_URL } from "@/libs/env";
 import useFetch from "@/libs/hooks/useFetch";
 import DirectorateHeader from "@/components/DirectorateHeader";
 import MemberCard from "@/components/memberCard";
-import SubUnits from "@/components/SubUnits"; // Assuming SubUnits is adapted to take a parentId prop
+import SubUnits from "@/components/SubUnits";
 
 // -------- Interfaces --------
 interface ImageFile {
@@ -81,7 +79,7 @@ const Page = () => {
   const t = useTranslations("Directorate");
   const params = useParams();
   const locale = params?.locale as string;
-  const id = params?.id as string; // This is the unit's slug
+  const id = params?.id as string;
 
   const [staffList, setStaffList] = useState<StaffItem[]>([]);
   const [staffPage, setStaffPage] = useState(1);
@@ -89,29 +87,36 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  // 1. Fetch this unit's main data to get its name, about text, and parent ID/slug
+  // Fetch unit's main data
   const { data: unitData } = useFetch<UnitDetail>(
-    id ? `${API_URL}/website/directorates/${id}` : ""
+    id ? `${API_URL}/website/directorates/${id}` : "",
+    locale
   );
 
-  // 2. Fetch the lead member of this unit
-  const { data: leadsData, loading: leadsLoading } = useFetch<LeadsResponse>(
-    id ? `${API_URL}/website/directorates/${id}/leads?page=1&limit=1` : ""
+  // Fetch the lead member of this unit
+  const { data: leadsData } = useFetch<LeadsResponse>(
+    id ? `${API_URL}/website/directorates/${id}/leads?page=1&limit=1` : "",
+    locale
   );
 
-  // 3. Manually handle paginated staff list for this unit
+  // Manually handle paginated staff list
   useEffect(() => {
     if (id) {
-      setIsLoading(true);
-      fetchStaff(1);
+      // Don't reset loading if it's just a page change
+      if (staffPage === 1) {
+        setIsLoading(true);
+      }
+      fetchStaff(staffPage);
     }
-  }, [id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, staffPage]); // Re-fetch if id or page changes
 
   const fetchStaff = async (page: number) => {
     if (page > 1) setIsLoadingMore(true);
     try {
       const res = await fetch(
-        `${API_URL}/website/directorates/${id}/staff?page=${page}&limit=4`
+        `${API_URL}/website/directorates/${id}/staff?page=${page}&limit=4`,
+        { headers: { "website-language": locale || "en" } }
       );
       const newData: StaffResponse = await res.json();
       if (newData.data) {
@@ -129,9 +134,7 @@ const Page = () => {
   };
 
   const handleLoadMore = () => {
-    const nextPage = staffPage + 1;
-    setStaffPage(nextPage);
-    fetchStaff(nextPage);
+    setStaffPage((prevPage) => prevPage + 1);
   };
 
   const leadMember = leadsData?.data?.[0];
@@ -139,7 +142,10 @@ const Page = () => {
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
       <div className="max-w-[1045px] px-3 w-full flex_start flex-col gap-8">
-        <SubHeader title={t("university_directory")} alt={false} />
+        <SubHeader
+          title={unitData?.directorate_type?.name || t("units")}
+          alt={false}
+        />
         <DirectorateHeader />
         <div className="flex_start w-full">
           <div className="w-full border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
@@ -149,7 +155,11 @@ const Page = () => {
               <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
                 <div className="flex_start flex-col gap-4 flex-shrink-0 lg:w-auto w-full">
                   <Link
-                    href={`/${locale}/directorate/${unitData.parent.slug}`}
+                    href={
+                      unitData?.parent?.slug
+                        ? `/${locale}/directorate/${unitData.parent.slug}`
+                        : "#"
+                    }
                     title={t("about")}
                     className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                   >
@@ -157,7 +167,11 @@ const Page = () => {
                     <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                   </Link>
                   <Link
-                    href={`/${locale}/directorate/${unitData.parent.slug}/staff`}
+                    href={
+                      unitData?.parent?.slug
+                        ? `/${locale}/directorate/${unitData.parent.slug}/staff`
+                        : "#"
+                    }
                     title={t("staff")}
                     className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                   >
@@ -179,15 +193,15 @@ const Page = () => {
                   <h2 className="relative sm:text-titleNormal text-lg font-semibold ">
                     <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
                     <span className="z-10 relative">
-                      {unitData.directorate_type.name}
+                      {unitData?.directorate_type?.name || t("units")}
                     </span>
                   </h2>
-                  <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder">
+                  <div className="p-5 w-full flex_start flex-col gap-5 rounded-3xl border border-lightBorder">
                     <h4 className="sm:text-base text-sm font-semibold">
                       {t("about")}
                     </h4>
                     <p className="opacity-70 sm:text-sm text-xs">
-                      {unitData.about}
+                      {unitData?.about || t("no_description_available")}
                     </p>
                   </div>
                   <h2 className="relative text-lg font-semibold ">
@@ -196,11 +210,19 @@ const Page = () => {
                   </h2>
 
                   {leadMember && (
-                    <div className="flex_center sm:gap-10 gap-5 sm:w-auto w-full border p-5 rounded-3xl border-lightBorder">
+                    <Link
+                      href={`/${locale}/academic-staff/${leadMember?.teacher?.id}`}
+                      title={leadMember?.teacher?.full_name}
+                      className="flex justify-start items-start sm:gap-10 gap-5 w-full border p-5 rounded-3xl border-lightBorder"
+                    >
                       <div className="sm:w-[200px] w-[125px] sm:h-[190px] h-[125px] relative flex-shrink-0">
                         <Image
-                          src={leadMember.teacher.profile_image.lg}
-                          alt={leadMember.teacher.full_name}
+                          src={
+                            leadMember?.teacher?.profile_image?.lg ||
+                            leadMember?.teacher?.profile_image?.original ||
+                            "/images/placeholder.svg"
+                          }
+                          alt={leadMember?.teacher?.full_name || "Lead Member"}
                           fill
                           priority
                           className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
@@ -208,11 +230,11 @@ const Page = () => {
                       </div>
                       <div className="flex_start flex-col gap-5">
                         <h3 className="text-golden sm:text-lg text-sm font-semibold">
-                          {leadMember.role}
+                          {leadMember?.role}
                         </h3>
                         <h1 className="max-w-[250px] lg:text-xl sm:text-lg text-xs font-semibold relative">
                           <span className="relative z-10">
-                            {leadMember.teacher.full_name}
+                            {leadMember?.teacher?.full_name}
                           </span>
                           <span className="absolute ltr:left-0 rtl:right-0 -bottom-3 w-[80%] h-6">
                             <Image
@@ -224,18 +246,26 @@ const Page = () => {
                           </span>
                         </h1>
                       </div>
-                    </div>
+                    </Link>
                   )}
 
                   <div className="grid w-full lg:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-8">
                     {staffList.map((member) => (
                       <MemberCard
-                        key={member.teacher.id}
-                        description={member.role}
-                        image={member.teacher.profile_image.lg}
-                        link={`/${locale}/academic-staff/${member.teacher.id}`}
+                        key={member?.teacher?.id}
+                        description={member?.role || ""}
+                        image={
+                          member?.teacher?.profile_image?.lg ||
+                          member?.teacher?.profile_image?.original ||
+                          "/images/placeholder.svg"
+                        }
+                        link={
+                          member?.teacher?.id
+                            ? `/${locale}/academic-staff/${member.teacher.id}`
+                            : "#"
+                        }
                         staticText={t("view_profile")}
-                        title={member.teacher.full_name}
+                        title={member?.teacher?.full_name || "Staff Member"}
                       />
                     ))}
                   </div>
@@ -249,6 +279,11 @@ const Page = () => {
                       >
                         {isLoadingMore ? t("loading") : t("load_more")}
                       </button>
+                    </div>
+                  )}
+                  {staffList.length === 0 && !isLoading && (
+                    <div className="text-center text-gray-500">
+                      {t("no_data_found")}
                     </div>
                   )}
                 </div>

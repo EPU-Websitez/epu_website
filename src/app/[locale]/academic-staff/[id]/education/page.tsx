@@ -14,6 +14,7 @@ import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
 // Utilities
 import { API_URL } from "@/libs/env";
+import useFetch from "@/libs/hooks/useFetch";
 
 // --- TYPE DEFINITIONS ---
 interface Qualification {
@@ -81,63 +82,55 @@ const Page = () => {
   const [qualifications, setQualifications] = useState<Qualification[]>([]);
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const LIMIT = 6;
 
-  // --- DATA FETCHING ---
+  // --- Centralized data fetching with useFetch ---
+  const endpoint = tab === "qualifications" ? "qualifications" : "experiences";
+  const url = `${API_URL}/website/teachers/${id}/${endpoint}?page=${page}&limit=${LIMIT}`;
+
+  const { data, loading } = useFetch<
+    QualificationResponse | ExperienceResponse
+  >(url, locale);
+
+  // useEffect to reset state when the tab changes
   useEffect(() => {
-    // Reset and fetch data when tab changes
     setPage(1);
     setQualifications([]);
     setExperiences([]);
-    fetchData(1);
   }, [tab, id]);
 
-  const fetchData = async (pageNum: number) => {
-    if (pageNum === 1) setIsLoading(true);
-    else setIsLoadingMore(true);
-
-    const endpoint =
-      tab === "qualifications" ? "qualifications" : "experiences";
-    const url = `${API_URL}/website/teachers/${id}/${endpoint}?page=${pageNum}&limit=${LIMIT}`;
-
-    try {
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("Failed to fetch data");
-      const newData = await res.json();
-
+  // useEffect to append new data when it arrives from the hook
+  useEffect(() => {
+    if (data?.data) {
       if (tab === "qualifications") {
-        setQualifications((prev) =>
-          pageNum === 1 ? newData.data : [...prev, ...newData.data]
-        );
+        setQualifications((prev) => [
+          ...prev,
+          ...(data.data as Qualification[]),
+        ]);
       } else {
-        setExperiences((prev) =>
-          pageNum === 1 ? newData.data : [...prev, ...newData.data]
-        );
+        setExperiences((prev) => [...prev, ...(data.data as Experience[])]);
       }
-      setTotal(newData.total);
-    } catch (error) {
-      console.error(`Failed to fetch ${tab}:`, error);
-    } finally {
-      setIsLoading(false);
-      setIsLoadingMore(false);
     }
-  };
+  }, [data]); // Runs whenever new data is fetched
 
+  // Simplified load more handler
   const handleLoadMore = () => {
-    const nextPage = page + 1;
-    setPage(nextPage);
-    fetchData(nextPage);
+    setPage((prevPage) => prevPage + 1);
   };
 
+  // --- FIX: Corrected the typo from toLocaleDateDateString to toLocaleDateString ---
   const formatDate = (dateString: string) =>
     new Date(dateString).toLocaleDateString(locale, {
       day: "numeric",
       month: "long",
       year: "numeric",
     });
+
+  // Loading states are now derived from the hook
+  const isInitialLoading = loading && page === 1;
+  const isLoadingMore = loading && page > 1;
+
+  const currentList = tab === "qualifications" ? qualifications : experiences;
 
   return (
     <div className="flex_center w-full flex-col">
@@ -210,7 +203,7 @@ const Page = () => {
             </div>
 
             <div className="lg:border-l lg:pl-10 w-full">
-              {isLoading ? (
+              {isInitialLoading ? (
                 <SectionSkeleton />
               ) : (
                 <>
@@ -262,7 +255,7 @@ const Page = () => {
                           </div>
                         ))}
                       </div>
-                      {qualifications.length === 0 && (
+                      {qualifications.length === 0 && !loading && (
                         <p className="text-center text-gray-500 py-10">
                           {t("no_data")}
                         </p>
@@ -305,7 +298,7 @@ const Page = () => {
                           </div>
                         ))}
                       </div>
-                      {experiences.length === 0 && (
+                      {experiences.length === 0 && !loading && (
                         <p className="text-center text-gray-500 py-10">
                           {t("no_data")}
                         </p>
@@ -314,9 +307,7 @@ const Page = () => {
                   )}
 
                   {/* "See More" Button */}
-                  {((tab === "qualifications" &&
-                    qualifications.length < total) ||
-                    (tab === "experience" && experiences.length < total)) && (
+                  {data && currentList.length < data.total && (
                     <div className="w-full flex justify-center mt-8">
                       <button
                         onClick={handleLoadMore}

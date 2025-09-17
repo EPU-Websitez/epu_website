@@ -1,6 +1,8 @@
+"use client";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import {
   FaFacebookF,
   FaInstagram,
@@ -10,6 +12,8 @@ import {
 
 export default function Footer() {
   const t = useTranslations("Footer");
+  const params = useParams();
+  const locale = params.locale as string;
 
   return (
     <div className="w-full flex_center flex-col gap-5 py-10 px-5 bg-primary text-white">
@@ -22,39 +26,48 @@ export default function Footer() {
       <div className="flex_start sm:gap-20 gap-14 mt-10 flex-wrap">
         <div className="flex_start flex-col gap-3">
           <h3 className="text-lg font-medium">{t("academics")}</h3>
-          <Link href={"/"} className="opacity-50">
+          <Link
+            href={`/${locale}/colleges?type=INSTITUTE`}
+            className="opacity-50"
+          >
             {t("institutions")}
           </Link>
-          <Link href={"/"} className="opacity-50">
+          <Link href={`/${locale}/colleges`} className="opacity-50">
             {t("colleges")}
           </Link>
-          <Link href={"/"} className="opacity-50">
+          <Link href={`/${locale}/centers`} className="opacity-50">
             {t("centers")}
           </Link>
         </div>
         <div className="flex_start flex-col gap-3">
           <h3 className="text-lg font-medium">{t("about")}</h3>
-          <Link href={"/"} className="opacity-50">
+          <Link href={`/${locale}/about`} className="opacity-50">
             {t("history")}
           </Link>
-          <Link href={"/"} className="opacity-50">
+          <Link href={`/${locale}/president-speech`} className="opacity-50">
             {t("president_speech")}
           </Link>
-          <Link href={"/"} className="opacity-50">
+          <Link href={`/${locale}/academic-staff`} className="opacity-50">
             {t("academic_staff")}
           </Link>
         </div>
         <div className="flex_start flex-col gap-3">
           <h3 className="text-lg font-medium">{t("relations")}</h3>
-          <Link href={"/"} className="opacity-50">
+          <Link
+            href={`/${locale}/international-strategy`}
+            className="opacity-50"
+          >
             {t("strategy")}
           </Link>
-          <Link href={"/"} className="opacity-50">
+          <Link
+            href={`/${locale}/memorandum-of-understanding`}
+            className="opacity-50"
+          >
             MOUs
           </Link>
-          <Link href={"/"} className="opacity-50">
+          {/* <Link href={`/${locale}/centers`} className="opacity-50">
             {t("contact_us")}
-          </Link>
+          </Link> */}
         </div>
       </div>
       <div className="max-w-[1024px] w-full border-t border-t-white border-opacity-30 pt-10 flex justify-between items-center gap-3 mt-5 px-4 md:flex-row flex-col">

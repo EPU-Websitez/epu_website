@@ -1,14 +1,14 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import "swiper/css";
+@import "leaflet/dist/leaflet.css";
 
 @font-face {
   font-family: rabar;
   src: url("../../../public/fonts/rabar.ttf");
 }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 * {
   box-sizing: border-box;
@@ -279,7 +279,6 @@ small {
   @apply tracking-wide leading-relaxed;
 }
 /* Add to globals.css */
-@import "leaflet/dist/leaflet.css";
 
 .leaflet-container {
   height: 100%;
@@ -302,4 +301,108 @@ small {
     4% 34%,
     17% 12%
   );
+}
+
+.css-lnmdiq5-menu {
+  z-index: 30 !important;
+}
+
+/* Custom styling for the Swiper pagination dots moved to the bottom */
+
+.hero-swiper-pagination {
+  /* Aligns the dots horizontally in the center */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px; /* Adds space between the dots */
+}
+
+.hero-swiper-pagination .swiper-pagination-bullet {
+  /* Basic style for the dots */
+  width: 10px;
+  height: 10px;
+  background-color: #dcc48c !important; /* A light gray color for inactive dots */
+  opacity: 1;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.hero-swiper-pagination .swiper-pagination-bullet-active {
+  /* Style for the active dot */
+  background-color: #1b417b !important; /* Example primary color (you can change this) */
+}
+
+.card__arc_alumni {
+  width: 40px; /* Now this works! Make it any size you want. */
+  height: 40px; /* This will also work perfectly. */
+  position: absolute;
+  bottom: 58%;
+  z-index: 21;
+  left: 0;
+  transform: rotate(90deg);
+}
+
+@media screen and (max-width: 1024px) {
+  .card__arc_alumni {
+    bottom: 57%;
+  }
+}
+@media screen and (max-width: 640px) {
+  .card__arc_alumni {
+    bottom: 56%;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* The path styling remains simple */
+.card__arc_alumni path {
+  fill: #ffffff;
+}
+.card__arc_alumni_alt {
+  width: 40px; /* Now this works! Make it any size you want. */
+  height: 40px; /* This will also work perfectly. */
+  position: absolute;
+  bottom: 0;
+  z-index: 21;
+  right: -60px;
+  transform: rotate(90deg);
+}
+@media screen and (max-width: 640px) {
+  .card__arc_alumni_alt {
+    right: -28px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* The path styling remains simple */
+.card__arc_alumni_alt path {
+  fill: #ffffff;
+}
+.card__arc_president {
+  width: 20px; /* Now this works! Make it any size you want. */
+  height: 20px; /* This will also work perfectly. */
+  position: absolute;
+  bottom: 0;
+  z-index: 21;
+  left: -20px;
+}
+
+/* The path styling remains simple */
+.card__arc_president path {
+  fill: #ffffff;
+}
+.card__arc_president_alt {
+  width: 20px; /* Now this works! Make it any size you want. */
+  height: 20px; /* This will also work perfectly. */
+  position: absolute;
+  top: -20px;
+  z-index: 21;
+  right: 0;
+}
+
+/* The path styling remains simple */
+.card__arc_president_alt path {
+  fill: #ffffff;
 }

@@ -59,7 +59,8 @@ const Page = () => {
   } = useFetch<DirectoryStructureResponse>(
     id
       ? `${API_URL}/website/international-relations/international-relation/${id}/directory-structure`
-      : ""
+      : "",
+    locale
   );
 
   const structures = directoryData?.data || [];
@@ -148,6 +149,14 @@ const Page = () => {
               <span>{t("directory_structure")}</span>
               <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
             </div>
+            <Link
+              href={`/${locale}/international-relations/news?id=${id}`}
+              title={t("news")}
+              className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+            >
+              <span>{t("news")}</span>
+              <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+            </Link>
             <Link
               href={`/${locale}/international-relations/office-staff?id=${id}`}
               title={t("office_staff")}

@@ -7,7 +7,11 @@ interface UseFetchReturn<T> {
   refetch: () => Promise<void>;
 }
 
-const useFetch = <T = any>(url: string): UseFetchReturn<T> => {
+// 1. Accept 'language' as a new parameter
+const useFetch = <T = any>(
+  url: string,
+  language: string = "en"
+): UseFetchReturn<T> => {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +21,7 @@ const useFetch = <T = any>(url: string): UseFetchReturn<T> => {
 
     const fetchData = async () => {
       setLoading(true);
-      setError(null); // Reset error on new fetch
+      setError(null);
 
       try {
         const response = await fetch(url, {
@@ -25,8 +29,9 @@ const useFetch = <T = any>(url: string): UseFetchReturn<T> => {
           headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
+            // 2. Add the language to the request headers
+            "website-language": language,
           },
-          // credentials: "include",
         });
 
         if (!response.ok) {
@@ -35,7 +40,6 @@ const useFetch = <T = any>(url: string): UseFetchReturn<T> => {
 
         const responseData = await response.json();
 
-        // Check for application-level errors
         if (responseData.status === 400) {
           setError(responseData.message);
           return;
@@ -62,7 +66,8 @@ const useFetch = <T = any>(url: string): UseFetchReturn<T> => {
     return () => {
       isMounted = false;
     };
-  }, [url]);
+    // 3. Add 'language' to the dependency array to refetch on change
+  }, [url, language]);
 
   const refetch = async (): Promise<void> => {
     setLoading(true);
@@ -73,7 +78,8 @@ const useFetch = <T = any>(url: string): UseFetchReturn<T> => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          // Authorization: `Bearer ${token}`,
+          // 4. Also add the language header to the refetch function
+          "website-language": language,
         },
         credentials: "include",
       });
