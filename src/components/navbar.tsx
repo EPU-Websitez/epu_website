@@ -10,6 +10,7 @@ import { useTranslations } from "next-intl";
 import { IoChevronForward, IoMenu } from "react-icons/io5";
 import { API_URL } from "@/libs/env";
 import useSWR from "swr";
+import SearchModal from "./Search";
 
 interface MenuItem {
   id: number;
@@ -53,6 +54,7 @@ const Navbar = () => {
   const { normalizedPath, locale } = normalizePathname(pathname);
   const [isCollege, setIsCollege] = useState(false);
   const [navIsOpen, setNavIsOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [hoveredDropdown, setHoveredDropdown] = useState<number | null>(null);
   const fetcher = (url: string) =>
     fetch(url, {
@@ -745,7 +747,11 @@ const Navbar = () => {
           </div>
 
           <div className="flex_center gap-4">
-            <button className="sm:text-2xl text-lg">
+            <button
+              className="sm:text-2xl text-lg"
+              aria-label="Open search"
+              onClick={() => setIsSearchOpen(true)}
+            >
               <FiSearch />
             </button>
             <button
@@ -758,6 +764,10 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+      <SearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+      />
     </div>
   );
 };
