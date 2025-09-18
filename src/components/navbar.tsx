@@ -156,13 +156,24 @@ const Navbar = () => {
     const hasChildren =
       Array.isArray(item.children) && item.children.length > 0;
     const parentHref = getMenuItemUrl(item);
-    const anyChildActive =
-      hasChildren &&
-      item.children.some((child) => isActiveStartsWith(getMenuItemUrl(child)));
-    const parentActive = isActiveStartsWith(parentHref) || anyChildActive;
-    const isDropdownOpen = hoveredDropdown === item.id;
 
+    // --- Dropdown Menu Item Logic ---
     if (hasChildren) {
+      const isDropdownOpen = hoveredDropdown === item.id;
+
+      // Check if any child link is active
+      const anyChildActive = item.children.some((child) =>
+        isActiveStartsWith(getMenuItemUrl(child))
+      );
+
+      // Check if the parent item itself has an active link.
+      // This now correctly ignores parents with a null link.
+      const parentItselfActive =
+        item.link !== null && isActiveStartsWith(parentHref);
+
+      // A dropdown parent is active if its own link is active OR any child is active.
+      const parentActive = parentItselfActive || anyChildActive;
+
       return (
         <div
           key={item.id}
@@ -194,8 +205,8 @@ const Navbar = () => {
             <div className="py-2">
               {item.children.map((child, index) => {
                 const childHref = getMenuItemUrl(child);
-                const childActive =
-                  isActiveExact(childHref) || isActiveStartsWith(childHref);
+                // Use a more specific active check for children if needed
+                const childActive = isActiveStartsWith(childHref);
                 return (
                   <div key={child.id}>
                     <Link
@@ -220,7 +231,7 @@ const Navbar = () => {
       );
     }
 
-    // simple link
+    // --- Simple Link Logic ---
     return (
       <Link
         key={item.id}

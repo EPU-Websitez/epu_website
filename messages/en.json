@@ -237,7 +237,8 @@
     "collaboration": "Collaboration",
     "alumni": "Alumni Students",
     "feedback": "Feedback",
-    "read_more": "Read More"
+    "read_more": "Read More",
+    "error_loading_data": "error loading data"
   },
   "Colleges": {
     "new_events": "New Events",

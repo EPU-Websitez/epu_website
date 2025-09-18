@@ -265,115 +265,126 @@ const MapSection = () => {
                 slidesPerView={1}
                 className="w-full h-full"
               >
-                {colleges.map((college) => (
-                  <SwiperSlide key={college.id} className="p-5 overflow-y-auto">
-                    {/* All the college info content goes here */}
-                    <div className="flex flex-col gap-3 h-full">
-                      <Link
-                        href={`/${locale}/colleges/${college.subdomain}`}
-                        className="w-full flex justify-between items-center text-secondary sm:text-smallTitle text-lg font-semibold"
-                      >
-                        <h3>{college.title}</h3>
-                        <GoArrowRight className="rtl:rotate-180 text-lg" />
-                      </Link>
-                      <div className="flex justify-start items-center gap-3 text-secondary sm:text-base text-sm border-b border-b-lightBorder pb-3 w-full">
-                        <MdOutlineLocationOn />
-                        <p className="text-sm">{college.address?.location}</p>
-                      </div>
-                      <span className="text-sm text-secondary opacity-90">
-                        {college?.description?.substring(0, 200)}
-                        {college?.description?.length > 200 && (
-                          <Link
-                            href={`/${locale}/colleges/${college.subdomain}`}
-                            className="opacity-100 font-semibold"
-                          >
-                            {" "}
-                            .... {t("more")}
-                          </Link>
-                        )}
-                      </span>
+                {colleges.map((college) => {
+                  const collegeUrl = `https://${college.subdomain}.epu.edu.iq/${locale}`;
+                  return (
+                    <SwiperSlide
+                      key={college.id}
+                      className="p-5 overflow-y-auto"
+                    >
+                      {/* All the college info content goes here */}
+                      <div className="flex flex-col gap-3 h-full">
+                        <a
+                          href={collegeUrl}
+                          title={college.title ?? ""}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full flex justify-between items-center text-secondary sm:text-smallTitle text-lg font-semibold"
+                        >
+                          <h3>{college.title}</h3>
+                          <GoArrowRight className="rtl:rotate-180 text-lg" />
+                        </a>
+                        <div className="flex justify-start items-center gap-3 text-secondary sm:text-base text-sm border-b border-b-lightBorder pb-3 w-full">
+                          <MdOutlineLocationOn />
+                          <p className="text-sm">{college.address?.location}</p>
+                        </div>
+                        <span className="text-sm text-secondary opacity-90">
+                          {college?.description?.substring(0, 200)}
+                          {college?.description?.length > 200 && (
+                            <Link
+                              href={`/${locale}/colleges/${college.subdomain}`}
+                              className="opacity-100 font-semibold"
+                            >
+                              {" "}
+                              .... {t("more")}
+                            </Link>
+                          )}
+                        </span>
 
-                      <div className="flex_center sm:gap-14 gap-10 w-full mt-5">
-                        <div className="flex_center flex-col gap-1 text-secondary">
-                          <span className="sm:w-16 w-12 sm:h-16 h-12 bg-[#D5E2ED] rounded-full flex_center">
-                            <LuBookOpen className="text-lg" />
-                          </span>
-                          <h2 className="text-lg font-semibold">
-                            {college.departments_count}
-                          </h2>
-                          <span className="text-sm">{t("departments")}</span>
-                        </div>
-                        <div className="flex_center flex-col gap-1 text-secondary">
-                          <span className="sm:w-16 w-12 sm:h-16 h-12 bg-[#D5E2ED] rounded-full flex_center">
-                            <IoBriefcaseOutline className="text-lg" />
-                          </span>
-                          <h2 className="text-lg font-semibold">
-                            {college.teachers_count}
-                          </h2>
-                          <span className="text-sm">{t("teachers")}</span>
-                        </div>
-                        <div className="flex_center flex-col gap-1 text-secondary">
-                          <span className="sm:w-16 w-12 sm:h-16 h-12 bg-[#D5E2ED] rounded-full flex_center">
-                            <PiStudent className="text-lg" />
-                          </span>
-                          <h2 className="text-lg font-semibold">
-                            {college.student_number}
-                          </h2>
-                          <span className=" text-sm">{t("students")}</span>
-                        </div>
-                      </div>
-
-                      {college.latest_news && (
-                        <div className="flex_start w-full flex-col sm:gap-5 gap-3 mt-5">
-                          <div className="flex justify-between items-center w-full">
-                            <h2 className="sm:text-lg text-base font-medium text-secondary">
-                              {t("latest_news")}
+                        <div className="flex_center sm:gap-14 gap-10 w-full mt-5">
+                          <div className="flex_center flex-col gap-1 text-secondary">
+                            <span className="sm:w-16 w-12 sm:h-16 h-12 bg-[#D5E2ED] rounded-full flex_center">
+                              <LuBookOpen className="text-lg" />
+                            </span>
+                            <h2 className="text-lg font-semibold">
+                              {college.departments_count}
                             </h2>
-                            <Link
-                              href={`/${locale}/colleges/${college.subdomain}/news`}
-                              className="border-b border-b-secondary text-secondary sm:text-sm text-xs"
-                            >
-                              {t("see_all")}
-                            </Link>
+                            <span className="text-sm">{t("departments")}</span>
                           </div>
-                          <div className="w-full flex_start flex-col gap-4 group relative">
-                            <Link
-                              href={`/${locale}/news/${college.latest_news.slug}`}
-                              className="relative w-full h-[190px] rounded-xl overflow-hidden bg-gray-200"
-                            >
-                              <div className="text-secondary bg-white h-6 w-6 flex_center rounded-full z-10 absolute top-2 right-2">
-                                <IoArrowForwardOutline />
-                              </div>
-                              {college.latest_news.cover_image && (
-                                <Image
-                                  src={college.latest_news.cover_image.original}
-                                  alt={college.latest_news.title}
-                                  fill
-                                  className="w-full h-auto object-cover group-hover:scale-105 duration-300"
-                                />
-                              )}
-                            </Link>
-                            <div className="flex_center gap-1 text-secondary text-sm">
-                              <p>{college.latest_news.author}</p>
-                              <span className="opacity-75">-</span>
-                              <span className="opacity-75">
-                                {new Date(
-                                  college.latest_news.published_at
-                                ).toLocaleDateString()}
-                              </span>
-                            </div>
-                            <Link
-                              href={`/news/${college.latest_news.slug}`}
-                              className="text-lg font-bold hover:text-primary text-secondary duration-300"
-                            >
-                              {college.latest_news.title}
-                            </Link>
+                          <div className="flex_center flex-col gap-1 text-secondary">
+                            <span className="sm:w-16 w-12 sm:h-16 h-12 bg-[#D5E2ED] rounded-full flex_center">
+                              <IoBriefcaseOutline className="text-lg" />
+                            </span>
+                            <h2 className="text-lg font-semibold">
+                              {college.teachers_count}
+                            </h2>
+                            <span className="text-sm">{t("teachers")}</span>
+                          </div>
+                          <div className="flex_center flex-col gap-1 text-secondary">
+                            <span className="sm:w-16 w-12 sm:h-16 h-12 bg-[#D5E2ED] rounded-full flex_center">
+                              <PiStudent className="text-lg" />
+                            </span>
+                            <h2 className="text-lg font-semibold">
+                              {college.student_number}
+                            </h2>
+                            <span className=" text-sm">{t("students")}</span>
                           </div>
                         </div>
-                      )}
-                    </div>
-                  </SwiperSlide>
-                ))}
+
+                        {college.latest_news && (
+                          <div className="flex_start w-full flex-col sm:gap-5 gap-3 mt-5">
+                            <div className="flex justify-between items-center w-full">
+                              <h2 className="sm:text-lg text-base font-medium text-secondary">
+                                {t("latest_news")}
+                              </h2>
+                              <Link
+                                href={`/${locale}/colleges/${college.subdomain}/news`}
+                                className="border-b border-b-secondary text-secondary sm:text-sm text-xs"
+                              >
+                                {t("see_all")}
+                              </Link>
+                            </div>
+                            <div className="w-full flex_start flex-col gap-4 group relative">
+                              <Link
+                                href={`/${locale}/news/${college.latest_news.slug}`}
+                                className="relative w-full h-[190px] rounded-xl overflow-hidden bg-gray-200"
+                              >
+                                <div className="text-secondary bg-white h-6 w-6 flex_center rounded-full z-10 absolute top-2 right-2">
+                                  <IoArrowForwardOutline />
+                                </div>
+                                {college.latest_news.cover_image && (
+                                  <Image
+                                    src={
+                                      college.latest_news.cover_image.original
+                                    }
+                                    alt={college.latest_news.title}
+                                    fill
+                                    className="w-full h-auto object-cover group-hover:scale-105 duration-300"
+                                  />
+                                )}
+                              </Link>
+                              <div className="flex_center gap-1 text-secondary text-sm">
+                                <p>{college.latest_news.author}</p>
+                                <span className="opacity-75">-</span>
+                                <span className="opacity-75">
+                                  {new Date(
+                                    college.latest_news.published_at
+                                  ).toLocaleDateString()}
+                                </span>
+                              </div>
+                              <Link
+                                href={`/news/${college.latest_news.slug}`}
+                                className="text-lg font-bold hover:text-primary text-secondary duration-300"
+                              >
+                                {college.latest_news.title}
+                              </Link>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </SwiperSlide>
+                  );
+                })}
               </Swiper>
             )}
           </div>

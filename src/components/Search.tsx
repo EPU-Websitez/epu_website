@@ -125,7 +125,7 @@ const SearchModal = ({
       }
 
       const limit = tab === "all" ? 5 : 10;
-      const url = `${API_URL}/website/global-search?search=${term}&type=${tab}&page=${page}&limit=${limit}`;
+      const url = `${API_URL}/website/global-search?search=${term}&type=${tab}&page=${page}&limit=${limit}&platform=main`;
 
       try {
         const response = await fetch(url, {
@@ -203,6 +203,21 @@ const SearchModal = ({
   const canLoadMore =
     activeTab !== "all" &&
     currentResultsForTab.length < (totals[activeTab] || 0);
+  const getLinkPathByType = (type: string) => {
+    switch (type) {
+      case "event":
+        return "events";
+      case "news":
+        return "news";
+      case "directory":
+        return "directories";
+      case "center":
+        return "centers"; // Assuming 'center' type maps to 'centers' route
+      default:
+        // Fallback for any other types, like "department", etc.
+        return type;
+    }
+  };
 
   return (
     <div
@@ -303,7 +318,10 @@ const SearchModal = ({
                       <div className="space-y-2">
                         {items.map((item: SearchResult) => (
                           <Link
-                            href={`/${locale}/${item.type}/${item.slug}`}
+                            // The href now uses the helper function for the correct path
+                            href={`/${locale}/${getLinkPathByType(item.type)}/${
+                              item.slug
+                            }`}
                             key={`${item.type}-${item.id}`}
                             onClick={onClose}
                             className="block group"

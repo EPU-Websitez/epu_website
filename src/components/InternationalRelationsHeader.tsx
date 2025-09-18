@@ -121,6 +121,7 @@ const InternationalRelationsHeader = () => {
         >
           {t("directory_structure")}
         </Link>
+        <span className="h-[20px] w-[1px] bg-white"></span>
         <Link
           href={`${newsPath}?id=${headerData.id}`}
           title={t("news")}
