@@ -16,7 +16,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { CiSearch } from "react-icons/ci";
 import { FaChevronDown, FaTimes } from "react-icons/fa";
-import { API_URL } from "@/libs/env";
+
 import { AsyncPaginate } from "react-select-async-paginate";
 import type {
   GroupBase,
@@ -275,7 +275,9 @@ const AcademicStaffClient = () => {
     if (selectedCenter?.value) params.append("center_id", selectedCenter.value);
     if (selectedCollege?.value)
       params.append("college_id", selectedCollege.value);
-    return `${API_URL}/website/teachers?${params.toString()}`;
+    return `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/website/teachers?${params.toString()}`;
   };
 
   const [apiUrl, setApiUrl] = useState(buildApiUrl());
@@ -319,7 +321,10 @@ const AcademicStaffClient = () => {
     setSelectedCollege(null);
     setIsSearchActive(true);
     if (page !== 1) setPage(1);
-    else setApiUrl(`${API_URL}/website/teachers?page=1&limit=10`);
+    else
+      setApiUrl(
+        `${process.env.NEXT_PUBLIC_API_URL}/website/teachers?page=1&limit=10`
+      );
   };
 
   return (
@@ -333,6 +338,9 @@ const AcademicStaffClient = () => {
             fill
             priority
             className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
+            onError={(e) => {
+              e.currentTarget.src = "/images/placeholder.svg";
+            }}
           />
           <div className="absolute w-[95%] left-1/2 -translate-x-1/2 sm:bottom-5 bottom-2 bg-white flex_center sm:gap-5 gap-2 sm:p-3 p-1 sm:rounded-3xl rounded-lg">
             {/* Desktop layout */}
@@ -364,7 +372,7 @@ const AcademicStaffClient = () => {
         <div className="grid sm:grid-cols-3 grid-cols-2 w-full gap-5">
           <div className="w-full text-sm sm:col-span-1 col-span-2">
             <SearchableSelect
-              apiUrl={`${API_URL}/website/centers`}
+              apiUrl={`${process.env.NEXT_PUBLIC_API_URL}/website/centers`}
               locale={locale}
               placeholder={t("select_center")}
               value={selectedCenter}
@@ -374,7 +382,7 @@ const AcademicStaffClient = () => {
           </div>
           <div className="w-full text-sm">
             <SearchableSelect
-              apiUrl={`${API_URL}/website/departments`}
+              apiUrl={`${process.env.NEXT_PUBLIC_API_URL}/website/departments`}
               locale={locale}
               placeholder={t("select_department")}
               value={selectedDepartment}
@@ -384,7 +392,7 @@ const AcademicStaffClient = () => {
           </div>
           <div className="w-full text-sm">
             <SearchableSelect
-              apiUrl={`${API_URL}/website/colleges`}
+              apiUrl={`${process.env.NEXT_PUBLIC_API_URL}/website/colleges`}
               locale={locale}
               placeholder={t("select_college")}
               value={selectedCollege}

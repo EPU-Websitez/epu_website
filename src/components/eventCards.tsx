@@ -36,6 +36,9 @@ const EventCard: React.FC<EventCardProps> = ({
             fill
             priority
             className="w-full h-auto object-cover rounded-xl"
+            onError={(e) => {
+              e.currentTarget.src = "/images/placeholder.svg";
+            }}
           />
         </div>
       </Link>

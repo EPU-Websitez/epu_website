@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+import { process.env.NEXT_PUBLIC_BASE_URL } from "@/libs/env";
 import DirectoratesClient from "./DirectoratesClient";
 
 // --- Server-side function to generate metadata ---
@@ -10,7 +10,7 @@ export async function generateMetadata({}: {}): Promise<Metadata> {
     const pageDescription =
       "Explore the various university directorates, centers, and administrative units at Erbil Polytechnic University.";
 
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

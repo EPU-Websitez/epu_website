@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import EventDetailClient from "./EventDetailClient";
 
 // --- Interface for the data needed for metadata ---
@@ -24,10 +24,13 @@ export async function generateMetadata({
   const { slug, locale } = await params;
 
   try {
-    const response = await fetch(`${API_URL}/website/events/${slug}`, {
-      headers: { "website-language": locale || "en" },
-      next: { revalidate: 3600 }, // Cache for 1 hour
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/website/events/${slug}`,
+      {
+        headers: { "website-language": locale || "en" },
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to fetch event metadata");
@@ -43,7 +46,7 @@ export async function generateMetadata({
         .trim() + "...";
 
     const imageUrl = eventData.galleries?.[0]?.image?.lg || "/images/event.png";
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

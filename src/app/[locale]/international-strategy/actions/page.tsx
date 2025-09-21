@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import React from "react";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // -------- Interfaces --------
@@ -49,7 +49,7 @@ const Page = () => {
 
   const { data, error, loading } = useFetch<ActionsResponse>(
     id
-      ? `${API_URL}/website/international-strategies/international-strategy/${id}/actions`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/international-strategies/international-strategy/${id}/actions`
       : "",
     locale
   );

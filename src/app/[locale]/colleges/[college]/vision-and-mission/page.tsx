@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import VisionAndMissionClient from "./VisionAndMissionClient";
 
 // --- Interface for metadata fetching ---
@@ -18,13 +18,16 @@ export async function generateMetadata({
   params: Promise<{ college: string; locale: string }>; // ✅ params is now a Promise
 }): Promise<Metadata> {
   const { college, locale } = await params; // ✅ Await params before destructuring
-  const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
   try {
-    const response = await fetch(`${API_URL}/website/colleges/${college}`, {
-      headers: { "website-language": locale },
-      next: { revalidate: 3600 }, // Cache for 1 hour
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}`,
+      {
+        headers: { "website-language": locale },
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      }
+    );
 
     if (!response.ok) throw new Error("College is not found");
 

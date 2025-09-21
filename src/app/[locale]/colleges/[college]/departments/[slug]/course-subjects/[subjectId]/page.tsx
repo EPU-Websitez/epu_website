@@ -1,7 +1,7 @@
 // src/app/[locale]/colleges/[college]/departments/[slug]/course-subjects/carriculum/[id]/[subjectId]/page.tsx
 
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import SubjectDetailsPageClient from "./SubjectDetailsPageClient"; // The new client component
 
 // Interface for the data needed for metadata
@@ -26,7 +26,7 @@ export async function generateMetadata({
     const { locale, college, slug, id, subjectId } = await params;
 
     const response = await fetch(
-      `${API_URL}/website/departments/subject/${subjectId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/departments/subject/${subjectId}`,
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 },
@@ -41,7 +41,7 @@ export async function generateMetadata({
       subjectData.description?.substring(0, 160) ||
       `Course details, schedule, and materials for the subject ${subjectData.name}.`;
 
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
     const fullPath = `/colleges/${college}/departments/${slug}/course-subjects/carriculum/${id}/${subjectId}`;
 
     return {

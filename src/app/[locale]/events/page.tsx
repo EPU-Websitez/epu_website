@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import EventsClient from "./EventsClient";
 
 // --- Server-side function to generate metadata ---
@@ -8,7 +8,7 @@ export async function generateMetadata({}: {}): Promise<Metadata> {
   try {
     // Fetch the first event to use its image for OpenGraph tags
     const response = await fetch(
-      `${API_URL}/website/universities/events?page=1&limit=1`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/universities/events?page=1&limit=1`,
       {
         headers: { "website-language": "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
@@ -23,7 +23,7 @@ export async function generateMetadata({}: {}): Promise<Metadata> {
     const pageDescription =
       "Stay updated with the latest news, announcements, and upcoming events at Erbil Polytechnic University.";
 
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

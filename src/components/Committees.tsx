@@ -4,7 +4,7 @@ import SubHeader from "./subHeader";
 import { useTranslations } from "next-intl";
 import { BsBarChart } from "react-icons/bs";
 import { HiOutlineLink } from "react-icons/hi2";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { PiSealCheck } from "react-icons/pi";
 import { FaUsers } from "react-icons/fa6";
@@ -102,7 +102,7 @@ const Committees = ({ teacherId }: Props) => {
   const locale = useParams()?.locale as string;
 
   const { data, loading, error, refetch } = useFetch<Response>(
-    `${API_URL}/website/teachers/${teacherId}/committees?page=${page}&limit=${limit}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${teacherId}/committees?page=${page}&limit=${limit}`,
     locale
   );
 
@@ -139,7 +139,7 @@ const Committees = ({ teacherId }: Props) => {
     if (!filePath) return;
     setDownloadingFiles((prev) => new Set(prev).add(filePath));
     try {
-      const fileUrl = new URL(filePath, API_URL).href;
+      const fileUrl = new URL(filePath, process.env.NEXT_PUBLIC_API_URL).href;
       const res = await fetch(fileUrl, { mode: "cors" });
       if (!res.ok) throw new Error(`Failed to fetch file: ${res.status}`);
 
@@ -156,7 +156,10 @@ const Committees = ({ teacherId }: Props) => {
       URL.revokeObjectURL(objectUrl);
     } catch (e) {
       console.error("Download failed:", e);
-      window.open(new URL(filePath, API_URL).href, "_blank"); // Fallback
+      window.open(
+        new URL(filePath, process.env.NEXT_PUBLIC_API_URL).href,
+        "_blank"
+      ); // Fallback
     } finally {
       setDownloadingFiles((prev) => {
         const newSet = new Set(prev);

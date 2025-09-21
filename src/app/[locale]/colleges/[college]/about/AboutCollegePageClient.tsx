@@ -12,7 +12,7 @@ import { HiOutlineBuildingOffice } from "react-icons/hi2";
 import { IoMdMail } from "react-icons/io";
 import { IoBriefcaseOutline, IoLocationSharp } from "react-icons/io5";
 import { PiStudent } from "react-icons/pi";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { useEffect, useState } from "react";
 import CollegeMapComponent from "@/components/CollegeMapComponent ";
@@ -121,7 +121,10 @@ const AboutCollegePageClient = () => {
     data: collegeData,
     loading,
     error,
-  } = useFetch<CollegeData>(`${API_URL}/website/colleges/${college}`, locale);
+  } = useFetch<CollegeData>(
+    `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}`,
+    locale
+  );
 
   useEffect(() => {
     if (collegeData?.address?.latitude && collegeData?.address?.longitude) {
@@ -230,6 +233,9 @@ const AboutCollegePageClient = () => {
                 fill
                 priority
                 className="w-full h-full object-cover rounded-lg"
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
               />
             )}
             <div className="bg-primary grid sm:grid-cols-3 absolute grid-cols-1 sm:gap-5 gap-2 sm:rounded-3xl rounded-xl sm:py-5 p-2 lg:px-8 px-5 lg:w-[85%] w-[95%] text-white z-10 sm:mt-10 mt-5">

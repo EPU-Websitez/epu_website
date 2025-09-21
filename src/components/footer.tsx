@@ -78,6 +78,9 @@ export default function Footer() {
             fill
             priority
             className="w-full h-auto"
+            onError={(e) => {
+              e.currentTarget.src = "/images/placeholder.svg";
+            }}
           />
         </div>
         <span className="opacity-80 text-sm">{t("copyright")}</span>

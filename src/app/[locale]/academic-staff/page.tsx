@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import AcademicStaffClient from "./AcademicStaffClient";
-import { NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+import { process.env.NEXT_PUBLIC_BASE_URL } from "@/libs/env";
 
 // --- Corrected generateMetadata function ---
 export async function generateMetadata({
@@ -14,7 +14,7 @@ export async function generateMetadata({
   const pageDescription =
     "Meet the dedicated and experienced academic staff at Erbil Polytechnic University.";
 
-  const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
   return {
     // metadataBase is crucial for resolving relative image paths

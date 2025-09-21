@@ -8,7 +8,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CiMail } from "react-icons/ci";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import InternationalRelationsHeader from "@/components/InternationalRelationsHeader";
 
@@ -74,7 +74,7 @@ const Page = () => {
     error,
   } = useFetch<StaffResponse>(
     id
-      ? `${API_URL}/website/international-relations/international-relation/${id}/staff?page=${page}&limit=${limit}`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/international-relations/international-relation/${id}/staff?page=${page}&limit=${limit}`
       : "",
     locale
   );
@@ -152,6 +152,9 @@ const Page = () => {
                       fill
                       priority
                       className="w-full h-full rounded-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
                     />
                   </Link>
                 </div>

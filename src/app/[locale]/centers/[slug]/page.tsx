@@ -1,6 +1,5 @@
 "use client";
 
-import { API_URL } from "@/libs/env";
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -53,7 +52,7 @@ const Page = () => {
   const slug = params?.slug as string;
 
   const { data, loading, error } = useFetch<CenterResponse>(
-    `${API_URL}/website/centers/${slug}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/centers/${slug}`,
     locale
   );
 

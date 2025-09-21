@@ -9,7 +9,7 @@ import { IoArrowForwardOutline, IoBriefcaseOutline } from "react-icons/io5";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
 import type { Map, Marker } from "leaflet";
-import { API_URL } from "@/libs/env";
+
 import { useParams } from "next/navigation";
 
 // --- Swiper Imports ---
@@ -194,11 +194,14 @@ const MapSection = () => {
     const fetchColleges = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(`${API_URL}/website/colleges/overview`, {
-          headers: {
-            "website-language": locale || "en",
-          },
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/overview`,
+          {
+            headers: {
+              "website-language": locale || "en",
+            },
+          }
+        );
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
@@ -360,6 +363,10 @@ const MapSection = () => {
                                     alt={college.latest_news.title}
                                     fill
                                     className="w-full h-auto object-cover group-hover:scale-105 duration-300"
+                                    onError={(e) => {
+                                      e.currentTarget.src =
+                                        "/images/placeholder.svg";
+                                    }}
                                   />
                                 )}
                               </Link>

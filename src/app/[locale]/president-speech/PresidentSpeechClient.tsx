@@ -7,7 +7,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { useParams } from "next/navigation";
 
@@ -49,7 +49,7 @@ const PresidentSpeechClient = () => {
   const locale = (params?.locale as string) || "en";
   const { data: messageData, loading: isLoading } =
     useFetch<PresidentMessageData>(
-      `${API_URL}/website/universities/president-message`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/universities/president-message`,
       locale
     );
 
@@ -76,6 +76,9 @@ const PresidentSpeechClient = () => {
                   fill
                   priority
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/placeholder.svg";
+                  }}
                 />
               </SwiperSlide>
             ))}
@@ -103,7 +106,15 @@ const PresidentSpeechClient = () => {
           </div>
         </div>
         <div className="sm:w-[111px] w-14 sm:h-[111px] h-14 relative">
-          <Image src={"/images/quote.svg"} alt="Quote" fill priority />
+          <Image
+            src={"/images/quote.svg"}
+            alt="Quote"
+            fill
+            priority
+            onError={(e) => {
+              e.currentTarget.src = "/images/placeholder.svg";
+            }}
+          />
         </div>
         <h3 className="text-[#4A4A4A] sm:text-base text-sm font-semibold">
           {messageData.subtitle}
@@ -113,7 +124,15 @@ const PresidentSpeechClient = () => {
         </p>
         <div className="w-full flex items-end justify-end">
           <div className="sm:w-[111px] w-14 sm:h-[111px] h-14 relative rotate-180">
-            <Image src={"/images/quote.svg"} alt="Quote" fill priority />
+            <Image
+              src={"/images/quote.svg"}
+              alt="Quote"
+              fill
+              priority
+              onError={(e) => {
+                e.currentTarget.src = "/images/placeholder.svg";
+              }}
+            />
           </div>
         </div>
       </div>

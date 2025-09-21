@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { NEXT_PUBLIC_BASE_URL, API_URL } from "@/libs/env";
+import { process.env.NEXT_PUBLIC_BASE_URL, process.env.NEXT_PUBLIC_API_URL } from "@/libs/env";
 import DecisionsClient from "./DecisionsClient"; // Import the client component
 
 // --- Interface for the data needed for metadata ---
@@ -15,7 +15,7 @@ interface DecisionsMetadata {
 export async function generateMetadata({}: {}): Promise<Metadata> {
   try {
     const response = await fetch(
-      `${API_URL}/website/universities/decisions-and-instructions`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/universities/decisions-and-instructions`,
       {
         headers: { "website-language": "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
@@ -32,7 +32,7 @@ export async function generateMetadata({}: {}): Promise<Metadata> {
       pageData.description ||
       "Official decisions, instructions, and guidelines from the university.";
     const imageUrl = pageData.bg_image?.lg || "/small-logo.png";
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

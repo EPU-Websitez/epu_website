@@ -10,7 +10,7 @@ import {
   usePathname,
   useSearchParams,
 } from "next/navigation";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { CiSearch } from "react-icons/ci";
 import { FaChevronDown, FaFilePdf, FaXmark } from "react-icons/fa6";
@@ -260,7 +260,9 @@ const ResearchClient = () => {
         currentTab === "researches" ? `${currentYear}-01-01` : currentYear;
       urlParams.append(dateParam, dateValue);
     }
-    return `${API_URL}${endpoint}?${urlParams.toString()}`;
+    return `${
+      process.env.NEXT_PUBLIC_API_URL
+    }${endpoint}?${urlParams.toString()}`;
   }, [currentTab, currentPage, currentSearch, currentYear]);
 
   const { data, loading: isLoadingData } = useFetch<ApiResponse>(
@@ -361,6 +363,9 @@ const ResearchClient = () => {
             fill
             priority
             className="w-full h-full object-cover"
+            onError={(e) => {
+              e.currentTarget.src = "/images/placeholder.svg";
+            }}
           />
         </div>
         <div className="lg:w-[1024px] w-full h-auto absolute left-1/2 md:bottom-10 bottom-2 z-10 -translate-x-1/2 flex_start">
@@ -463,6 +468,9 @@ const ResearchClient = () => {
                     fill
                     priority
                     className="w-full h-full object-cover rounded-2xl"
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/placeholder.svg";
+                    }}
                   />
                 </div>
                 <div className="absolute md:w-[92px] w-[72px] md:h-[42px] h-[32px] md:-left-4 -left-3 bottom-5 text-white flex justify-center items-start">
@@ -472,6 +480,9 @@ const ResearchClient = () => {
                     fill
                     priority
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/placeholder.svg";
+                    }}
                   />
                   <h3 className="text-xs z-10 md:mt-2 mt-1">
                     {currentTab === "researches"

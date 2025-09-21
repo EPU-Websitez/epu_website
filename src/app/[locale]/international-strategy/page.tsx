@@ -11,7 +11,6 @@ import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react"; // Updated import
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 // import useSWR from "swr"; // Removed useSWR
-import { API_URL } from "@/libs/env";
 
 // --- Type Definitions ---
 interface ImageType {
@@ -66,7 +65,7 @@ const Page = () => {
       setError(null);
       try {
         const res = await fetch(
-          `${API_URL}/website/international-strategies?page=1&limit=1`,
+          `${process.env.NEXT_PUBLIC_API_URL}/website/international-strategies?page=1&limit=1`,
           {
             headers: {
               "website-language": locale,

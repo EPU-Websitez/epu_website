@@ -5,7 +5,7 @@ import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
@@ -149,7 +149,10 @@ const Page = () => {
     data: departmentData,
     loading: departmentLoading,
     error: departmentError,
-  } = useFetch<Department>(`${API_URL}/website/departments/${slug}`, locale);
+  } = useFetch<Department>(
+    `${process.env.NEXT_PUBLIC_API_URL}/website/departments/${slug}`,
+    locale
+  );
 
   if (departmentError) {
     return (

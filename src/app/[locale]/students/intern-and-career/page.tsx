@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import InternCareerClient from "./InternCareerClient";
 
 // --- Interface for metadata fetching ---
@@ -21,7 +21,7 @@ export async function generateMetadata({
   const { locale } = await params;
   try {
     const response = await fetch(
-      `${API_URL}/website/intern-career?page=1&limit=1`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/intern-career?page=1&limit=1`,
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
@@ -42,7 +42,7 @@ export async function generateMetadata({
     const pageTitle = `${internData.title} | EPU`;
     const pageDescription = internData.description.substring(0, 160).trim();
     const imageUrl = "/images/story.png"; // Using a static fallback image from the page
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

@@ -12,7 +12,7 @@ import { FaArrowRight, FaChevronRight } from "react-icons/fa6";
 import { GoBriefcase } from "react-icons/go";
 import { IoArrowForwardOutline } from "react-icons/io5";
 import { PiStudent } from "react-icons/pi";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // Interfaces
@@ -116,22 +116,25 @@ const CollegeDetailClient = () => {
     data: collegeData,
     loading: collegeLoading,
     error,
-  } = useFetch<CollegeData>(`${API_URL}/website/colleges/${college}`, locale);
+  } = useFetch<CollegeData>(
+    `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}`,
+    locale
+  );
   const { data: departmentsData, loading: departmentsLoading } =
     useFetch<DepartmentsResponse>(
-      `${API_URL}/website/colleges/${college}/departments`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}/departments`,
       locale
     );
   const { data: staffData, loading: staffLoading } = useFetch<StaffApiResponse>(
-    `${API_URL}/website/colleges/${college}/staff`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}/staff`,
     locale
   );
   const { data: newsData } = useFetch<NewsResponse>(
-    `${API_URL}/website/colleges/${college}/news`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}/news`,
     locale
   );
   const { data: eventsData } = useFetch<EventsResponse>(
-    `${API_URL}/website/colleges/${college}/events`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}/events`,
     locale
   );
 
@@ -227,6 +230,9 @@ const CollegeDetailClient = () => {
                     alt="park"
                     fill
                     priority
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/placeholder.svg";
+                    }}
                   />
                 </span>
               </div>
@@ -280,6 +286,9 @@ const CollegeDetailClient = () => {
                       alt="department"
                       fill
                       priority
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
                     />
                   </Link>
                   <Link
@@ -335,6 +344,9 @@ const CollegeDetailClient = () => {
                   alt="shape"
                   fill
                   priority
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/placeholder.svg";
+                  }}
                 />
               </span>
             </h1>
@@ -372,6 +384,9 @@ const CollegeDetailClient = () => {
                 alt="student"
                 fill
                 priority
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
               />
             </div>
             <div className="max-w-[176px] sm:text-smallTitle text-xl relative">
@@ -382,6 +397,9 @@ const CollegeDetailClient = () => {
                   alt="star"
                   fill
                   priority
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/placeholder.svg";
+                  }}
                 />
               </div>
               {renderContent()}
@@ -402,6 +420,9 @@ const CollegeDetailClient = () => {
                 alt="student"
                 fill
                 priority
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
               />
             </div>
           </div>
@@ -424,6 +445,9 @@ const CollegeDetailClient = () => {
                     alt="shape"
                     fill
                     priority
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/placeholder.svg";
+                    }}
                   />
                 </span>
               </div>

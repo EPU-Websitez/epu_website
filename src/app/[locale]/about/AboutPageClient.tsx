@@ -8,7 +8,7 @@ import { HiOutlineBuildingOffice } from "react-icons/hi2";
 import { IoBriefcaseOutline } from "react-icons/io5";
 import { LuUsers } from "react-icons/lu";
 import { PiStudent } from "react-icons/pi";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
@@ -77,12 +77,12 @@ const AboutPageClient = () => {
   const locale = (params.locale as string) || "en";
 
   const { data: aboutData, loading: isLoading } = useFetch<AboutUsData>(
-    `${API_URL}/website/universities/about-us`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/universities/about-us`,
     locale
   );
 
   const { data: statsData } = useFetch<UniversityStatsData>(
-    `${API_URL}/website/universities`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/universities`,
     locale
   );
 
@@ -116,6 +116,9 @@ const AboutPageClient = () => {
                       fill
                       priority
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
                     />
                   </SwiperSlide>
                 ))}
@@ -163,6 +166,9 @@ const AboutPageClient = () => {
                       fill
                       priority
                       className="w-full h-full sm:rounded-3xl rounded-lg object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
                     />
                   </div>
                 </div>

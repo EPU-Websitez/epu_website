@@ -1,7 +1,7 @@
 // src/app/[locale]/colleges/[college]/teachers/page.tsx
 
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import TeachersPageClient from "./TeachersPageClient";
 
 // Interface for the data needed for metadata
@@ -18,17 +18,20 @@ export async function generateMetadata({
   try {
     const { locale, college } = await params;
 
-    const response = await fetch(`${API_URL}/website/colleges/${college}`, {
-      headers: { "website-language": locale || "en" },
-      next: { revalidate: 3600 },
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}`,
+      {
+        headers: { "website-language": locale || "en" },
+        next: { revalidate: 3600 },
+      }
+    );
 
     if (!response.ok) throw new Error("Failed to fetch college metadata");
 
     const collegeData: CollegeMetadata = await response.json();
     const pageTitle = `${collegeData.title} Teachers | EPU`;
     const pageDescription = `Meet the dedicated academic staff and teachers at ${collegeData.title}, Erbil Polytechnic University.`;
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

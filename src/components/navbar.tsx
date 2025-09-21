@@ -8,7 +8,7 @@ import { BsChevronDown } from "react-icons/bs";
 import { FiPlus, FiSearch } from "react-icons/fi";
 import { useTranslations } from "next-intl";
 import { IoChevronForward, IoMenu } from "react-icons/io5";
-import { API_URL } from "@/libs/env";
+
 import useSWR from "swr";
 import SearchModal from "./Search";
 
@@ -67,10 +67,14 @@ const Navbar = () => {
     data: menuData,
     error,
     isLoading: menuLoading,
-  } = useSWR<MenuResponse>(`${API_URL}/website/menus`, fetcher, {
-    dedupingInterval: 1000 * 60 * 60,
-    revalidateOnFocus: false,
-  });
+  } = useSWR<MenuResponse>(
+    `${process.env.NEXT_PUBLIC_API_URL}/website/menus`,
+    fetcher,
+    {
+      dedupingInterval: 1000 * 60 * 60,
+      revalidateOnFocus: false,
+    }
+  );
 
   useEffect(() => {
     document.body.dir = locale === "en" ? "ltr" : "rtl";
@@ -315,7 +319,15 @@ const Navbar = () => {
             href="/"
             className="w-[195px] h-[53px] relative sm:block hidden"
           >
-            <Image src="/images/logo.svg" alt="Navbar" fill priority />
+            <Image
+              src="/images/logo.svg"
+              alt="Navbar"
+              fill
+              priority
+              onError={(e) => {
+                e.currentTarget.src = "/images/placeholder.svg";
+              }}
+            />
           </Link>
           <LocalSwitcher />
         </div>
@@ -334,6 +346,9 @@ const Navbar = () => {
               fill
               priority
               className="w-full h-full"
+              onError={(e) => {
+                e.currentTarget.src = "/images/placeholder.svg";
+              }}
             />
           </Link>
 

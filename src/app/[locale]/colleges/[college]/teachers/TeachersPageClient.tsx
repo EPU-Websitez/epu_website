@@ -6,7 +6,7 @@ import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // --- Interfaces (Updated for the new API response) ---
@@ -81,7 +81,7 @@ const TeachersPageClient = () => {
     loading: teachersLoading,
     error: teachersError,
   } = useFetch<TeachersResponse>(
-    `${API_URL}/website/colleges/${college}/teachers?page=${page}&limit=${limit}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}/teachers?page=${page}&limit=${limit}`,
     locale
   );
 

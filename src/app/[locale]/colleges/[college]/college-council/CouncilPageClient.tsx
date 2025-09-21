@@ -5,7 +5,7 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { API_URL } from "@/libs/env";
+
 import CollegeHeader from "@/components/collegeHeader";
 import MemberCard from "@/components/memberCard";
 import SubHeader from "@/components/subHeader";
@@ -104,7 +104,7 @@ const CouncilPageClient = () => {
     error: leadError,
   } = useFetch<LeadsResponse>(
     college
-      ? `${API_URL}/website/colleges/${college}/leads?page=1&limit=1`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}/leads?page=1&limit=1`
       : "",
     locale
   );
@@ -115,7 +115,7 @@ const CouncilPageClient = () => {
     error: staffError,
   } = useFetch<StaffResponse>(
     college
-      ? `${API_URL}/website/colleges/${college}/staff?page=${staffPage}&limit=${staffLimit}`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}/staff?page=${staffPage}&limit=${staffLimit}`
       : "",
     locale
   );
@@ -181,6 +181,9 @@ const CouncilPageClient = () => {
                   fill
                   priority
                   className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/placeholder.svg";
+                  }}
                 />
               </div>
               <div className="flex_start flex-col gap-5">
@@ -197,6 +200,9 @@ const CouncilPageClient = () => {
                       alt="shape"
                       fill
                       priority
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
                     />
                   </span>
                 </h1>

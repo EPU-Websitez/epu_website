@@ -1,7 +1,7 @@
 // src/app/[locale]/colleges/[college]/departments/[slug]/course-subjects/carriculum/[id]/page.tsx
 
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import CurriculumPageClient from "./CurriculumPageClient";
 
 // Interface for the data needed for metadata
@@ -27,7 +27,7 @@ export async function generateMetadata({
     const { locale, college, slug, id } = await params;
 
     const response = await fetch(
-      `${API_URL}/website/departments/curriculum/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/departments/curriculum/${id}`,
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 },
@@ -39,7 +39,7 @@ export async function generateMetadata({
     const curriculumData: CurriculumMetadata = await response.json();
     const pageTitle = `${curriculumData.title} | ${curriculumData.department.title}`;
     const pageDescription = `View the course subjects and curriculum details for ${curriculumData.title} in the ${curriculumData.department.title} at Erbil Polytechnic University.`;
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
     const fullPath = `/colleges/${college}/departments/${slug}/course-subjects/carriculum/${id}`;
 
     return {

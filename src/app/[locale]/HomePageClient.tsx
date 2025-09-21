@@ -15,7 +15,7 @@ import { IoLogoYoutube } from "react-icons/io";
 import { IoBriefcaseOutline } from "react-icons/io5";
 import { PiStudent } from "react-icons/pi";
 import useFetch from "@/libs/hooks/useFetch";
-import { API_URL } from "@/libs/env";
+
 import { useParams } from "next/navigation";
 
 // --- Swiper Imports ---
@@ -111,20 +111,20 @@ export default function HomePageClient() {
 
   // --- CHANGE: Added `locale` to all useFetch calls ---
   const { data: uniData, loading: uniLoading } = useFetch<UniversityData>(
-    `${API_URL}/website/universities`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/universities`,
     locale
   );
   const { data: newsData, loading: newsLoading } = useFetch<NewsResponse>(
-    `${API_URL}/website/universities/news?page=1&limit=2`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/universities/news?page=1&limit=2`,
     locale
   );
   const { data: eventsData, loading: eventsLoading } = useFetch<EventsResponse>(
-    `${API_URL}/website/universities/events?page=1&limit=3`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/universities/events?page=1&limit=3`,
     locale
   );
   const { data: slidersData, loading: slidersLoading } =
     useFetch<SlidersResponse>(
-      `${API_URL}/website/universities/sliders`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/universities/sliders`,
       locale
     );
 
@@ -225,6 +225,10 @@ export default function HomePageClient() {
                     fill
                     priority={index === 0}
                     className="w-full h-full object-cover"
+                    // Directly set the src of the target element on error
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/placeholder.svg";
+                    }}
                   />
                 </SwiperSlide>
               ))}
@@ -266,6 +270,9 @@ export default function HomePageClient() {
                     fill
                     sizes="100px"
                     priority
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/placeholder.svg";
+                    }}
                   />
                 </div>
               </div>
@@ -282,6 +289,9 @@ export default function HomePageClient() {
                         alt={alumni.name}
                         width={46}
                         height={46}
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/placeholder.svg";
+                        }}
                         className="lg:w-12 sm:w-8 w-5 lg:h-12 sm:h-8 h-5 rounded-full border-3 border-white shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer object-cover"
                       />
                     </div>
@@ -374,6 +384,9 @@ export default function HomePageClient() {
                 fill
                 priority
                 className="object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
               />
             )}
           </div>
@@ -390,7 +403,15 @@ export default function HomePageClient() {
           <div className="relative">
             <h1 className="sm:text-title text-xl">{t("latest_news")}</h1>
             <span className="absolute ltr:right-0 rtl:left-0 sm:bottom-0 -bottom-2 w-28 h-3">
-              <Image src={`/images/title-shape.svg`} alt="park" fill priority />
+              <Image
+                src={`/images/title-shape.svg`}
+                alt="park"
+                fill
+                priority
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
+              />
             </span>
           </div>
           <FaArrowRight className="sm:text-2xl text-xl rtl:rotate-180" />
@@ -425,7 +446,15 @@ export default function HomePageClient() {
           <div className="relative">
             <h1 className="sm:text-title text-xl">{t("new_events")}</h1>
             <span className="absolute ltr:-right-3 rtl:-left-3 sm:bottom-10 bottom-5 sm:w-14 w-10 h-10">
-              <Image src="/images/alumni-shape.svg" alt="park" fill priority />
+              <Image
+                src="/images/alumni-shape.svg"
+                alt="park"
+                fill
+                priority
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
+              />
             </span>
           </div>
           <FaArrowRight className="sm:text-2xl text-xl rtl:rotate-180" />
@@ -460,6 +489,9 @@ export default function HomePageClient() {
               fill
               priority
               className="w-full h-auto object-contain rounded-md"
+              onError={(e) => {
+                e.currentTarget.src = "/images/placeholder.svg";
+              }}
             />
           </div>
         </div>

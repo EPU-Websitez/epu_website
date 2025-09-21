@@ -15,7 +15,7 @@ import {
 } from "next/navigation";
 import Link from "next/link";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { CiCalendar, CiSearch } from "react-icons/ci";
 import { FaChevronDown, FaXmark } from "react-icons/fa6";
@@ -218,7 +218,9 @@ const Page = () => {
     if (currentSearch) urlParams.append("search", currentSearch);
     if (currentDates.from) urlParams.append("date_from", currentDates.from);
     if (currentDates.to) urlParams.append("date_to", currentDates.to);
-    return `${API_URL}/website/news?${urlParams.toString()}`;
+    return `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/website/news?${urlParams.toString()}`;
   }, [currentPage, slug, currentSearch, currentDates]);
 
   // --- Data Fetching ---

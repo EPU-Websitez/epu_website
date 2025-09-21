@@ -17,7 +17,6 @@ import {
 } from "react-icons/fa6";
 
 // Local imports
-import { API_URL } from "@/libs/env";
 
 // --- TYPE DEFINITIONS ---
 interface ImageType {
@@ -95,7 +94,7 @@ const AcademicStaffHeader = () => {
 
   // Data fetching using SWR
   const { data, error, isLoading } = useSWR<AcademicStaff>(
-    id ? `${API_URL}/website/teachers/${id}` : null,
+    id ? `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}` : null,
     fetcher, // The local fetcher now includes the header
     { revalidateOnFocus: false }
   );
@@ -179,6 +178,9 @@ const AcademicStaffHeader = () => {
             fill
             priority
             className="w-full h-auto rounded-2xl object-cover"
+            onError={(e) => {
+              e.currentTarget.src = "/images/placeholder.svg";
+            }}
           />
         </div>
 
@@ -192,6 +194,9 @@ const AcademicStaffHeader = () => {
                 fill
                 priority
                 className="w-full h-auto object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
               />
             </div>
           </div>

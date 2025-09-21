@@ -8,7 +8,7 @@ import { useParams } from "next/navigation";
 import { FaPhone, FaTimes } from "react-icons/fa";
 import { IoBriefcaseOutline, IoLocationSharp } from "react-icons/io5";
 import CollegeMapComponent from "@/components/CollegeMapComponent ";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // -------- Interfaces --------
@@ -124,6 +124,9 @@ const JobDetailModal = ({ job, onClose }: JobDetailModalProps) => {
                       width={24}
                       height={24}
                       className="rounded-full"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
                     />
                     <span>{service.title}</span>
                   </div>
@@ -215,7 +218,7 @@ const InternCareerClient = () => {
 
   const { data: mainData, loading: mainLoading } =
     useFetch<InternCareerMainResponse>(
-      `${API_URL}/website/intern-career?page=1&limit=1`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/intern-career?page=1&limit=1`,
       locale
     );
 
@@ -228,19 +231,19 @@ const InternCareerClient = () => {
   const { data: galleriesData, loading: galleriesLoading } =
     useFetch<GalleriesResponse>(
       internCareerSlug
-        ? `${API_URL}/website/intern-career/${internCareerSlug}/galleries`
+        ? `${process.env.NEXT_PUBLIC_API_URL}/website/intern-career/${internCareerSlug}/galleries`
         : "",
       locale
     );
   const { data: offersData, loading: offersLoading } = useFetch<OffersResponse>(
     internCareerSlug
-      ? `${API_URL}/website/intern-career/${internCareerSlug}/offers`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/intern-career/${internCareerSlug}/offers`
       : "",
     locale
   );
   const { data: staffData, loading: staffLoading } = useFetch<StaffResponse>(
     internCareerSlug
-      ? `${API_URL}/website/intern-career/${internCareerSlug}/staff`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/intern-career/${internCareerSlug}/staff`
       : "",
     locale
   );
@@ -249,7 +252,7 @@ const InternCareerClient = () => {
     if (page > 1) setIsJobsLoadingMore(true);
     try {
       const res = await fetch(
-        `${API_URL}/website/intern-career/${internCareerSlug}/job-opportunities?page=${page}&limit=6`,
+        `${process.env.NEXT_PUBLIC_API_URL}/website/intern-career/${internCareerSlug}/job-opportunities?page=${page}&limit=6`,
         {
           headers: {
             "website-language": locale || "en",
@@ -325,6 +328,9 @@ const InternCareerClient = () => {
                         fill
                         priority
                         className="object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/placeholder.svg";
+                        }}
                       />
                     </div>
                   );
@@ -364,6 +370,9 @@ const InternCareerClient = () => {
                     fill
                     priority
                     className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/placeholder.svg";
+                    }}
                   />
                 </div>
                 {offers.slice(0, 4).map((offer) => (
@@ -377,6 +386,9 @@ const InternCareerClient = () => {
                         alt={offer.title}
                         width={24}
                         height={24}
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/placeholder.svg";
+                        }}
                       />
                     </span>
                     <h5 className="sm:text-base text-sm font-medium">
@@ -395,7 +407,15 @@ const InternCareerClient = () => {
         ) : (
           <div className="w-full flex_center bg-primary mt-20 text-white flex-col gap-10 relative px-3 md:py-20 py-14">
             <div className="absolute lg:left-40 left-10 md:top-20 top-[20%] w-[58px] h-[47px]">
-              <Image src={"/images/dialog.svg"} alt="Dialog" fill priority />
+              <Image
+                src={"/images/dialog.svg"}
+                alt="Dialog"
+                fill
+                priority
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
+              />
             </div>
             <h1 className="lg:max-w-[740px] md:max-w-[490px] max-w-[90%] lg:text-title md:text-titleNormal text-2xl text-center">
               {mainInfo?.staff_title}
@@ -415,6 +435,9 @@ const InternCareerClient = () => {
                       className="w-full h-full object-cover"
                       style={{
                         clipPath: customShapes[index % customShapes.length],
+                      }}
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
                       }}
                     />
                   </div>
@@ -457,6 +480,9 @@ const InternCareerClient = () => {
                               fill
                               priority
                               className="w-full h-full object-contain"
+                              onError={(e) => {
+                                e.currentTarget.src = "/images/placeholder.svg";
+                              }}
                             />
                           </div>
                         </div>
@@ -507,6 +533,9 @@ const InternCareerClient = () => {
               fill
               priority
               className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/images/placeholder.svg";
+              }}
             />
           </div>
         </div>

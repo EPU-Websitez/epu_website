@@ -1,7 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -57,7 +57,7 @@ const AccommodationClient = () => {
     loading: isLoading,
     error: hasError,
   } = useFetch<AccommodationResponse>(
-    `${API_URL}/website/student-accommodation/main`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/student-accommodation/main`,
     locale
   );
 
@@ -104,6 +104,9 @@ const AccommodationClient = () => {
                     fill
                     priority
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/placeholder.svg";
+                    }}
                   />
                 </SwiperSlide>
               ))}

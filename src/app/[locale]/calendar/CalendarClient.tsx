@@ -9,7 +9,7 @@ import { FiExternalLink } from "react-icons/fi";
 
 // Components & Hooks
 import useFetch from "@/libs/hooks/useFetch";
-import { API_URL } from "@/libs/env";
+
 import SubHeader from "@/components/subHeader";
 
 // -------- TYPE DEFINITIONS (UPDATED) --------
@@ -159,7 +159,7 @@ const CalendarClient = () => {
   const endDate = new Date(currentYear, currentMonth + 1, 0)
     .toISOString()
     .split("T")[0];
-  const calendarUrl = `${API_URL}/website/universities/calendar-events?start_date=${startDate}&end_date=${endDate}&limit=100`;
+  const calendarUrl = `${process.env.NEXT_PUBLIC_API_URL}/website/universities/calendar-events?start_date=${startDate}&end_date=${endDate}&limit=100`;
 
   // --- State for Seasons Tables (Load More) ---
   const [seasons, setSeasons] = useState<Season[]>([]);
@@ -171,7 +171,7 @@ const CalendarClient = () => {
     useFetch<CalendarEventsResponse>(calendarUrl, locale);
   const { data: seasonsData, loading: seasonsLoading } =
     useFetch<SeasonsResponse>(
-      `${API_URL}/website/universities/seasons?page=${page}&limit=${LIMIT}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/universities/seasons?page=${page}&limit=${LIMIT}`,
       locale
     );
 

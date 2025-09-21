@@ -7,7 +7,7 @@ import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa6";
 import { GrLinkNext } from "react-icons/gr";
 import { HiOutlineLink } from "react-icons/hi2";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { useParams } from "next/navigation";
 
@@ -82,7 +82,7 @@ const DecisionsClient = () => {
   const [openedAccordion, setOpenedAccordion] = useState<number | null>(null);
 
   const { data: pageData, loading: isLoading } = useFetch<DecisionsApiResponse>(
-    `${API_URL}/website/universities/decisions-and-instructions`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/universities/decisions-and-instructions`,
     locale
   );
 
@@ -108,6 +108,9 @@ const DecisionsClient = () => {
             fill
             priority
             className="w-full h-full object-cover"
+            onError={(e) => {
+              e.currentTarget.src = "/images/placeholder.svg";
+            }}
           />
         </div>
 

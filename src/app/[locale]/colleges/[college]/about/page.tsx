@@ -1,7 +1,7 @@
 // src/app/[locale]/colleges/[college]/about/page.tsx
 
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import AboutCollegePageClient from "./AboutCollegePageClient";
 
 // Interface for the data needed for metadata
@@ -20,10 +20,13 @@ export async function generateMetadata({
   try {
     const { locale, college } = await params;
 
-    const response = await fetch(`${API_URL}/website/colleges/${college}`, {
-      headers: { "website-language": locale || "en" },
-      next: { revalidate: 3600 },
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}`,
+      {
+        headers: { "website-language": locale || "en" },
+        next: { revalidate: 3600 },
+      }
+    );
 
     if (!response.ok) throw new Error("Failed to fetch college metadata");
 
@@ -33,7 +36,7 @@ export async function generateMetadata({
       collegeData.about_content?.substring(0, 160) ||
       `Learn more about ${collegeData.title}, its mission, vision, and contact information at Erbil Polytechnic University.`;
     const imageUrl = collegeData.logo?.lg || "/small-logo.png";
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

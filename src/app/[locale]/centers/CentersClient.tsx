@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import SubHeader from "@/components/subHeader";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -47,7 +47,7 @@ const CentersClient = () => {
   const limit = 5;
 
   const { data, loading } = useFetch<CenterResponse>(
-    `${API_URL}/website/centers?page=${page}&limit=${limit}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/centers?page=${page}&limit=${limit}`,
     locale
   );
 

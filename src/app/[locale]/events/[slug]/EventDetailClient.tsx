@@ -11,7 +11,7 @@ import { Pagination } from "swiper/modules";
 import "swiper/css/pagination";
 import { FaClock, FaCalendarAlt, FaHourglassEnd } from "react-icons/fa";
 import useFetch from "@/libs/hooks/useFetch";
-import { API_URL } from "@/libs/env";
+
 import CollegeMapComponent from "@/components/CollegeMapComponent ";
 
 // -------- Interfaces --------
@@ -96,13 +96,13 @@ const EventDetailClient = () => {
 
   // Fetch the main event data
   const { data: eventData, loading: eventLoading } = useFetch<EventDetail>(
-    slug ? `${API_URL}/website/events/${slug}` : "",
+    slug ? `${process.env.NEXT_PUBLIC_API_URL}/website/events/${slug}` : "",
     locale
   );
 
   // Fetch other events
   const { data: otherEventsData } = useFetch<EventsResponse>(
-    `${API_URL}/website/events?page=1&limit=20`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/events?page=1&limit=20`,
     locale
   );
 
@@ -155,6 +155,9 @@ const EventDetailClient = () => {
                         fill
                         priority
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/placeholder.svg";
+                        }}
                       />
                     </SwiperSlide>
                   ))}
@@ -201,6 +204,9 @@ const EventDetailClient = () => {
                         fill
                         priority
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/placeholder.svg";
+                        }}
                       />
                     )}
                   </div>
@@ -253,6 +259,9 @@ const EventDetailClient = () => {
                               fill
                               priority
                               className="w-full h-full rounded-full"
+                              onError={(e) => {
+                                e.currentTarget.src = "/images/placeholder.svg";
+                              }}
                             />
                           </div>
                         </div>

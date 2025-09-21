@@ -8,7 +8,7 @@ import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { HiOutlineBuildingOffice } from "react-icons/hi2";
 import { PiFlaskLight } from "react-icons/pi";
@@ -175,7 +175,7 @@ const LabDetailsPageClient = () => {
     loading: labLoading,
     error: labError,
   } = useFetch<Laboratory>(
-    `${API_URL}/website/colleges/${college}/laboratories/${slug}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}/laboratories/${slug}`,
     locale
   );
 
@@ -317,6 +317,9 @@ const LabDetailsPageClient = () => {
                 alt={labData.name}
                 fill
                 priority
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
               />
               <div className="absolute text-white w-[90%] rounded-3xl md:bottom-5 bottom-1/2 md:translate-y-0 translate-y-1/2 left-1/2 -translate-x-1/2 p-5 bg-primary bg-opacity-70 md:text-base text-sm">
                 {labData.description || t("lab_text")}
@@ -343,6 +346,9 @@ const LabDetailsPageClient = () => {
                   alt={section.title}
                   fill
                   priority
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/placeholder.svg";
+                  }}
                 />
               </div>
               <div className="flex_start flex-col gap-5">

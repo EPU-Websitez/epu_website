@@ -12,7 +12,7 @@ import {
 } from "react-icons/ci";
 import { FaTimes } from "react-icons/fa";
 import { CgSpinner } from "react-icons/cg";
-import { API_URL } from "@/libs/env";
+
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
@@ -125,7 +125,7 @@ const SearchModal = ({
       }
 
       const limit = tab === "all" ? 5 : 10;
-      const url = `${API_URL}/website/global-search?search=${term}&type=${tab}&page=${page}&limit=${limit}&platform=main`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/website/global-search?search=${term}&type=${tab}&page=${page}&limit=${limit}&platform=main`;
 
       try {
         const response = await fetch(url, {
@@ -316,28 +316,56 @@ const SearchModal = ({
                       </div>
                     ) : (
                       <div className="space-y-2">
-                        {items.map((item: SearchResult) => (
-                          <Link
-                            // The href now uses the helper function for the correct path
-                            href={`/${locale}/${getLinkPathByType(item.type)}/${
-                              item.slug
-                            }`}
-                            key={`${item.type}-${item.id}`}
-                            onClick={onClose}
-                            className="block group"
-                          >
-                            <div className="flex items-start gap-4 p-2 rounded-lg hover:bg-zinc-100 transition-colors">
-                              <div>
-                                <h3 className="font-semibold text-secondary group-hover:text-primary transition-colors">
-                                  {item.title}
-                                </h3>
-                                <p className="text-sm text-black opacity-70 line-clamp-1">
-                                  {item.organization?.name || ""}
-                                </p>
-                              </div>
-                            </div>
-                          </Link>
-                        ))}
+                        {items.map((item: SearchResult) => {
+                          // Use if/else for clearer logic
+                          if (type === "colleges" || type === "institutes") {
+                            const collegeUrl = `https://${item.slug}.epu.edu.iq/${locale}`;
+                            return (
+                              <a
+                                href={collegeUrl}
+                                title={item.title ?? ""}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                key={`${item.type}-${item.id}`}
+                                onClick={onClose}
+                                className="block group"
+                              >
+                                <div className="flex items-start gap-4 p-2 rounded-lg hover:bg-zinc-100 transition-colors">
+                                  <div>
+                                    <h3 className="font-semibold text-secondary group-hover:text-primary transition-colors">
+                                      {item.title}
+                                    </h3>
+                                    <p className="text-sm text-black opacity-70 line-clamp-1">
+                                      {item.organization?.name || ""}
+                                    </p>
+                                  </div>
+                                </div>
+                              </a>
+                            );
+                          } else {
+                            return (
+                              <Link
+                                href={`/${locale}/${getLinkPathByType(
+                                  item.type
+                                )}/${item.slug}`}
+                                key={`${item.type}-${item.id}`}
+                                onClick={onClose}
+                                className="block group"
+                              >
+                                <div className="flex items-start gap-4 p-2 rounded-lg hover:bg-zinc-100 transition-colors">
+                                  <div>
+                                    <h3 className="font-semibold text-secondary group-hover:text-primary transition-colors">
+                                      {item.title}
+                                    </h3>
+                                    <p className="text-sm text-black opacity-70 line-clamp-1">
+                                      {item.organization?.name || ""}
+                                    </p>
+                                  </div>
+                                </div>
+                              </Link>
+                            );
+                          }
+                        })}
                       </div>
                     )}
                   </div>

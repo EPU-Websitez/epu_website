@@ -8,7 +8,6 @@ import "swiper/css";
 import { Swiper as SwiperCore } from "swiper/types";
 import { Pagination } from "swiper/modules";
 import "swiper/css/pagination";
-import { API_URL } from "@/libs/env";
 
 interface Response {
   id: number;
@@ -50,7 +49,7 @@ const DirectorateHeader = () => {
       },
     }).then((res) => res.json());
   const { data, error, isLoading } = useSWR<Response>(
-    id ? `${API_URL}/website/directorates/${id}` : null,
+    id ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}` : null,
     fetcher,
     {
       dedupingInterval: 1000 * 60 * 60, // 1 hour
@@ -88,6 +87,9 @@ const DirectorateHeader = () => {
                 fill
                 priority
                 className="w-full h-full object-cover rounded-3xl"
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
               />
             </SwiperSlide>
           ))}
@@ -100,6 +102,9 @@ const DirectorateHeader = () => {
             fill
             priority
             className="w-full h-full object-cover rounded-3xl"
+            onError={(e) => {
+              e.currentTarget.src = "/images/placeholder.svg";
+            }}
           />
         </div>
       )}

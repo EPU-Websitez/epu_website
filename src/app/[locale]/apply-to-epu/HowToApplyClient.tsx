@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { PiGraduationCap, PiHandshake } from "react-icons/pi";
 import { TfiShine } from "react-icons/tfi";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { useParams } from "next/navigation";
 
@@ -51,7 +51,7 @@ const HowToApplyClient = () => {
   const locale = useParams()?.locale as string;
 
   const { data: applyData, loading: isLoading } = useFetch<HowToApplyData>(
-    `${API_URL}/website/universities/how-to-apply`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/universities/how-to-apply`,
     locale
   );
 
@@ -71,6 +71,9 @@ const HowToApplyClient = () => {
             fill
             priority
             className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
+            onError={(e) => {
+              e.currentTarget.src = "/images/placeholder.svg";
+            }}
           />
           <div className="absolute ltr:left-0 rtl:right-0 top-0 sm:w-[580px] w-[90%] sm:h-[400px] h-full rtl:rotate-180">
             <Image
@@ -79,6 +82,9 @@ const HowToApplyClient = () => {
               fill
               priority
               className="w-full h-full"
+              onError={(e) => {
+                e.currentTarget.src = "/images/placeholder.svg";
+              }}
             />
           </div>
           {applyData.description && (
@@ -93,7 +99,15 @@ const HowToApplyClient = () => {
           <h1 className="sm:text-titleNormal text-lg font-semibold relative mb-3">
             {applyData.question_description}
             <span className="absolute right-0 -bottom-2 w-[40%] sm:h-[16px] h-[10px]">
-              <Image src="/images/title-shape.svg" alt="shape" fill priority />
+              <Image
+                src="/images/title-shape.svg"
+                alt="shape"
+                fill
+                priority
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
+              />
             </span>
           </h1>
           <div className="flex_center lg:gap-8 gap-3 w-full sm:flex-row flex-col">
@@ -114,6 +128,9 @@ const HowToApplyClient = () => {
                         alt="shape"
                         fill
                         priority
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/placeholder.svg";
+                        }}
                       />
                     </span>
                     <p className="font-medium lg:text-sm text-xs">

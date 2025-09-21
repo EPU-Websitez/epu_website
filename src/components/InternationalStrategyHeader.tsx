@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useParams, useSearchParams, useRouter } from "next/navigation"; // Import hooks
 import React, { useEffect } from "react"; // Import useEffect
 import useSWR from "swr";
-import { API_URL } from "@/libs/env";
 
 // --- Type Definitions for the API Response ---
 interface ImageType {
@@ -48,7 +47,7 @@ const InternationalStrategyHeader = () => {
     }).then((res) => res.json());
   // --- Data Fetching with useSWR ---
   const { data, error, isLoading } = useSWR<InternationalRelationsResponse>(
-    `${API_URL}/website/international-strategies?page=1&limit=1`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/international-strategies?page=1&limit=1`,
     fetcher,
     {
       dedupingInterval: 1000 * 60 * 60, // 1 hour cache
@@ -104,6 +103,9 @@ const InternationalStrategyHeader = () => {
         fill
         priority
         className="w-full h-full object-cover"
+        onError={(e) => {
+          e.currentTarget.src = "/images/placeholder.svg";
+        }}
       />
       <div className="ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary to-transparent absolute top-0 left-0 w-full h-full z-10"></div>
       {bgDescription && (

@@ -4,7 +4,7 @@ import SubHeader from "./subHeader";
 import { useTranslations } from "next-intl";
 import { BsBarChart } from "react-icons/bs";
 import { HiOutlineLink } from "react-icons/hi2";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { useParams } from "next/navigation";
 
@@ -98,7 +98,7 @@ const Activities = ({ teacherId }: ActivitiesProps) => {
   const limit = 10;
   const locale = useParams()?.locale as string;
   const { data, loading, error, refetch } = useFetch<ActivitiesResponse>(
-    `${API_URL}/website/teachers/${teacherId}/activities?page=${page}&limit=${limit}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${teacherId}/activities?page=${page}&limit=${limit}`,
     locale
   );
 
@@ -135,7 +135,7 @@ const Activities = ({ teacherId }: ActivitiesProps) => {
     if (!filePath) return;
     setDownloadingFiles((prev) => new Set(prev).add(filePath));
     try {
-      const fileUrl = new URL(filePath, API_URL).href;
+      const fileUrl = new URL(filePath, process.env.NEXT_PUBLIC_API_URL).href;
       const res = await fetch(fileUrl, { mode: "cors" });
       if (!res.ok) throw new Error(`Failed to fetch file: ${res.status}`);
 
@@ -152,7 +152,10 @@ const Activities = ({ teacherId }: ActivitiesProps) => {
       URL.revokeObjectURL(objectUrl);
     } catch (e) {
       console.error("Download failed:", e);
-      window.open(new URL(filePath, API_URL).href, "_blank");
+      window.open(
+        new URL(filePath, process.env.NEXT_PUBLIC_API_URL).href,
+        "_blank"
+      );
     } finally {
       setDownloadingFiles((prev) => {
         const newSet = new Set(prev);

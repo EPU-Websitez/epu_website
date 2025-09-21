@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import DirectorateHeader from "@/components/DirectorateHeader";
 import MemberCard from "@/components/memberCard";
@@ -89,13 +89,15 @@ const Page = () => {
 
   // Fetch unit's main data
   const { data: unitData } = useFetch<UnitDetail>(
-    id ? `${API_URL}/website/directorates/${id}` : "",
+    id ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}` : "",
     locale
   );
 
   // Fetch the lead member of this unit
   const { data: leadsData } = useFetch<LeadsResponse>(
-    id ? `${API_URL}/website/directorates/${id}/leads?page=1&limit=1` : "",
+    id
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}/leads?page=1&limit=1`
+      : "",
     locale
   );
 
@@ -115,7 +117,7 @@ const Page = () => {
     if (page > 1) setIsLoadingMore(true);
     try {
       const res = await fetch(
-        `${API_URL}/website/directorates/${id}/staff?page=${page}&limit=4`,
+        `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}/staff?page=${page}&limit=4`,
         { headers: { "website-language": locale || "en" } }
       );
       const newData: StaffResponse = await res.json();
@@ -226,6 +228,9 @@ const Page = () => {
                           fill
                           priority
                           className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
+                          onError={(e) => {
+                            e.currentTarget.src = "/images/placeholder.svg";
+                          }}
                         />
                       </div>
                       <div className="flex_start flex-col gap-5">
@@ -242,6 +247,9 @@ const Page = () => {
                               alt="shape"
                               fill
                               priority
+                              onError={(e) => {
+                                e.currentTarget.src = "/images/placeholder.svg";
+                              }}
                             />
                           </span>
                         </h1>

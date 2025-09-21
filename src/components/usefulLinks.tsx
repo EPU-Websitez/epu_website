@@ -19,6 +19,9 @@ export default function UsefulLink() {
           fill
           priority
           className="w-full h-auto object-cover opacity-25"
+          onError={(e) => {
+            e.currentTarget.src = "/images/placeholder.svg";
+          }}
         />
         <div className="flex sm:justify-between justify-center sm:flex-row flex-col sm:items-center sm:gap-5 gap-8 items-start h-full max-w-[1000px] w-full z-10 px-3">
           <div className="flex_start flex-col sm:gap-8 gap-3">

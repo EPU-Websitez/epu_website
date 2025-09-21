@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+import { process.env.NEXT_PUBLIC_BASE_URL } from "@/libs/env";
 import AnniversaryClient from "./AnniversaryClient";
 
 // --- Server-side function to generate STATIC metadata ---
@@ -13,7 +13,7 @@ export async function generateMetadata({
   const pageDescription =
     "Celebrate the milestones and achievements of Erbil Polytechnic University. Discover our history and anniversary events.";
 
-  const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
   return {
     metadataBase: new URL(baseUrl),

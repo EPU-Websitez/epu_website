@@ -14,7 +14,7 @@ import {
   FaPhone,
   FaXmark,
 } from "react-icons/fa6";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { FaExternalLinkAlt, FaMapMarkerAlt } from "react-icons/fa";
 
@@ -146,7 +146,7 @@ const PostgraduateClient = () => {
   const programsListRef = useRef<HTMLDivElement>(null);
   const { data: programsData, loading: isLoading } =
     useFetch<PostgraduateResponse>(
-      `${API_URL}/website/programs/postgraduate?page=1&limit=1&is_active=true`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/programs/postgraduate?page=1&limit=1&is_active=true`,
       locale
     );
 
@@ -271,6 +271,9 @@ const PostgraduateClient = () => {
                       fill
                       priority
                       className="w-full h-full object-cover rounded-2xl"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
                     />
                   </div>
                 </div>
@@ -310,6 +313,10 @@ const PostgraduateClient = () => {
                                   fill
                                   priority
                                   className="object-cover"
+                                  onError={(e) => {
+                                    e.currentTarget.src =
+                                      "/images/placeholder.svg";
+                                  }}
                                 />
                               </span>
                             ) : (

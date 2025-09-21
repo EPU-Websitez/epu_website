@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import AboutKurdistanClient from "./AboutKurdistanClient"; // Import the new client component
 
 // --- Interface for the data needed for metadata ---
@@ -18,7 +18,7 @@ export async function generateMetadata({
     const { locale } = await params;
 
     const response = await fetch(
-      `${API_URL}/website/universities/about-kurdistan`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/universities/about-kurdistan`,
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
@@ -33,7 +33,7 @@ export async function generateMetadata({
       pageData.description ||
       "Discover the rich culture and history of Kurdistan.";
 
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

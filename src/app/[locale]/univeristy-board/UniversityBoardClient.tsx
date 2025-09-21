@@ -6,7 +6,7 @@ import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import useFetch from "@/libs/hooks/useFetch";
-import { API_URL } from "@/libs/env";
+
 import { useParams } from "next/navigation";
 
 // -------- Interfaces --------
@@ -56,7 +56,7 @@ const UniversityBoardClient = () => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const { data: leadsData, loading: leadsLoading } = useFetch<LeadsResponse>(
-    `${API_URL}/website/universities/leads`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/universities/leads`,
     locale
   );
 
@@ -68,7 +68,7 @@ const UniversityBoardClient = () => {
     if (pageNum > 1) setIsLoadingMore(true);
     try {
       const res = await fetch(
-        `${API_URL}/website/universities/staff?page=${pageNum}&limit=6`,
+        `${process.env.NEXT_PUBLIC_API_URL}/website/universities/staff?page=${pageNum}&limit=6`,
         {
           headers: {
             "website-language": locale || "en",
@@ -115,6 +115,9 @@ const UniversityBoardClient = () => {
                 fill
                 priority
                 className="w-full h-auto object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
               />
               <div className="max-w-[1024px] w-full flex justify-between items-start sm:gap-10 gap-5 sm:mt-20 mt-10 text-white z-10 px-3 sm:flex-row flex-col">
                 <div className="flex_start flex-col sm:gap-10 gap-8">
@@ -138,6 +141,9 @@ const UniversityBoardClient = () => {
                     fill
                     priority
                     className="w-full h-auto object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/placeholder.svg";
+                    }}
                   />
                 </div>
                 <h4 className="lg:text-xl text-base sm:hidden block tracking-wide">

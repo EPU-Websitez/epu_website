@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { FiLink } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
@@ -89,6 +89,9 @@ const MouModal = ({
             alt={mou.title}
             fill
             className="object-cover sm:rounded-3xl rounded-lg"
+            onError={(e) => {
+              e.currentTarget.src = "/images/placeholder.svg";
+            }}
           />
         </div>
         <div className="flex flex-col gap-4 text-center sm:text-left">
@@ -163,7 +166,7 @@ const MouClient = () => {
     loading,
     error,
   } = useFetch<MouResponse>(
-    `${API_URL}/website/memorandum-of-understanding?page=${page}&limit=${limit}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/memorandum-of-understanding?page=${page}&limit=${limit}`,
     locale
   );
 
@@ -228,6 +231,9 @@ const MouClient = () => {
                           fill
                           priority={i < 6}
                           className="w-full h-full object-contain rounded-md transition-transform group-hover:scale-105"
+                          onError={(e) => {
+                            e.currentTarget.src = "/images/placeholder.svg";
+                          }}
                         />
                       </div>
                     </div>

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import SubHeader from "./subHeader";
 import { useTranslations } from "next-intl";
 import { HiOutlineLink } from "react-icons/hi2";
-import { API_URL } from "@/libs/env";
+
 import { PiHandHeart } from "react-icons/pi";
 import useSWR from "swr"; // Switched to useSWR for consistency and better caching
 
@@ -106,7 +106,7 @@ const Grants = ({ teacherId, locale = "en" }: Props) => {
       },
     }).then((res) => res.json());
   const { data, error, isLoading } = useSWR<GrantsResponse>(
-    `${API_URL}/website/teachers/${teacherId}/grants?page=${page}&limit=${limit}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${teacherId}/grants?page=${page}&limit=${limit}`,
     fetcher
   );
 
@@ -144,7 +144,7 @@ const Grants = ({ teacherId, locale = "en" }: Props) => {
     if (!filePath) return;
     setDownloadingFiles((prev) => new Set(prev).add(filePath));
     try {
-      const fileUrl = new URL(filePath, API_URL).href;
+      const fileUrl = new URL(filePath, process.env.NEXT_PUBLIC_API_URL).href;
       const res = await fetch(fileUrl, { mode: "cors" });
       if (!res.ok) throw new Error(`Failed to fetch file: ${res.status}`);
 
@@ -161,7 +161,10 @@ const Grants = ({ teacherId, locale = "en" }: Props) => {
       URL.revokeObjectURL(objectUrl);
     } catch (e) {
       console.error("Download failed:", e);
-      window.open(new URL(filePath, API_URL).href, "_blank");
+      window.open(
+        new URL(filePath, process.env.NEXT_PUBLIC_API_URL).href,
+        "_blank"
+      );
     } finally {
       setDownloadingFiles((prev) => {
         const newSet = new Set(prev);

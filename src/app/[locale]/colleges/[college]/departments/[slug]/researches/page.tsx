@@ -24,7 +24,7 @@ import { IoArrowForwardOutline, IoBriefcaseOutline } from "react-icons/io5";
 import { LuUsers } from "react-icons/lu";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 interface Department {
@@ -244,9 +244,11 @@ const Page = () => {
   const buildFileUrl = (path: string) => {
     // Supports absolute or relative paths
     try {
-      return path.startsWith("http") ? path : new URL(path, API_URL).href;
+      return path.startsWith("http")
+        ? path
+        : new URL(path, process.env.NEXT_PUBLIC_API_URL).href;
     } catch {
-      return `${API_URL}${path}`;
+      return `${process.env.NEXT_PUBLIC_API_URL}${path}`;
     }
   };
 
@@ -278,7 +280,9 @@ const Page = () => {
     if (selectedDates.from) qs.set("date_from", selectedDates.from);
     if (selectedDates.to) qs.set("date_to", selectedDates.to);
 
-    return `${API_URL}/website/departments/${slug}/research?${qs.toString()}`;
+    return `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/website/departments/${slug}/research?${qs.toString()}`;
   }, [
     slug,
     page,

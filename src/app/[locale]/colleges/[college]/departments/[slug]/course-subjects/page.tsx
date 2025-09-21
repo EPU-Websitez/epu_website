@@ -9,7 +9,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { BsBook } from "react-icons/bs";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa6";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // ---------------- Types ----------------
@@ -206,7 +206,9 @@ const Page = () => {
     if (selectedCourseType) qp.set("course_type", selectedCourseType);
     if (selectedLanguage) qp.set("language", selectedLanguage);
     if (searchText.trim()) qp.set("search", searchText.trim());
-    return `${API_URL}/website/departments/${slug}/subjects?${qp.toString()}`;
+    return `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/website/departments/${slug}/subjects?${qp.toString()}`;
   }, [
     slug,
     currentPage,
@@ -220,7 +222,7 @@ const Page = () => {
   // Curriculums
   const { data: curriculumsData, loading: curriculumsLoading } =
     useFetch<CurriculumResponse>(
-      `${API_URL}/website/departments/${slug}/curriculums?page=1&limit=20`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/departments/${slug}/curriculums?page=1&limit=20`,
       locale
     );
 

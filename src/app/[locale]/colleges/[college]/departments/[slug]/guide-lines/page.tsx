@@ -19,7 +19,7 @@ import { IoArrowForwardOutline, IoBriefcaseOutline } from "react-icons/io5";
 import { LuUsers } from "react-icons/lu";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // --- Interfaces (No Changes) ---
@@ -160,7 +160,7 @@ const Page = () => {
     loading: guidesLoading,
     error: guidesError,
   } = useFetch<GraduationGuideResponse>(
-    `${API_URL}/website/departments/${slug}/graduation-guides?page=1&limit=10`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/departments/${slug}/graduation-guides?page=1&limit=10`,
     locale
   );
 
@@ -170,7 +170,7 @@ const Page = () => {
   ) => {
     setDownloadingFiles((prev) => new Set(prev).add(filePath));
     try {
-      const fileUrl = new URL(filePath, API_URL).href;
+      const fileUrl = new URL(filePath, process.env.NEXT_PUBLIC_API_URL).href;
       const res = await fetch(fileUrl, { mode: "cors" });
       if (!res.ok) throw new Error(`Failed to fetch file: ${res.status}`);
       const blob = await res.blob();
@@ -207,7 +207,7 @@ const Page = () => {
   };
 
   const handleFilePreview = (filePath: string) => {
-    const fileUrl = new URL(filePath, API_URL).href;
+    const fileUrl = new URL(filePath, process.env.NEXT_PUBLIC_API_URL).href;
     window.open(fileUrl, "_blank", "noopener,noreferrer");
   };
 

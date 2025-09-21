@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { GoBriefcase } from "react-icons/go";
 import { IoArrowForwardOutline } from "react-icons/io5";
 import { PiStudent } from "react-icons/pi";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // Interfaces
@@ -110,7 +110,7 @@ const DepartmentsPageClient = () => {
     loading,
     error,
   } = useFetch<DepartmentsResponse>(
-    `${API_URL}/website/departments?page=${page}&limit=${limit}&college_subdomain=${college}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/departments?page=${page}&limit=${limit}&college_subdomain=${college}`,
     locale
   );
 
@@ -179,6 +179,9 @@ const DepartmentsPageClient = () => {
                     alt={department.title}
                     fill
                     priority={i < 4}
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/placeholder.svg";
+                    }}
                   />
                 </Link>
                 <Link

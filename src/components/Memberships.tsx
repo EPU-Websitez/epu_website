@@ -4,7 +4,7 @@ import SubHeader from "./subHeader";
 import { useTranslations } from "next-intl";
 import { BsBarChart } from "react-icons/bs";
 import { HiOutlineLink } from "react-icons/hi2";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { PiSealCheck } from "react-icons/pi";
 import { FaUsers } from "react-icons/fa6";
@@ -77,7 +77,7 @@ const Memberships = ({ teacherId }: Props) => {
   const locale = useParams()?.locale as string;
 
   const { data, loading, error, refetch } = useFetch<Response>(
-    `${API_URL}/website/teachers/${teacherId}/memberships?page=${page}&limit=${limit}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${teacherId}/memberships?page=${page}&limit=${limit}`,
     locale
   );
 
@@ -111,7 +111,7 @@ const Memberships = ({ teacherId }: Props) => {
 
   // Handle file download
   const handleFileDownload = (filePath: string) => {
-    const fileUrl = `${API_URL}/${filePath}`;
+    const fileUrl = `${process.env.NEXT_PUBLIC_API_URL}/${filePath}`;
     const fileName = getFileName(filePath);
 
     // Create a temporary anchor element to trigger download

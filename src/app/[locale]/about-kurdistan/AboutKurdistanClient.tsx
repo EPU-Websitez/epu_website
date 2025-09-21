@@ -3,7 +3,7 @@
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { useParams } from "next/navigation";
 
@@ -60,7 +60,7 @@ const AboutKurdistanClient = () => {
   const locale = (params.locale as string) || "en";
 
   const { data: aboutData, loading: isLoading } = useFetch<AboutKurdistanData>(
-    `${API_URL}/website/universities/about-kurdistan`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/universities/about-kurdistan`,
     locale
   );
 
@@ -78,6 +78,9 @@ const AboutKurdistanClient = () => {
             fill
             priority
             className="w-full h-full object-cover sm:rounded-3xl rounded-lg"
+            onError={(e) => {
+              e.currentTarget.src = "/images/placeholder.svg";
+            }}
           />
         </div>
         <h2 className="font-semibold sm:text-titleNormal text-xl text-secondary">
@@ -103,6 +106,9 @@ const AboutKurdistanClient = () => {
                 fill
                 priority
                 className="w-full h-full object-cover sm:rounded-3xl rounded-lg"
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
               />
             </div>
 
@@ -127,6 +133,9 @@ const AboutKurdistanClient = () => {
                   fill
                   priority
                   className="w-full h-full object-cover sm:rounded-3xl rounded-lg"
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/placeholder.svg";
+                  }}
                 />
               </div>
 

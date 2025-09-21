@@ -20,7 +20,7 @@ import { FaChevronDown, FaXmark } from "react-icons/fa6";
 import { LuArrowRight } from "react-icons/lu";
 import { CiCalendar, CiSearch } from "react-icons/ci";
 import NewsCard from "@/components/newsCard";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // --- INTERFACE DEFINITIONS ---
@@ -230,13 +230,13 @@ const NewsClient = () => {
 
   // --- Data Fetching ---
   const { data: sliderData, loading: sliderLoading } = useFetch<NewsResponse>(
-    `${API_URL}/website/news?limit=10&page=1`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/news?limit=10&page=1`,
     locale
   );
 
   const { data: categoriesData, loading: categoriesLoading } =
     useFetch<CategoryResponse>(
-      `${API_URL}/website/news/categories/list`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/news/categories/list`,
       locale
     );
 
@@ -245,7 +245,9 @@ const NewsClient = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", currentPage.toString());
     params.set("limit", "4");
-    return `${API_URL}/website/news?${params.toString()}`;
+    return `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/website/news?${params.toString()}`;
   }, [searchParams, currentPage]);
 
   const { data: newsData, loading: newsLoading } = useFetch<NewsResponse>(
@@ -356,6 +358,9 @@ const NewsClient = () => {
                     fill
                     priority
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/placeholder.svg";
+                    }}
                   />
                   <div className="absolute left-0 top-0 ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-[#1b417bc7] to-transparent w-full h-full"></div>
 

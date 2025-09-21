@@ -9,7 +9,7 @@ import { IoBriefcaseOutline } from "react-icons/io5";
 import { LuUsers } from "react-icons/lu";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // Interfaces
@@ -128,7 +128,10 @@ const Page = () => {
     data: departmentData,
     loading,
     error,
-  } = useFetch<Department>(`${API_URL}/website/departments/${slug}`, locale);
+  } = useFetch<Department>(
+    `${process.env.NEXT_PUBLIC_API_URL}/website/departments/${slug}`,
+    locale
+  );
 
   // Generate consistent stats based on department ID
   const generateStats = (departmentId?: number) => {

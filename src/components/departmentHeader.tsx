@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { API_URL } from "@/libs/env";
+
 import useSWR from "swr";
 
 // --- Import necessary icons ---
@@ -61,7 +61,9 @@ const DepartmentHeader = () => {
       },
     }).then((res) => res.json());
   const { data, error, isLoading } = useSWR<Response>(
-    slug ? `${API_URL}/website/departments/${slug}` : null,
+    slug
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/departments/${slug}`
+      : null,
     fetcher,
     {
       dedupingInterval: 1000 * 60 * 60, // 1 hour
@@ -99,6 +101,9 @@ const DepartmentHeader = () => {
         fill
         priority
         className="w-full h-auto object-cover"
+        onError={(e) => {
+          e.currentTarget.src = "/images/placeholder.svg";
+        }}
       />
       <div className="z-20 flex_start flex-col max-w-[1040px] w-full md:gap-8 gap-4 text-white px-3">
         <div className="flex_center gap-2 group relative">

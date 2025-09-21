@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react"; // --- CHANGE: Imported useState
 import useSWR from "swr";
-import { API_URL } from "@/libs/env";
 
 // --- (Type Definitions and Skeleton remain the same) ---
 interface ImageType {
@@ -45,7 +44,7 @@ const InternationalRelationsHeader = () => {
     }).then((res) => res.json());
 
   const { data, error, isLoading } = useSWR<InternationalRelationsResponse>(
-    `${API_URL}/website/international-relations?page=1&limit=1`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/international-relations?page=1&limit=1`,
     fetcher,
     {
       dedupingInterval: 1000 * 60 * 60,
@@ -97,6 +96,9 @@ const InternationalRelationsHeader = () => {
         fill
         priority
         className="w-full h-full object-cover"
+        onError={(e) => {
+          e.currentTarget.src = "/images/placeholder.svg";
+        }}
       />
       <div className="ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary to-transparent absolute top-0 left-0 w-full h-full z-10"></div>
       <h3 className="absolute leading-relaxed z-20 text-white top-10 sm:ltr:left-10 ltr:left-5 sm:rtl:right-10 rtl:right-5 lg:text-[28px] text-sm max-w-[710px]">

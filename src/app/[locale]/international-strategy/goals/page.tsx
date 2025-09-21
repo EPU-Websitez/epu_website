@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import React from "react";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // -------- Interfaces --------
@@ -52,7 +52,7 @@ const Page = () => {
   // Fetch the goals for this strategy
   const { data, error, loading } = useFetch<GoalsResponse>(
     id
-      ? `${API_URL}/website/international-strategies/international-strategy/${id}/goals`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/international-strategies/international-strategy/${id}/goals`
       : "",
     locale
   );

@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaAngleRight } from "react-icons/fa6";
 import { IoArrowForwardOutline } from "react-icons/io5";
 import { PiStudent } from "react-icons/pi";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 /* ============================
@@ -106,7 +106,7 @@ const ProgramsClient = () => {
 
   const { data: mainProgramsResponse, loading: mainLoading } =
     useFetch<ProgramListResponse>(
-      `${API_URL}/website/programs?page=1&limit=1`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/programs?page=1&limit=1`,
       locale
     );
 
@@ -132,7 +132,7 @@ const ProgramsClient = () => {
 
     try {
       const res = await fetch(
-        `${API_URL}/website/programs/departments-by-college?college_type=${type}&limit=${LIMIT}&page=${pageNum}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/website/programs/departments-by-college?college_type=${type}&limit=${LIMIT}&page=${pageNum}`,
         {
           headers: {
             "website-language": locale || "en",
@@ -244,6 +244,9 @@ const ProgramsClient = () => {
                     fill
                     priority
                     className="w-full h-full object-cover rounded-2xl"
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/placeholder.svg";
+                    }}
                   />
                 ) : (
                   <div className="w-full h-full bg-white/20 rounded-2xl" />
@@ -340,6 +343,10 @@ const ProgramsClient = () => {
                                   alt={dept.title}
                                   fill
                                   priority
+                                  onError={(e) => {
+                                    e.currentTarget.src =
+                                      "/images/placeholder.svg";
+                                  }}
                                 />
                               ) : (
                                 <div className="w-full h-full bg-white/50" />

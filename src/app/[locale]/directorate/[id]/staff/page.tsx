@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { BiMinus } from "react-icons/bi";
 import { GoPlus } from "react-icons/go";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import Image from "next/image";
 import SubUnits from "@/components/SubUnits";
@@ -110,13 +110,15 @@ const Page = () => {
   };
   // Fetch parent info for sidebar navigation
   const { data: directorateInfo } = useFetch<DirectorateParentInfo>(
-    id ? `${API_URL}/website/directorates/${id}` : "",
+    id ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}` : "",
     locale
   );
 
   // Fetch data for the lead member
   const { data: leadsData, loading: leadsLoading } = useFetch<LeadsResponse>(
-    id ? `${API_URL}/website/directorates/${id}/leads?page=1&limit=1` : "",
+    id
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}/leads?page=1&limit=1`
+      : "",
     locale
   );
 
@@ -132,7 +134,7 @@ const Page = () => {
     if (page > 1) setIsLoadingMore(true);
     try {
       const res = await fetch(
-        `${API_URL}/website/directorates/${id}/staff?page=${page}&limit=4`,
+        `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}/staff?page=${page}&limit=4`,
         {
           headers: {
             "website-language": locale || "en",
@@ -220,6 +222,9 @@ const Page = () => {
                           fill
                           priority
                           className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
+                          onError={(e) => {
+                            e.currentTarget.src = "/images/placeholder.svg";
+                          }}
                         />
                       </div>
                       <div className="flex_start flex-col gap-5">
@@ -236,6 +241,9 @@ const Page = () => {
                               alt="shape"
                               fill
                               priority
+                              onError={(e) => {
+                                e.currentTarget.src = "/images/placeholder.svg";
+                              }}
                             />
                           </span>
                         </h1>

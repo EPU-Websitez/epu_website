@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+import { process.env.NEXT_PUBLIC_BASE_URL } from "@/libs/env";
 import CollegesClient from "./CollegesClient"; // Import the client component
 
 // This function now accepts 'searchParams' to generate dynamic metadata
@@ -24,7 +24,7 @@ export async function generateMetadata({
       ? "Explore the specialized institutes at Erbil Polytechnic University."
       : "Discover the diverse colleges and academic programs at Erbil Polytechnic University.";
 
-  const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
   return {
     metadataBase: new URL(baseUrl),

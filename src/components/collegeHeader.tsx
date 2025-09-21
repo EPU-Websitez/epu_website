@@ -8,7 +8,6 @@ import "swiper/css";
 import { Swiper as SwiperCore } from "swiper/types";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css/pagination";
-import { API_URL } from "@/libs/env";
 
 interface Response {
   id: number;
@@ -57,7 +56,9 @@ const CollegeHeader = () => {
       },
     }).then((res) => res.json());
   const { data, error, isLoading } = useSWR<Response>(
-    college ? `${API_URL}/website/colleges/${college}` : null,
+    college
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}`
+      : null,
     fetcher,
     {
       dedupingInterval: 1000 * 60 * 60, // 1 hour
@@ -95,6 +96,9 @@ const CollegeHeader = () => {
                 priority
                 src={"/images/small-logo.png"}
                 alt="logo"
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
               ></Image>
             </div>
           </div>
@@ -122,6 +126,9 @@ const CollegeHeader = () => {
                 fill
                 priority
                 className="w-full h-full object-cover rounded-3xl"
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
               />
             </SwiperSlide>
           ))}
@@ -134,6 +141,9 @@ const CollegeHeader = () => {
             fill
             priority
             className="w-full h-full object-cover rounded-3xl"
+            onError={(e) => {
+              e.currentTarget.src = "/images/placeholder.svg";
+            }}
           />
         </div>
       )}

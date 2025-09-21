@@ -11,7 +11,7 @@ import {
 } from "next/navigation";
 import { useEffect, useState, useMemo, useRef } from "react";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import NewsCard from "@/components/newsCard";
 import SubUnits from "@/components/SubUnits";
@@ -195,7 +195,7 @@ const Page = () => {
   // --- Data Fetching ---
   const { data: directorateInfo, loading: directorateLoading } =
     useFetch<DirectorateParentInfo>(
-      id ? `${API_URL}/website/directorates/${id}` : "",
+      id ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}` : "",
       locale
     );
 
@@ -209,7 +209,9 @@ const Page = () => {
     if (currentSearch) urlParams.append("search", currentSearch);
     if (currentDates.from) urlParams.append("date_from", currentDates.from);
     if (currentDates.to) urlParams.append("date_to", currentDates.to);
-    return `${API_URL}/website/news?${urlParams.toString()}`;
+    return `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/website/news?${urlParams.toString()}`;
   }, [id, currentPage, currentSearch, currentDates]);
 
   const { data: newsData, loading: newsLoading } = useFetch<NewsResponse>(

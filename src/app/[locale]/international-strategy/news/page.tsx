@@ -10,7 +10,7 @@ import {
   usePathname,
   useSearchParams,
 } from "next/navigation";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { useEffect, useState, useMemo, useRef } from "react";
 import { CiCalendar, CiSearch } from "react-icons/ci";
@@ -194,7 +194,9 @@ const Page = () => {
     if (currentSearch) urlParams.append("search", currentSearch);
     if (currentDates.from) urlParams.append("date_from", currentDates.from);
     if (currentDates.to) urlParams.append("date_to", currentDates.to);
-    return `${API_URL}/website/news?${urlParams.toString()}`;
+    return `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/website/news?${urlParams.toString()}`;
   }, [id, currentPage, currentSearch, currentDates]);
 
   // --- Data Fetching ---

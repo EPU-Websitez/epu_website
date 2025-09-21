@@ -14,7 +14,7 @@ import {
   MdNavigateBefore,
 } from "react-icons/md";
 import { FaTimes } from "react-icons/fa";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { Pagination } from "swiper/modules";
 import "swiper/css/pagination";
@@ -107,6 +107,9 @@ const GalleryModal = ({
           alt={`Gallery image ${currentIndex + 1}`}
           fill
           className="object-contain"
+          onError={(e) => {
+            e.currentTarget.src = "/images/placeholder.svg";
+          }}
         />
       </div>
 
@@ -172,7 +175,7 @@ const Page = () => {
 
   const { data: directorateData, loading: isLoading } =
     useFetch<DirectorateDetail>(
-      `${API_URL}/website/directorates/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}`,
       locale
     );
 
@@ -263,6 +266,10 @@ const Page = () => {
                                     fill
                                     priority
                                     className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      e.currentTarget.src =
+                                        "/images/placeholder.svg";
+                                    }}
                                   />
                                 </button>
                               ))}

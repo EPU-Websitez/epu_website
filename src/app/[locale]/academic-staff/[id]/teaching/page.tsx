@@ -9,7 +9,6 @@ import { useTranslations } from "next-intl";
 import AcademicStaffHeader from "@/components/AcademicStaffHeader";
 import SubHeader from "@/components/subHeader";
 import useFetch from "@/libs/hooks/useFetch"; // --- CHANGE: Using your primary useFetch hook
-import { API_URL } from "@/libs/env";
 
 // --- TYPE DEFINITIONS ---
 interface Teaching {
@@ -49,7 +48,7 @@ const Page = () => {
 
   // --- CHANGE: Data fetching uses useFetch with the page state in the URL ---
   const { data, loading } = useFetch<TeachingsResponse>(
-    `${API_URL}/website/teachers/${id}/teachings?page=${page}&limit=${LIMIT}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}/teachings?page=${page}&limit=${LIMIT}`,
     locale // Pass locale for the header
   );
 

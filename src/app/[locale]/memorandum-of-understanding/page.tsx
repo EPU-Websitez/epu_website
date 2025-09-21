@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import MouClient from "./MouClient";
 
 // --- Interface for metadata fetching ---
@@ -21,7 +21,7 @@ export async function generateMetadata({
   try {
     // Fetch the first MOU to use its image for OpenGraph tags
     const response = await fetch(
-      `${API_URL}/website/memorandum-of-understanding?page=1&limit=1`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/memorandum-of-understanding?page=1&limit=1`,
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
@@ -35,7 +35,7 @@ export async function generateMetadata({
     const pageDescription =
       "Explore the memorandums of understanding and partnerships established by Erbil Polytechnic University with local and international institutions.";
 
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

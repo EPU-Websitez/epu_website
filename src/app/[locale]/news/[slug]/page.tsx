@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import NewsDetailClient from "./NewsDetailClient";
 
 // --- Interface for metadata fetching ---
@@ -24,10 +24,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug, locale } = await params;
   try {
-    const response = await fetch(`${API_URL}/website/news/${slug}`, {
-      headers: { "website-language": locale || "en" },
-      next: { revalidate: 3600 }, // Cache for 1 hour
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/website/news/${slug}`,
+      {
+        headers: { "website-language": locale || "en" },
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to fetch news metadata");
@@ -43,7 +46,7 @@ export async function generateMetadata({
       newsData.gallery?.[0]?.image?.lg ||
       "/images/news.png";
 
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

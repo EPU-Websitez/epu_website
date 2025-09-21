@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { BiMinus } from "react-icons/bi";
 import { GoPlus } from "react-icons/go";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { API_URL } from "@/libs/env";
 
 // -------- Interfaces --------
 interface UnitItem {
@@ -62,7 +61,7 @@ const SubUnits = () => {
     if (pageNum > 1) setIsLoadingMore(true);
     try {
       const res = await fetch(
-        `${API_URL}/website/directorates?parent_id=${pId}&page=${pageNum}&limit=5`,
+        `${process.env.NEXT_PUBLIC_API_URL}/website/directorates?parent_id=${pId}&page=${pageNum}&limit=5`,
         {
           headers: {
             "Content-Type": "application/json",

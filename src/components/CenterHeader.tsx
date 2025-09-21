@@ -8,7 +8,7 @@ import "swiper/css/pagination";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import useSWR from "swr";
-import { API_URL } from "@/libs/env";
+
 import SubHeader from "./subHeader";
 
 interface CenterResponse {
@@ -61,7 +61,7 @@ const CenterHeader = () => {
       },
     }).then((res) => res.json());
   const { data, error, isLoading } = useSWR<CenterResponse>(
-    slug ? `${API_URL}/website/centers/${slug}` : null,
+    slug ? `${process.env.NEXT_PUBLIC_API_URL}/website/centers/${slug}` : null,
     fetcher,
     {
       dedupingInterval: 1000 * 60 * 60, // 1 hour
@@ -114,6 +114,9 @@ const CenterHeader = () => {
                   fill
                   priority
                   className="w-full h-full object-cover rounded-3xl"
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/placeholder.svg";
+                  }}
                 />
               </div>
             </SwiperSlide>

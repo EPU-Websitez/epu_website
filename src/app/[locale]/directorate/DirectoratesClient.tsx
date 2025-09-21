@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import { FiChevronRight } from "react-icons/fi";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // -------- Interfaces --------
@@ -85,13 +85,13 @@ const DirectoratesClient = () => {
 
   // --- API Fetching ---
   const { data: typesData } = useFetch<DirectoratesTypeResponse>(
-    `${API_URL}/website/directorates/types/list?page=1&limit=4`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/types/list?page=1&limit=4`,
     locale
   );
 
   const { data: directoratesData } = useFetch<DirectoratesResponse>(
     activeTypeId
-      ? `${API_URL}/website/directorates?page=${page}&limit=8&directorate_type_id=${activeTypeId}`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates?page=${page}&limit=8&directorate_type_id=${activeTypeId}`
       : "",
     locale
   );
@@ -171,6 +171,9 @@ const DirectoratesClient = () => {
               fill
               priority
               className="w-full h-full rounded-3xl object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/images/placeholder.svg";
+              }}
             />
           </div>
         )}
@@ -239,6 +242,10 @@ const DirectoratesClient = () => {
                                 width={32}
                                 height={32}
                                 className="w-8 h-8 rounded-full border-2 border-white shadow-lg object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.src =
+                                    "/images/placeholder.svg";
+                                }}
                               />
                             </div>
                           ))}

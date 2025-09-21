@@ -27,6 +27,9 @@ const MemberCard: React.FC<MemberCardProps> = ({
             fill
             priority
             className="w-full h-auto object-cover rounded-full"
+            onError={(e) => {
+              e.currentTarget.src = "/images/placeholder.svg";
+            }}
           />
         </Link>
       </div>

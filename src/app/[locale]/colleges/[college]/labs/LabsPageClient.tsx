@@ -9,7 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { FaArrowRight } from "react-icons/fa6";
 
@@ -108,7 +108,7 @@ const LabsPageClient = () => {
     loading: labsLoading,
     error: labsError,
   } = useFetch<LaboratoriesResponse>(
-    `${API_URL}/website/colleges/${college}/laboratories?page=${page}&limit=${limit}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}/laboratories?page=${page}&limit=${limit}`,
     locale
   );
 
@@ -169,6 +169,9 @@ const LabsPageClient = () => {
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 priority
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
               />
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-[#1B417B8A] to-transparent z-10 group-hover:bg-primary duration-200 group-hover:bg-opacity-40"></div>
               <div className="flex_center text-sm rounded-lg border border-white gap-3 z-20 absolute ltr:left-10 rtl:right-10 bottom-5 px-4 py-2 opacity-0 group-hover:opacity-100 duration-300">

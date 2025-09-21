@@ -1,7 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -82,6 +82,9 @@ const StoryModal = ({ story, onClose }: StoryModalProps) => {
             alt={story.full_name}
             fill
             className="object-cover"
+            onError={(e) => {
+              e.currentTarget.src = "/images/placeholder.svg";
+            }}
           />
         </div>
         <div className="p-6">
@@ -130,7 +133,7 @@ const AlumniClient = () => {
     loading: isLoading,
     error: hasError,
   } = useFetch<AlumniResponse>(
-    `${API_URL}/website/alumni-students/main`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/alumni-students/main`,
     locale
   );
 
@@ -201,6 +204,9 @@ const AlumniClient = () => {
                           fill
                           priority
                           className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = "/images/placeholder.svg";
+                          }}
                         />
                       </div>
                       <div className="flex_center md:flex-row flex-row-reverse gap-5">
@@ -215,6 +221,9 @@ const AlumniClient = () => {
                             fill
                             priority
                             className="w-full h-full object-cover rounded-full"
+                            onError={(e) => {
+                              e.currentTarget.src = "/images/placeholder.svg";
+                            }}
                           />
                         </div>
                       </div>
@@ -299,6 +308,9 @@ const AlumniClient = () => {
                       fill
                       priority
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
                     />
                   </div>
                   <h3 className="text-smallTitle font-semibold px-3 mt-5 mb-3">
@@ -330,6 +342,9 @@ const AlumniClient = () => {
               fill
               priority
               className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/images/placeholder.svg";
+              }}
             />
             <div className="opacity-40 bg-primary absolute left-0 top-0 w-full h-full z-10"></div>
             <div className="w-[1024px] text-white text-opacity-90 px-3 flex_start flex-col gap-5 z-20">

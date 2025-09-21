@@ -3,7 +3,7 @@
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
@@ -50,7 +50,7 @@ const MissionClient = () => {
   const locale = (params?.locale as string) || "en";
 
   const { data: uniData, loading: isLoading } = useFetch<UniversityData>(
-    `${API_URL}/website/universities`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/universities`,
     locale
   );
 
@@ -106,6 +106,9 @@ const MissionClient = () => {
               fill
               priority
               className="object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/images/placeholder.svg";
+              }}
             />
           )}
         </div>

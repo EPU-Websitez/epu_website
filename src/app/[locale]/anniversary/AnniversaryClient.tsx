@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { Pagination } from "swiper/modules";
 import "swiper/css/pagination";
 import { FaCalendarAlt, FaTimes } from "react-icons/fa";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // -------- Interfaces --------
@@ -120,8 +120,11 @@ const AnniversaryClient = () => {
   const [page, setPage] = useState(1);
 
   const { data: anniversaryData, loading: sliderLoading } =
-    useFetch<AnniversaryData>(`${API_URL}/website/anniversary`, locale);
-  const gridUrl = `${API_URL}/website/anniversary/items?page=${page}&limit=6`;
+    useFetch<AnniversaryData>(
+      `${process.env.NEXT_PUBLIC_API_URL}/website/anniversary`,
+      locale
+    );
+  const gridUrl = `${process.env.NEXT_PUBLIC_API_URL}/website/anniversary/items?page=${page}&limit=6`;
   const { data: gridData, loading: gridLoading } = useFetch<ItemsResponse>(
     gridUrl,
     locale
@@ -200,6 +203,9 @@ const AnniversaryClient = () => {
                           fill
                           priority
                           className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = "/images/placeholder.svg";
+                          }}
                         />
                         <div className="absolute left-0 top-0 ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-[#1b417bc7] to-transparent w-full h-full"></div>
                         <div className="absolute inset-0 pointer-events-none z-10">
@@ -252,6 +258,9 @@ const AnniversaryClient = () => {
                     fill
                     priority
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/placeholder.svg";
+                    }}
                   />
                   <span className="bg-white py-1 px-3 rounded-md text-secondary font-semibold absolute md:ltr:left-5 ltr:left-3 md:rtl:right-5 rtl:right-3 md:top-5 top-3 z-10 md:text-sm text-xs">
                     {renderDate(item)}

@@ -8,7 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
@@ -97,7 +97,7 @@ const DepartmentCouncilPage = ({
   // State for Department Head (from leads endpoint)
   const [leads, setLeads] = useState<Lead[]>([]);
   const { data: leadsData, loading: leadsLoading } = useFetch<LeadsResponse>(
-    `${API_URL}/website/departments/${slug}/leads?page=1&limit=10`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/departments/${slug}/leads?page=1&limit=10`,
     locale
   );
 
@@ -109,7 +109,7 @@ const DepartmentCouncilPage = ({
     loading: staffLoading,
     error: staffError,
   } = useFetch<StaffResponse>(
-    `${API_URL}/website/departments/${slug}/staff?page=${staffPage}&limit=12`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/departments/${slug}/staff?page=${staffPage}&limit=12`,
     locale
   );
 
@@ -225,6 +225,9 @@ const DepartmentCouncilPage = ({
                       fill
                       priority
                       className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
                     />
                   </div>
                   <div className="flex_start flex-col gap-5">
@@ -241,6 +244,9 @@ const DepartmentCouncilPage = ({
                           alt="shape"
                           fill
                           priority
+                          onError={(e) => {
+                            e.currentTarget.src = "/images/placeholder.svg";
+                          }}
                         />
                       </span>
                     </h1>

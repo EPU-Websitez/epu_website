@@ -1,7 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -84,7 +84,7 @@ const StudentUnionClient = () => {
 
   const { data: mainData, loading: mainLoading } =
     useFetch<StudentUnionMainResponse>(
-      `${API_URL}/website/student-union?page=1&limit=1`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/student-union?page=1&limit=1`,
       locale
     );
 
@@ -97,14 +97,14 @@ const StudentUnionClient = () => {
   const { data: sectionsData, loading: sectionsLoading } =
     useFetch<SectionsResponse>(
       studentUnionSlug
-        ? `${API_URL}/website/student-union/${studentUnionSlug}/sections`
+        ? `${process.env.NEXT_PUBLIC_API_URL}/website/student-union/${studentUnionSlug}/sections`
         : "",
       locale
     );
   const { data: achievementsData, loading: achievementsLoading } =
     useFetch<AchievementsResponse>(
       studentUnionSlug
-        ? `${API_URL}/website/student-union/${studentUnionSlug}/achievements`
+        ? `${process.env.NEXT_PUBLIC_API_URL}/website/student-union/${studentUnionSlug}/achievements`
         : "",
       locale
     );
@@ -138,6 +138,9 @@ const StudentUnionClient = () => {
                 fill
                 priority
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
               />
             </div>
             <div className="lg:w-[250px] md:w-[208px] w-full lg:h-[430px] md:h-[360px] h-[245px] relative rounded-3xl overflow-hidden">
@@ -153,6 +156,9 @@ const StudentUnionClient = () => {
                 fill
                 priority
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
               />
             </div>
           </div>
@@ -185,6 +191,9 @@ const StudentUnionClient = () => {
                       alt={item.title}
                       width={28}
                       height={28}
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
                     />
                   </div>
                   <h4 className="font-semibold">{item.title}</h4>
@@ -212,6 +221,9 @@ const StudentUnionClient = () => {
                   fill
                   priority
                   className="w-full h-full object-cover rounded-lg z-10"
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/placeholder.svg";
+                  }}
                 />
                 <div className="w-full h-full absolute top-2 left-2 border-4 border-golden border-dashed"></div>
                 <span className="w-9 h-9 rounded-full bg-primary absolute ltr:-right-5 rtl:-left-5 -bottom-5 z-10"></span>

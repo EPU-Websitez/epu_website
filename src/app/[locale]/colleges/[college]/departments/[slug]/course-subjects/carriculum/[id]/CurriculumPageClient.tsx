@@ -4,7 +4,7 @@
 
 import { useEffect, useState, FC } from "react";
 import { useParams } from "next/navigation";
-import { API_URL } from "@/libs/env";
+
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 
@@ -118,7 +118,7 @@ const CurriculumPageClient = () => {
     const fetchSemestersAndSubjects = async () => {
       try {
         const semestersRes = await fetch(
-          `${API_URL}/website/departments/curriculum/${curriculumId}/semesters`,
+          `${process.env.NEXT_PUBLIC_API_URL}/website/departments/curriculum/${curriculumId}/semesters`,
           {
             headers: {
               "website-language": locale || "en",
@@ -130,7 +130,7 @@ const CurriculumPageClient = () => {
         const semestersWithSubjects = await Promise.all(
           semestersData.data.map(async (semester: Semester) => {
             const subjectsRes = await fetch(
-              `${API_URL}/website/departments/semester/${semester.id}/subjects`,
+              `${process.env.NEXT_PUBLIC_API_URL}/website/departments/semester/${semester.id}/subjects`,
               {
                 headers: {
                   "website-language": locale || "en",

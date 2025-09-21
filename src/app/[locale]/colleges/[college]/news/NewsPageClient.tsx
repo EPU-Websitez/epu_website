@@ -11,7 +11,7 @@ import {
   usePathname,
   useSearchParams,
 } from "next/navigation";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import NewsCard from "@/components/newsCard";
 import { CiCalendar, CiSearch } from "react-icons/ci";
@@ -235,7 +235,7 @@ const NewsPageClient = () => {
   // Fetch categories
   const { data: categoriesData, loading: categoriesLoading } =
     useFetch<CategoryResponse>(
-      `${API_URL}/website/news/categories/list`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/news/categories/list`,
       locale
     );
 
@@ -253,7 +253,9 @@ const NewsPageClient = () => {
     if (currentCategory !== "all")
       urlParams.append("category_slug", currentCategory);
 
-    return `${API_URL}/website/news?${urlParams.toString()}`;
+    return `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/website/news?${urlParams.toString()}`;
   }, [currentPage, college, currentSearch, currentDates, currentCategory]);
 
   const { data: newsData, loading: newsLoading } = useFetch<NewsResponse>(

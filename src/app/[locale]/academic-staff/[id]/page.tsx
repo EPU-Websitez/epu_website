@@ -1,6 +1,6 @@
 "use client";
 import AcademicStaffHeader from "@/components/AcademicStaffHeader";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -41,7 +41,7 @@ const Page = () => {
   const locale = params?.locale as string;
 
   const { data, loading } = useFetch<AcademicStaff>(
-    `${API_URL}/website/teachers/${id}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}`,
     locale
   );
 

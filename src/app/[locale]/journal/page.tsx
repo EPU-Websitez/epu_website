@@ -130,6 +130,9 @@ const Page = () => {
               fill
               priority
               className="w-full h-full object-cover rounded-2xl"
+              onError={(e) => {
+                e.currentTarget.src = "/images/placeholder.svg";
+              }}
             />
           </div>
         </div>
@@ -196,6 +199,9 @@ const Page = () => {
               fill
               priority
               className="w-full h-full object-cover rounded-2xl"
+              onError={(e) => {
+                e.currentTarget.src = "/images/placeholder.svg";
+              }}
             />
           </div>
         </div>

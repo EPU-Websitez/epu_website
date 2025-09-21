@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import AccommodationClient from "./AccommodationClient";
 
 // --- Interface for metadata fetching ---
@@ -23,7 +23,7 @@ export async function generateMetadata({
   const { locale } = await params;
   try {
     const response = await fetch(
-      `${API_URL}/website/student-accommodation/main`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/student-accommodation/main`,
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
@@ -42,7 +42,7 @@ export async function generateMetadata({
       .trim();
     const imageUrl =
       accommodationData.galleries?.[0]?.image?.lg || "/images/accomodation.png";
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

@@ -8,7 +8,7 @@ import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { GrLinkNext } from "react-icons/gr";
 import { HiOutlineLink } from "react-icons/hi2";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // ---------------- Skeleton ----------------
@@ -120,7 +120,8 @@ const SubjectDetailsPageClient = () => {
   );
 
   const subjectUrl = useMemo(
-    () => `${API_URL}/website/departments/subject/${subjectId}`,
+    () =>
+      `${process.env.NEXT_PUBLIC_API_URL}/website/departments/subject/${subjectId}`,
     [subjectId]
   );
 
@@ -147,7 +148,7 @@ const SubjectDetailsPageClient = () => {
     if (!filePath) return;
     setDownloadingFiles((prev) => new Set(prev).add(filePath));
     try {
-      const fileUrl = new URL(filePath, API_URL).href;
+      const fileUrl = new URL(filePath, process.env.NEXT_PUBLIC_API_URL).href;
       const res = await fetch(fileUrl, { mode: "cors" });
       if (!res.ok) throw new Error(`Failed to fetch file: ${res.status}`);
       const blob = await res.blob();
@@ -162,7 +163,7 @@ const SubjectDetailsPageClient = () => {
       URL.revokeObjectURL(objectUrl);
     } catch (e) {
       console.error(e);
-      const fileUrl = new URL(filePath, API_URL).href;
+      const fileUrl = new URL(filePath, process.env.NEXT_PUBLIC_API_URL).href;
       window.open(fileUrl, "_blank", "noopener,noreferrer");
     } finally {
       setDownloadingFiles((prev) => {

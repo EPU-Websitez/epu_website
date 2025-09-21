@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import UniversityBoardClient from "./UniversityBoardClient";
 
 // --- Interface for metadata fetching ---
@@ -25,10 +25,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   try {
-    const response = await fetch(`${API_URL}/website/universities/leads`, {
-      headers: { "website-language": locale || "en" },
-      next: { revalidate: 3600 }, // Cache for 1 hour
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/website/universities/leads`,
+      {
+        headers: { "website-language": locale || "en" },
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to fetch university leads data");
@@ -45,7 +48,7 @@ export async function generateMetadata({
     const pageDescription = `Meet the ${presidentData.role} of Erbil Polytechnic University, ${presidentData.teacher.full_name}, and the university council members.`;
     const imageUrl =
       presidentData.teacher.profile_image?.lg || "/images/bg.svg";
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

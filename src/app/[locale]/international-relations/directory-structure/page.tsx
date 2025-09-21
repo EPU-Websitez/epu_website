@@ -8,7 +8,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa6";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import InternationalRelationsHeader from "@/components/InternationalRelationsHeader";
 
@@ -58,7 +58,7 @@ const Page = () => {
     error,
   } = useFetch<DirectoryStructureResponse>(
     id
-      ? `${API_URL}/website/international-relations/international-relation/${id}/directory-structure`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/international-relations/international-relation/${id}/directory-structure`
       : "",
     locale
   );

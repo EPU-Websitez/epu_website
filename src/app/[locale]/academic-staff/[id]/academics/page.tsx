@@ -19,7 +19,6 @@ import { IoMdClose } from "react-icons/io";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
 // Utilities
-import { API_URL } from "@/libs/env";
 
 /* ============================
   TypeScript Types
@@ -262,7 +261,7 @@ const Page = () => {
   };
 
   const endpoint = endpoints[tab];
-  const url = `${API_URL}/website/teachers/${id}/${endpoint}?page=${page}&limit=${LIMIT}`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}/${endpoint}?page=${page}&limit=${LIMIT}`;
   const { data: hookData, loading } = useFetch<PagedResponse<DataItem>>(
     url,
     locale
@@ -297,7 +296,7 @@ const Page = () => {
     if (!filePath) return;
     setDownloadingFiles((prev) => new Set(prev).add(filePath));
     try {
-      const fileUrl = new URL(filePath, API_URL).href;
+      const fileUrl = new URL(filePath, process.env.NEXT_PUBLIC_API_URL).href;
       const res = await fetch(fileUrl, { mode: "cors" });
       if (!res.ok) throw new Error(`Failed to fetch file: ${res.status}`);
       const blob = await res.blob();
@@ -322,7 +321,7 @@ const Page = () => {
       URL.revokeObjectURL(objectUrl);
     } catch (e) {
       console.error(e);
-      const fileUrl = new URL(filePath, API_URL).href;
+      const fileUrl = new URL(filePath, process.env.NEXT_PUBLIC_API_URL).href;
       window.open(fileUrl, "_blank", "noopener,noreferrer");
     } finally {
       setDownloadingFiles((prev) => {
@@ -679,6 +678,10 @@ const Page = () => {
                                     alt="seminar icon"
                                     fill
                                     priority
+                                    onError={(e) => {
+                                      e.currentTarget.src =
+                                        "/images/placeholder.svg";
+                                    }}
                                   />
                                 </div>
                               </div>

@@ -8,7 +8,7 @@ import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import {
   FaPlus,
@@ -138,7 +138,7 @@ const NewsDetailClient = () => {
 
   // --- Data Fetching ---
   const { data: mainNews, loading: mainNewsLoading } = useFetch<NewsDetail>(
-    slug ? `${API_URL}/website/news/${slug}` : "",
+    slug ? `${process.env.NEXT_PUBLIC_API_URL}/website/news/${slug}` : "",
     locale
   );
 
@@ -148,7 +148,9 @@ const NewsDetailClient = () => {
       page: String(currentPage),
       limit: "4",
     });
-    return `${API_URL}/website/news/${slug}/related?${p.toString()}`;
+    return `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/website/news/${slug}/related?${p.toString()}`;
   }, [slug, currentPage]);
 
   const { data: relatedNewsData, loading: relatedNewsLoading } =
@@ -264,6 +266,9 @@ const NewsDetailClient = () => {
                   fill
                   priority
                   className="w-full h-full object-cover rounded-2xl"
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/placeholder.svg";
+                  }}
                 />
               </div>
 
@@ -338,6 +343,9 @@ const NewsDetailClient = () => {
                             fill
                             sizes="150px"
                             className="object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = "/images/placeholder.svg";
+                            }}
                           />
                         )}
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex_center">
@@ -535,6 +543,9 @@ const NewsDetailClient = () => {
                   fill
                   className="object-contain"
                   sizes="90vw"
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/placeholder.svg";
+                  }}
                 />
               )}
               <button
@@ -589,6 +600,9 @@ const NewsDetailClient = () => {
                         fill
                         className="object-cover"
                         sizes="80px"
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/placeholder.svg";
+                        }}
                       />
                     )}
                     {g.image.media_type === "VIDEO" && (

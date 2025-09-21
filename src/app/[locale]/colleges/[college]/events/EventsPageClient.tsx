@@ -8,7 +8,7 @@ import {
   usePathname,
   useSearchParams,
 } from "next/navigation";
-import { API_URL } from "@/libs/env";
+
 import CollegeHeader from "@/components/collegeHeader";
 import EventCard from "@/components/eventCards";
 import useFetch from "@/libs/hooks/useFetch";
@@ -99,7 +99,9 @@ const EventsPageClient = () => {
     if (currentSearch) {
       urlParams.append("search", currentSearch);
     }
-    return `${API_URL}/website/colleges/${college}/events?${urlParams.toString()}`;
+    return `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/website/colleges/${college}/events?${urlParams.toString()}`;
   }, [college, currentPage, currentSearch]);
 
   // --- Data Fetching ---

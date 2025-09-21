@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import ProgramsClient from "./ProgramsClient";
 
 // --- Interface for metadata fetching ---
@@ -23,10 +23,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   try {
-    const response = await fetch(`${API_URL}/website/programs?page=1&limit=1`, {
-      headers: { "website-language": locale || "en" },
-      next: { revalidate: 3600 }, // Cache for 1 hour
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/website/programs?page=1&limit=1`,
+      {
+        headers: { "website-language": locale || "en" },
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to fetch programs data");
@@ -42,7 +45,7 @@ export async function generateMetadata({
     const pageTitle = `${programData.title} | EPU`;
     const pageDescription = programData.description.substring(0, 160).trim();
     const imageUrl = programData.bg_image?.lg || "/images/programs-bg.png"; // Assuming a fallback image
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

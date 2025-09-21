@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import AboutPageClient from "./AboutPageClient"; // Import the new client component
 
 // --- Interface for the API data needed for metadata ---
@@ -16,10 +16,13 @@ export async function generateMetadata({
   try {
     const { locale } = await params;
 
-    const response = await fetch(`${API_URL}/website/universities/about-us`, {
-      headers: { "website-language": locale || "en" },
-      next: { revalidate: 3600 }, // Cache for 1 hour
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/website/universities/about-us`,
+      {
+        headers: { "website-language": locale || "en" },
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      }
+    );
 
     if (!response.ok) throw new Error("Failed to fetch metadata");
 
@@ -29,7 +32,7 @@ export async function generateMetadata({
       aboutData.description ||
       "Learn about the history, mission, and values of Erbil Polytechnic University.";
 
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

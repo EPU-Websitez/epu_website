@@ -4,7 +4,7 @@ import CollegeHeader from "@/components/collegeHeader";
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // Interfaces
@@ -58,7 +58,10 @@ const VisionAndMissionClient = () => {
     data: collegeData,
     loading: collegeLoading,
     error: collegeError,
-  } = useFetch<College>(`${API_URL}/website/colleges/${college}`, locale);
+  } = useFetch<College>(
+    `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}`,
+    locale
+  );
 
   if (collegeLoading) return <PageSkeleton />;
 

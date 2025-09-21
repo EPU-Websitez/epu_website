@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import useFetch from "@/libs/hooks/useFetch";
-import { API_URL } from "@/libs/env";
+
 import Image from "next/image";
 import Link from "next/link";
 import { CiMail } from "react-icons/ci";
@@ -114,14 +114,16 @@ const Page = () => {
   // Fetch for regular staff
   const { data, loading } = useFetch<StaffResponse>(
     slug
-      ? `${API_URL}/website/centers/${slug}/staff?page=${page}&limit=${limit}`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/centers/${slug}/staff?page=${page}&limit=${limit}`
       : "",
     locale
   );
 
   // --- ADDED: Fetch for Lead Member ---
   const { data: leadsData } = useFetch<LeadsResponse>(
-    slug ? `${API_URL}/website/centers/${slug}/leads?page=1&limit=1` : "",
+    slug
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/centers/${slug}/leads?page=1&limit=1`
+      : "",
     locale
   );
   // --- END ---
@@ -200,6 +202,9 @@ const Page = () => {
                       fill
                       priority
                       className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
                     />
                   </div>
                   <div className="flex_start flex-col gap-5 text-secondary">
@@ -216,6 +221,9 @@ const Page = () => {
                           alt="shape"
                           fill
                           priority
+                          onError={(e) => {
+                            e.currentTarget.src = "/images/placeholder.svg";
+                          }}
                         />
                       </span>
                     </h1>
@@ -246,6 +254,9 @@ const Page = () => {
                             alt={item.teacher.full_name}
                             fill
                             className="w-full h-full rounded-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = "/images/placeholder.svg";
+                            }}
                           />
                         </Link>
                       </div>

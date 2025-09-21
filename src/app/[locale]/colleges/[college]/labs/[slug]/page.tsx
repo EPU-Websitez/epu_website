@@ -1,7 +1,7 @@
 // src/app/[locale]/colleges/[college]/labs/[slug]/page.tsx
 
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import LabDetailsPageClient from "./LabDetailsPageClient";
 
 // Interface for the data needed for metadata
@@ -21,7 +21,7 @@ export async function generateMetadata({
     const { locale, college, slug } = await params;
 
     const response = await fetch(
-      `${API_URL}/website/colleges/${college}/laboratories/${slug}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}/laboratories/${slug}`,
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 },
@@ -37,7 +37,7 @@ export async function generateMetadata({
       labData.description?.substring(0, 160) ||
       `Details about the ${labData.name} at Erbil Polytechnic University.`;
     const imageUrl = labData.images?.[0]?.image?.lg || "/small-logo.png";
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

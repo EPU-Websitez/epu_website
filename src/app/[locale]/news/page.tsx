@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import NewsClient from "./NewsClient";
 
 // --- Interface for metadata fetching ---
@@ -20,10 +20,13 @@ export async function generateMetadata({
   const { locale } = await params;
   try {
     // Fetch the latest news item to use its image for OpenGraph tags
-    const response = await fetch(`${API_URL}/website/news?page=1&limit=1`, {
-      headers: { "website-language": locale || "en" },
-      next: { revalidate: 3600 }, // Cache for 1 hour
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/website/news?page=1&limit=1`,
+      {
+        headers: { "website-language": locale || "en" },
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      }
+    );
 
     const newsData: NewsMetadata = await response.json();
     const imageUrl = newsData?.data?.[0]?.cover_image?.lg || "/images/news.png";
@@ -32,7 +35,7 @@ export async function generateMetadata({
     const pageDescription =
       "Stay informed with the latest news, updates, and announcements from Erbil Polytechnic University. Explore articles on academic achievements, events, and campus life.";
 
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

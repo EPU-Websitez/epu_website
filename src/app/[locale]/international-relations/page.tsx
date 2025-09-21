@@ -11,7 +11,7 @@ import { FaChevronDown } from "react-icons/fa6";
 import { FiArrowRight } from "react-icons/fi";
 import { GoBook } from "react-icons/go";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // -------- Interfaces --------
@@ -115,7 +115,7 @@ const Page = () => {
     loading: relationLoading,
     error: relationError,
   } = useFetch<InternationalRelationResponse>(
-    `${API_URL}/website/international-relations?page=1&limit=1`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/international-relations?page=1&limit=1`,
     locale
   );
 
@@ -133,7 +133,7 @@ const Page = () => {
     error: unitsError,
   } = useFetch<UnitsResponse>(
     internationalRelationId
-      ? `${API_URL}/website/international-relations/international-relation/${internationalRelationId}/units`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/international-relations/international-relation/${internationalRelationId}/units`
       : "",
     locale
   );
@@ -145,7 +145,7 @@ const Page = () => {
     error: sectionsError,
   } = useFetch<SectionsResponse>(
     internationalRelationId
-      ? `${API_URL}/website/international-relations/international-relation/${internationalRelationId}/sections`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/international-relations/international-relation/${internationalRelationId}/sections`
       : "",
     locale
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -43,7 +43,7 @@ const VisionClient = () => {
   const locale = (params?.locale as string) || "en";
   const videoRef = useRef<HTMLVideoElement>(null);
   const { data: uniData, loading: isLoading } = useFetch<UniversityData>(
-    `${API_URL}/website/universities`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/universities`,
     locale
   );
 
@@ -99,6 +99,9 @@ const VisionClient = () => {
               fill
               priority
               className="object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/images/placeholder.svg";
+              }}
             />
           )}
         </div>

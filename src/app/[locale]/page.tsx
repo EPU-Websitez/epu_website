@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
 import HomePageClient from "./HomePageClient";
 
 // --- Interfaces can be defined here or imported ---
@@ -19,10 +18,13 @@ export async function generateMetadata({
   try {
     const { locale } = await params; // Await params before using them
 
-    const response = await fetch(`${API_URL}/website/universities`, {
-      headers: { "website-language": locale || "en" },
-      next: { revalidate: 3600 },
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/website/universities`,
+      {
+        headers: { "website-language": locale || "en" },
+        next: { revalidate: 3600 },
+      }
+    );
 
     if (!response.ok) throw new Error("Failed to fetch metadata");
 
@@ -33,8 +35,8 @@ export async function generateMetadata({
       "Welcome to the official website of Erbil Polytechnic University.";
 
     // IMPORTANT: Set your website's base URL in your environment variables
-    // For example, in .env.local: NEXT_PUBLIC_BASE_URL=https://www.yourdomain.com
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    // For example, in .env.local: process.env.NEXT_PUBLIC_BASE_URL=https://www.yourdomain.com
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       // metadataBase is crucial for resolving relative image paths

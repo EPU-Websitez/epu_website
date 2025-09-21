@@ -12,7 +12,7 @@ import {
 } from "next/navigation";
 import { CiSearch } from "react-icons/ci";
 import { FaPlay, FaTimes } from "react-icons/fa";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // -------- Interfaces --------
@@ -112,7 +112,9 @@ const TutorialsClient = () => {
     if (currentSearch) {
       urlParams.append("search", currentSearch);
     }
-    return `${API_URL}/website/universities/tutorials?${urlParams.toString()}`;
+    return `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/website/universities/tutorials?${urlParams.toString()}`;
   }, [currentPage, currentSearch]);
 
   const { data, loading: isLoadingData } = useFetch<TutorialsResponse>(
@@ -224,6 +226,9 @@ const TutorialsClient = () => {
                         fill
                         priority
                         className="w-full h-auto object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/placeholder.svg";
+                        }}
                       />
                     </div>
                     <Image
@@ -232,6 +237,9 @@ const TutorialsClient = () => {
                       fill
                       priority
                       className="w-full h-auto object-cover group-hover:scale-105 duration-300"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
                     />
                     {video && (
                       <button className="flex_center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 sm:w-16 w-10 sm:h-16 h-10 text-white rounded-full sm:text-xl text-lg bg-gradient-to-r from-[#DCC48C] to-[#FFA64D] z-10">

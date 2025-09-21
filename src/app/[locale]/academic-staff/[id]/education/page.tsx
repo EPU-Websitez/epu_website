@@ -13,7 +13,7 @@ import { GoBriefcase } from "react-icons/go";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
 // Utilities
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // --- TYPE DEFINITIONS ---
@@ -86,7 +86,7 @@ const Page = () => {
 
   // --- Centralized data fetching with useFetch ---
   const endpoint = tab === "qualifications" ? "qualifications" : "experiences";
-  const url = `${API_URL}/website/teachers/${id}/${endpoint}?page=${page}&limit=${LIMIT}`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}/${endpoint}?page=${page}&limit=${LIMIT}`;
 
   const { data, loading } = useFetch<
     QualificationResponse | ExperienceResponse
@@ -223,6 +223,10 @@ const Page = () => {
                                   alt="education icon"
                                   width={24}
                                   height={24}
+                                  onError={(e) => {
+                                    e.currentTarget.src =
+                                      "/images/placeholder.svg";
+                                  }}
                                 />
                               </div>
                               <div className="flex_start flex-col">

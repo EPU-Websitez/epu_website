@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams, useParams, useRouter } from "next/navigation";
 import SubHeader from "@/components/subHeader";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -48,7 +48,7 @@ const CollegesClient = () => {
   const [page, setPage] = useState(1);
   const limit = 5;
 
-  const url = `${API_URL}/website/colleges?page=${page}&limit=${limit}&type=${type}`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/website/colleges?page=${page}&limit=${limit}&type=${type}`;
   const { data, loading } = useFetch<Response>(url, locale);
 
   useEffect(() => {

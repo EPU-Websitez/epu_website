@@ -19,7 +19,7 @@ import { FaClock, FaCalendarAlt } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { FaXmark } from "react-icons/fa6";
 import EventCard from "@/components/eventCards";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // -------- Interfaces --------
@@ -99,7 +99,9 @@ const EventsClient = () => {
     if (currentSearch) {
       urlParams.append("search", currentSearch);
     }
-    return `${API_URL}/website/universities/events?${urlParams.toString()}`;
+    return `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/website/universities/events?${urlParams.toString()}`;
   }, [currentPage, currentSearch]);
 
   // --- Data Fetching ---
@@ -183,6 +185,9 @@ const EventsClient = () => {
                     fill
                     priority
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/placeholder.svg";
+                    }}
                   />
                   <div className="absolute left-0 top-0 ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-[#1b417bc7] to-transparent w-full h-full"></div>
                   <div className="absolute inset-0 pointer-events-none z-10">

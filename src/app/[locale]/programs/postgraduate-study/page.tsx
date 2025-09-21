@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { API_URL, NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+
 import PostgraduateClient from "./PostgraduateClient";
 
 // --- Interface for metadata fetching ---
@@ -24,7 +24,7 @@ export async function generateMetadata({
   const { locale } = await params;
   try {
     const response = await fetch(
-      `${API_URL}/website/programs/postgraduate?page=1&limit=1&is_active=true`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/programs/postgraduate?page=1&limit=1&is_active=true`,
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
@@ -45,7 +45,7 @@ export async function generateMetadata({
     const pageTitle = `Postgraduate | EPU`;
     const pageDescription = programData.description.substring(0, 160).trim();
     const imageUrl = programData.bg_image?.lg || "/images/programs-bg.png";
-    const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
       metadataBase: new URL(baseUrl),

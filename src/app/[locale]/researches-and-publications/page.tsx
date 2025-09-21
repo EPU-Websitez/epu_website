@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { NEXT_PUBLIC_BASE_URL } from "@/libs/env";
+import { process.env.NEXT_PUBLIC_BASE_URL } from "@/libs/env";
 import ResearchClient from "./ResearchClient";
 
 // --- Server-side function to generate metadata ---
@@ -13,7 +13,7 @@ export async function generateMetadata({
   const pageDescription =
     "Explore academic research papers, theses, and publications from the faculty and students of Erbil Polytechnic University.";
   const imageUrl = "/images/innovative.png";
-  const baseUrl = NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
   return {
     metadataBase: new URL(baseUrl),

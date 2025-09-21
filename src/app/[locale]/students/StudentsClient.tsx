@@ -17,7 +17,7 @@ import { LuLibraryBig } from "react-icons/lu";
 import { TbOlympics } from "react-icons/tb";
 import { IoArrowForwardOutline } from "react-icons/io5";
 import CollegeMapComponent from "@/components/CollegeMapComponent ";
-import { API_URL } from "@/libs/env";
+
 import useFetch from "@/libs/hooks/useFetch";
 
 // -------- Interfaces --------
@@ -113,7 +113,7 @@ const StudentsClient = () => {
     loading: campusLoading,
     error: campusError,
   } = useFetch<CampusLifeResponse>(
-    `${API_URL}/website/campus-life?page=1&limit=1`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/campus-life?page=1&limit=1`,
     locale
   );
 
@@ -129,7 +129,7 @@ const StudentsClient = () => {
     error: sectionsError,
   } = useFetch<SectionsResponse>(
     campusLifeSlug
-      ? `${API_URL}/website/campus-life/${campusLifeSlug}/sections?page=1&limit=20`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/campus-life/${campusLifeSlug}/sections?page=1&limit=20`
       : "",
     locale
   );
@@ -140,7 +140,7 @@ const StudentsClient = () => {
     error: addressError,
   } = useFetch<AddressResponse>(
     campusLifeSlug
-      ? `${API_URL}/website/campus-life/${campusLifeSlug}/address`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/campus-life/${campusLifeSlug}/address`
       : "",
     locale
   );
@@ -151,7 +151,7 @@ const StudentsClient = () => {
     error: galleriesError,
   } = useFetch<GalleriesResponse>(
     campusLifeSlug
-      ? `${API_URL}/website/campus-life/${campusLifeSlug}/galleries?page=1&limit=20`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/campus-life/${campusLifeSlug}/galleries?page=1&limit=20`
       : "",
     locale
   );
@@ -273,6 +273,9 @@ const StudentsClient = () => {
                       fill
                       priority
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
                     />
                   </SwiperSlide>
                 ))}
@@ -312,6 +315,9 @@ const StudentsClient = () => {
                     fill
                     priority
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/placeholder.svg";
+                    }}
                   />
                 </div>
               )}
@@ -338,6 +344,9 @@ const StudentsClient = () => {
                       fill
                       priority
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
                     />
                   </div>
                 ))}
@@ -379,6 +388,9 @@ const StudentsClient = () => {
                 fill
                 priority
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
               />
             )}
           </div>
