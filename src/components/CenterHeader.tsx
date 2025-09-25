@@ -34,8 +34,6 @@ interface CenterResponse {
   }[];
 }
 
-// const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
 const CenterSkeleton = () => (
   <div className="w-full flex justify-center items-start sm:mt-10 mt-6 min-h-screen animate-pulse">
     <div className="max-w-[1024px] px-3 text-secondary flex_center flex-col gap-5 w-full">
@@ -53,27 +51,33 @@ const CenterHeader = () => {
   const locale = params?.locale as string;
 
   const swiperRef = useRef<SwiperCore>();
-  const fetcher = (url: string) =>
+
+  // UPDATED: The fetcher now accepts an array from the SWR key.
+  const fetcher = ([url, lang]: [string, string]) =>
     fetch(url, {
       headers: {
         "Content-Type": "application/json",
-        "website-language": locale,
+        "website-language": lang, // Use the language from the key
       },
     }).then((res) => res.json());
+
+  // UPDATED: The SWR key is now an array including the URL and the locale.
   const { data, error, isLoading } = useSWR<CenterResponse>(
-    slug ? `${process.env.NEXT_PUBLIC_API_URL}/website/centers/${slug}` : null,
+    slug
+      ? [`${process.env.NEXT_PUBLIC_API_URL}/website/centers/${slug}`, locale]
+      : null,
     fetcher,
     {
       dedupingInterval: 1000 * 60 * 60, // 1 hour
       revalidateOnFocus: false,
     }
   );
+
   useEffect(() => {
     if (data) {
-      // This changes the title in the browser tab
       document.title = `${data.title} | EPU Center`;
     }
-  }, [data]); // This effect runs when the data is fetched
+  }, [data]);
 
   if (isLoading || !data) return <CenterSkeleton />;
   if (error)

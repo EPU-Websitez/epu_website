@@ -16,8 +16,6 @@ import {
   FaXmark,
 } from "react-icons/fa6";
 
-// Local imports
-
 // --- TYPE DEFINITIONS ---
 interface ImageType {
   lg: string;
@@ -83,29 +81,30 @@ const AcademicStaffHeader = () => {
   const id = params?.id as string;
   const locale = params?.locale as string;
 
-  // The fetcher function is defined inside the component to access the `locale` variable.
-  const fetcher = (url: string) =>
+  // UPDATED: The fetcher now accepts an array from the SWR key.
+  const fetcher = ([url, lang]: [string, string]) =>
     fetch(url, {
       headers: {
         "Content-Type": "application/json",
-        "website-language": locale, // Adds the language header
+        "website-language": lang, // Use the language from the key
       },
     }).then((res) => res.json());
 
-  // Data fetching using SWR
+  // UPDATED: The SWR key is now an array including the URL and the locale.
   const { data, error, isLoading } = useSWR<AcademicStaff>(
-    id ? `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}` : null,
-    fetcher, // The local fetcher now includes the header
+    id
+      ? [`${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}`, locale]
+      : null,
+    fetcher,
     { revalidateOnFocus: false }
   );
+
   useEffect(() => {
     if (data) {
-      // This changes the title in the browser tab
       document.title = `${data.full_name} | EPU Academic Staff`;
     }
-  }, [data]); // This effect runs when the data is fetched
+  }, [data]);
 
-  // Icon map
   const socialIconMap: { [key: string]: React.ReactElement } = {
     Facebook: <FaFacebookF />,
     "Google Scholar": <FaGoogleScholar />,
@@ -114,7 +113,6 @@ const AcademicStaffHeader = () => {
     Twitter: <FaTwitter />,
   };
 
-  // State and effects for the modal
   const [showTitlesModal, setShowTitlesModal] = useState(false);
 
   useEffect(() => {
@@ -136,7 +134,6 @@ const AcademicStaffHeader = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Handle loading and error states
   if (isLoading) return <Skeleton />;
   if (error || !data) {
     return (
@@ -146,7 +143,6 @@ const AcademicStaffHeader = () => {
     );
   }
 
-  // Destructure data for easier use
   const {
     full_name,
     title,
@@ -161,7 +157,6 @@ const AcademicStaffHeader = () => {
   const bgImage = bg_image?.lg || "/images/academic-bg.png";
   const email = user?.email;
 
-  // Logic for displaying titles
   const MAX_INLINE = 2;
   const inlineTitles = title_lists.slice(0, MAX_INLINE);
   const hiddenCount = Math.max(0, title_lists.length - MAX_INLINE);
@@ -170,7 +165,6 @@ const AcademicStaffHeader = () => {
   return (
     <>
       <div className="max-w-[1380px] w-full relative flex_center flex-col gap-5 sm:px-2 px-5 text-secondary">
-        {/* Background Image */}
         <div className="relative w-full h-[276px]">
           <Image
             src={bgImage}
@@ -184,7 +178,6 @@ const AcademicStaffHeader = () => {
           />
         </div>
 
-        {/* Profile Image */}
         <div className="flex_start lg:w-[1024px] w-auto absolute lg:left-1/2 md:left-[12%] sm:left-[18%] left-[22%] -translate-x-1/2 sm:top-[150px] top-[220px]">
           <div className="sm:w-[215px] w-[115px] sm:h-[215px] h-[115px] flex_center relative rounded-full bg-white shadow-md">
             <div className="flex_center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:w-[200px] w-[100px] sm:h-[200px] h-[100px] rounded-full overflow-hidden">
@@ -202,13 +195,11 @@ const AcademicStaffHeader = () => {
           </div>
         </div>
 
-        {/* Main Content Area */}
         <div className="flex_start max-w-[1024px] sm:mt-24 mt-16 w-full flex-col gap-4">
           <span className="text-sm font-medium">{title}</span>
           <h3 className="sm:text-xl text-lg font-medium">{full_name}</h3>
 
           <div className="flex w-full justify-between lg:items-center items-start lg:gap-2 gap-6 mt-3 lg:flex-row flex-col">
-            {/* Professional Titles (Dynamic) */}
             <div className="flex lg:justify-center justify-start sm:items-center items-start gap-2 flex-wrap lg:w-auto w-full">
               {inlineTitles.map((item) => (
                 <div
@@ -234,7 +225,6 @@ const AcademicStaffHeader = () => {
               )}
             </div>
 
-            {/* Contact and Social Links (Dynamic) */}
             <div className="flex sm:justify-center justify-start sm:items-center items-start sm:flex-row gap-3 sm:w-auto w-full flex-wrap">
               {email && (
                 <a
@@ -266,7 +256,6 @@ const AcademicStaffHeader = () => {
         </div>
       </div>
 
-      {/* --- MODAL: All Titles --- */}
       {showTitlesModal && (
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center"
@@ -277,10 +266,8 @@ const AcademicStaffHeader = () => {
             if (e.currentTarget === e.target) setShowTitlesModal(false);
           }}
         >
-          {/* Backdrop */}
           <div className="absolute inset-0 bg-black/50"></div>
 
-          {/* Dialog */}
           <div className="relative bg-white text-secondary w-[92vw] max-w-[600px] max-h-[80vh] rounded-2xl shadow-xl p-5 overflow-hidden">
             <div className="flex items-center justify-end mb-3">
               <button

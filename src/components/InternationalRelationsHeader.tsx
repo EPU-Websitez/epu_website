@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react"; // --- CHANGE: Imported useState
+import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 
 // --- (Type Definitions and Skeleton remain the same) ---
@@ -31,42 +31,40 @@ const InternationalRelationsHeader = () => {
   const params = useParams();
   const locale = params?.locale as string;
   const pathname = usePathname();
-
-  // --- CHANGE 1: Added a state to track if the component has mounted ---
   const [isMounted, setIsMounted] = useState(false);
 
-  const fetcher = (url: string) =>
+  // UPDATED: The fetcher now accepts an array from the SWR key.
+  const fetcher = ([url, lang]: [string, string]) =>
     fetch(url, {
       headers: {
         "Content-Type": "application/json",
-        "website-language": locale,
+        "website-language": lang,
       },
     }).then((res) => res.json());
 
+  // UPDATED: The SWR key is now an array including the URL and the locale.
   const { data, error, isLoading } = useSWR<InternationalRelationsResponse>(
-    `${process.env.NEXT_PUBLIC_API_URL}/website/international-relations?page=1&limit=1`,
+    [
+      `${process.env.NEXT_PUBLIC_API_URL}/website/international-relations?page=1&limit=1`,
+      locale,
+    ],
     fetcher,
     {
       dedupingInterval: 1000 * 60 * 60,
       revalidateOnFocus: false,
     }
   );
+
   useEffect(() => {
-    // This effect runs only on the client, after the initial render
     setIsMounted(true);
   }, []);
+
   useEffect(() => {
     if (data) {
-      // This changes the title in the browser tab
       document.title = `${data?.data[0]?.bg_title} | EPU`;
     }
-  }, [data]); // This effect runs when the data is fetched
+  }, [data]);
 
-  // --- CHANGE 2: Removed the useEffect that modified document.title ---
-  // It's better to handle page titles using Next.js's generateMetadata function
-  // in your page.tsx or layout.tsx file to avoid client-side side effects.
-
-  // --- CHANGE 3: Updated the loading condition to wait for mounting ---
   if (!isMounted || isLoading) return <Skeleton />;
 
   if (error || !data?.data?.[0]) {

@@ -48,16 +48,23 @@ const CollegeHeader = () => {
   const college = params?.college as string;
   const locale = params?.locale as string;
   const swiperRef = useRef<SwiperCore>();
-  const fetcher = (url: string) =>
+
+  // UPDATED: The fetcher now accepts an array from the SWR key.
+  const fetcher = ([url, lang]: [string, string]) =>
     fetch(url, {
       headers: {
         "Content-Type": "application/json",
-        "website-language": locale,
+        "website-language": lang,
       },
     }).then((res) => res.json());
+
+  // UPDATED: The SWR key is now an array including the URL and the locale.
   const { data, error, isLoading } = useSWR<Response>(
     college
-      ? `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}`
+      ? [
+          `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}`,
+          locale,
+        ]
       : null,
     fetcher,
     {
@@ -69,6 +76,7 @@ const CollegeHeader = () => {
   if (isLoading || !data) return <Skeleton />;
   if (error)
     return <div className="text-center text-red-500">Failed to load data.</div>;
+
   return (
     <div className="w-full relative">
       <div className="absolute inset-0 pointer-events-none z-10">

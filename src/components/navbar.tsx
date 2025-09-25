@@ -7,7 +7,12 @@ import { useParams, usePathname } from "next/navigation";
 import { BsChevronDown } from "react-icons/bs";
 import { FiPlus, FiSearch } from "react-icons/fi";
 import { useTranslations } from "next-intl";
-import { IoChevronForward, IoMenu } from "react-icons/io5";
+import {
+  IoChevronForward,
+  IoChevronBack,
+  IoMenu,
+  IoChevronDown,
+} from "react-icons/io5";
 
 import useSWR from "swr";
 import SearchModal from "./Search";
@@ -33,12 +38,11 @@ interface MenuResponse {
 // --- helpers
 const normalizePathname = (pathname: string) => {
   const segments = pathname.split("/");
-  let locale = "";
-  if (segments.length > 1 && segments[1]?.length === 2) {
+  let locale = "en"; // Default locale
+  if (segments.length > 1 && /^[a-z]{2}$/.test(segments[1])) {
     locale = segments[1];
     segments.splice(1, 1);
   }
-  // Guarantee leading slash
   const normalized = segments.join("/") || "/";
   return {
     normalizedPath: normalized.startsWith("/") ? normalized : `/${normalized}`,
@@ -52,23 +56,24 @@ const Navbar = () => {
   const params = useParams();
   const college = params?.college as string;
   const { normalizedPath, locale } = normalizePathname(pathname);
-  const [isCollege, setIsCollege] = useState(false);
   const [navIsOpen, setNavIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [hoveredDropdown, setHoveredDropdown] = useState<number | null>(null);
-  const fetcher = (url: string) =>
+
+  const fetcher = ([url, lang]: [string, string]) =>
     fetch(url, {
       headers: {
         "Content-Type": "application/json",
-        "website-language": locale,
+        "website-language": lang,
       },
     }).then((res) => res.json());
+
   const {
     data: menuData,
     error,
     isLoading: menuLoading,
   } = useSWR<MenuResponse>(
-    `${process.env.NEXT_PUBLIC_API_URL}/website/menus`,
+    [`${process.env.NEXT_PUBLIC_API_URL}/website/menus`, locale],
     fetcher,
     {
       dedupingInterval: 1000 * 60 * 60,
@@ -78,13 +83,8 @@ const Navbar = () => {
 
   useEffect(() => {
     document.body.dir = locale === "en" ? "ltr" : "rtl";
-    if (college) {
-      setIsCollege(true);
-    } else {
-      setIsCollege(false);
-    }
-    setNavIsOpen(false);
-  }, [locale, normalizedPath]);
+    setNavIsOpen(false); // Close mobile nav on route change
+  }, [locale, pathname]);
 
   const handleNav = () => setNavIsOpen((s) => !s);
   const handleMouseEnter = (itemId: number) => setHoveredDropdown(itemId);
@@ -98,14 +98,11 @@ const Navbar = () => {
     return "#";
   };
 
-  // Convert any href (absolute/relative) to a local, locale-stripped pathname for comparison
   const toLocalPath = (href: string) => {
     if (!href) return "/";
     try {
-      // If external or full URL, parse against current origin
       const url = new URL(href, window.location.origin);
       let p = url.pathname || "/";
-      // strip locale segment if present
       const segs = p.split("/").filter(Boolean);
       if (segs[0] === locale) {
         segs.shift();
@@ -113,7 +110,6 @@ const Navbar = () => {
       const out = `/${segs.join("/")}`;
       return out === "" ? "/" : out;
     } catch {
-      // Fallback for relative paths that may not parse
       let p = href.split("?")[0].split("#")[0] || "/";
       if (!p.startsWith("/")) p = `/${p}`;
       const segs = p.split("/").filter(Boolean);
@@ -128,11 +124,9 @@ const Navbar = () => {
     return normalizedPath === local;
   };
 
-  // parent-active: highlight if current path starts with the given href
   const isActiveStartsWith = (href: string) => {
     const local = toLocalPath(href);
     if (local === "/") return normalizedPath === "/";
-    // Ensure we only match as a prefix boundary ("/path" or "/path/..."), not "/pathology"
     return (
       normalizedPath === local ||
       normalizedPath.startsWith(local.endsWith("/") ? local : `${local}/`)
@@ -151,33 +145,60 @@ const Navbar = () => {
     });
   };
 
-  // classes
   const desktopActiveClass = "border-b-2 border-white pb-1";
   const mobileActiveClass = "border-b-2 !border-primary pb-1";
 
-  // --- Dynamic menu renderers (DESKTOP / MOBILE)
+  // --- Recursive Component for Desktop Submenus ---
+  const DesktopSubmenuItem = ({ item }: { item: MenuItem }) => {
+    const [isHovered, setIsHovered] = useState(false);
+    const hasChildren =
+      Array.isArray(item.children) && item.children.length > 0;
+    const href = getMenuItemUrl(item);
+    const childActive = isActiveStartsWith(href);
+
+    return (
+      <div
+        className="relative"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <Link
+          href={href}
+          className={`flex justify-between items-center w-full px-4 py-3 text-sm hover:bg-gray-50 hover:text-primary transition-colors ${
+            childActive ? "text-primary font-semibold" : "text-gray-700"
+          }`}
+        >
+          <span>{item.title}</span>
+          {hasChildren &&
+            (locale === "en" ? <IoChevronForward /> : <IoChevronBack />)}
+        </Link>
+        {hasChildren && isHovered && (
+          <div className="absolute top-0 ltr:left-full rtl:right-full w-64 bg-white shadow-lg rounded-lg border border-gray-200 z-50">
+            <div className="py-2">
+              {item.children.map((child) => (
+                <DesktopSubmenuItem key={child.id} item={child} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // --- Main Desktop Menu Item Renderer ---
   const renderDesktopMenuItem = (item: MenuItem) => {
     const hasChildren =
       Array.isArray(item.children) && item.children.length > 0;
     const parentHref = getMenuItemUrl(item);
+    const isDropdownOpen = hoveredDropdown === item.id;
+    const anyChildActive =
+      hasChildren &&
+      item.children.some((child) => isActiveStartsWith(getMenuItemUrl(child)));
+    const parentItselfActive =
+      item.link !== null && isActiveStartsWith(parentHref);
+    const parentActive = parentItselfActive || anyChildActive;
 
-    // --- Dropdown Menu Item Logic ---
     if (hasChildren) {
-      const isDropdownOpen = hoveredDropdown === item.id;
-
-      // Check if any child link is active
-      const anyChildActive = item.children.some((child) =>
-        isActiveStartsWith(getMenuItemUrl(child))
-      );
-
-      // Check if the parent item itself has an active link.
-      // This now correctly ignores parents with a null link.
-      const parentItselfActive =
-        item.link !== null && isActiveStartsWith(parentHref);
-
-      // A dropdown parent is active if its own link is active OR any child is active.
-      const parentActive = parentItselfActive || anyChildActive;
-
       return (
         <div
           key={item.id}
@@ -207,35 +228,15 @@ const Navbar = () => {
           >
             <div className="absolute -top-2 ltr:left-4 rtl:right-4 w-4 h-4 bg-white border-l border-t border-gray-200 rotate-45"></div>
             <div className="py-2">
-              {item.children.map((child, index) => {
-                const childHref = getMenuItemUrl(child);
-                // Use a more specific active check for children if needed
-                const childActive = isActiveStartsWith(childHref);
-                return (
-                  <div key={child.id}>
-                    <Link
-                      href={childHref}
-                      className={`block px-4 py-3 text-sm hover:bg-gray-50 hover:text-primary transition-colors ${
-                        childActive
-                          ? "text-primary font-semibold"
-                          : "text-gray-700"
-                      }`}
-                    >
-                      {child.title}
-                    </Link>
-                    {index < item.children.length - 1 && (
-                      <div className="border-b border-gray-100 mx-4"></div>
-                    )}
-                  </div>
-                );
-              })}
+              {item.children.map((child) => (
+                <DesktopSubmenuItem key={child.id} item={child} />
+              ))}
             </div>
           </div>
         </div>
       );
     }
 
-    // --- Simple Link Logic ---
     return (
       <Link
         key={item.id}
@@ -249,19 +250,24 @@ const Navbar = () => {
     );
   };
 
-  const renderMobileMenuItem = (item: MenuItem) => {
+  // --- Recursive Mobile Menu Renderer ---
+  const renderMobileMenuItem = (item: MenuItem, level: number = 0) => {
     const hasChildren =
       Array.isArray(item.children) && item.children.length > 0;
     const parentHref = getMenuItemUrl(item);
     const anyChildActive =
       hasChildren &&
       item.children.some((child) => isActiveStartsWith(getMenuItemUrl(child)));
-    const parentActive = isActiveStartsWith(parentHref) || anyChildActive;
+    const parentActive = isActiveExact(parentHref) || anyChildActive;
     const isExpanded = expandedMobileItems.has(item.id);
 
     return (
       <div key={item.id} className="w-full z-10">
-        <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
+        <div
+          className={`flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3 ${
+            level > 0 ? "pt-3" : ""
+          }`}
+        >
           <Link
             href={parentHref}
             className={`flex-1 ${parentActive ? mobileActiveClass : ""}`}
@@ -270,35 +276,28 @@ const Navbar = () => {
           </Link>
           {hasChildren && (
             <button
-              className={`text-2xl transition-transform duration-200 ${
-                isExpanded ? "rotate-45" : ""
-              }`}
+              className="text-2xl transition-transform duration-300 p-2 -m-2"
               onClick={() => toggleMobileItem(item.id)}
             >
-              <FiPlus />
+              <IoChevronDown
+                className={`transition-transform duration-300 ${
+                  isExpanded ? "rotate-180" : ""
+                }`}
+              />
             </button>
           )}
         </div>
-        {hasChildren && isExpanded && (
-          <div className="ltr:ml-4 rtl:mr-4 mt-3 space-y-3">
-            {item.children.map((child) => {
-              const childHref = getMenuItemUrl(child);
-              const childActive =
-                isActiveExact(childHref) || isActiveStartsWith(childHref);
-              return (
-                <Link
-                  key={child.id}
-                  href={childHref}
-                  className={`block text-sm py-2 border-b border-gray-100 last:border-b-0 transition-colors ${
-                    childActive
-                      ? "text-primary font-semibold"
-                      : "text-gray-600 hover:text-primary"
-                  }`}
-                >
-                  {child.title}
-                </Link>
-              );
-            })}
+        {hasChildren && (
+          <div
+            className={`overflow-hidden transition-all duration-300 ease-in-out ${
+              isExpanded ? "max-h-screen" : "max-h-0"
+            }`}
+          >
+            <div className="ltr:pl-4 rtl:pr-4 pt-2 space-y-2">
+              {item.children.map((child) =>
+                renderMobileMenuItem(child, level + 1)
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -317,7 +316,7 @@ const Navbar = () => {
           </div>
           <Link
             href="/"
-            className="md:w-[195px] w-[160px]  md:h-[53px] h-[45px] relative sm:block hidden"
+            className="md:w-[195px] w-[160px] md:h-[53px] h-[45px] relative sm:block hidden"
           >
             <Image
               src="/images/logo.svg"
@@ -357,15 +356,16 @@ const Navbar = () => {
             <button
               type="button"
               onClick={handleNav}
-              className="fixed top-0 left-0 w-full h-screen z-20 bg-black bg-opacity-40"
+              className="fixed top-0 left-0 w-full h-screen z-30 bg-black bg-opacity-40"
+              aria-label="Close menu"
             />
           )}
 
           {/* Mobile Drawer */}
           <div
-            className={`flex_start flex-col gap-5 rounded-3xl bg-white w-[80%] h-screen fixed top-0 ltr:right-0 rtl:left-0 z-40 text-secondary duration-300 ${
+            className={`flex_start flex-col gap-5 rounded-3xl bg-white w-[80%] h-screen fixed top-0 ltr:right-0 rtl:left-0 z-40 text-secondary duration-300 overflow-y-auto ${
               navIsOpen
-                ? "max-w-[80%] py-10 px-5 overflow-visible"
+                ? "max-w-[80%] py-10 px-5"
                 : "max-w-0 overflow-hidden p-0"
             }`}
           >
@@ -374,402 +374,25 @@ const Navbar = () => {
               onClick={handleNav}
               className="flex justify-start items-center text-xl bg-white custom_shape absolute top-1/2 ltr:-left-[50px] rtl:-right-[50px] w-20 h-16 shadow-[12px_0_0_0_white] rounded-full -translate-y-1/2 z-10 text-black"
             >
-              <IoChevronForward className="ltr:ml-5 rtl:mr-5" />
+              {locale === "en" ? (
+                <IoChevronBack className="ltr:ml-5 rtl:mr-5" />
+              ) : (
+                <IoChevronForward className="ltr:ml-5 rtl:mr-5" />
+              )}
             </button>
-
-            {isCollege ? (
-              // STATIC COLLEGE MOBILE MENU (with active states)
-              <>
-                {/* Home */}
-                <Link
-                  href={`/${locale}/colleges/${college}`}
-                  className={`flex w-full border-b border-b-lightBorder z-10 font-semibold pb-3 ${
-                    isActiveExact(`/${locale}/colleges/${college}`)
-                      ? mobileActiveClass
-                      : ""
-                  }`}
-                >
-                  {t("home")}
-                </Link>
-
-                {/* About (parent + children) */}
-                <div className="w-full z-10">
-                  <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
-                    <Link
-                      href={`/${locale}/colleges/${college}/about`}
-                      className={`${
-                        isActiveStartsWith(
-                          `/${locale}/colleges/${college}/about`
-                        )
-                          ? mobileActiveClass
-                          : ""
-                      }`}
-                    >
-                      {t("about")}
-                    </Link>
-                    <button
-                      className={`text-2xl transition-transform duration-200 ${
-                        expandedMobileItems.has(102) ? "rotate-45" : ""
-                      }`}
-                      onClick={() => toggleMobileItem(102)}
-                    >
-                      <FiPlus />
-                    </button>
-                  </div>
-                  {expandedMobileItems.has(102) && (
-                    <div className="ltr:ml-4 rtl:mr-4 mt-3 space-y-3">
-                      <Link
-                        href={`/${locale}/colleges/${college}/about`}
-                        className={`block text-sm ${
-                          isActiveExact(`/${locale}/colleges/${college}/about`)
-                            ? "text-primary font-semibold"
-                            : "text-gray-600 hover:text-primary"
-                        }`}
-                      >
-                        {t("about_us")}
-                      </Link>
-                      <Link
-                        href={`/${locale}/colleges/${college}/vision-and-mission`}
-                        className={`block text-sm ${
-                          isActiveExact(
-                            `/${locale}/colleges/${college}/vision-and-mission`
-                          )
-                            ? "text-primary font-semibold"
-                            : "text-gray-600 hover:text-primary"
-                        }`}
-                      >
-                        {t("vision_mission")}
-                      </Link>
-                    </div>
-                  )}
-                </div>
-
-                {/* Departments */}
-                <Link
-                  href={`/${locale}/colleges/${college}/departments`}
-                  className={`flex w-full border-b border-b-lightBorder z-10 font-semibold pb-3 ${
-                    isActiveStartsWith(
-                      `/${locale}/colleges/${college}/departments`
-                    )
-                      ? mobileActiveClass
-                      : ""
-                  }`}
-                >
-                  {t("departments")}
-                </Link>
-
-                {/* College Council */}
-                <Link
-                  href={`/${locale}/colleges/${college}/college-council`}
-                  className={`flex w-full border-b border-b-lightBorder z-10 font-semibold pb-3 ${
-                    isActiveStartsWith(
-                      `/${locale}/colleges/${college}/college-council`
-                    )
-                      ? mobileActiveClass
-                      : ""
-                  }`}
-                >
-                  {t("college_council")}
-                </Link>
-
-                {/* Teachers */}
-                <Link
-                  href={`/${locale}/colleges/${college}/teachers`}
-                  className={`flex w-full border-b border-b-lightBorder z-10 font-semibold pb-3 ${
-                    isActiveStartsWith(
-                      `/${locale}/colleges/${college}/teachers`
-                    )
-                      ? mobileActiveClass
-                      : ""
-                  }`}
-                >
-                  {t("teachers")}
-                </Link>
-
-                {/* Labs */}
-                <Link
-                  href={`/${locale}/colleges/${college}/labs`}
-                  className={`flex w-full border-b border-b-lightBorder z-10 font-semibold pb-3 ${
-                    isActiveStartsWith(`/${locale}/colleges/${college}/labs`)
-                      ? mobileActiveClass
-                      : ""
-                  }`}
-                >
-                  {t("labs")}
-                </Link>
-
-                {/* News & Events (parent + children) */}
-                <div className="w-full z-10">
-                  <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
-                    <Link
-                      href={`/${locale}/colleges/${college}/news`}
-                      className={`${
-                        isActiveStartsWith(
-                          `/${locale}/colleges/${college}/news`
-                        ) ||
-                        isActiveStartsWith(
-                          `/${locale}/colleges/${college}/events`
-                        )
-                          ? mobileActiveClass
-                          : ""
-                      }`}
-                    >
-                      {t("news_events")}
-                    </Link>
-                    <button
-                      className={`text-2xl transition-transform duration-200 ${
-                        expandedMobileItems.has(107) ? "rotate-45" : ""
-                      }`}
-                      onClick={() => toggleMobileItem(107)}
-                    >
-                      <FiPlus />
-                    </button>
-                  </div>
-                  {expandedMobileItems.has(107) && (
-                    <div className="ltr:ml-4 rtl:mr-4 mt-3 space-y-3">
-                      <Link
-                        href={`/${locale}/colleges/${college}/news`}
-                        className={`block text-sm ${
-                          isActiveStartsWith(
-                            `/${locale}/colleges/${college}/news`
-                          )
-                            ? "text-primary font-semibold"
-                            : "text-gray-600 hover:text-primary"
-                        }`}
-                      >
-                        {t("news")}
-                      </Link>
-                      <Link
-                        href={`/${locale}/colleges/${college}/events`}
-                        className={`block text-sm ${
-                          isActiveStartsWith(
-                            `/${locale}/colleges/${college}/events`
-                          )
-                            ? "text-primary font-semibold"
-                            : "text-gray-600 hover:text-primary"
-                        }`}
-                      >
-                        {t("events")}
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              // DYNAMIC MAIN MOBILE MENU (with active states)
-              menuData?.data?.map(renderMobileMenuItem)
-            )}
+            {menuData?.data?.map((item) => renderMobileMenuItem(item))}
           </div>
 
           {/* Desktop navbar row */}
           <div className="sm:flex hidden justify-center items-center xl:gap-5 gap-3 flex-grow">
-            {isCollege ? (
-              <>
-                {/* Home */}
-                <Link
-                  href={`/${locale}/colleges/${college}`}
-                  className={`flex_center gap-2 xl:text-base text-xs ${
-                    isActiveExact(`/${locale}/colleges/${college}`)
-                      ? desktopActiveClass
-                      : ""
-                  }`}
-                >
-                  <span>{t("home")}</span>
-                </Link>
-                <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
-
-                {/* About (dropdown parent) */}
-                <div
-                  className="relative group"
-                  onMouseEnter={() => handleMouseEnter(102)}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  <Link
-                    href={`/${locale}/colleges/${college}/about`}
-                    className={`flex_center gap-2 xl:text-base text-xs ${
-                      isActiveStartsWith(`/${locale}/colleges/${college}/about`)
-                        ? desktopActiveClass
-                        : ""
-                    }`}
-                  >
-                    <span>{t("about")}</span>
-                    <BsChevronDown
-                      className={`text-white transition-transform duration-200 ${
-                        hoveredDropdown === 102 ? "rotate-180" : ""
-                      }`}
-                    />
-                  </Link>
-                  <div
-                    className={`absolute top-full ltr:left-0 rtl:right-0 mt-2 w-64 bg-white shadow-lg rounded-lg border z-50 transition-all ${
-                      hoveredDropdown === 102
-                        ? "opacity-100 visible"
-                        : "opacity-0 invisible"
-                    }`}
-                  >
-                    <div className="py-2">
-                      <Link
-                        href={`/${locale}/colleges/${college}/about`}
-                        className={`block px-4 py-3 text-sm hover:bg-gray-50 ${
-                          isActiveExact(`/${locale}/colleges/${college}/about`)
-                            ? "text-primary font-semibold"
-                            : "text-gray-700"
-                        }`}
-                      >
-                        {t("about_us")}
-                      </Link>
-                      <Link
-                        href={`/${locale}/colleges/${college}/vision-and-mission`}
-                        className={`block px-4 py-3 text-sm hover:bg-gray-50 ${
-                          isActiveExact(
-                            `/${locale}/colleges/${college}/vision-and-mission`
-                          )
-                            ? "text-primary font-semibold"
-                            : "text-gray-700"
-                        }`}
-                      >
-                        {t("vision_mission")}
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-
-                <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
-
-                {/* Departments */}
-                <Link
-                  href={`/${locale}/colleges/${college}/departments`}
-                  className={`flex_center gap-2 xl:text-base text-xs ${
-                    isActiveStartsWith(
-                      `/${locale}/colleges/${college}/departments`
-                    )
-                      ? desktopActiveClass
-                      : ""
-                  }`}
-                >
-                  <span>{t("departments")}</span>
-                </Link>
-
-                <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
-
-                {/* College Council */}
-                <Link
-                  href={`/${locale}/colleges/${college}/college-council`}
-                  className={`flex_center gap-2 xl:text-base text-xs ${
-                    isActiveStartsWith(
-                      `/${locale}/colleges/${college}/college-council`
-                    )
-                      ? desktopActiveClass
-                      : ""
-                  }`}
-                >
-                  <span>{t("college_council")}</span>
-                </Link>
-
-                <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
-
-                {/* Teachers */}
-                <Link
-                  href={`/${locale}/colleges/${college}/teachers`}
-                  className={`lg:flex hidden_center gap-2 xl:text-base text-xs ${
-                    isActiveStartsWith(
-                      `/${locale}/colleges/${college}/teachers`
-                    )
-                      ? desktopActiveClass
-                      : ""
-                  }`}
-                >
-                  <span>{t("teachers")}</span>
-                </Link>
-
-                <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50 lg:block hidden"></span>
-
-                {/* Labs */}
-                <Link
-                  href={`/${locale}/colleges/${college}/labs`}
-                  className={`flex_center gap-2 xl:text-base text-xs ${
-                    isActiveStartsWith(`/${locale}/colleges/${college}/labs`)
-                      ? desktopActiveClass
-                      : ""
-                  }`}
-                >
-                  <span>{t("labs")}</span>
-                </Link>
-
-                <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
-
-                {/* News & Events (dropdown parent) */}
-                <div
-                  className="relative group"
-                  onMouseEnter={() => handleMouseEnter(107)}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  <Link
-                    href={`/${locale}/colleges/${college}/news`}
-                    className={`flex_center gap-2 xl:text-base text-xs ${
-                      isActiveStartsWith(
-                        `/${locale}/colleges/${college}/news`
-                      ) ||
-                      isActiveStartsWith(
-                        `/${locale}/colleges/${college}/events`
-                      )
-                        ? desktopActiveClass
-                        : ""
-                    }`}
-                  >
-                    <span>{t("news_events")}</span>
-                    <BsChevronDown
-                      className={`text-white transition-transform duration-200 ${
-                        hoveredDropdown === 107 ? "rotate-180" : ""
-                      }`}
-                    />
-                  </Link>
-                  <div
-                    className={`absolute top-full ltr:left-0 rtl:right-0 mt-2 w-64 bg-white shadow-lg rounded-lg border z-50 transition-all ${
-                      hoveredDropdown === 107
-                        ? "opacity-100 visible"
-                        : "opacity-0 invisible"
-                    }`}
-                  >
-                    <div className="py-2">
-                      <Link
-                        href={`/${locale}/colleges/${college}/news`}
-                        className={`block px-4 py-3 text-sm hover:bg-gray-50 ${
-                          isActiveStartsWith(
-                            `/${locale}/colleges/${college}/news`
-                          )
-                            ? "text-primary font-semibold"
-                            : "text-gray-700"
-                        }`}
-                      >
-                        {t("news")}
-                      </Link>
-                      <Link
-                        href={`/${locale}/colleges/${college}/events`}
-                        className={`block px-4 py-3 text-sm hover:bg-gray-50 ${
-                          isActiveStartsWith(
-                            `/${locale}/colleges/${college}/events`
-                          )
-                            ? "text-primary font-semibold"
-                            : "text-gray-700"
-                        }`}
-                      >
-                        {t("events")}
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              // DYNAMIC MAIN DESKTOP MENU (active underline + parent if a child is active)
-              menuData?.data?.map((item, index) => (
-                <React.Fragment key={item.id}>
-                  {renderDesktopMenuItem(item)}
-                  {index < (menuData?.data?.length || 0) - 1 && (
-                    <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
-                  )}
-                </React.Fragment>
-              ))
-            )}
+            {menuData?.data?.map((item, index) => (
+              <React.Fragment key={item.id}>
+                {renderDesktopMenuItem(item)}
+                {index < (menuData?.data?.length || 0) - 1 && (
+                  <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
+                )}
+              </React.Fragment>
+            ))}
           </div>
 
           <div className="flex_center gap-4">
@@ -784,6 +407,7 @@ const Navbar = () => {
               type="button"
               onClick={handleNav}
               className="sm:hidden block text-lg"
+              aria-label="Open menu"
             >
               <IoMenu />
             </button>

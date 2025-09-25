@@ -3,8 +3,8 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams, useSearchParams, useRouter } from "next/navigation"; // Import hooks
-import React, { useEffect } from "react"; // Import useEffect
+import { useParams, useSearchParams, useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 import useSWR from "swr";
 
 // --- Type Definitions for the API Response ---
@@ -23,8 +23,6 @@ interface InternationalRelationsResponse {
   data: RelationItem[];
 }
 
-// --- Fetcher function for useSWR ---
-
 // --- Skeleton Component for Loading State ---
 const Skeleton = () => (
   <div className="w-full lg:h-[400px] sm:h-[300px] h-[220px] bg-gray-300 rounded-3xl animate-pulse"></div>
@@ -34,20 +32,24 @@ const InternationalStrategyHeader = () => {
   const t = useTranslations("International");
   const params = useParams();
   const locale = params?.locale as string;
-
-  // --- 1. Initialize router and searchParams hooks ---
   const router = useRouter();
   const searchParams = useSearchParams();
-  const fetcher = (url: string) =>
+
+  // UPDATED: The fetcher now accepts an array from the SWR key.
+  const fetcher = ([url, lang]: [string, string]) =>
     fetch(url, {
       headers: {
         "Content-Type": "application/json",
-        "website-language": locale, // Adds the language header
+        "website-language": lang,
       },
     }).then((res) => res.json());
-  // --- Data Fetching with useSWR ---
+
+  // UPDATED: The SWR key is now an array including the URL and the locale.
   const { data, error, isLoading } = useSWR<InternationalRelationsResponse>(
-    `${process.env.NEXT_PUBLIC_API_URL}/website/international-strategies?page=1&limit=1`,
+    [
+      `${process.env.NEXT_PUBLIC_API_URL}/website/international-strategies?page=1&limit=1`,
+      locale,
+    ],
     fetcher,
     {
       dedupingInterval: 1000 * 60 * 60, // 1 hour cache
@@ -56,30 +58,25 @@ const InternationalStrategyHeader = () => {
   );
 
   const headerData = data?.data?.[0];
-  console.log(headerData);
+
   useEffect(() => {
     if (data) {
-      // This changes the title in the browser tab
       document.title = `${headerData?.bg_title} | EPU`;
     }
-  }, [data]); // This effect runs when the data is fetched
+  }, [data, headerData]);
 
-  // --- 2. Use an effect to update the URL when data is available ---
   useEffect(() => {
     if (headerData) {
       const id = headerData.id;
       const currentId = searchParams.get("id");
       const pathname = window.location.pathname;
 
-      // Only update the URL if the 'id' param is not already set to the correct value
       if (currentId !== id.toString()) {
-        // Use router.replace to update the URL without adding to browser history
         router.replace(`${pathname}?id=${id}`);
       }
     }
-  }, [headerData, router, searchParams]); // Effect dependencies
+  }, [headerData, router, searchParams]);
 
-  // --- Handle Loading and Error States ---
   if (isLoading) return <Skeleton />;
   if (error || !headerData) {
     return (
@@ -89,7 +86,6 @@ const InternationalStrategyHeader = () => {
     );
   }
 
-  // --- Extract Data and Provide Fallbacks ---
   const bgImage = headerData.bg_image?.lg || "/images/international-lg.png";
   const bgTitle = headerData.bg_title || "International Relations";
   const bgDescription =

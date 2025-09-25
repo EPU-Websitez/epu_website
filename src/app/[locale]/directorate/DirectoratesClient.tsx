@@ -183,14 +183,25 @@ const DirectoratesClient = () => {
             <TabsSkeleton />
           ) : (
             <div className="flex justify-center items-center lg:w-[920px] w-full lg:h-[55px] h-auto relative bg-lightBorder rounded-3xl overflow-hidden flex-wrap">
-              <span
-                className="bg-primary duration-300 text-white absolute top-0 h-full rounded-3xl transition-all"
-                style={{
-                  width: `${tabWidth}%`,
-                  left: `calc(${activeTabIndex} * ${tabWidth}%)`,
-                  right: `auto`,
-                }}
-              ></span>
+              {locale === "en" ? (
+                <span
+                  className="bg-primary duration-300 text-white absolute top-0 h-full rounded-3xl ltr:left-0 rtl:right-0 transition-all"
+                  style={{
+                    width: `${tabWidth}%`,
+                    left: `calc(${activeTabIndex} * ${tabWidth}%)`,
+                    right: `auto`,
+                  }}
+                ></span>
+              ) : (
+                <span
+                  className="bg-primary duration-300 text-white absolute top-0 h-full rounded-3xl ltr:left-0 rtl:right-0 transition-all"
+                  style={{
+                    width: `${tabWidth}%`,
+                    right: `calc(${activeTabIndex} * ${tabWidth}%)`,
+                    left: `auto`,
+                  }}
+                ></span>
+              )}
               {directorateTypes.map((type) => (
                 <button
                   key={type.id}

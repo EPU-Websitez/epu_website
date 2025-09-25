@@ -53,16 +53,23 @@ const DepartmentHeader = () => {
   const params = useParams();
   const slug = params?.slug as string;
   const locale = params?.locale as string;
-  const fetcher = (url: string) =>
+
+  // UPDATED: The fetcher now accepts an array from the SWR key.
+  const fetcher = ([url, lang]: [string, string]) =>
     fetch(url, {
       headers: {
         "Content-Type": "application/json",
-        "website-language": locale,
+        "website-language": lang,
       },
     }).then((res) => res.json());
+
+  // UPDATED: The SWR key is now an array including the URL and the locale.
   const { data, error, isLoading } = useSWR<Response>(
     slug
-      ? `${process.env.NEXT_PUBLIC_API_URL}/website/departments/${slug}`
+      ? [
+          `${process.env.NEXT_PUBLIC_API_URL}/website/departments/${slug}`,
+          locale,
+        ]
       : null,
     fetcher,
     {
@@ -70,22 +77,21 @@ const DepartmentHeader = () => {
       revalidateOnFocus: false,
     }
   );
+
   useEffect(() => {
     if (data) {
-      // This changes the title in the browser tab
       document.title = `${data.title} | Department`;
     }
-  }, [data]); // This effect runs when the data is fetched
+  }, [data]);
 
-  // --- Helper function to get an icon based on contact type ---
   const getContactIcon = (type: string): ReactNode => {
     switch (type.toUpperCase()) {
       case "EMAIL":
         return <IoMdMail className="text-2xl" />;
       case "PHONE":
-        return <FaPhoneAlt className="text-xl" />; // Phone icon is slightly smaller
+        return <FaPhoneAlt className="text-xl" />;
       default:
-        return <IoMdMail className="text-2xl" />; // Default icon
+        return <IoMdMail className="text-2xl" />;
     }
   };
 
@@ -114,9 +120,7 @@ const DepartmentHeader = () => {
         </div>
         <p className="md:text-sm text-xs">{data.subtitle}</p>
 
-        {/* --- DYNAMIC CONTACTS & LOCATION SECTION --- */}
         <div className="flex_start gap-5 sm:flex-row flex-col">
-          {/* Map through contacts from the API */}
           {data.contacts?.map((contact) => (
             <div
               key={contact.id}
@@ -132,7 +136,6 @@ const DepartmentHeader = () => {
             </div>
           ))}
 
-          {/* Display Address */}
           {data.address?.location && (
             <div className="flex justify-start items-center gap-3">
               <IoLocationSharp className="text-2xl" />

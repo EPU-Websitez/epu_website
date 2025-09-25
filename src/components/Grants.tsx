@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { HiOutlineLink } from "react-icons/hi2";
 
 import { PiHandHeart } from "react-icons/pi";
-import useSWR from "swr"; // Switched to useSWR for consistency and better caching
+import useSWR from "swr";
 
 // --- INTERFACES ---
 interface Achievement {
@@ -79,9 +79,6 @@ const SpinnerIcon = () => (
   </div>
 );
 
-// --- FETCHER FOR SWR ---
-// const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
 interface Props {
   teacherId: string;
   locale?: string;
@@ -98,17 +95,31 @@ const Grants = ({ teacherId, locale = "en" }: Props) => {
     new Set()
   );
   const limit = 6;
-  const fetcher = (url: string) =>
+
+  // UPDATED: The fetcher now accepts an array from the SWR key.
+  const fetcher = ([url, lang]: [string, string]) =>
     fetch(url, {
       headers: {
         "Content-Type": "application/json",
-        "website-language": locale,
+        "website-language": lang,
       },
     }).then((res) => res.json());
+
+  // UPDATED: The SWR key is now an array including the URL and the locale.
   const { data, error, isLoading } = useSWR<GrantsResponse>(
-    `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${teacherId}/grants?page=${page}&limit=${limit}`,
+    [
+      `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${teacherId}/grants?page=${page}&limit=${limit}`,
+      locale,
+    ],
     fetcher
   );
+
+  // NEW: Effect to reset the list when the teacher or language changes.
+  useEffect(() => {
+    setItems([]);
+    setPage(1);
+    setTotal(0);
+  }, [teacherId, locale]);
 
   useEffect(() => {
     if (data?.data) {

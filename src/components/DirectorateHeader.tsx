@@ -39,33 +39,42 @@ const DirectorateHeader = () => {
   const params = useParams();
   const id = params?.id as string;
   const locale = params?.locale as string;
-
   const swiperRef = useRef<SwiperCore>();
-  const fetcher = (url: string) =>
+
+  // UPDATED: The fetcher now accepts an array from the SWR key.
+  const fetcher = ([url, lang]: [string, string]) =>
     fetch(url, {
       headers: {
         "Content-Type": "application/json",
-        "website-language": locale, // Adds the language header
+        "website-language": lang,
       },
     }).then((res) => res.json());
+
+  // UPDATED: The SWR key is now an array including the URL and the locale.
   const { data, error, isLoading } = useSWR<Response>(
-    id ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}` : null,
+    id
+      ? [
+          `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}`,
+          locale,
+        ]
+      : null,
     fetcher,
     {
       dedupingInterval: 1000 * 60 * 60, // 1 hour
       revalidateOnFocus: false,
     }
   );
+
   useEffect(() => {
     if (data) {
-      // This changes the title in the browser tab
       document.title = `${data?.directorate_type?.name} | EPU`;
     }
-  }, [data]); // This effect runs when the data is fetched
+  }, [data]);
 
   if (isLoading || !data) return <Skeleton />;
   if (error)
     return <div className="text-center text-red-500">Failed to load data.</div>;
+
   return (
     <div className="w-full lg:h-[570px] sm:h-[400px] h-[220px] relative rounded-3xl overflow-hidden">
       {data.galleries.length > 1 ? (
