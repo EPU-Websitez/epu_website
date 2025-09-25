@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { process.env.NEXT_PUBLIC_BASE_URL } from "@/libs/env";
 import CollegesClient from "./CollegesClient"; // Import the client component
 
 // This function now accepts 'searchParams' to generate dynamic metadata

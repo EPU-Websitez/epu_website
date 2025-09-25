@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { process.env.NEXT_PUBLIC_BASE_URL } from "@/libs/env";
 import ResearchClient from "./ResearchClient";
 
 // --- Server-side function to generate metadata ---

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import AcademicStaffClient from "./AcademicStaffClient";
-import { process.env.NEXT_PUBLIC_BASE_URL } from "@/libs/env";
 
 // --- Corrected generateMetadata function ---
 export async function generateMetadata({

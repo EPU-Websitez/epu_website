@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { process.env.NEXT_PUBLIC_BASE_URL } from "@/libs/env";
 import DirectoratesClient from "./DirectoratesClient";
 
 // --- Server-side function to generate metadata ---

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { process.env.NEXT_PUBLIC_BASE_URL } from "@/libs/env";
 import CalendarClient from "./CalendarClient"; // Import the client component
 
 // --- Server-side function to generate STATIC metadata ---

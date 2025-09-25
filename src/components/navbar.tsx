@@ -187,7 +187,7 @@ const Navbar = () => {
         >
           <Link
             href={parentHref}
-            className={`flex_center gap-2 xl:text-base text-xs hover:text-opacity-80 transition-colors ${
+            className={`flex_center gap-2 xl:text-base text-[10px] hover:text-opacity-80 transition-colors ${
               parentActive ? desktopActiveClass : ""
             }`}
           >
@@ -240,7 +240,7 @@ const Navbar = () => {
       <Link
         key={item.id}
         href={parentHref}
-        className={`flex_center gap-2 xl:text-base text-xs hover:text-opacity-80 transition-colors ${
+        className={`flex_center gap-2 xl:text-base text-[10px] hover:text-opacity-80 transition-colors ${
           isActiveExact(parentHref) ? desktopActiveClass : ""
         }`}
       >
@@ -260,7 +260,7 @@ const Navbar = () => {
     const isExpanded = expandedMobileItems.has(item.id);
 
     return (
-      <div key={item.id} className="w-full">
+      <div key={item.id} className="w-full z-10">
         <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
           <Link
             href={parentHref}
@@ -317,7 +317,7 @@ const Navbar = () => {
           </div>
           <Link
             href="/"
-            className="w-[195px] h-[53px] relative sm:block hidden"
+            className="md:w-[195px] w-[160px]  md:h-[53px] h-[45px] relative sm:block hidden"
           >
             <Image
               src="/images/logo.svg"
@@ -393,7 +393,7 @@ const Navbar = () => {
                 </Link>
 
                 {/* About (parent + children) */}
-                <div className="w-full">
+                <div className="w-full z-10">
                   <div className="flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3">
                     <Link
                       href={`/${locale}/colleges/${college}/about`}
