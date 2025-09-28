@@ -216,7 +216,7 @@ const CouncilPageClient = () => {
             )
           )}
 
-          <div className="grid w-full lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-8">
+          <div className="grid w-full lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-8">
             {staff.map((member) => (
               <MemberCard
                 key={`${member.teacher.id}-${member.role}`}

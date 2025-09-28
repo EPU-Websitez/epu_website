@@ -212,7 +212,7 @@
     "clear": "Clear",
     "apply": "Apply",
     "search": "Search",
-    "no_news_found": "No News Found"
+    "no_news_found": "No Data Found"
   },
   "Students": {
     "head": "Campus Life",
@@ -238,7 +238,9 @@
     "alumni": "Alumni Students",
     "feedback": "Feedback",
     "read_more": "Read More",
-    "error_loading_data": "error loading data"
+    "error_loading_data": "error loading data",
+    "show_more": "Show More",
+    "all_items": "All Items"
   },
   "Colleges": {
     "new_events": "New Events",

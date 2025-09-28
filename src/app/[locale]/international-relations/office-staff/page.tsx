@@ -129,7 +129,7 @@ const Page = () => {
         </h2>
 
         {/* Dynamic Grid for Staff */}
-        <div className="w-full grid lg:grid-cols-3 md:grid-cols-2 gap-5 text-secondary text-center">
+        <div className="w-full grid lg:grid-cols-4 md:grid-cols-2 gap-5 text-secondary text-center">
           {loading && page === 1 ? (
             Array.from({ length: limit }).map((_, i) => (
               <StaffCardSkeleton key={i} />

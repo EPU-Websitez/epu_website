@@ -85,30 +85,39 @@ export default function Footer() {
         </div>
         <span className="opacity-80 text-sm">{t("copyright")}</span>
         <div className="flex_center gap-5">
-          <a
-            href="/"
+          {/* <a
+            href="https://www.facebook.com/epu.education"
+            title="EPU Facebook"
+            ref="noopener noreferrer"
+            target="_blank"
             className="lg:w-12 w-10 lg:h-12 h-10 border border-white border-opacity-50 rounded-full flex_center"
           >
             <FaLinkedinIn />
-          </a>
+          </a> */}
           <a
-            href="/"
+            href="https://www.facebook.com/epu.education"
+            title="EPU Facebook"
+            ref="noopener noreferrer"
+            target="_blank"
             className="lg:w-12 w-10 lg:h-12 h-10 border border-white border-opacity-50 rounded-full flex_center"
           >
             <FaFacebookF />
           </a>
           <a
-            href="/"
+            href="https://www.instagram.com/epolytechnicuni/?hl=en"
+            title="EPU Facebook"
+            ref="noopener noreferrer"
+            target="_blank"
             className="lg:w-12 w-10 lg:h-12 h-10 border border-white border-opacity-50 rounded-full flex_center"
           >
             <FaInstagram />
           </a>
-          <a
+          {/* <a
             href="/"
             className="lg:w-12 w-10 lg:h-12 h-10 border border-white border-opacity-50 rounded-full flex_center"
           >
             <FaYoutube />
-          </a>
+          </a> */}
         </div>
       </div>
     </div>

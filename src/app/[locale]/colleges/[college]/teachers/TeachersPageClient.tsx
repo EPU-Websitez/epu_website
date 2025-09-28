@@ -133,7 +133,7 @@ const TeachersPageClient = () => {
         <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-10 w-full sm:mt-14 mt-10">
           <SubHeader title={t("teachers")} alt={false} />
 
-          <div className="grid w-full lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-8">
+          <div className="grid w-full lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-8">
             {/* --- CHANGE: Mapping over 'teachers' with new data structure --- */}
             {teachers.map((teacher) => (
               <MemberCard

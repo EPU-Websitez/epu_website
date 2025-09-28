@@ -232,7 +232,7 @@ const Page = () => {
               )}
               {/* --- END --- */}
 
-              <div className="w-full grid lg:grid-cols-3 md:grid-cols-2 gap-5 text-secondary text-center">
+              <div className="w-full grid lg:grid-cols-4 md:grid-cols-2 gap-5 text-secondary text-center">
                 {centers.map((item) => {
                   const email = `${item.teacher.full_name
                     .replace(/\s+/g, "")
@@ -293,6 +293,11 @@ const Page = () => {
               >
                 {loading ? t("loading") : t("see_more")}
               </button>
+            </div>
+          )}
+          {centers.length === 0 && (
+            <div className="flex_center w-full my-5">
+              <p className="text-gray-500 text-lg">{t("no_news_found")}</p>
             </div>
           )}
         </div>

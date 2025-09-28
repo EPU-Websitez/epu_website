@@ -1,11 +1,9 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
-
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useRef, useState } from "react";
 import { FaAngleLeft, FaTimes } from "react-icons/fa";
@@ -54,11 +52,12 @@ interface AlumniResponse {
   bg_lists: BgListItem[];
 }
 
-// -------- Modal Component --------
+// -------- Modals --------
 interface StoryModalProps {
   story: StoryItem;
   onClose: () => void;
 }
+
 const StoryModal = ({ story, onClose }: StoryModalProps) => {
   return (
     <div
@@ -98,7 +97,52 @@ const StoryModal = ({ story, onClose }: StoryModalProps) => {
   );
 };
 
-// -------- Granular Skeleton Components --------
+interface BgListModalProps {
+  list: BgListItem[];
+  onClose: () => void;
+  title: string;
+}
+
+const BgListModal = ({ list, onClose, title }: BgListModalProps) => {
+  return (
+    <div
+      className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center"
+      onClick={onClose}
+    >
+      <div
+        className="relative bg-white rounded-2xl max-w-2xl w-11/12 p-6 overflow-y-auto max-h-[80vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 z-10"
+          aria-label="Close modal"
+        >
+          <FaTimes size={20} />
+        </button>
+        <h2 className="text-2xl font-semibold mb-5 text-secondary">{title}</h2>
+        <div className="flex flex-col gap-5">
+          {list.map((item, index) => (
+            <div
+              key={item.id}
+              className="flex_start gap-5 w-full border-b pb-4 last:border-none"
+            >
+              <div className="w-10 h-10 rounded-full flex_center bg-primary text-white flex-shrink-0">
+                {index + 1}
+              </div>
+              <div className="flex_start flex-col gap-1">
+                <h2 className="text-lg font-semibold">{item.title}</h2>
+                <p className="text-sm opacity-80">{item.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// -------- Skeletons --------
 const FeedbackSkeleton = () => (
   <div className="md:w-full w-[95%] flex flex-col md:flex-row items-center gap-5 mt-10 relative md:p-0 p-5 animate-pulse">
     <div className="lg:w-[45%] md:w-[50%] w-full h-[250px] bg-gray-200 rounded-3xl"></div>
@@ -119,11 +163,13 @@ const BannerSkeleton = () => (
   <div className="mt-10 w-full relative h-[575px] bg-gray-200 animate-pulse"></div>
 );
 
+// -------- Main Component --------
 const AlumniClient = () => {
   const swiperRef = useRef<SwiperCore>();
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedStory, setSelectedStory] = useState<StoryItem | null>(null);
-
+  const [showBgListModal, setShowBgListModal] = useState(false);
+  const [bgImageError, setBgImageError] = useState(false);
   const t = useTranslations("Students");
   const params = useParams();
   const locale = (params?.locale as string) || "en";
@@ -160,6 +206,7 @@ const AlumniClient = () => {
           <SubHeader title={t("alumni")} alt={false} />
         </div>
 
+        {/* Feedback Section */}
         {isLoading ? (
           <FeedbackSkeleton />
         ) : (
@@ -274,6 +321,7 @@ const AlumniClient = () => {
           </div>
         )}
 
+        {/* Stories Section */}
         <div className="max-w-[1024px] text-secondary px-3 w-full flex_center flex-col gap-5 mt-10">
           {isLoading ? (
             <StoriesHeaderSkeleton />
@@ -332,19 +380,22 @@ const AlumniClient = () => {
           </div>
         </div>
 
+        {/* Background Section */}
         {isLoading ? (
           <BannerSkeleton />
         ) : (
           <div className="mt-10 w-full relative h-[575px] flex_center">
             <Image
-              src={alumniData?.bg_image.lg || "/images/alumni-bg.png"}
+              src={
+                bgImageError
+                  ? "/images/placeholder.svg"
+                  : alumniData?.bg_image?.lg || "/images/alumni-bg.png"
+              }
               alt={alumniData?.bg_title || "Alumni"}
               fill
               priority
               className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.src = "/images/placeholder.svg";
-              }}
+              onError={() => setBgImageError(true)}
             />
             <div className="opacity-40 bg-primary absolute left-0 top-0 w-full h-full z-10"></div>
             <div className="w-[1024px] text-white text-opacity-90 px-3 flex_start flex-col gap-5 z-20">
@@ -354,7 +405,8 @@ const AlumniClient = () => {
               <p className="md:text-base text-sm">
                 {alumniData?.bg_description}
               </p>
-              {alumniData?.bg_lists.map((item, index) => (
+
+              {alumniData?.bg_lists.slice(0, 3).map((item, index) => (
                 <div
                   key={item.id}
                   className="flex_start gap-5 w-full max-w-[600px] md:mt-10 mt-5"
@@ -374,6 +426,15 @@ const AlumniClient = () => {
                   </div>
                 </div>
               ))}
+
+              {alumniData?.bg_lists && alumniData?.bg_lists.length > 3 && (
+                <button
+                  onClick={() => setShowBgListModal(true)}
+                  className="mt-5 bg-white text-primary font-semibold px-4 py-2 rounded-md"
+                >
+                  {t("show_more")}
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -385,7 +446,16 @@ const AlumniClient = () => {
           onClose={() => setSelectedStory(null)}
         />
       )}
+
+      {showBgListModal && (
+        <BgListModal
+          list={alumniData?.bg_lists || []}
+          onClose={() => setShowBgListModal(false)}
+          title={t("all_items")}
+        />
+      )}
     </>
   );
 };
+
 export default AlumniClient;

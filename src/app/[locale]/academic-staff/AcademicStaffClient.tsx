@@ -418,7 +418,7 @@ const AcademicStaffClient = () => {
         {page === 1 && loading ? (
           <TeacherSkeleton />
         ) : teachers.length > 0 ? (
-          <div className="grid w-full lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 -mt-3">
+          <div className="grid w-full lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5 -mt-3">
             {teachers.map((teacher) => (
               <MemberCard
                 key={teacher.id}

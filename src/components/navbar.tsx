@@ -350,7 +350,6 @@ const Navbar = () => {
               }}
             />
           </Link>
-
           {/* Mobile Overlay */}
           {navIsOpen && (
             <button
@@ -360,29 +359,35 @@ const Navbar = () => {
               aria-label="Close menu"
             />
           )}
-
           {/* Mobile Drawer */}
+          {/* Solution: Separate the button from the scrollable content area */}
           <div
-            className={`flex_start flex-col gap-5 rounded-3xl bg-white w-[80%] h-screen fixed top-0 ltr:right-0 rtl:left-0 z-40 text-secondary duration-300 overflow-y-auto ${
+            className={`flex_start overflow-visible flex-col gap-5 rounded-3xl bg-white w-[80%] h-screen fixed top-0 ltr:right-0 rtl:left-0 z-40 text-secondary duration-300 ${
               navIsOpen
                 ? "max-w-[80%] py-10 px-5"
                 : "max-w-0 overflow-hidden p-0"
             }`}
           >
-            <button
-              type="button"
-              onClick={handleNav}
-              className="flex justify-start items-center text-xl bg-white custom_shape absolute top-1/2 ltr:-left-[50px] rtl:-right-[50px] w-20 h-16 shadow-[12px_0_0_0_white] rounded-full -translate-y-1/2 z-10 text-black"
-            >
-              {locale === "en" ? (
-                <IoChevronBack className="ltr:ml-5 rtl:mr-5" />
-              ) : (
-                <IoChevronForward className="ltr:ml-5 rtl:mr-5" />
-              )}
-            </button>
-            {menuData?.data?.map((item) => renderMobileMenuItem(item))}
-          </div>
+            {/* Close button - positioned absolutely, stays outside overflow context */}
+            {navIsOpen && (
+              <button
+                type="button"
+                onClick={handleNav}
+                className="flex justify-start items-center text-xl bg-white custom_shape absolute top-1/2 ltr:-left-[50px] rtl:-right-[50px] w-20 h-16 shadow-[12px_0_0_0_white] rounded-full -translate-y-1/2 z-10 text-black"
+              >
+                {locale === "en" ? (
+                  <IoChevronBack className="ltr:ml-5 rtl:mr-5" />
+                ) : (
+                  <IoChevronForward className="ltr:ml-5 rtl:mr-5" />
+                )}
+              </button>
+            )}
 
+            {/* Scrollable content area */}
+            <div className="flex flex-col gap-5 overflow-y-auto overflow-x-hidden w-full">
+              {menuData?.data?.map((item) => renderMobileMenuItem(item))}
+            </div>
+          </div>
           {/* Desktop navbar row */}
           <div className="sm:flex hidden justify-center items-center xl:gap-5 gap-3 flex-grow">
             {menuData?.data?.map((item, index) => (
@@ -394,7 +399,6 @@ const Navbar = () => {
               </React.Fragment>
             ))}
           </div>
-
           <div className="flex_center gap-4">
             <button
               className="sm:text-2xl text-lg"
