@@ -230,7 +230,7 @@ const MouClient = () => {
                           alt={mou.title}
                           fill
                           priority={i < 6}
-                          className="w-full h-full object-contain rounded-md transition-transform group-hover:scale-105"
+                          className="w-full h-full sm:object-contain object-cover rounded-md transition-transform group-hover:scale-105"
                           onError={(e) => {
                             e.currentTarget.src = "/images/placeholder.svg";
                           }}
