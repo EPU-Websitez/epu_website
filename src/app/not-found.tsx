@@ -1,5 +1,7 @@
 "use client";
+
 import Link from "next/link";
+import Image from "next/image";
 import React from "react";
 
 const NotFound = () => {
@@ -19,7 +21,8 @@ const NotFound = () => {
           }}
         >
           {/* Background decorative elements */}
-          {/* Top left circular shape */}
+
+          {/* Top right circular shape */}
           <div
             style={{
               position: "absolute",
@@ -30,10 +33,12 @@ const NotFound = () => {
               opacity: 0.3,
             }}
           >
-            <img
+            <Image
               src="/images/rotate.svg"
-              alt=""
-              style={{ width: "100%", height: "100%" }}
+              alt="Decorative Rotate Shape"
+              fill
+              style={{ objectFit: "contain" }}
+              priority
             />
           </div>
 
@@ -48,10 +53,12 @@ const NotFound = () => {
               opacity: 0.4,
             }}
           >
-            <img
+            <Image
               src="/images/dialog.svg"
-              alt=""
-              style={{ width: "100%", height: "100%" }}
+              alt="Decorative Dialog Shape"
+              fill
+              style={{ objectFit: "contain" }}
+              priority
             />
           </div>
 
@@ -66,10 +73,12 @@ const NotFound = () => {
               opacity: 0.4,
             }}
           >
-            <img
+            <Image
               src="/images/dots.svg"
-              alt=""
-              style={{ width: "100%", height: "100%" }}
+              alt="Decorative Dots"
+              fill
+              style={{ objectFit: "contain" }}
+              priority
             />
           </div>
 
@@ -84,10 +93,12 @@ const NotFound = () => {
               opacity: 0.3,
             }}
           >
-            <img
+            <Image
               src="/images/rotate.svg"
-              alt=""
-              style={{ width: "100%", height: "100%" }}
+              alt="Decorative Rotate Shape"
+              fill
+              style={{ objectFit: "contain" }}
+              priority
             />
           </div>
 
@@ -102,10 +113,12 @@ const NotFound = () => {
               opacity: 0.4,
             }}
           >
-            <img
+            <Image
               src="/images/dialog.svg"
-              alt=""
-              style={{ width: "100%", height: "100%" }}
+              alt="Decorative Dialog Shape"
+              fill
+              style={{ objectFit: "contain" }}
+              priority
             />
           </div>
 
@@ -120,14 +133,16 @@ const NotFound = () => {
               height: "60px",
             }}
           >
-            <img
+            <Image
               src="/images/logo.svg"
               alt="EPU Logo"
-              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              fill
+              style={{ objectFit: "contain" }}
+              priority
             />
           </div>
 
-          {/* Main Content Container */}
+          {/* Main Content */}
           <div
             style={{
               textAlign: "center",
@@ -144,10 +159,12 @@ const NotFound = () => {
                 margin: "0 auto 20px auto",
               }}
             >
-              <img
+              <Image
                 src="/images/404.svg"
-                alt="404"
-                style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                alt="404 Error Illustration"
+                fill
+                style={{ objectFit: "contain" }}
+                priority
               />
             </div>
 
@@ -181,7 +198,7 @@ const NotFound = () => {
 
             {/* Back to Home Button */}
             <Link
-              href={"/"}
+              href="/"
               title="Home"
               style={{
                 background: "linear-gradient(135deg, #2c5282 0%, #3182ce 100%)",

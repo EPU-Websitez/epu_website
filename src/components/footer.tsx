@@ -3,12 +3,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaLinkedinIn,
-  FaYoutube,
-} from "react-icons/fa6";
+import { FaFacebookF, FaInstagram } from "react-icons/fa6";
 
 export default function Footer() {
   const t = useTranslations("Footer");
@@ -97,7 +92,7 @@ export default function Footer() {
           <a
             href="https://www.facebook.com/epu.education"
             title="EPU Facebook"
-            ref="noopener noreferrer"
+            rel="noopener noreferrer"
             target="_blank"
             className="lg:w-12 w-10 lg:h-12 h-10 border border-white border-opacity-50 rounded-full flex_center"
           >
@@ -106,7 +101,7 @@ export default function Footer() {
           <a
             href="https://www.instagram.com/epolytechnicuni/?hl=en"
             title="EPU Facebook"
-            ref="noopener noreferrer"
+            rel="noopener noreferrer"
             target="_blank"
             className="lg:w-12 w-10 lg:h-12 h-10 border border-white border-opacity-50 rounded-full flex_center"
           >

@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { process.env.NEXT_PUBLIC_BASE_URL, process.env.NEXT_PUBLIC_API_URL } from "@/libs/env";
 import DecisionsClient from "./DecisionsClient"; // Import the client component
 
 // --- Interface for the data needed for metadata ---

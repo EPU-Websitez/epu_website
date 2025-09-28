@@ -1,7 +1,6 @@
 "use client";
 
-// 1. IMPORT useRef, useRouter, usePathname, useSearchParams
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import {
   useParams,
   useRouter,
@@ -24,30 +23,33 @@ import type {
   Props as SelectProps,
 } from "react-select";
 
-// ========== Types (Unchanged) ==========
+// ========== Types ==========
 interface ImageType {
   lg: string;
   md: string;
   original: string;
 }
+
 interface Teacher {
   id: number;
   full_name: string;
   title: string;
   profile_image: ImageType;
 }
+
 interface TeacherResponse {
   total: number;
   page: number;
   limit: number;
   data: Teacher[];
 }
+
 interface SelectOption {
   value: string;
   label: string;
 }
 
-// ========== Skeletons & Components (Unchanged) ==========
+// ========== Skeleton ==========
 const TeacherSkeleton = () => (
   <div className="grid w-full lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 -mt-3 animate-pulse">
     {[...Array(6)].map((_, i) => (
@@ -69,6 +71,7 @@ const TeacherSkeleton = () => (
   </div>
 );
 
+// ========== Custom Select Styles ==========
 const customStyles: SelectProps<
   SelectOption,
   false,
@@ -104,13 +107,13 @@ const customStyles: SelectProps<
   }),
 };
 
+// ========== Searchable Select Component ==========
 interface SearchableSelectProps {
   apiUrl: string;
   locale: string;
   placeholder: string;
   value: SelectOption | null;
   onChange: (value: SelectOption | null) => void;
-  // NEW PROP to load an initial value from an ID
   initialValueId?: string;
 }
 
@@ -122,7 +125,6 @@ const SearchableSelect = ({
   onChange,
   initialValueId,
 }: SearchableSelectProps) => {
-  // NEW: Effect to load initial value if an ID is provided
   useEffect(() => {
     if (initialValueId && !value) {
       const fetchInitialOption = async () => {
@@ -150,7 +152,6 @@ const SearchableSelect = ({
     loadedOptions: OptionsOrGroups<SelectOption, GroupBase<SelectOption>>,
     additional: { page: number } | undefined
   ) => {
-    // (loadOptions logic is unchanged)
     const page = additional?.page || 1;
     try {
       const params = new URLSearchParams({
@@ -158,6 +159,7 @@ const SearchableSelect = ({
         limit: "10",
         ...(search && { search }),
       });
+
       const res = await fetch(`${apiUrl}?${params.toString()}`, {
         headers: { "website-language": locale },
       });
@@ -176,6 +178,7 @@ const SearchableSelect = ({
       return { options: [], hasMore: false };
     }
   };
+
   return (
     <AsyncPaginate
       value={value}
@@ -204,25 +207,24 @@ const SearchableSelect = ({
   );
 };
 
-// ========== Main Client Component ==========
+// ========== Main Component ==========
 const AcademicStaffClient = () => {
   const t = useTranslations("AcademicStaff");
   const params = useParams();
   const locale = params.locale as string;
 
-  // 2. ADD router, pathname, and searchParams hooks
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isMounted = useRef(false);
 
-  // 3. INITIALIZE state from URL search params
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [page, setPage] = useState(() => Number(searchParams.get("page")) || 1);
   const [searchQuery, setSearchQuery] = useState(
     () => searchParams.get("search") || ""
   );
   const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
+
   const [selectedCenter, setSelectedCenter] = useState<SelectOption | null>(
     null
   );
@@ -231,17 +233,17 @@ const AcademicStaffClient = () => {
   const [selectedCollege, setSelectedCollege] = useState<SelectOption | null>(
     null
   );
+
   const [isSearchActive, setIsSearchActive] = useState(false);
 
-  // Debounce effect (unchanged)
+  // Debounce effect
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearch(searchQuery), 500);
     return () => clearTimeout(handler);
   }, [searchQuery]);
 
-  // 4. NEW EFFECT: Update URL when filters change
+  // Update URL params when filters change
   useEffect(() => {
-    // Only run this effect on updates, not on the initial mount
     if (!isMounted.current) {
       isMounted.current = true;
       return;
@@ -255,7 +257,6 @@ const AcademicStaffClient = () => {
     if (selectedCenter) params.set("center_id", selectedCenter.value);
     if (page > 1) params.set("page", page.toString());
 
-    // Use router.replace to update the URL without adding to browser history
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   }, [
     debouncedSearch,
@@ -267,7 +268,8 @@ const AcademicStaffClient = () => {
     pathname,
   ]);
 
-  const buildApiUrl = () => {
+  // FIX: Wrap buildApiUrl in useCallback
+  const buildApiUrl = useCallback(() => {
     const params = new URLSearchParams({ page: page.toString(), limit: "10" });
     if (debouncedSearch.trim()) params.append("search", debouncedSearch.trim());
     if (selectedDepartment?.value)
@@ -275,14 +277,22 @@ const AcademicStaffClient = () => {
     if (selectedCenter?.value) params.append("center_id", selectedCenter.value);
     if (selectedCollege?.value)
       params.append("college_id", selectedCollege.value);
+
     return `${
       process.env.NEXT_PUBLIC_API_URL
     }/website/teachers?${params.toString()}`;
-  };
+  }, [
+    page,
+    debouncedSearch,
+    selectedDepartment,
+    selectedCenter,
+    selectedCollege,
+  ]);
 
   const [apiUrl, setApiUrl] = useState(buildApiUrl());
   const { data, loading } = useFetch<TeacherResponse>(apiUrl, locale);
 
+  // Update teachers when data changes
   useEffect(() => {
     if (data?.data) {
       setTeachers((prev) => {
@@ -295,16 +305,10 @@ const AcademicStaffClient = () => {
     }
   }, [data, page, isSearchActive]);
 
+  // Update apiUrl when dependencies change
   useEffect(() => {
-    const newUrl = buildApiUrl();
-    setApiUrl(newUrl);
-  }, [
-    page,
-    debouncedSearch,
-    selectedCenter,
-    selectedDepartment,
-    selectedCollege,
-  ]);
+    setApiUrl(buildApiUrl());
+  }, [buildApiUrl]);
 
   const handleLoadMore = () => setPage((prev) => prev + 1);
 
@@ -331,6 +335,8 @@ const AcademicStaffClient = () => {
     <div className="my-10 flex_center w-full">
       <div className="max-w-[1024px] px-3 w-full flex_start flex-col gap-10">
         <SubHeader title={t("head")} alt={false} />
+
+        {/* Banner Section */}
         <div className="relative w-full lg:h-[530px] sm:h-[488px] h-[305px]">
           <Image
             src="/images/campus.png"
@@ -338,15 +344,9 @@ const AcademicStaffClient = () => {
             fill
             priority
             className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
-            onError={(e) => {
-              e.currentTarget.src = "/images/placeholder.svg";
-            }}
           />
           <div className="absolute w-[95%] left-1/2 -translate-x-1/2 sm:bottom-5 bottom-2 bg-white flex_center sm:gap-5 gap-2 sm:p-3 p-1 sm:rounded-3xl rounded-lg">
-            {/* Desktop layout */}
             <div className="flex sm:gap-5 w-full items-center gap-3">
-              {/* 5. PASS initial value IDs to the select components */}
-
               <div className="relative w-full">
                 <span className="pointer-events-none text-black opacity-50 absolute ltr:left-2 rtl:right-2 top-1/2 -translate-y-1/2 z-10 text-xl">
                   <CiSearch />
@@ -369,6 +369,8 @@ const AcademicStaffClient = () => {
             </div>
           </div>
         </div>
+
+        {/* Filters */}
         <div className="grid sm:grid-cols-3 grid-cols-2 w-full gap-5">
           <div className="w-full text-sm sm:col-span-1 col-span-2">
             <SearchableSelect
@@ -402,7 +404,7 @@ const AcademicStaffClient = () => {
           </div>
         </div>
 
-        {/* Results (Unchanged) */}
+        {/* Results Header */}
         <div className="flex justify-between items-center w-full mt-4">
           <h3 className="sm:text-lg text-base opacity-60 font-semibold">
             {data?.total || 0} {t("results")}
@@ -415,6 +417,7 @@ const AcademicStaffClient = () => {
           </button>
         </div>
 
+        {/* Results Grid */}
         {page === 1 && loading ? (
           <TeacherSkeleton />
         ) : teachers.length > 0 ? (
@@ -437,22 +440,22 @@ const AcademicStaffClient = () => {
             </div>
           )
         )}
+
         {loading && page > 1 && (
           <p className="text-center w-full">{t("loading")}...</p>
         )}
+
         {!loading &&
           teachers.length > 0 &&
           teachers.length < (data?.total || 0) && (
             <div className="flex_center w-full">
-              {" "}
               <button
                 onClick={handleLoadMore}
                 className="custom_button px-20 py-2"
                 disabled={loading}
               >
-                {" "}
-                {loading ? t("loading") : t("see_more")}{" "}
-              </button>{" "}
+                {loading ? t("loading") : t("see_more")}
+              </button>
             </div>
           )}
       </div>
