@@ -237,7 +237,7 @@ const MouClient = () => {
                         />
                       </div>
                     </div>
-                    <div className="bg-primary absolute bottom-0 left-0 w-full sm:py-4 py-3 flex_center gap-2 sm:text-base text-xs font-semibold text-white transition-colors group-hover:bg-secondary">
+                    <div className="bg-primary absolute bottom-0 px-2 left-0 w-full sm:py-4 py-3 flex_center gap-2 sm:text-base text-xs font-semibold text-white transition-colors group-hover:bg-secondary">
                       {mou.title}
                     </div>
                   </button>
