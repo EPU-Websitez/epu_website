@@ -406,7 +406,7 @@ const AlumniClient = () => {
                 {alumniData?.bg_description}
               </p>
 
-              {alumniData?.bg_lists.slice(0, 3).map((item, index) => (
+              {alumniData?.bg_lists.slice(0, 2).map((item, index) => (
                 <div
                   key={item.id}
                   className="flex_start gap-5 w-full max-w-[600px] md:mt-10 mt-5"

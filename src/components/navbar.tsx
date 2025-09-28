@@ -254,11 +254,17 @@ const Navbar = () => {
   const renderMobileMenuItem = (item: MenuItem, level: number = 0) => {
     const hasChildren =
       Array.isArray(item.children) && item.children.length > 0;
+
     const parentHref = getMenuItemUrl(item);
+
+    // Child active check is still needed for expanding the menu
     const anyChildActive =
       hasChildren &&
       item.children.some((child) => isActiveStartsWith(getMenuItemUrl(child)));
-    const parentActive = isActiveExact(parentHref) || anyChildActive;
+
+    // FIX: parent should only be active if it has a real link and matches exactly
+    const parentActive = parentHref !== "#" && isActiveExact(parentHref);
+
     const isExpanded = expandedMobileItems.has(item.id);
 
     return (
@@ -274,6 +280,7 @@ const Navbar = () => {
           >
             {item.title}
           </Link>
+
           {hasChildren && (
             <button
               className="text-2xl transition-transform duration-300 p-2 -m-2"
@@ -287,6 +294,7 @@ const Navbar = () => {
             </button>
           )}
         </div>
+
         {hasChildren && (
           <div
             className={`overflow-hidden transition-all duration-300 ease-in-out ${
