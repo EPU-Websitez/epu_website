@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: rabar;
-  src: url("../../../public/fonts/rabar.ttf");
+  src: url("/fonts/rabar.ttf");
 }
 @tailwind base;
 @tailwind components;
