@@ -188,17 +188,17 @@ const Page = () => {
               {/* --- ADDED: Display Lead Member Card --- */}
               {leadMember && (
                 <Link
-                  href={`/${locale}/academic-staff/${leadMember.teacher.id}`}
+                  href={`/${locale}/academic-staff/${leadMember?.teacher?.id}`}
                   className="flex justify-start items-center sm:gap-10 gap-5 w-full border p-5 rounded-3xl border-lightBorder"
                 >
                   <div className="sm:w-[200px] w-[125px] sm:h-[190px] h-[125px] relative flex-shrink-0">
                     <Image
                       src={
-                        leadMember.teacher.profile_image?.lg ||
-                        leadMember.teacher.profile_image?.original ||
+                        leadMember?.teacher?.profile_image?.lg ||
+                        leadMember?.teacher?.profile_image?.original ||
                         "/images/placeholder.svg"
                       }
-                      alt={leadMember.teacher.full_name}
+                      alt={leadMember?.teacher?.full_name}
                       fill
                       priority
                       className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
@@ -213,7 +213,7 @@ const Page = () => {
                     </h3>
                     <h1 className="max-w-[250px] lg:text-xl sm:text-lg text-xs font-semibold relative">
                       <span className="relative z-10">
-                        {leadMember.teacher.full_name}
+                        {leadMember?.teacher?.full_name}
                       </span>
                       <span className="absolute ltr:left-0 rtl:right-0 -bottom-3 w-[80%] h-6">
                         <Image
@@ -234,7 +234,7 @@ const Page = () => {
 
               <div className="w-full grid lg:grid-cols-4 md:grid-cols-2 gap-5 text-secondary text-center">
                 {centers.map((item) => {
-                  const email = `${item.teacher.full_name
+                  const email = `${item.teacher?.full_name
                     .replace(/\s+/g, "")
                     .toLowerCase()}@epu.edu.iq`;
 
@@ -245,13 +245,13 @@ const Page = () => {
                     >
                       <div className="sm:w-[120px] w-[80px] mt-5 sm:h-[120px] h-[80px] border-[5px] border-primary rounded-full flex_center">
                         <Link
-                          href={`/${locale}/academic-staff/${item.teacher.id}`}
+                          href={`/${locale}/academic-staff/${item.teacher?.id}`}
                           title={item.teacher.full_name}
                           className="sm:w-[100px] w-[65px] sm:h-[100px] h-[65px] relative"
                         >
                           <Image
-                            src={item.teacher.profile_image.lg}
-                            alt={item.teacher.full_name}
+                            src={item.teacher?.profile_image?.lg}
+                            alt={item.teacher?.full_name}
                             fill
                             className="w-full h-full rounded-full object-cover"
                             onError={(e) => {
@@ -261,11 +261,11 @@ const Page = () => {
                         </Link>
                       </div>
                       <Link
-                        href={`/${locale}/academic-staff/${item.teacher.id}`}
-                        title={item.teacher.full_name}
+                        href={`/${locale}/academic-staff/${item.teacher?.id}`}
+                        title={item.teacher?.full_name}
                         className="text-lg font-semibold px-5"
                       >
-                        {item.teacher.full_name}
+                        {item.teacher?.full_name}
                       </Link>
                       <span className="opacity-70 mb-3 px-5 text-sm">
                         {item.role_in_center}
