@@ -1,3 +1,4 @@
+"use client";
 import { TbExternalLink } from "react-icons/tb";
 import Image from "next/image";
 import Link from "next/link";
@@ -5,6 +6,7 @@ import { IoArrowForwardOutline } from "react-icons/io5";
 import { FaCalendarDays } from "react-icons/fa6";
 import { IoIosTime } from "react-icons/io";
 import { GoArrowRight } from "react-icons/go";
+import { useTranslations } from "next-intl";
 
 interface EventCardProps {
   link: string;
@@ -23,9 +25,14 @@ const EventCard: React.FC<EventCardProps> = ({
   createdAt,
   time,
 }) => {
+  const t = useTranslations("Events");
   return (
     <div className="w-full flex_start flex-col gap-4 group relative border border-lightBorder rounded-xl py-3">
-      <Link href={link} className="relative w-full h-[250px] rounded-xl px-3">
+      <Link
+        href={link}
+        title={title}
+        className="relative w-full h-[250px] rounded-xl px-3"
+      >
         <div className="absolute text-sm z-10 ltr:left-4 rtl:right-4 -bottom-4 border border-white bg-blue rounded-xl px-3 py-0.5 text-white">
           {type}
         </div>
@@ -58,6 +65,7 @@ const EventCard: React.FC<EventCardProps> = ({
       </div>
       <Link
         href={link}
+        title={title}
         type="button"
         className="lg:text-xl truncate w-full text-base font-medium pt-3 border-t border-t-lightBorder hover:text-primary text-secondary duration-300 px-3"
       >
@@ -65,9 +73,10 @@ const EventCard: React.FC<EventCardProps> = ({
       </Link>
       <Link
         href={link}
+        title={title}
         className="w-full text-sm text-secondary font-bold border-t border-t-lightBorder pt-3 px-3 flex justify-between items-center"
       >
-        <span>Read More</span>
+        <span>{t("read_more")}</span>
         <GoArrowRight className="text-2xl rtl:rotate-180" />
       </Link>
     </div>

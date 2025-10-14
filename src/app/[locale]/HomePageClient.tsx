@@ -398,6 +398,7 @@ export default function HomePageClient() {
       <div className="max-w-[1040px] w-full flex-col flex_start gap-5 mt-14 sm:px-3 px-5">
         <Link
           href={`/${locale}/news`}
+          title={t("latest_news")}
           className="flex_center gap-5 text-primary font-semibold"
         >
           <div className="relative">
@@ -441,6 +442,7 @@ export default function HomePageClient() {
       <div className="max-w-[1040px] w-full flex-col flex_start sm:gap-8 gap-5 mt-10 sm:px-3 px-5">
         <Link
           href={`/${locale}/events`}
+          title={t("new_events")}
           className="flex_center gap-5 text-primary font-semibold"
         >
           <div className="relative">

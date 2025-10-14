@@ -439,6 +439,7 @@ const NewsDetailClient = () => {
                     <Link
                       href={`/${locale}/news?tag=${tag.name}`}
                       key={tag.id}
+                      title={tag.name}
                       className="bg-backgroundSecondary font-medium p-2 rounded-sm md:text-base text-xs"
                     >
                       #{tag.name}

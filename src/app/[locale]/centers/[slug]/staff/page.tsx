@@ -160,6 +160,7 @@ const Page = () => {
         <div className="md:w-[720px] w-full sm:h-[50px] my-10 h-[35px] grid grid-cols-3 justify-center items-center bg-lightBorder text-secondary rounded-3xl">
           <Link
             href={`/${locale}/centers/${slug}`}
+            title={t("vision_mission")}
             className="opacity-70 flex_center sm:text-lg text-sm font-medium"
           >
             {t("vision_mission")}
@@ -169,6 +170,7 @@ const Page = () => {
           </p>
           <Link
             href={`/${locale}/centers/${slug}/news`}
+            title={t("news")}
             className="opacity-70 flex_center sm:text-lg text-sm font-medium"
           >
             {t("news")}
@@ -189,6 +191,7 @@ const Page = () => {
               {leadMember && (
                 <Link
                   href={`/${locale}/academic-staff/${leadMember?.teacher?.id}`}
+                  title={leadMember?.teacher?.full_name}
                   className="flex justify-start items-center sm:gap-10 gap-5 w-full border p-5 rounded-3xl border-lightBorder"
                 >
                   <div className="sm:w-[200px] w-[125px] sm:h-[190px] h-[125px] relative flex-shrink-0">
@@ -246,7 +249,7 @@ const Page = () => {
                       <div className="sm:w-[120px] w-[80px] mt-5 sm:h-[120px] h-[80px] border-[5px] border-primary rounded-full flex_center">
                         <Link
                           href={`/${locale}/academic-staff/${item.teacher?.id}`}
-                          title={item.teacher.full_name}
+                          title={item.teacher?.full_name}
                           className="sm:w-[100px] w-[65px] sm:h-[100px] h-[65px] relative"
                         >
                           <Image

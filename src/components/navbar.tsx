@@ -164,6 +164,7 @@ const Navbar = () => {
       >
         <Link
           href={href}
+          title={item.title}
           className={`flex justify-between items-center w-full px-4 py-3 text-sm hover:bg-gray-50 hover:text-primary transition-colors ${
             childActive ? "text-primary font-semibold" : "text-gray-700"
           }`}
@@ -208,6 +209,7 @@ const Navbar = () => {
         >
           <Link
             href={parentHref}
+            title={item.title}
             className={`flex_center gap-2 xl:text-base text-[10px] hover:text-opacity-80 transition-colors ${
               parentActive ? desktopActiveClass : ""
             }`}
@@ -240,6 +242,7 @@ const Navbar = () => {
     return (
       <Link
         key={item.id}
+        title={item.title}
         href={parentHref}
         className={`flex_center gap-2 xl:text-base text-[10px] hover:text-opacity-80 transition-colors ${
           isActiveExact(parentHref) ? desktopActiveClass : ""
@@ -276,6 +279,7 @@ const Navbar = () => {
         >
           <Link
             href={parentHref}
+            title={item.title}
             className={`flex-1 ${parentActive ? mobileActiveClass : ""}`}
           >
             {item.title}
@@ -324,11 +328,12 @@ const Navbar = () => {
           </div>
           <Link
             href="/"
+            title="Home"
             className="md:w-[195px] w-[160px] md:h-[53px] h-[45px] relative sm:block hidden"
           >
             <Image
               src="/images/logo.svg"
-              alt="Navbar"
+              alt="Navbar logo"
               fill
               priority
               onError={(e) => {
@@ -345,11 +350,12 @@ const Navbar = () => {
         <div className="custom_container flex justify-between items-center xl:gap-5 gap-2">
           <Link
             href={"/"}
+            title="Home"
             className="w-[110px] h-[25px] relative sm:hidden block"
           >
             <Image
               src={"/images/logo-alt.png"}
-              alt="My Image"
+              alt="Logo"
               fill
               priority
               className="w-full h-full"

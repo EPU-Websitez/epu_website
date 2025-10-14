@@ -349,6 +349,7 @@ const SearchModal = ({
                                   item.type
                                 )}/${item.slug}`}
                                 key={`${item.type}-${item.id}`}
+                                title={item.title}
                                 onClick={onClose}
                                 className="block group"
                               >

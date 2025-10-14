@@ -23,7 +23,7 @@ const MemberCard: React.FC<MemberCardProps> = ({
         <Link href={link} title={title} className="w-full h-full relative">
           <Image
             src={image}
-            alt="title"
+            alt={title}
             fill
             priority
             className="w-full h-auto object-cover rounded-full"

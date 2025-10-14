@@ -165,6 +165,7 @@ const DepartmentCouncilPage = ({
           <div className="flex_start flex-col gap-4 flex-shrink-0 lg:w-auto w-full">
             <Link
               href={`/${locale}/colleges/${college}/departments/${slug}`}
+              title={t("about_button")}
               className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
             >
               <span>{t("about_button")}</span>
@@ -172,6 +173,7 @@ const DepartmentCouncilPage = ({
             </Link>
             <Link
               href={`/${locale}/colleges/${college}/departments/${slug}/vision-and-mission`}
+              title={t("vision_mission")}
               className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
             >
               <span>{t("vision_mission")}</span>
@@ -183,6 +185,7 @@ const DepartmentCouncilPage = ({
             </div>
             <Link
               href={`/${locale}/colleges/${college}/departments/${slug}/news`}
+              title={t("news_button")}
               className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
             >
               <span>{t("news_button")}</span>
@@ -190,6 +193,7 @@ const DepartmentCouncilPage = ({
             </Link>
             <Link
               href={`/${locale}/colleges/${college}/departments/${slug}/course-subjects`}
+              title={t("course_subjects")}
               className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
             >
               <span>{t("course_subjects")}</span>
@@ -197,6 +201,7 @@ const DepartmentCouncilPage = ({
             </Link>
             <Link
               href={`/${locale}/colleges/${college}/departments/${slug}/guide-lines`}
+              title={t("guide_lines")}
               className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
             >
               <span>{t("guide_lines")}</span>

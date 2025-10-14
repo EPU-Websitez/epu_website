@@ -15,7 +15,7 @@ export default function UsefulLink() {
       <div className="relative w-full sm:h-[450px] h-[500px] flex_center">
         <Image
           src={"/images/footer.png"}
-          alt="My Image"
+          alt="Footer"
           fill
           priority
           className="w-full h-auto object-cover opacity-25"
@@ -33,7 +33,7 @@ export default function UsefulLink() {
           <div className="sm:w-1/2 w-full flex_start flex-col gap-2">
             <Link
               href={`/${locale}/colleges`}
-              title="colleges"
+              title={t("colleges")}
               className="w-full flex justify-between items-center px-2 text-secondary border-b border-b-secondary border-opacity-30 py-3 relative group"
             >
               <h3 className="text-lg font-semibold">{t("colleges")}</h3>
@@ -43,7 +43,7 @@ export default function UsefulLink() {
 
             <Link
               href={`/${locale}/colleges?type=INSTITUTE`}
-              title="Centers"
+              title={t("institutions")}
               className="w-full flex justify-between items-center px-2 text-secondary border-b border-b-secondary border-opacity-30 py-3 relative group"
             >
               <h3 className="text-lg font-semibold">{t("institutions")}</h3>
@@ -53,7 +53,7 @@ export default function UsefulLink() {
 
             <Link
               href={`/${locale}/programs`}
-              title="programs"
+              title={t("EPU_programs")}
               className="w-full flex justify-between items-center px-2 text-secondary border-b border-b-secondary border-opacity-30 py-3 relative group"
             >
               <h3 className="text-lg font-semibold">{t("EPU_programs")}</h3>
@@ -63,6 +63,7 @@ export default function UsefulLink() {
 
             <Link
               href={`/${locale}/academic-staff`}
+              title={t("academic_staff")}
               className="w-full flex justify-between items-center px-2 text-secondary border-b border-b-secondary border-opacity-30 py-3 relative group"
             >
               <h3 className="text-lg font-semibold">{t("academic_staff")}</h3>
@@ -73,6 +74,7 @@ export default function UsefulLink() {
               href="https://conferences.epu.edu.iq/"
               target="_blank"
               rel="noopener noreferrer"
+              title={t("conferences")}
               className="w-full flex justify-between items-center px-2 text-secondary border-b border-b-secondary border-opacity-30 py-3 relative group"
             >
               <h3 className="text-lg font-semibold">{t("conferences")}</h3>

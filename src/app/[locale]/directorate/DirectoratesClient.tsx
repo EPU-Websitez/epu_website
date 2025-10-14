@@ -231,11 +231,11 @@ const DirectoratesClient = () => {
                   <Link
                     key={item.id}
                     href={`/${locale}/directorate/${item.slug}?parent_id=${item.id}`}
-                    title={item.directorate_type.name}
+                    title={item.directorate_type?.name}
                     className="flex_start flex-col gap-5 bg-backgroundSecondary rounded-lg p-5"
                   >
                     <h3 className="md:text-lg text-base font-semibold h-14 line-clamp-2">
-                      {item.directorate_type.name}
+                      {item.directorate_type?.name}
                     </h3>
                     <div className="flex w-full justify-between items-center gap-4 text-white">
                       <div className="flex -space-x-3">
@@ -243,13 +243,13 @@ const DirectoratesClient = () => {
                           .slice(0, 4)
                           .map((galleryItem, index) => (
                             <div
-                              key={galleryItem.image.id}
+                              key={galleryItem.image?.id}
                               className="relative group"
                               style={{ zIndex: item.galleries.length - index }}
                             >
                               <Image
-                                src={galleryItem.image.lg}
-                                alt={`img-${galleryItem.image.id}`}
+                                src={galleryItem.image?.lg}
+                                alt={`img-${galleryItem.image?.id}`}
                                 width={32}
                                 height={32}
                                 className="w-8 h-8 rounded-full border-2 border-white shadow-lg object-cover"

@@ -330,6 +330,7 @@ const ProgramsClient = () => {
                           >
                             <Link
                               href={deptLink}
+                              title={dept.title}
                               className="w-full h-[165px] relative overflow-hidden rounded-2xl group"
                             >
                               <div className="text-secondary bg-white h-5 w-5 flex_center rounded-full z-10 absolute top-2 ltr:right-2 rtl:left-2 text-sm group-hover:bg-primary group-hover:text-white transition-colors">
@@ -355,6 +356,7 @@ const ProgramsClient = () => {
 
                             <Link
                               href={`/${locale}/department/${dept.slug}`}
+                              title={dept.title}
                               className="sm:text-sm text-[10px] font-semibold hover:text-primary transition-colors h-10 flex items-center"
                             >
                               {dept.title}

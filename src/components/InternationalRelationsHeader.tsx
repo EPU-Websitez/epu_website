@@ -108,6 +108,7 @@ const InternationalRelationsHeader = () => {
           className={
             pathname === aboutPath ? "border-b-2 border-white pb-1" : ""
           }
+          title={t("about")}
         >
           {t("about")}
         </Link>

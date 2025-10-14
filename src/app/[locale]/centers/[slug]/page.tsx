@@ -70,12 +70,14 @@ const Page = () => {
           </p>
           <Link
             href={`/${locale}/centers/${slug}/staff`}
+            title={t("staff")}
             className="opacity-70 flex_center sm:text-lg text-sm font-medium"
           >
             {t("staff")}
           </Link>
           <Link
             href={`/${locale}/centers/${slug}/news`}
+            title={t("news")}
             className="opacity-70 flex_center sm:text-lg text-sm font-medium"
           >
             {t("news")}

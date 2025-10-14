@@ -209,6 +209,7 @@ const Page = () => {
                   {leadMember && (
                     <Link
                       href={`/${locale}/academic-staff/${leadMember?.teacher?.id}`}
+                      title={leadMember.teacher?.full_name}
                       className="flex justify-start items-center sm:gap-10 gap-5 w-full border p-5 rounded-3xl border-lightBorder"
                     >
                       <div className="sm:w-[200px] w-[125px] sm:h-[190px] h-[125px] relative flex-shrink-0">

@@ -24,6 +24,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
     <div className="w-full flex_start flex-col md:gap-4 gap-2 group relative">
       <Link
         href={link}
+        title={title}
         className="relative w-full md:h-[330px] h-[200px] rounded-t-xl overflow-hidden"
       >
         <div className="text-secondary bg-white sm:text-base text-sm h-6 w-6 flex_center rounded-full z-10 absolute top-2 ltr:right-2 rtl:left-2">
@@ -31,7 +32,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
         </div>
         <Image
           src={image}
-          alt="My Image"
+          alt={title}
           fill
           priority
           className="w-full h-auto object-cover group-hover:scale-105 duration-300"
@@ -44,7 +45,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
       </div>
       <Link
         href={link}
-        type="button"
+        title={title}
         className="md:text-lg text-base font-bold hover:text-primary text-secondary duration-300"
       >
         {title}

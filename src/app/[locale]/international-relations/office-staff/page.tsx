@@ -142,13 +142,13 @@ const Page = () => {
               >
                 <div className="sm:w-[120px] w-[80px] mt-5 sm:h-[120px] h-[80px] border-[5px] border-primary rounded-full flex_center flex-shrink-0">
                   <Link
-                    href={`/${locale}/academic-staff/${item.teacher.id}`}
-                    title={item.teacher.full_name}
+                    href={`/${locale}/academic-staff/${item.teacher?.id}`}
+                    title={item.teacher?.full_name}
                     className="sm:w-[100px] w-[65px] sm:h-[100px] h-[65px] relative"
                   >
                     <Image
                       src={getStaffImage(item)}
-                      alt={item.teacher.full_name}
+                      alt={item.teacher?.full_name}
                       fill
                       priority
                       className="w-full h-full rounded-full object-cover"
@@ -160,11 +160,11 @@ const Page = () => {
                 </div>
                 <div className="flex_center flex-col gap-2 h-full p-5 pt-0">
                   <Link
-                    href={`/${locale}/academic-staff/${item.teacher.id}`}
-                    title={item.teacher.full_name}
+                    href={`/${locale}/academic-staff/${item.teacher?.id}`}
+                    title={item.teacher?.full_name}
                     className="text-lg font-medium"
                   >
-                    {item.teacher.full_name}
+                    {item.teacher?.full_name}
                   </Link>
                   <span className="opacity-80 text-sm">
                     {item.role_in_international_relations}
@@ -172,8 +172,8 @@ const Page = () => {
                 </div>
                 {/* Note: The API does not provide an email, so this section is omitted to avoid showing incorrect data. */}
                 <Link
-                  href={`/${locale}/academic-staff/${item.teacher.id}`}
-                  title={item.teacher.full_name}
+                  href={`/${locale}/academic-staff/${item.teacher?.id}`}
+                  title={item.teacher?.full_name}
                   className="flex_center gap-3 w-full py-5 px-5 border-t border-t-lightBorder text-gray-400"
                 >
                   <span className="text-sm opacity-80">{t("read_more")}</span>

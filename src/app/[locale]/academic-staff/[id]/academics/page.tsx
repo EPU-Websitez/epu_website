@@ -360,6 +360,7 @@ const Page = () => {
           </Link>
           <Link
             href={`/${locale}/academic-staff/${id}/professional-engagement`}
+            title={t("professional_engagement")}
             className="opacity-70 px-3 sm:text-base text-sm flex-shrink-0"
           >
             {t("professional_engagement")}

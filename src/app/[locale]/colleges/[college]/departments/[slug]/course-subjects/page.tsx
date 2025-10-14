@@ -404,6 +404,7 @@ const Page = () => {
                 ) : (
                   <Link
                     href={`/${locale}/colleges/${college}/departments/${slug}/course-subjects/carriculum`}
+                    title={t("see_course_curriculum")}
                     className="w-full flex justify-between items-center gap-5 rounded-xl border border-lightBorder px-3 p-2 font-semibold"
                   >
                     <span>{t("see_course_curriculum")}</span>

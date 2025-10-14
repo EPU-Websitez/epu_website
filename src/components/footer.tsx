@@ -24,25 +24,46 @@ export default function Footer() {
           <Link
             href={`/${locale}/colleges?type=INSTITUTE`}
             className="opacity-50"
+            title={t("institutions")}
           >
             {t("institutions")}
           </Link>
-          <Link href={`/${locale}/colleges`} className="opacity-50">
+          <Link
+            href={`/${locale}/colleges`}
+            className="opacity-50"
+            title={t("colleges")}
+          >
             {t("colleges")}
           </Link>
-          <Link href={`/${locale}/centers`} className="opacity-50">
+          <Link
+            href={`/${locale}/centers`}
+            className="opacity-50"
+            title={t("centers")}
+          >
             {t("centers")}
           </Link>
         </div>
         <div className="flex_start flex-col gap-3">
           <h3 className="text-lg font-medium">{t("about")}</h3>
-          <Link href={`/${locale}/about`} className="opacity-50">
+          <Link
+            href={`/${locale}/about`}
+            title={t("history")}
+            className="opacity-50"
+          >
             {t("history")}
           </Link>
-          <Link href={`/${locale}/president-speech`} className="opacity-50">
+          <Link
+            href={`/${locale}/president-speech`}
+            title={t("president_speech")}
+            className="opacity-50"
+          >
             {t("president_speech")}
           </Link>
-          <Link href={`/${locale}/academic-staff`} className="opacity-50">
+          <Link
+            href={`/${locale}/academic-staff`}
+            title={t("academic_staff")}
+            className="opacity-50"
+          >
             {t("academic_staff")}
           </Link>
         </div>
@@ -51,12 +72,14 @@ export default function Footer() {
           <Link
             href={`/${locale}/international-strategy`}
             className="opacity-50"
+            title={t("strategy")}
           >
             {t("strategy")}
           </Link>
           <Link
             href={`/${locale}/memorandum-of-understanding`}
             className="opacity-50"
+            title="MOUs"
           >
             MOUs
           </Link>

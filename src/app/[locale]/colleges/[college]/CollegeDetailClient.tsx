@@ -218,6 +218,7 @@ const CollegeDetailClient = () => {
             </h1> */}
             <Link
               href={`/${locale}/colleges/${college}/news`}
+              title={collegeData?.news_title || t("news")}
               className="flex_center gap-5 text-primary font-semibold"
             >
               <div className="relative">
@@ -270,6 +271,7 @@ const CollegeDetailClient = () => {
                 >
                   <Link
                     href={`/${locale}/colleges/${college}/departments/${department.slug}`}
+                    title={department.title}
                     className={`w-full h-[165px] relative overflow-hidden ${
                       index === 0 ? "rounded-2xl" : "rounded-3xl"
                     }`}
@@ -293,6 +295,7 @@ const CollegeDetailClient = () => {
                   </Link>
                   <Link
                     href={`/${locale}/colleges/${college}/departments/${department.slug}`}
+                    title={department.title}
                     className="sm:text-sm text-[10px] font-semibold px-2 text-center hover:text-primary transition-colors"
                   >
                     {department.title}
@@ -355,6 +358,7 @@ const CollegeDetailClient = () => {
             </p>
             <Link
               href={`/${locale}/colleges/${college}/departments`}
+              title={t("see_all_departments")}
               className="flex_center gap-5 bg-gradient-to-r from-blue to-primary rounded-3xl lg:py-3 text-sm py-2 lg:px-10 px-5 text-white"
             >
               <span>{t("see_all_departments")}</span>
@@ -433,6 +437,7 @@ const CollegeDetailClient = () => {
           <div className="w-full flex-col flex_start gap-8 mt-10">
             <Link
               href={`/${locale}/colleges/${college}/events`}
+              title={collegeData?.event_title || t("new_events")}
               className="flex items-center gap-5 text-primary font-semibold"
             >
               <div className="relative">

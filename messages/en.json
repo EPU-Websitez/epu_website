@@ -487,7 +487,8 @@
     "loading": "Loading...",
     "clear_search": "Clear Search",
     "search": "Search",
-    "no_events_found": "No Events Found"
+    "no_events_found": "No Events Found",
+    "read_more": "Read More"
   },
   "Anniversary": {
     "head": "Anniversary",

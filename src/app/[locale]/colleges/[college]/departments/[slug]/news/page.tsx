@@ -326,6 +326,7 @@ const Page = () => {
             <div className="flex_start flex-col gap-4 flex-shrink-0 lg:w-auto w-full">
               <Link
                 href={`/${locale}/colleges/${college}/departments/${slug}`}
+                title={t("about_button")}
                 className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
               >
                 <span>{t("about_button")}</span>

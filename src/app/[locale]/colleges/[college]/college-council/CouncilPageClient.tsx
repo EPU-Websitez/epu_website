@@ -168,16 +168,17 @@ const CouncilPageClient = () => {
 
           {mainLead ? (
             <Link
-              href={`/${locale}/academic-staff/${mainLead.teacher.id}`}
+              href={`/${locale}/academic-staff/${mainLead.teacher?.id}`}
+              title={mainLead.teacher?.full_name}
               className="flex justify-start md:items-start items-center gap-10 w-full border p-5 rounded-3xl border-lightBorder"
             >
               <div className="sm:w-[310px] w-[125px] sm:h-[285px] h-[125px] relative">
                 <Image
                   src={
-                    mainLead.teacher.profile_image?.md ||
+                    mainLead.teacher?.profile_image?.md ||
                     "/images/president-alt.png"
                   }
-                  alt={mainLead.teacher.full_name}
+                  alt={mainLead.teacher?.full_name}
                   fill
                   priority
                   className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
@@ -192,7 +193,7 @@ const CouncilPageClient = () => {
                 </h3>
                 <h1 className="max-w-[350px] lg:text-title sm:text-smallTitle text-xs font-medium relative">
                   <span className="relative z-10 font-medium">
-                    {mainLead.teacher.full_name}
+                    {mainLead.teacher?.full_name}
                   </span>
                   <span className="absolute ltr:left-0 rtl:right-0 -bottom-3 w-[80%] h-6">
                     <Image
@@ -219,15 +220,15 @@ const CouncilPageClient = () => {
           <div className="grid w-full lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-8">
             {staff.map((member) => (
               <MemberCard
-                key={`${member.teacher.id}-${member.role}`}
+                key={`${member.teacher?.id}-${member.role}`}
                 description={member.role}
                 image={
-                  member.teacher.profile_image?.md ||
+                  member.teacher?.profile_image?.md ||
                   "/images/president-alt.png"
                 }
-                link={`/${locale}/academic-staff/${member.teacher.id}`}
+                link={`/${locale}/academic-staff/${member.teacher?.id}`}
                 staticText={t("view_profile")}
-                title={member.teacher.full_name}
+                title={member.teacher?.full_name}
               />
             ))}
 

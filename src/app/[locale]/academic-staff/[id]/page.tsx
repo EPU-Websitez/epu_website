@@ -61,24 +61,28 @@ const Page = () => {
           </p>
           <Link
             href={`/${locale}/academic-staff/${id}/teaching`}
+            title={t("teaching")}
             className="opacity-70 px-3 sm:text-base text-xs flex-shrink-0"
           >
             {t("teaching")}
           </Link>
           <Link
             href={`/${locale}/academic-staff/${id}/education`}
+            title={t("education")}
             className="opacity-70 px-3 sm:text-base text-xs flex-shrink-0"
           >
             {t("education")}
           </Link>
           <Link
             href={`/${locale}/academic-staff/${id}/professional-engagement`}
+            title={t("professional_engagement")}
             className="opacity-70 px-3 sm:text-base text-xs flex-shrink-0"
           >
             {t("professional_engagement")}
           </Link>
           <Link
             href={`/${locale}/academic-staff/${id}/academics`}
+            title={t("academics")}
             className="opacity-70 px-3 sm:text-base text-xs flex-shrink-0"
           >
             {t("academics")}
