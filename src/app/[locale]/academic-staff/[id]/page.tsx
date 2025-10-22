@@ -19,6 +19,7 @@ interface AcademicStaff {
   title: string;
   general_spec: string;
   specific_spec: string;
+  lecturer_at?: string;
   biography: string;
   profile_image: ImageType;
   bg_image: ImageType;
@@ -49,6 +50,7 @@ const Page = () => {
   const generalSpec = data?.general_spec || "Civil Engineering";
   const specificSpec =
     data?.specific_spec || "Transportation Planning and Design";
+  const lecturerAt = data?.lecturer_at;
 
   return (
     <div className="flex_center w-full flex-col">
@@ -119,6 +121,14 @@ const Page = () => {
                   </span>
                   <p className="text-sm font-medium">{specificSpec}</p>
                 </div>
+                {lecturerAt && (
+                  <div className="flex_start flex-col gap-2">
+                    <span className="text-xs text-black text-opacity-60">
+                      {t("lecturer_at")}
+                    </span>
+                    <p className="text-sm font-medium">{lecturerAt}</p>
+                  </div>
+                )}
                 {/* <div className="flex_start flex-col gap-2">
                   <span className="text-xs text-black text-opacity-60">
                     {t("lecturer_at")}

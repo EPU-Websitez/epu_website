@@ -278,6 +278,9 @@ span,
 small {
   @apply tracking-wide leading-relaxed;
 }
+p {
+  @apply text-justify;
+}
 /* Add to globals.css */
 
 .leaflet-container {
