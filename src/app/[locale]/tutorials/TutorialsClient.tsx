@@ -10,7 +10,7 @@ import {
   usePathname,
   useSearchParams,
 } from "next/navigation";
-import { CiSearch } from "react-icons/ci";
+import { CiSearch, CiUser } from "react-icons/ci";
 import { FaPlay, FaTimes } from "react-icons/fa";
 
 import useFetch from "@/libs/hooks/useFetch";
@@ -22,53 +22,101 @@ interface ImageInfo {
   media_type: "IMAGE" | "VIDEO";
   thumbnail?: string | null;
 }
+
 interface TutorialImage {
   id: number;
   image: ImageInfo;
 }
+
 interface Tutorial {
   id: number;
   title: string;
   description: string;
+  trainer_full_name?: string; // Added field
   images: TutorialImage[];
 }
+
 interface TutorialsResponse {
   total: number;
   data: Tutorial[];
 }
 
-// -------- Modal Component --------
+// -------- Modal Component (Redesigned) --------
 const VideoModal = ({
-  videoSrc,
+  tutorial,
   onClose,
 }: {
-  videoSrc: string;
+  tutorial: Tutorial;
   onClose: () => void;
 }) => {
+  // Extract video URL safely
+  const videoSrc = tutorial.images.find(
+    (img) => img.image.media_type === "VIDEO"
+  )?.image.original;
+
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-80 z-50 flex justify-center items-center p-4"
+      className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex justify-center items-center p-4 animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
-        className="relative bg-black rounded-lg w-full max-w-4xl"
+        className="relative bg-white rounded-2xl w-full max-w-4xl shadow-2xl flex flex-col overflow-hidden max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute -top-10 right-0 text-white text-2xl z-10"
+          className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full z-20 transition-all"
           aria-label="Close modal"
         >
           <FaTimes />
         </button>
-        <video
-          src={videoSrc}
-          controls
-          autoPlay
-          className="w-full h-auto max-h-[80vh] rounded-lg"
-        >
-          Your browser does not support the video tag.
-        </video>
+
+        {/* Video Section */}
+        <div className="w-full bg-black aspect-video relative flex-shrink-0">
+          {videoSrc ? (
+            <video
+              src={videoSrc}
+              controls
+              autoPlay
+              className="w-full h-full object-contain"
+            >
+              Your browser does not support the video tag.
+            </video>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-white">
+              Video source not found
+            </div>
+          )}
+        </div>
+
+        {/* Content Section */}
+        <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar">
+          <div className="flex flex-col gap-4">
+            {/* Header: Title & Trainer */}
+            <div className="border-b border-gray-200 pb-4">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+                {tutorial.title}
+              </h2>
+
+              {tutorial.trainer_full_name && (
+                <div className="flex items-center gap-2 text-primary font-medium">
+                  <div className="p-1.5 bg-primary/10 rounded-full">
+                    <CiUser className="text-lg" />
+                  </div>
+                  <span className="text-sm md:text-base">
+                    {tutorial.trainer_full_name}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Description */}
+            <div className="text-gray-600 leading-relaxed text-sm md:text-base">
+              <p>{tutorial.description}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -101,7 +149,10 @@ const TutorialsClient = () => {
   // --- Local UI State ---
   const [searchTerm, setSearchTerm] = useState(currentSearch);
   const [tutorials, setTutorials] = useState<Tutorial[]>([]);
-  const [modalVideoSrc, setModalVideoSrc] = useState<string | null>(null);
+  // Changed from storing string ID/URL to storing the whole object
+  const [selectedTutorial, setSelectedTutorial] = useState<Tutorial | null>(
+    null
+  );
 
   // --- Data Fetching ---
   const apiUrl = useMemo(() => {
@@ -161,15 +212,21 @@ const TutorialsClient = () => {
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const handleOpenModal = (videoUrl: string | undefined) => {
-    if (videoUrl) {
-      setModalVideoSrc(videoUrl);
+  // Updated to accept the full Tutorial object
+  const handleOpenModal = (tutorial: Tutorial) => {
+    // Only open if there is actually a video
+    const hasVideo = tutorial.images.some(
+      (img) => img.image.media_type === "VIDEO"
+    );
+
+    if (hasVideo) {
+      setSelectedTutorial(tutorial);
       document.body.style.overflowY = "hidden";
     }
   };
 
   const handleCloseModal = () => {
-    setModalVideoSrc(null);
+    setSelectedTutorial(null);
     document.body.style.overflowY = "auto";
   };
 
@@ -207,9 +264,11 @@ const TutorialsClient = () => {
               const thumbnail = tutorial.images.find(
                 (img) => img.image.media_type === "IMAGE"
               )?.image.lg;
-              const video = tutorial.images.find(
+
+              const hasVideo = tutorial.images.some(
                 (img) => img.image.media_type === "VIDEO"
-              )?.image.original;
+              );
+
               return (
                 <div
                   key={tutorial.id}
@@ -217,7 +276,7 @@ const TutorialsClient = () => {
                 >
                   <div
                     className="relative w-full md:h-[330px] h-[200px] rounded-xl overflow-hidden cursor-pointer"
-                    onClick={() => handleOpenModal(video)}
+                    onClick={() => handleOpenModal(tutorial)}
                   >
                     <div className="w-32 h-7 flex_center rounded-full z-10 absolute top-2 ltr:left-2 rtl:right-2">
                       <Image
@@ -241,12 +300,12 @@ const TutorialsClient = () => {
                         e.currentTarget.src = "/images/placeholder.svg";
                       }}
                     />
-                    {video && (
-                      <button className="flex_center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 sm:w-16 w-10 sm:h-16 h-10 text-white rounded-full sm:text-xl text-lg bg-gradient-to-r from-[#DCC48C] to-[#FFA64D] z-10">
+                    {hasVideo && (
+                      <button className="flex_center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 sm:w-16 w-10 sm:h-16 h-10 text-white rounded-full sm:text-xl text-lg bg-gradient-to-r from-[#DCC48C] to-[#FFA64D] z-10 hover:scale-110 transition-transform">
                         <FaPlay />
                       </button>
                     )}
-                    <div className="absolute bottom-3 left-0 rounded-r-full bg-black bg-opacity-35 px-3 py-2 text-white sm:text-sm text-xs">
+                    <div className="absolute bottom-3 left-0 rounded-r-full bg-black bg-opacity-35 px-3 py-2 text-white sm:text-sm text-xs backdrop-blur-sm">
                       {t("watch")}
                     </div>
                   </div>
@@ -281,8 +340,8 @@ const TutorialsClient = () => {
           </div>
         )}
 
-        {modalVideoSrc && (
-          <VideoModal videoSrc={modalVideoSrc} onClose={handleCloseModal} />
+        {selectedTutorial && (
+          <VideoModal tutorial={selectedTutorial} onClose={handleCloseModal} />
         )}
       </div>
     </div>

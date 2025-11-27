@@ -36,6 +36,8 @@ interface ContentListItem {
 interface AboutUsData {
   description: string;
   timeline_image: ImageFile;
+  thumbnail: string;
+  video_url?: string; // Added optional video URL
   content_title: string;
   content_description: string;
   bg_images: { id: number; image: ImageFile }[];
@@ -158,21 +160,37 @@ const AboutPageClient = () => {
                     ))}
                   </div>
                 </div>
+
+                {/* -------- VIDEO / IMAGE SECTION -------- */}
                 <div className="flex_center lg:w-auto w-full">
-                  <div className="lg:w-[440px] w-full h-[300px] relative">
-                    <Image
-                      src={aboutData.timeline_image.lg}
-                      alt="Timeline Image 1"
-                      fill
-                      priority
-                      className="w-full h-full sm:rounded-3xl rounded-lg object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = "/images/placeholder.svg";
-                      }}
-                    />
+                  <div className="lg:w-[440px] w-full h-[300px] relative bg-gray-100 sm:rounded-3xl rounded-lg overflow-hidden">
+                    {aboutData.video_url ? (
+                      <video
+                        controls
+                        playsInline
+                        preload="metadata"
+                        poster={aboutData.thumbnail} // Use the image as thumbnail
+                        className="w-full h-full object-cover"
+                      >
+                        <source src={aboutData.video_url} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : (
+                      <Image
+                        src={aboutData.thumbnail}
+                        alt="Timeline Image"
+                        fill
+                        priority
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/placeholder.svg";
+                        }}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
+
               <h1 className="sm:text-title text-titleNormal font-semibold sm:mt-10 mt-5 text-secondary">
                 {aboutData.content_title}
               </h1>

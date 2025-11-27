@@ -50,6 +50,8 @@ interface UniversityData {
   research_image: ImageFile;
   alumni_feedbacks_count: number;
   alumni_feedbacks: AlumniFeedback[];
+  research_paper_publication_url: string;
+  confrance_publication_url: string;
 }
 interface SliderItem {
   id: number;
@@ -509,17 +511,27 @@ export default function HomePageClient() {
               <h1 className="sm:text-title text-2xl font-bold text-golden">
                 {uniData?.research_paper_publication_number}
               </h1>
-              <span className="text-secondary text-sm font-medium border-b border-b-lightBorder pb-1">
+              <a
+                href={uniData?.research_paper_publication_url}
+                rel="noopener noreferrer"
+                target="_blank"
+                className="text-secondary text-sm font-medium border-b border-b-lightBorder pb-1"
+              >
                 {t("research_paper")}
-              </span>
+              </a>
             </div>
             <div className="flex_center flex-col gap-2">
               <h1 className="sm:text-title text-2xl font-bold text-golden">
                 {uniData?.research_number}
               </h1>
-              <span className="text-secondary text-sm font-medium border-b border-b-lightBorder pb-1">
+              <a
+                href={uniData?.confrance_publication_url}
+                rel="noopener noreferrer"
+                target="_blank"
+                className="text-secondary text-sm font-medium border-b border-b-lightBorder pb-1"
+              >
                 {t("conference_paper")}
-              </span>
+              </a>
             </div>
           </div>
         </div>
