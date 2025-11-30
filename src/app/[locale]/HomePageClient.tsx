@@ -222,7 +222,7 @@ export default function HomePageClient() {
               {slidersData?.data.map((slide, index) => (
                 <SwiperSlide key={slide.id}>
                   <Image
-                    src={slide.image.lg}
+                    src={slide.image?.lg}
                     alt={slide.title}
                     fill
                     priority={index === 0}
@@ -287,7 +287,7 @@ export default function HomePageClient() {
                       style={{ zIndex: displayAvatars.length - index }}
                     >
                       <Image
-                        src={alumni.image.lg}
+                        src={alumni.image?.lg}
                         alt={alumni.name}
                         width={46}
                         height={46}
@@ -381,7 +381,7 @@ export default function HomePageClient() {
               />
             ) : (
               <Image
-                src={uniData?.intro_image.lg || "/images/placeholder.svg"}
+                src={uniData?.intro_image?.lg || "/images/placeholder.svg"}
                 alt="University Intro"
                 fill
                 priority
@@ -426,7 +426,7 @@ export default function HomePageClient() {
           {newsData?.data.map((news) => (
             <NewsCard
               key={news.id}
-              image={news.cover_image.lg}
+              image={news.cover_image?.lg}
               link={`/${locale}/news/${news.slug}`}
               author={news.author}
               createdAt={formatDate(news.published_at)}
@@ -470,7 +470,7 @@ export default function HomePageClient() {
           {eventsData?.data.map((event) => (
             <EventCard
               key={event.id}
-              image={event.galleries[0]?.image.lg || "/images/event.png"}
+              image={event.galleries[0]?.image?.lg || "/images/event.png"}
               link={`/${locale}/events/${event.slug}`}
               type={
                 event.event_category_event[0]?.event_category.name || "Event"
@@ -488,7 +488,7 @@ export default function HomePageClient() {
         <div className="flex justify-start items-start md:w-[50%] w-full py-5 flex-shrink-0">
           <div className="lg:w-[500px] w-full lg:h-[390px] md:h-[340px] sm:h-[420px] h-[270px] relative">
             <Image
-              src={uniData?.research_image.lg || "/images/research.png"}
+              src={uniData?.research_image?.lg || "/images/research.png"}
               alt="Research"
               fill
               priority

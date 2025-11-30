@@ -46,7 +46,7 @@ const CollegesClient = () => {
 
   const [items, setItems] = useState<MainData[]>([]);
   const [page, setPage] = useState(1);
-  const limit = 5;
+  const limit = 10;
 
   const url = `${process.env.NEXT_PUBLIC_API_URL}/website/colleges?page=${page}&limit=${limit}&type=${type}`;
   const { data, loading } = useFetch<Response>(url, locale);
