@@ -178,7 +178,9 @@
     "untitled": "Untitled",
     "reset_search": "Reset Search",
     "no_data_found": "No Data Found",
-    "error_loading_data": "error loading data"
+    "error_loading_data": "error loading data",
+    "university_positions": "University Positions",
+    "department_positions": "Department Positions"
   },
   "Apply": {
     "head": "How to apply for EPU?",
