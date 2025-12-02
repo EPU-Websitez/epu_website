@@ -25,6 +25,7 @@ interface Gallery {
 interface Directorate {
   id: number;
   slug: string;
+  title: string;
   directorate_type: {
     name: string;
   };
@@ -235,7 +236,7 @@ const DirectoratesClient = () => {
                     className="flex_start flex-col gap-5 bg-backgroundSecondary rounded-lg p-5"
                   >
                     <h3 className="md:text-lg text-base font-semibold h-14 line-clamp-2">
-                      {item.directorate_type?.name}
+                      {item?.title}
                     </h3>
                     <div className="flex w-full justify-between items-center gap-4 text-white">
                       <div className="flex -space-x-3">

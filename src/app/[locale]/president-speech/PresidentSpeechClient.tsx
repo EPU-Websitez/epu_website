@@ -119,9 +119,15 @@ const PresidentSpeechClient = () => {
         <h3 className="text-[#4A4A4A] sm:text-base text-sm font-semibold">
           {messageData.subtitle}
         </h3>
-        <p className="text-[#4A4A4A] sm:text-base text-sm">
+        {/* <p className="text-[#4A4A4A] sm:text-base text-sm">
           {messageData.description}
-        </p>
+        </p> */}
+        <div
+          className="text-[#4A4A4A] sm:text-base text-sm"
+          dangerouslySetInnerHTML={{
+            __html: messageData.description,
+          }}
+        />
         <div className="w-full flex items-end justify-end">
           <div className="sm:w-[111px] w-14 sm:h-[111px] h-14 relative rotate-180">
             <Image

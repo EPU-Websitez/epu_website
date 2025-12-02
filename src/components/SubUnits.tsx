@@ -12,6 +12,7 @@ import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 interface UnitItem {
   id: number;
   slug: string;
+  title: string;
   directorate_type: {
     name: string;
   };
@@ -125,7 +126,7 @@ const SubUnits = () => {
               key={unit.id}
               // Corrected Link: It now correctly passes the UNIT's ID as the next parent_id
               href={`/${locale}/directorate/${unit.slug}/units?parent_id=${unit.id}`}
-              title={unit.directorate_type?.name}
+              title={unit?.title}
               className={`w-full gap-3 flex items-center justify-between opacity-70 hover:opacity-100 ${
                 index > 0
                   ? "border-t border-t-lightBorder pt-3"
@@ -133,7 +134,7 @@ const SubUnits = () => {
               }`}
             >
               <span className="max-w-full text-wrap text-sm">
-                {unit.directorate_type?.name}
+                {unit?.title}
               </span>
               <MdKeyboardDoubleArrowRight className="rtl:rotate-180 flex-shrink-0" />
             </Link>

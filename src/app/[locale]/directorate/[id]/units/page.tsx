@@ -47,6 +47,7 @@ interface StaffResponse {
 
 interface UnitDetail {
   id: number;
+  title: string;
   about: string;
   parent_id: number;
   directorate_type: {
@@ -144,10 +145,7 @@ const Page = () => {
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
       <div className="max-w-[1045px] px-3 w-full flex_start flex-col gap-8">
-        <SubHeader
-          title={unitData?.directorate_type?.name || t("units")}
-          alt={false}
-        />
+        <SubHeader title={unitData?.title || t("units")} alt={false} />
         <DirectorateHeader />
         <div className="flex_start w-full">
           <div className="w-full border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
@@ -195,16 +193,22 @@ const Page = () => {
                   <h2 className="relative sm:text-titleNormal text-lg font-semibold ">
                     <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
                     <span className="z-10 relative">
-                      {unitData?.directorate_type?.name || t("units")}
+                      {unitData?.title || t("units")}
                     </span>
                   </h2>
                   <div className="p-5 w-full flex_start flex-col gap-5 rounded-3xl border border-lightBorder">
                     <h4 className="sm:text-base text-sm font-semibold">
                       {t("about")}
                     </h4>
-                    <p className="opacity-70 sm:text-sm text-xs">
+                    {/* <p className="opacity-70 sm:text-sm text-xs">
                       {unitData?.about || t("no_description_available")}
-                    </p>
+                    </p> */}
+                    <div
+                      className="text-opacity-70 text-secondary text-sm prose max-w-none"
+                      dangerouslySetInnerHTML={{
+                        __html: unitData.about,
+                      }}
+                    />
                   </div>
                   <h2 className="relative text-lg font-semibold ">
                     <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>

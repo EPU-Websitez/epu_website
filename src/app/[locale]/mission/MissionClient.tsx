@@ -92,7 +92,7 @@ const MissionClient = () => {
           {uniData?.intro_image?.media_type === "VIDEO" ? (
             <video
               ref={videoRef}
-              src={uniData.intro_image.original}
+              src={uniData.intro_image?.original}
               autoPlay
               muted
               loop
@@ -101,7 +101,7 @@ const MissionClient = () => {
             />
           ) : (
             <Image
-              src={uniData?.intro_image.lg || "/images/placeholder.svg"}
+              src={uniData?.intro_image?.lg || "/images/placeholder.svg"}
               alt="University Intro"
               fill
               priority

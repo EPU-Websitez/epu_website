@@ -13,6 +13,7 @@ interface Center {
   id: number;
   title: string;
   slug: string;
+  description: string;
   vision: string;
   mission: string;
   created_at: string;
@@ -89,9 +90,15 @@ const CentersClient = () => {
                     >
                       {center.title}
                     </Link>
-                    <p className="font-medium md:text-base text-sm text-secondary/80">
+                    {/* <p className="font-medium md:text-base text-sm text-secondary/80">
                       {center.mission}
-                    </p>
+                    </p> */}
+                    <div
+                      className="font-medium md:text-base text-sm text-secondary/80"
+                      dangerouslySetInnerHTML={{
+                        __html: center.description,
+                      }}
+                    />
                   </div>
                   <Link
                     href={`/${locale}/centers/${center.slug}`}

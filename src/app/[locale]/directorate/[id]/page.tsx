@@ -6,8 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useRef, useState } from "react";
-import { BiMinus } from "react-icons/bi";
-import { GoPlus } from "react-icons/go";
+// Removed unused imports (BiMinus, GoPlus)
 import {
   MdKeyboardDoubleArrowRight,
   MdNavigateNext,
@@ -16,11 +15,7 @@ import {
 import { FaTimes } from "react-icons/fa";
 
 import useFetch from "@/libs/hooks/useFetch";
-import { Pagination } from "swiper/modules";
-import "swiper/css/pagination";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import { Swiper as SwiperCore } from "swiper/types";
+// Removed unused Swiper imports if they aren't being used in the rest of the file
 import DirectorateHeader from "@/components/DirectorateHeader";
 import SubUnits from "@/components/SubUnits";
 
@@ -44,14 +39,36 @@ interface GalleryItem {
   image: ImageFile;
 }
 
+interface DirectorateType {
+  id: number;
+  type_key: string;
+  name: string;
+  description: string;
+  priority: number;
+  created_at: string;
+  updated_at: string;
+}
+
 interface DirectorateDetail {
   id: number;
-  about: string;
-  directorate_type: {
-    name: string;
-  };
+  slug: string;
+  directorate_type_id: number;
+  parent_id: number | null;
+  title: string;
+  college_id: number | null;
+  university_id: number;
+  about: string; // This now contains HTML
+  priority: number;
+  created_at: string;
+  updated_at: string;
+  directorate_type: DirectorateType;
+  parent: any | null; // You can define a Parent interface if needed
   children: DirectorateChild[];
   galleries: GalleryItem[];
+  leads_count: number;
+  staff_count: number;
+  news_count: number;
+  children_count: number;
 }
 
 // -------- Modal Component --------
@@ -164,14 +181,12 @@ const Page = () => {
   const locale = params?.locale as string;
   const id = params?.id as string;
   const searchParams = useSearchParams();
-  const parentId = searchParams.get("parent_id"); // This can be string or null
+  const parentId = searchParams.get("parent_id");
 
   const [staffIsOpen, setStaffIsOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
     null
   );
-
-  const swiperRef = useRef<SwiperCore>();
 
   const { data: directorateData, loading: isLoading } =
     useFetch<DirectorateDetail>(
@@ -182,6 +197,7 @@ const Page = () => {
   const handleOpenStaff = () => setStaffIsOpen(!staffIsOpen);
   const handleOpenModal = (index: number) => setSelectedImageIndex(index);
   const handleCloseModal = () => setSelectedImageIndex(null);
+
   const handleNextImage = () => {
     if (
       directorateData &&
@@ -191,6 +207,7 @@ const Page = () => {
       setSelectedImageIndex(selectedImageIndex + 1);
     }
   };
+
   const handlePrevImage = () => {
     if (selectedImageIndex !== null && selectedImageIndex > 0) {
       setSelectedImageIndex(selectedImageIndex - 1);
@@ -202,10 +219,7 @@ const Page = () => {
       <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
         <div className="max-w-[1045px] px-3 w-full flex_start flex-col gap-8">
           <SubHeader
-            title={
-              directorateData?.directorate_type?.name ||
-              t("university_directory")
-            }
+            title={directorateData?.title || t("university_directory")}
             alt={false}
           />
           <DirectorateHeader />
@@ -247,9 +261,16 @@ const Page = () => {
                         <span className="z-10 relative">{t("about")}</span>
                       </h2>
                       <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full">
-                        <p className="text-opacity-70 text-secondary text-sm">
-                          {directorateData.about}
-                        </p>
+                        {/* --- FIXED SECTION STARTS HERE --- */}
+                        {/* Changed from <p> to <div> and added dangerouslySetInnerHTML */}
+                        <div
+                          className="text-opacity-70 text-secondary text-sm prose max-w-none"
+                          dangerouslySetInnerHTML={{
+                            __html: directorateData.about,
+                          }}
+                        />
+                        {/* --- FIXED SECTION ENDS HERE --- */}
+
                         {directorateData.galleries.length > 0 && (
                           <div className="grid grid-cols-2 sm:grid-cols-3 w-full">
                             {directorateData.galleries
