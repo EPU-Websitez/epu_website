@@ -121,7 +121,13 @@ const Page = () => {
                 <span className="absolute ltr:left-0 right-0 bottom-1 h-[40%] bg-golden w-[6ch]"></span>
                 <span className="z-10 relative">{t("vision_statement")}</span>
               </h2>
-              <p className="font-medium md:text-base text-sm">{data.vision}</p>
+              {/* <p className="font-medium md:text-base text-sm">{data.vision}</p> */}
+              <div
+                className="font-medium md:text-base text-sm"
+                dangerouslySetInnerHTML={{
+                  __html: data.vision,
+                }}
+              />
             </div>
 
             {/* Mission */}
@@ -130,7 +136,13 @@ const Page = () => {
                 <span className="absolute ltr:left-0 right-0 bottom-1 h-[40%] bg-golden w-[7ch]"></span>
                 <span className="z-10 relative">{t("mission_statement")}</span>
               </h2>
-              <p className="font-medium md:text-base text-sm">{data.mission}</p>
+              {/* <p className="font-medium md:text-base text-sm">{data.mission}</p> */}
+              <div
+                className="font-medium md:text-base text-sm"
+                dangerouslySetInnerHTML={{
+                  __html: data.mission,
+                }}
+              />
             </div>
 
             {/* Contact */}
