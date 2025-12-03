@@ -118,9 +118,13 @@ const MissionClient = () => {
           <h2 className="sm:text-3xl text-2xl z-10 relative font-semibold text-secondary">
             {t("title")}
           </h2>
-          <p className="text-secondary text-opacity-80 sm:text-base text-sm leading-relaxed">
+          {/* <p className="text-secondary text-opacity-80 sm:text-base text-sm leading-relaxed">
             {uniData.mission}
-          </p>
+          </p> */}
+          <div
+            className="text-secondary text-opacity-80 sm:text-base text-sm leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: uniData.mission }}
+          />
         </div>
       </div>
     </div>

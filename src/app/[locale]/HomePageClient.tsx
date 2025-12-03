@@ -37,13 +37,13 @@ interface AlumniFeedback {
 }
 interface UniversityData {
   title: string;
-  description: string;
+  description: any;
   student_number: string;
   teacher_number: string;
   academic_number: string;
   staff_member: string;
   research_title: string;
-  research_description: string;
+  research_description: any;
   research_paper_publication_number: string;
   research_number: string;
   intro_image: ImageFile;
@@ -315,9 +315,13 @@ export default function HomePageClient() {
         <h1 className="sm:text-title text-xl text-secondary font-semibold">
           {t("facts_about_university")}
         </h1>
-        <span className="sm:text-smallParagraph text-xs tracking-normal font-medium max-w-[745px] text-center text-primary opacity-90">
+        {/* <span className="sm:text-smallParagraph text-xs tracking-normal font-medium max-w-[745px] text-center text-primary opacity-90">
           {uniData?.description}
-        </span>
+        </span> */}
+        <div
+          className="sm:text-smallParagraph text-xs tracking-normal font-medium max-w-[745px] text-center text-primary opacity-90"
+          dangerouslySetInnerHTML={{ __html: uniData?.description }}
+        />
         <div className="sm:mt-5 mt-0 grid sm:grid-cols-4 grid-cols-2 gap-5 w-full max-w-[1000px]">
           {/* stats numbers (No change) */}
           <div className="flex_center flex-col gap-4">
@@ -503,9 +507,13 @@ export default function HomePageClient() {
           <h1 className="sm:text-title text-xl text-secondary font-semibold">
             {uniData?.research_title}
           </h1>
-          <span className="sm:text-smallParagraph text-xs tracking-normal text-secondary max-w-[350px]">
+          {/* <span className="sm:text-smallParagraph text-xs tracking-normal text-secondary max-w-[350px]">
             {uniData?.research_description}
-          </span>
+          </span> */}
+          <div
+            className="sm:text-smallParagraph text-xs tracking-normal text-secondary max-w-[350px]"
+            dangerouslySetInnerHTML={{ __html: uniData?.research_description }}
+          />
           <div className="flex_center gap-10">
             <div className="flex_center flex-col gap-2">
               <h1 className="sm:text-title text-2xl font-bold text-golden">

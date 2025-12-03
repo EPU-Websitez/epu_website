@@ -294,14 +294,16 @@ const MapSection = () => {
                         <span className="text-sm text-secondary opacity-90">
                           {college?.description?.substring(0, 200)}
                           {college?.description?.length > 200 && (
-                            <Link
-                              href={`/${locale}/colleges/${college.subdomain}`}
+                            <a
+                              href={collegeUrl}
+                              title={college.title ?? ""}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="opacity-100 font-semibold"
-                              title={college.subdomain}
                             >
                               {" "}
                               .... {t("more")}
-                            </Link>
+                            </a>
                           )}
                         </span>
 
