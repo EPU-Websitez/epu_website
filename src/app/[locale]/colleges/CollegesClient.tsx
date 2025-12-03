@@ -8,6 +8,7 @@ import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { FaChevronRight } from "react-icons/fa6";
+import { API_URL } from "@/libs/env";
 
 interface MainData {
   id: number;
@@ -48,7 +49,7 @@ const CollegesClient = () => {
   const [page, setPage] = useState(1);
   const limit = 10;
 
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/website/colleges?page=${page}&limit=${limit}&type=${type}`;
+  const url = `${API_URL}/website/colleges?page=${page}&limit=${limit}&type=${type}`;
   const { data, loading } = useFetch<Response>(url, locale);
 
   useEffect(() => {
