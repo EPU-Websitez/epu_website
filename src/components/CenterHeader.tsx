@@ -88,12 +88,16 @@ const CenterHeader = () => {
       <div className="w-full flex_start">
         <SubHeader title={data?.title || slug} alt={false} />
       </div>
-      <div className="w-full relative sm:mt-14 mt-6">
+      <div className="w-full relative sm:mt-14 mt-6 min-h-80">
         {data.description && (
           <div className="absolute lg:-top-14 top-10 ltr:left-10 right-10 sm:flex hidden flex-col max-w-[520px] z-10 p-4">
-            <h2 className="bg-primary text-white text-xl font-semibold z-10 p-5">
+            {/* <h2 className="bg-primary text-white text-xl font-semibold z-10 p-5">
               {data.description.substring(0, 150)}
-            </h2>
+            </h2> */}
+            <div
+              className="bg-primary text-white text-xl font-semibold z-10 p-5 max-h-72 overflow-y-auto"
+              dangerouslySetInnerHTML={{ __html: data.description }}
+            />
             <div className="triangle -mt-14 rotate-90"></div>
           </div>
         )}

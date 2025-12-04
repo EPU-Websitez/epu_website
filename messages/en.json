@@ -374,7 +374,10 @@
     "clear": "Clear",
     "from_date": "From Date",
     "to_date": "To Date",
-    "search": "Search"
+    "search": "Search",
+    "mission": "Mission",
+    "vision": "Vision",
+    "centers": "Centers"
   },
   "International": {
     "international_strategy": "International Strategy",

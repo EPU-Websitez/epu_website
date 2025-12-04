@@ -1,6 +1,11 @@
 "use client";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import {
+  useParams,
+  useRouter,
+  useSearchParams,
+  usePathname,
+} from "next/navigation";
 import { useEffect, useRef } from "react";
 import useSWR from "swr";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -9,8 +14,10 @@ import { Swiper as SwiperCore } from "swiper/types";
 import { Pagination } from "swiper/modules";
 import "swiper/css/pagination";
 
+// 1. Updated Interface to include parent_id
 interface Response {
   id: number;
+  title: string;
   directorate_type: {
     name: string;
   };
@@ -37,11 +44,14 @@ const Skeleton = () => (
 
 const DirectorateHeader = () => {
   const params = useParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams(); // Read query params
+
   const id = params?.id as string;
   const locale = params?.locale as string;
   const swiperRef = useRef<SwiperCore>();
 
-  // UPDATED: The fetcher now accepts an array from the SWR key.
   const fetcher = ([url, lang]: [string, string]) =>
     fetch(url, {
       headers: {
@@ -50,7 +60,6 @@ const DirectorateHeader = () => {
       },
     }).then((res) => res.json());
 
-  // UPDATED: The SWR key is now an array including the URL and the locale.
   const { data, error, isLoading } = useSWR<Response>(
     id
       ? [
@@ -60,16 +69,39 @@ const DirectorateHeader = () => {
       : null,
     fetcher,
     {
-      dedupingInterval: 1000 * 60 * 60, // 1 hour
+      dedupingInterval: 1000 * 60 * 60,
       revalidateOnFocus: false,
     }
   );
 
+  // Logic to validate and update parent_id
   useEffect(() => {
     if (data) {
-      document.title = `${data?.directorate_type?.name} | EPU`;
+      // Set Document Title
+      document.title = `${data?.title} | EPU`;
+
+      // --- PARENT ID VALIDATION LOGIC ---
+      const correctParentId = data.id?.toString();
+      const currentParentId = searchParams.get("parent_id");
+
+      // Only proceed if the API actually returned a parent_id
+      if (correctParentId) {
+        // If the URL param is missing OR if it doesn't match the API data
+        if (!currentParentId || currentParentId !== correctParentId) {
+          // Create a new URLSearchParams object to avoid mutating the readonly one
+          const newParams = new URLSearchParams(searchParams.toString());
+
+          // Update the parameter
+          newParams.set("parent_id", correctParentId);
+
+          // Update the URL without reloading the page
+          router.replace(`${pathname}?${newParams.toString()}`, {
+            scroll: false,
+          });
+        }
+      }
     }
-  }, [data]);
+  }, [data, searchParams, pathname, router]);
 
   if (isLoading || !data) return <Skeleton />;
   if (error)
@@ -106,7 +138,7 @@ const DirectorateHeader = () => {
       ) : (
         <div className="w-full lg:h-[570px] sm:h-[400px] h-[220px] relative rounded-3xl overflow-hidden">
           <Image
-            src={`/images/bg.svg`}
+            src={data.galleries[0]?.image?.lg || `/images/bg.svg`}
             alt={`bg`}
             fill
             priority

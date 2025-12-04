@@ -4,7 +4,7 @@ import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
@@ -48,6 +48,9 @@ interface StaffResponse {
 interface UnitDetail {
   id: number;
   title: string;
+  slug: string;
+  vision: string;
+  mission: string;
   about: string;
   parent_id: number;
   directorate_type: {
@@ -79,8 +82,10 @@ const ContentSkeleton = () => (
 const Page = () => {
   const t = useTranslations("Directorate");
   const params = useParams();
+  const searchParams = useSearchParams();
   const locale = params?.locale as string;
   const id = params?.id as string;
+  const parentId = searchParams.get("parent_id");
 
   const [staffList, setStaffList] = useState<StaffItem[]>([]);
   const [staffPage, setStaffPage] = useState(1);
@@ -158,7 +163,7 @@ const Page = () => {
                     href={
                       unitData?.parent?.slug
                         ? `/${locale}/directorate/${unitData.parent.slug}`
-                        : "#"
+                        : `/${locale}/directorate/${unitData.slug}`
                     }
                     title={t("about")}
                     className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
@@ -170,7 +175,7 @@ const Page = () => {
                     href={
                       unitData?.parent?.slug
                         ? `/${locale}/directorate/${unitData.parent.slug}/staff`
-                        : "#"
+                        : `/${locale}/directorate/${unitData.slug}`
                     }
                     title={t("staff")}
                     className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
@@ -185,6 +190,14 @@ const Page = () => {
                     className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                   >
                     <span>{t("news")}</span>
+                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+                  </Link>
+                  <Link
+                    href={`/${locale}/directorate/${id}/centers?parent_id=${parentId}`}
+                    title={t("centers")}
+                    className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
+                  >
+                    <span>{t("centers")}</span>
                     <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                   </Link>
                 </div>
@@ -210,6 +223,42 @@ const Page = () => {
                       }}
                     />
                   </div>
+                  {unitData.mission && (
+                    <>
+                      <h2 className="relative text-lg font-semibold ">
+                        <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
+                        <span className="z-10 relative">{t("mission")}</span>
+                      </h2>
+                      <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full">
+                        {/* --- FIXED SECTION STARTS HERE --- */}
+                        {/* Changed from <p> to <div> and added dangerouslySetInnerHTML */}
+                        <div
+                          className="text-opacity-70 text-secondary text-sm prose max-w-none"
+                          dangerouslySetInnerHTML={{
+                            __html: unitData.mission,
+                          }}
+                        />
+                      </div>
+                    </>
+                  )}
+                  {unitData.vision && (
+                    <>
+                      <h2 className="relative text-lg font-semibold ">
+                        <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
+                        <span className="z-10 relative">{t("vision")}</span>
+                      </h2>
+                      <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full">
+                        {/* --- FIXED SECTION STARTS HERE --- */}
+                        {/* Changed from <p> to <div> and added dangerouslySetInnerHTML */}
+                        <div
+                          className="text-opacity-70 text-secondary text-sm prose max-w-none"
+                          dangerouslySetInnerHTML={{
+                            __html: unitData.vision,
+                          }}
+                        />
+                      </div>
+                    </>
+                  )}
                   <h2 className="relative text-lg font-semibold ">
                     <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
                     <span className="z-10 relative">{t("staff_members")}</span>

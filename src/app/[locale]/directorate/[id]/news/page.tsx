@@ -40,6 +40,7 @@ interface NewsResponse {
 }
 interface DirectorateParentInfo {
   id: number;
+  title: string;
   parent_id: number | null;
   parent?: { slug: string };
   directorate_type: { name: string };
@@ -283,7 +284,7 @@ const Page = () => {
     });
   };
 
-  const parentTitle = directorateInfo?.directorate_type?.name || "";
+  const parentTitle = directorateInfo?.title || "";
 
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
@@ -379,6 +380,14 @@ const Page = () => {
                     <span>{t("news")}</span>
                     <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                   </div>
+                  <Link
+                    href={`/${locale}/directorate/${id}/centers?parent_id=${parentId}`}
+                    title={t("centers")}
+                    className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
+                  >
+                    <span>{t("centers")}</span>
+                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+                  </Link>
                 </div>
                 <div className="lg:border-l text-secondary border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
                   <h2 className="relative sm:text-titleNormal text-lg font-semibold ">

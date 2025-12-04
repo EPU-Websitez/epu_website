@@ -58,6 +58,8 @@ interface DirectorateDetail {
   college_id: number | null;
   university_id: number;
   about: string; // This now contains HTML
+  vision: string; // This now contains HTML
+  mission: string; // This now contains HTML
   priority: number;
   created_at: string;
   updated_at: string;
@@ -253,6 +255,14 @@ const Page = () => {
                         <span>{t("news")}</span>
                         <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                       </Link>
+                      <Link
+                        href={`/${locale}/directorate/${id}/centers?parent_id=${parentId}`}
+                        title={t("centers")}
+                        className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
+                      >
+                        <span>{t("centers")}</span>
+                        <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+                      </Link>
                     </div>
 
                     <div className="lg:border-l w-full border-l-none lg:border-b-0 border-b text-secondary border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7">
@@ -297,6 +307,44 @@ const Page = () => {
                           </div>
                         )}
                       </div>
+                      {directorateData.mission && (
+                        <>
+                          <h2 className="relative sm:text-titleNormal text-lg font-semibold ">
+                            <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
+                            <span className="z-10 relative">
+                              {t("mission")}
+                            </span>
+                          </h2>
+                          <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full">
+                            {/* --- FIXED SECTION STARTS HERE --- */}
+                            {/* Changed from <p> to <div> and added dangerouslySetInnerHTML */}
+                            <div
+                              className="text-opacity-70 text-secondary text-sm prose max-w-none"
+                              dangerouslySetInnerHTML={{
+                                __html: directorateData.mission,
+                              }}
+                            />
+                          </div>
+                        </>
+                      )}
+                      {directorateData.vision && (
+                        <>
+                          <h2 className="relative sm:text-titleNormal text-lg font-semibold ">
+                            <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
+                            <span className="z-10 relative">{t("vision")}</span>
+                          </h2>
+                          <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full">
+                            {/* --- FIXED SECTION STARTS HERE --- */}
+                            {/* Changed from <p> to <div> and added dangerouslySetInnerHTML */}
+                            <div
+                              className="text-opacity-70 text-secondary text-sm prose max-w-none"
+                              dangerouslySetInnerHTML={{
+                                __html: directorateData.vision,
+                              }}
+                            />
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
