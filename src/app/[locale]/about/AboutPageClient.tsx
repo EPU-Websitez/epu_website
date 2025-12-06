@@ -15,6 +15,16 @@ import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
+// -------- Helper Function for Number Formatting --------
+const formatNumber = (numStr: string | undefined): string => {
+  if (!numStr) return "0";
+  const num = parseInt(numStr, 10);
+  if (isNaN(num)) return numStr;
+
+  // Use locale-aware formatting for thousands separator
+  return new Intl.NumberFormat().format(num);
+};
+
 // -------- Interfaces --------
 interface ImageFile {
   id: number;
@@ -37,7 +47,7 @@ interface AboutUsData {
   description: string;
   timeline_image: ImageFile;
   thumbnail: string;
-  video_url?: string; // Added optional video URL
+  video_url?: string;
   content_title: string;
   content_description: string;
   bg_images: { id: number; image: ImageFile }[];
@@ -46,6 +56,7 @@ interface AboutUsData {
 }
 
 interface UniversityStatsData {
+  title: string; // Added to use as the main header
   student_number: string;
   teacher_number: string;
   academic_number: string;
@@ -134,15 +145,19 @@ const AboutPageClient = () => {
         ) : (
           aboutData && (
             <>
+              {/* Description (About Us Text) */}
               <p className="text-secondary font-medium mt-5 sm:text-base text-sm">
                 {aboutData.description}
               </p>
+
+              {/* TIMELINE SECTION */}
               <div className="flex justify-between items-center gap-3 w-full border-b border-b-golden sm:pb-20 pb-10 lg:flex-row flex-col lg:px-0 px-3">
                 <div className="flex_start flex-col gap-5 lg:w-auto w-full">
                   <h5 className="text-sm text-secondary font-medium">
                     {t("uni_stages")}
                   </h5>
-                  <div className="flex_start flex-col gap-5 relative after:absolute after:h-[69%] ltr:after:left-0 rtl:after:right-0 after:top-0 after:w-[1px] after:bg-golden ltr:pl-5 rtl:pr-5">
+                  {/* Dynamic Timeline Line Height (after:h-full) */}
+                  <div className="flex_start flex-col gap-5 relative after:absolute after:h-full ltr:after:left-0 rtl:after:right-0 after:top-0 after:w-[1px] after:bg-golden ltr:pl-5 rtl:pr-5">
                     {sortedTimeline?.map((item) => (
                       <div
                         key={item.id}
@@ -169,7 +184,7 @@ const AboutPageClient = () => {
                         controls
                         playsInline
                         preload="metadata"
-                        poster={aboutData.thumbnail} // Use the image as thumbnail
+                        poster={aboutData.thumbnail}
                         className="w-full h-full object-cover"
                       >
                         <source src={aboutData.video_url} type="video/mp4" />
@@ -177,8 +192,10 @@ const AboutPageClient = () => {
                       </video>
                     ) : (
                       <Image
-                        src={aboutData.thumbnail}
-                        alt="Timeline Image"
+                        src={aboutData.timeline_image?.lg}
+                        alt={`Historical event image for year ${
+                          sortedTimeline?.[0]?.year || "university"
+                        }`}
                         fill
                         priority
                         className="w-full h-full object-cover"
@@ -191,8 +208,9 @@ const AboutPageClient = () => {
                 </div>
               </div>
 
+              {/* **Content Title and Content** */}
               <h1 className="sm:text-title text-titleNormal font-semibold sm:mt-10 mt-5 text-secondary">
-                {aboutData.content_title}
+                {t("head")}
               </h1>
               <p className="text-secondary sm:text-base text-sm font-medium">
                 {aboutData.content_description}
@@ -211,6 +229,7 @@ const AboutPageClient = () => {
           )
         )}
 
+        {/* **Stats Section with Number Formatting** */}
         {statsData && (
           <div className="grid sm:grid-cols-4 grid-cols-2 lg:gap-5 sm:gap-2 gap-5 justify-between w-full my-10 lg:px-10 px-3 text-secondary">
             <div className="flex_center flex-col gap-2">
@@ -218,7 +237,7 @@ const AboutPageClient = () => {
                 <PiStudent />
               </span>
               <h1 className="sm:text-title text-titleNormal font-bold">
-                + {statsData.student_number || 0}
+                + {formatNumber(statsData.student_number)}
               </h1>
               <p className="font-medium">{t("students")}</p>
             </div>
@@ -227,7 +246,7 @@ const AboutPageClient = () => {
                 <IoBriefcaseOutline />
               </span>
               <h1 className="sm:text-title text-titleNormal font-bold">
-                + {statsData.teacher_number || 0}
+                + {formatNumber(statsData.teacher_number)}
               </h1>
               <p className="font-medium">{t("teachers")}</p>
             </div>
@@ -236,7 +255,7 @@ const AboutPageClient = () => {
                 <HiOutlineBuildingOffice />
               </span>
               <h1 className="sm:text-title text-titleNormal font-bold">
-                + {statsData.academic_number || 0}
+                + {formatNumber(statsData.academic_number)}
               </h1>
               <p className="font-medium">{t("academics")}</p>
             </div>
@@ -245,7 +264,7 @@ const AboutPageClient = () => {
                 <LuUsers />
               </span>
               <h1 className="sm:text-title text-titleNormal font-bold">
-                + {statsData.staff_member || 0}
+                + {formatNumber(statsData.staff_member)}
               </h1>
               <p className="font-medium">{t("staff_members")}</p>
             </div>

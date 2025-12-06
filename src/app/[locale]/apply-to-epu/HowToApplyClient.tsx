@@ -58,7 +58,7 @@ const HowToApplyClient = () => {
   if (isLoading) return <PageSkeleton />;
   if (!applyData) return <div>No data available.</div>;
 
-  const reasonsToDisplay = applyData.question_sections.slice(0, 3);
+  const reasonsToDisplay = applyData.question_sections;
 
   return (
     <div className="my-10 flex_center w-full">
@@ -89,7 +89,7 @@ const HowToApplyClient = () => {
           </div>
           {applyData.description && (
             <p className="z-10 absolute top-[30%] text-white ltr:left-[5%] rtl:right-[5%] font-semibold sm:text-lg text-sm sm:max-w-[600px] max-w-[80%]">
-              {applyData.description.substring(0, 180)}
+              {applyData.description}
             </p>
           )}
         </div>
@@ -110,41 +110,29 @@ const HowToApplyClient = () => {
               />
             </span>
           </h1>
-          <div className="flex_center lg:gap-8 gap-3 w-full sm:flex-row flex-col">
-            {reasonsToDisplay.map((reason, index) => (
-              <>
-                <div
-                  key={reason.id}
-                  className={`flex_start flex-col gap-3 sm:w-auto w-full sm:border-none ${
-                    index < reasonsToDisplay.length - 1
-                      ? "border-b border-b-white pb-4"
-                      : ""
-                  } sm:pb-0`}
-                >
-                  <div className="flex_center gap-4">
-                    <span className="relative sm:w-12 sm:h-12 w-9 h-9">
-                      <Image
-                        src={reason.icon_image.lg}
-                        alt="shape"
-                        fill
-                        priority
-                        onError={(e) => {
-                          e.currentTarget.src = "/images/placeholder.svg";
-                        }}
-                      />
-                    </span>
-                    <p className="font-medium lg:text-sm text-xs">
-                      {reason.title}
-                    </p>
-                  </div>
-                  <p className="sm:max-w-[250px] max-w-full lg:text-xs text-[8px] text-start opacity-75">
-                    {reason.description}
+          <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 w-full">
+            {reasonsToDisplay.map((reason) => (
+              <div key={reason.id} className="flex flex-col gap-3">
+                <div className="flex items-center gap-4">
+                  <span className="relative sm:w-12 sm:h-12 w-9 h-9 flex-shrink-0">
+                    <Image
+                      src={reason?.icon_image?.lg}
+                      alt={reason.title}
+                      fill
+                      priority
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
+                    />
+                  </span>
+                  <p className="font-medium lg:text-sm text-xs">
+                    {reason.title}
                   </p>
                 </div>
-                {index < reasonsToDisplay.length - 1 && (
-                  <div className="w-[1px] h-[100px] bg-white opacity-75 sm:block hidden"></div>
-                )}
-              </>
+                <p className="lg:text-xs text-[8px] text-start opacity-75">
+                  {reason.description}
+                </p>
+              </div>
             ))}
           </div>
         </div>

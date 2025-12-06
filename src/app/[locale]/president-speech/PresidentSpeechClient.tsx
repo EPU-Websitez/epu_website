@@ -24,6 +24,7 @@ interface PresidentMessageData {
   title: string;
   subtitle: string;
   description: string;
+  president_name: string;
   galleries: GalleryItem[];
 }
 
@@ -59,7 +60,7 @@ const PresidentSpeechClient = () => {
   return (
     <div className="w-full flex_center my-10">
       <div className="max-w-[1024px] px-3 w-full flex_start flex-col gap-10">
-        <SubHeader title={messageData.title} alt={false} />
+        <SubHeader title={t("head")} alt={false} />
         <div className="w-full lg:h-[500px] sm:h-[400px] h-[250px] relative ltr:justify-end rtl:justify-start items-end flex">
           <Swiper
             modules={[Pagination]}
@@ -101,7 +102,7 @@ const PresidentSpeechClient = () => {
               <path d="M 40 80 c 22 0 40 -22 40 -40 v 40 Z" />
             </svg>
             <div className="w-full h-full lg:bg-primary bg-golden rounded-lg p-2">
-              {t("name")}
+              {messageData.president_name}
             </div>
           </div>
         </div>

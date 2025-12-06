@@ -52,6 +52,7 @@ interface UniversityData {
   alumni_feedbacks: AlumniFeedback[];
   research_paper_publication_url: string;
   confrance_publication_url: string;
+  confrance_publication_number: string;
 }
 interface SliderItem {
   id: number;
@@ -178,6 +179,12 @@ export default function HomePageClient() {
       month: "short",
       year: "numeric",
     });
+
+  const formatNumber = (numStr: string | undefined) => {
+    if (!numStr) return "0";
+    const num = parseInt(numStr, 10);
+    return isNaN(num) ? numStr : num.toLocaleString(locale);
+  };
 
   if (isLoading) return <HomeSkeleton />;
 
@@ -326,7 +333,7 @@ export default function HomePageClient() {
           {/* stats numbers (No change) */}
           <div className="flex_center flex-col gap-4">
             <h1 className="sm:text-title text-2xl text-secondary font-medium">
-              {uniData?.student_number}
+              +{formatNumber(uniData?.student_number)}
             </h1>
             <div className="flex_center gap-2">
               <span className="bg-primary w-6 h-6 text-sm rounded-full bg-opacity-20 flex_center">
@@ -337,7 +344,7 @@ export default function HomePageClient() {
           </div>
           <div className="flex_center flex-col gap-4">
             <h1 className="sm:text-title text-2xl text-secondary font-medium">
-              {uniData?.teacher_number}
+              +{formatNumber(uniData?.teacher_number)}
             </h1>
             <div className="flex_center gap-2">
               <span className="bg-primary w-6 h-6 text-sm rounded-full bg-opacity-20 flex_center">
@@ -348,7 +355,7 @@ export default function HomePageClient() {
           </div>
           <div className="flex_center flex-col gap-4">
             <h1 className="sm:text-title text-2xl text-secondary font-medium">
-              {uniData?.academic_number}
+              +{formatNumber(uniData?.academic_number)}
             </h1>
             <div className="flex_center gap-2">
               <span className="bg-primary w-6 h-6 text-sm rounded-full bg-opacity-20 flex_center">
@@ -359,7 +366,7 @@ export default function HomePageClient() {
           </div>
           <div className="flex_center flex-col gap-4">
             <h1 className="sm:text-title text-2xl text-secondary font-medium">
-              {uniData?.staff_member}
+              +{formatNumber(uniData?.staff_member)}
             </h1>
             <div className="flex_center gap-2">
               <span className="bg-primary w-6 h-6 text-sm rounded-full bg-opacity-20 flex_center">
@@ -517,7 +524,7 @@ export default function HomePageClient() {
           <div className="flex_center gap-10">
             <div className="flex_center flex-col gap-2">
               <h1 className="sm:text-title text-2xl font-bold text-golden">
-                {uniData?.research_paper_publication_number}
+                {formatNumber(uniData?.research_paper_publication_number)}
               </h1>
               <a
                 href={uniData?.research_paper_publication_url}
@@ -530,7 +537,7 @@ export default function HomePageClient() {
             </div>
             <div className="flex_center flex-col gap-2">
               <h1 className="sm:text-title text-2xl font-bold text-golden">
-                {uniData?.research_number}
+                {formatNumber(uniData?.confrance_publication_number)}
               </h1>
               <a
                 href={uniData?.confrance_publication_url}

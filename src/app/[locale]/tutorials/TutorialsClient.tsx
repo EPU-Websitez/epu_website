@@ -261,9 +261,14 @@ const TutorialsClient = () => {
         ) : tutorials.length > 0 ? (
           <div className="grid sm:grid-cols-2 grid-cols-1 w-full gap-5 mt-10">
             {tutorials.map((tutorial) => {
-              const thumbnail = tutorial.images.find(
+              const videoWithThumbnail = tutorial.images.find(
+                (img) => img.image.media_type === "VIDEO" && img.image.thumbnail
+              );
+              const imageThumbnail = tutorial.images.find(
                 (img) => img.image.media_type === "IMAGE"
               )?.image.lg;
+              const thumbnail =
+                videoWithThumbnail?.image.thumbnail || imageThumbnail;
 
               const hasVideo = tutorial.images.some(
                 (img) => img.image.media_type === "VIDEO"
