@@ -105,6 +105,10 @@ const CentersClient = () => {
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                 </Link>
                 <SubUnits />
+                <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-primary border-primary">
+                  <span>{tDir("centers")}</span>
+                  <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+                </div>
                 <Link
                   href={`/${locale}/directorate/${params?.id}/news?parent_id=${parentId}`}
                   title={tDir("news")}
@@ -113,10 +117,6 @@ const CentersClient = () => {
                   <span>{tDir("news")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                 </Link>
-                <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-primary border-primary">
-                  <span>{tDir("centers")}</span>
-                  <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                </div>
               </div>
 
               <div className="lg:border-l w-full border-l-none lg:border-b-0 border-b text-secondary border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7">

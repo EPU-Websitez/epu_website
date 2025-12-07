@@ -248,19 +248,19 @@ const Page = () => {
                       </Link>
                       <SubUnits />
                       <Link
-                        href={`/${locale}/directorate/${id}/news?parent_id=${parentId}`}
-                        title={t("news")}
-                        className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                      >
-                        <span>{t("news")}</span>
-                        <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                      </Link>
-                      <Link
                         href={`/${locale}/directorate/${id}/centers?parent_id=${parentId}`}
                         title={t("centers")}
                         className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                       >
                         <span>{t("centers")}</span>
+                        <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+                      </Link>
+                      <Link
+                        href={`/${locale}/directorate/${id}/news?parent_id=${parentId}`}
+                        title={t("news")}
+                        className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
+                      >
+                        <span>{t("news")}</span>
                         <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                       </Link>
                     </div>
@@ -282,28 +282,25 @@ const Page = () => {
                         {/* --- FIXED SECTION ENDS HERE --- */}
 
                         {directorateData.galleries.length > 0 && (
-                          <div className="grid grid-cols-2 sm:grid-cols-3 w-full">
-                            {directorateData.galleries
-                              .slice(0, 6)
-                              .map((item, index) => (
-                                <button
-                                  key={item.id}
-                                  onClick={() => handleOpenModal(index)}
-                                  className="relative w-full md:h-[180px] h-[122px] block"
-                                >
-                                  <Image
-                                    src={item.image.lg}
-                                    alt={directorateData.directorate_type.name}
-                                    fill
-                                    priority
-                                    className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                      e.currentTarget.src =
-                                        "/images/placeholder.svg";
-                                    }}
-                                  />
-                                </button>
-                              ))}
+                          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
+                            {directorateData.galleries.map((item, index) => (
+                              <button
+                                key={item.id}
+                                onClick={() => handleOpenModal(index)}
+                                className="group relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 shadow-sm hover:shadow-md transition-all duration-300"
+                              >
+                                <Image
+                                  src={item.image.lg}
+                                  alt={directorateData.directorate_type.name}
+                                  fill
+                                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                                  className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+                                />
+
+                                {/* Optional: Dark Overlay on Hover for better UX */}
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+                              </button>
+                            ))}
                           </div>
                         )}
                       </div>

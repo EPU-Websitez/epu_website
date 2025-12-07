@@ -208,7 +208,7 @@ const DirectoratesClient = () => {
                   key={type.id}
                   type="button"
                   onClick={() => handleTab(type.id)}
-                  className="flex_center text-wrap lg:text-lg text-xs z-10 text-center h-[55px] transition-colors"
+                  className="flex_center text-wrap lg:text-base text-xs z-10 text-center h-[55px] transition-colors"
                   style={{ width: `${tabWidth}%` }}
                 >
                   <span
@@ -235,7 +235,7 @@ const DirectoratesClient = () => {
                     title={item.directorate_type?.name}
                     className="flex_start flex-col gap-5 bg-backgroundSecondary rounded-lg p-5"
                   >
-                    <h3 className="md:text-lg text-base font-semibold h-14 line-clamp-2">
+                    <h3 className="md:text-lg text-base font-semibold">
                       {item?.title}
                     </h3>
                     <div className="flex w-full justify-between items-center gap-4 text-white">

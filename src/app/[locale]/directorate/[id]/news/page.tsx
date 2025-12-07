@@ -376,10 +376,6 @@ const Page = () => {
                     <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                   </Link>
                   <SubUnits />
-                  <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-primary border-primary">
-                    <span>{t("news")}</span>
-                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                  </div>
                   <Link
                     href={`/${locale}/directorate/${id}/centers?parent_id=${parentId}`}
                     title={t("centers")}
@@ -388,6 +384,10 @@ const Page = () => {
                     <span>{t("centers")}</span>
                     <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                   </Link>
+                  <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-primary border-primary">
+                    <span>{t("news")}</span>
+                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+                  </div>
                 </div>
                 <div className="lg:border-l text-secondary border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
                   <h2 className="relative sm:text-titleNormal text-lg font-semibold ">

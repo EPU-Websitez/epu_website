@@ -192,19 +192,19 @@ const Page = () => {
                   </div>
                   <SubUnits />
                   <Link
-                    href={`/${locale}/directorate/${id}/news?parent_id=${parentId}`}
-                    title={t("news")}
-                    className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                  >
-                    <span>{t("news")}</span>
-                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                  </Link>
-                  <Link
                     href={`/${locale}/directorate/${id}/centers?parent_id=${parentId}`}
                     title={t("centers")}
                     className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                   >
                     <span>{t("centers")}</span>
+                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+                  </Link>
+                  <Link
+                    href={`/${locale}/directorate/${id}/news?parent_id=${parentId}`}
+                    title={t("news")}
+                    className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
+                  >
+                    <span>{t("news")}</span>
                     <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                   </Link>
                 </div>
