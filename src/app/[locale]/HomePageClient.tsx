@@ -53,6 +53,8 @@ interface UniversityData {
   research_paper_publication_url: string;
   confrance_publication_url: string;
   confrance_publication_number: string;
+  event_description: string;
+  news_description: string;
 }
 interface SliderItem {
   id: number;
@@ -431,7 +433,7 @@ export default function HomePageClient() {
           <FaArrowRight className="sm:text-2xl text-xl rtl:rotate-180" />
         </Link>
         <p className="sm:text-smallParagraph text-xs tracking-normal text-primary opacity-90 font-medium">
-          {t("latest_news_text")}
+          {uniData?.news_description || t("latest_news_text")}
         </p>
         <div className="grid sm:grid-cols-2 grid-cols-1 w-full mt-3 gap-5 mb-10">
           {newsData?.data.map((news) => (
@@ -475,7 +477,7 @@ export default function HomePageClient() {
           <FaArrowRight className="sm:text-2xl text-xl rtl:rotate-180" />
         </Link>
         <p className="sm:text-paragraph text-xs tracking-normal text-primary opacity-90 font-medium">
-          {t("new_events_text")}
+          {uniData?.event_description || t("new_events_text")}
         </p>
         <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full gap-8">
           {eventsData?.data.map((event) => (
