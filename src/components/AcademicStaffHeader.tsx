@@ -153,7 +153,7 @@ const AcademicStaffHeader = () => {
     title_lists = [],
   } = data;
 
-  const profileImage = profile_image?.lg || "/images/president-alt.png";
+  const profileImage = profile_image?.lg || "/images/placeholder.svg";
   const bgImage = bg_image?.lg || "/images/academic-bg.png";
   const email = user?.email;
 
