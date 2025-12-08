@@ -119,7 +119,7 @@ const JobDetailModal = ({ job, onClose }: JobDetailModalProps) => {
                     className="flex items-center gap-2 bg-gray-100 p-2 rounded-lg"
                   >
                     <Image
-                      src={service.icon_image.lg}
+                      src={service?.icon_image?.lg}
                       alt={service.title}
                       width={24}
                       height={24}
@@ -323,7 +323,7 @@ const InternCareerClient = () => {
                       className={`relative rounded-xl overflow-hidden ${gridClass}`}
                     >
                       <Image
-                        src={item.image.lg}
+                        src={item?.image?.lg}
                         alt={`Gallery Image ${index + 1}`}
                         fill
                         priority
@@ -382,7 +382,7 @@ const InternCareerClient = () => {
                   >
                     <span className="w-10 h-10 rounded bg-secondary bg-opacity-10 text-xl flex_center z-10">
                       <Image
-                        src={offer.icon_image.lg}
+                        src={offer?.icon_image?.lg}
                         alt={offer.title}
                         width={24}
                         height={24}
@@ -428,8 +428,10 @@ const InternCareerClient = () => {
                 >
                   <div className="md:w-[160px] w-[120px] md:h-[175px] h-[130px] relative">
                     <Image
-                      src={member.teacher.profile_image.lg}
-                      alt={member.teacher.full_name}
+                      src={
+                        member?.teacher?.profile_image?.lg || "placeholder.svg"
+                      }
+                      alt={member.teacher?.full_name}
                       fill
                       priority
                       className="w-full h-full object-cover"
@@ -442,7 +444,7 @@ const InternCareerClient = () => {
                     />
                   </div>
                   <h4 className="font-semibold mt-2 text-center">
-                    {member.teacher.full_name}
+                    {member.teacher?.full_name}
                   </h4>
                   <span className="text-sm opacity-80 -mt-2">
                     {member.role_in_intern}
@@ -475,7 +477,7 @@ const InternCareerClient = () => {
                         <div className="w-[82px] h-[82px] flex-shrink-0 flex_center rounded-xl border border-lightBorder">
                           <div className="w-[60px] h-[60px] relative">
                             <Image
-                              src={job.services[0].icon_image.lg}
+                              src={job.services[0]?.icon_image?.lg}
                               alt={job.title}
                               fill
                               priority

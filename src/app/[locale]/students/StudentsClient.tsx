@@ -372,7 +372,7 @@ const StudentsClient = () => {
       {isLoading && !addressData ? (
         <MapSkeleton />
       ) : (
-        <div className="w-full sm:h-[760px] h-[500px] relative flex justify-center items-start my-10 bg-[#fff]">
+        <div className="w-full sm:h-[500px] h-[400px] relative flex justify-center items-start my-10 bg-[#fff]">
           <div className="w-full h-full absolute top-0 left-0">
             {addressData ? (
               <CollegeMapComponent

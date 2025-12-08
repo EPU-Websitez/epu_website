@@ -31,6 +31,7 @@ interface StoryItem {
   id: number;
   full_name: string;
   description: string;
+  subject: string;
   image: ImageFile;
 }
 interface BgListItem {
@@ -90,7 +91,12 @@ const StoryModal = ({ story, onClose }: StoryModalProps) => {
           <h2 className="text-2xl font-semibold mb-2 text-secondary">
             {story.full_name}
           </h2>
-          <p className="text-secondary opacity-80">{story.description}</p>
+          {story.subject && (
+            <span className="text-sm bg-backgroundSecondary rounded-full px-2 py-1.5 font-semibold text-lightText">
+              {story.subject}
+            </span>
+          )}
+          <p className="text-secondary opacity-80 pt-3">{story.description}</p>
         </div>
       </div>
     </div>
