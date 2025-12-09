@@ -8,6 +8,7 @@ import Image from "next/image";
 import useFetch from "@/libs/hooks/useFetch";
 
 import { useParams } from "next/navigation";
+import NoData from "@/components/NoData";
 
 // -------- Interfaces --------
 interface ImageFile {
@@ -101,6 +102,16 @@ const UniversityBoardClient = () => {
   );
   const isLoading = leadsLoading || (members.length === 0 && !isLoadingMore);
 
+  
+
+// For pages with NO data (optional but recommended)
+if (!president) return (
+  <div className="my-10 flex_center w-full">
+    <div className="max-w-[1024px] w-full flex_center">
+      <NoData showButton={false} />
+    </div>
+  </div>
+);
   return (
     <div className="mb-10 -mt-5 flex_center w-full flex-col">
       {isLoading ? (

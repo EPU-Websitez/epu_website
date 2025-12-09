@@ -144,12 +144,12 @@ const DepartmentCouncilPage = ({
 
   // Helper function to safely get the best available image with fallbacks
   const getProfileImage = (teacher: Teacher | undefined) => {
-    if (!teacher?.profile_image) return "/images/president-alt.png";
+    if (!teacher?.profile_image) return "/images/placeholder.svg";
     return (
-      teacher.profile_image.lg ||
-      teacher.profile_image.md ||
-      teacher.profile_image.original ||
-      "/images/president-alt.png"
+      teacher.profile_image?.lg ||
+      teacher.profile_image?.md ||
+      teacher.profile_image?.original ||
+      "/images/placeholder.svg"
     );
   };
 

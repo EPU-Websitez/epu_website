@@ -98,7 +98,7 @@ const Page = () => {
       item.teacher?.profile_image?.lg ||
       item.teacher?.profile_image?.md ||
       item.teacher?.profile_image?.original ||
-      `/images/president-alt.png` // Fallback image
+      `/images/placeholder.svg` // Fallback image
     );
   };
 

@@ -1,6 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -119,13 +120,13 @@ const AnniversaryClient = () => {
   const [gridItems, setGridItems] = useState<GridItem[]>([]);
   const [page, setPage] = useState(1);
 
-  const { data: anniversaryData, loading: sliderLoading } =
+  const { data: anniversaryData, loading: sliderLoading, error: sliderError } =
     useFetch<AnniversaryData>(
       `${process.env.NEXT_PUBLIC_API_URL}/website/anniversary`,
       locale
     );
   const gridUrl = `${process.env.NEXT_PUBLIC_API_URL}/website/anniversary/items?page=${page}&limit=6`;
-  const { data: gridData, loading: gridLoading } = useFetch<ItemsResponse>(
+  const { data: gridData, loading: gridLoading, error: gridError } = useFetch<ItemsResponse>(
     gridUrl,
     locale
   );
@@ -177,6 +178,13 @@ const AnniversaryClient = () => {
     <div className="my-10 flex_center w-full flex-col gap-10">
       {isLoading ? (
         <PageSkeleton />
+      ) : sliderError || gridError ? (
+        <div className="max-w-[1040px] w-full flex_start flex-col gap-8 lg:px-0 px-3">
+          <SubHeader title={t("head")} alt={false} />
+          <div className="w-full flex_center">
+            <NoData showButton={true} className="my-10" />
+          </div>
+        </div>
       ) : (
         <>
           <div className="max-w-[1040px] w-full flex_start flex-col gap-8 lg:px-0 px-3">
@@ -245,34 +253,42 @@ const AnniversaryClient = () => {
               </h1>
               <span className="w-full h-1 bg-golden"></span>
             </div>
-            <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-4">
-              {gridItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleOpenModal(item)}
-                  className="w-full relative lg:h-[375px] md:h-[340px] h-[250px] rounded-3xl overflow-hidden group"
-                >
-                  <Image
-                    src={item.image.lg}
-                    alt={item.title}
-                    fill
-                    priority
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    onError={(e) => {
-                      e.currentTarget.src = "/images/placeholder.svg";
-                    }}
-                  />
-                  <span className="bg-white py-1 px-3 rounded-md text-secondary font-semibold absolute md:ltr:left-5 ltr:left-3 md:rtl:right-5 rtl:right-3 md:top-5 top-3 z-10 md:text-sm text-xs">
-                    {renderDate(item)}
-                  </span>
-                  <div className="bg-gradient-to-t from-black to-transparent absolute bottom-0 left-0 w-full h-[50%] flex items-end md:p-5 p-3 z-10 justify-start">
-                    <h3 className="text-white font-semibold md:text-base text-sm">
-                      {item.title}
-                    </h3>
-                  </div>
-                </button>
-              ))}
-            </div>
+            {gridItems.length > 0 ? (
+              <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full lg:gap-8 gap-4">
+                {gridItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => handleOpenModal(item)}
+                    className="w-full relative lg:h-[375px] md:h-[340px] h-[250px] rounded-3xl overflow-hidden group"
+                  >
+                    <Image
+                      src={item.image.lg}
+                      alt={item.title}
+                      fill
+                      priority
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
+                    />
+                    <span className="bg-white py-1 px-3 rounded-md text-secondary font-semibold absolute md:ltr:left-5 ltr:left-3 md:rtl:right-5 rtl:right-3 md:top-5 top-3 z-10 md:text-sm text-xs">
+                      {renderDate(item)}
+                    </span>
+                    <div className="bg-gradient-to-t from-black to-transparent absolute bottom-0 left-0 w-full h-[50%] flex items-end md:p-5 p-3 z-10 justify-start">
+                      <h3 className="text-white font-semibold md:text-base text-sm">
+                        {item.title}
+                      </h3>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              !gridLoading && (
+                <div className="w-full flex_center">
+                  <NoData showButton={false} />
+                </div>
+              )
+            )}
           </div>
           {gridData && gridItems.length < gridData.total && (
             <button

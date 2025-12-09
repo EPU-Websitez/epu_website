@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
@@ -47,7 +48,7 @@ const CentersClient = () => {
   const [page, setPage] = useState(1);
   const limit = 5;
 
-  const { data, loading } = useFetch<CenterResponse>(
+  const { data, loading, error } = useFetch<CenterResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/centers?page=${page}&limit=${limit}`,
     locale
   );
@@ -75,40 +76,50 @@ const CentersClient = () => {
 
         {/* Dynamic Centers */}
         <div className="mt-10 w-full flex flex-col gap-6">
-          {isInitialLoading
-            ? Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)
-            : centers.map((center) => (
-                <div
-                  key={center.id}
-                  className="pt-10 pb-10 border-b w-full border-b-lightBorder flex justify-between items-start gap-5"
-                >
-                  <div className="flex_start flex-col gap-5">
-                    <Link
-                      href={`/${locale}/centers/${center.slug}`}
-                      title={center.title}
-                      className="md:text-titleNormal text-lg font-semibold hover:text-primary transition-colors"
-                    >
-                      {center.title}
-                    </Link>
-                    {/* <p className="font-medium md:text-base text-sm text-secondary/80">
-                      {center.mission}
-                    </p> */}
-                    <div
-                      className="font-medium md:text-base text-sm text-secondary/80"
-                      dangerouslySetInnerHTML={{
-                        __html: center.description,
-                      }}
-                    />
-                  </div>
+          {isInitialLoading ? (
+            Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)
+          ) : error ? (
+            <div className="w-full flex_center">
+              <NoData showButton={true} className="my-10" />
+            </div>
+          ) : centers.length > 0 ? (
+            centers.map((center) => (
+              <div
+                key={center.id}
+                className="pt-10 pb-10 border-b w-full border-b-lightBorder flex justify-between items-start gap-5"
+              >
+                <div className="flex_start flex-col gap-5">
                   <Link
                     href={`/${locale}/centers/${center.slug}`}
                     title={center.title}
-                    className="text-lg w-10 h-10 rounded-full bg-golden flex_center text-white flex-shrink-0 hover:bg-golden/80 transition-colors"
+                    className="md:text-titleNormal text-lg font-semibold hover:text-primary transition-colors"
                   >
-                    <FaChevronRight className="rtl:rotate-180" />
+                    {center.title}
                   </Link>
+                  {/* <p className="font-medium md:text-base text-sm text-secondary/80">
+                    {center.mission}
+                  </p> */}
+                  <div
+                    className="font-medium md:text-base text-sm text-secondary/80"
+                    dangerouslySetInnerHTML={{
+                      __html: center.description,
+                    }}
+                  />
                 </div>
-              ))}
+                <Link
+                  href={`/${locale}/centers/${center.slug}`}
+                  title={center.title}
+                  className="text-lg w-10 h-10 rounded-full bg-golden flex_center text-white flex-shrink-0 hover:bg-golden/80 transition-colors"
+                >
+                  <FaChevronRight className="rtl:rotate-180" />
+                </Link>
+              </div>
+            ))
+          ) : (
+            <div className="w-full flex_center">
+              <NoData showButton={false} />
+            </div>
+          )}
         </div>
 
         {/* Load more button */}

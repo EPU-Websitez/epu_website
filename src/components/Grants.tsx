@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import SubHeader from "./subHeader";
+import NoData from "./NoData";
 import { useTranslations } from "next-intl";
 import { HiOutlineLink } from "react-icons/hi2";
 
@@ -283,14 +284,14 @@ const Grants = ({ teacherId, locale = "en" }: Props) => {
       )}
 
       {error && (
-        <div className="text-red-500 text-center w-full">
-          {t("error_loading_data")}
+        <div className="w-full flex_center">
+          <NoData showButton={true} className="my-10" />
         </div>
       )}
 
       {!isLoading && items.length === 0 && (
-        <div className="text-gray-500 text-center w-full">
-          {t("no_data_found")}
+        <div className="w-full flex_center">
+          <NoData showButton={false} />
         </div>
       )}
     </div>

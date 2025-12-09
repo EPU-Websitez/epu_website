@@ -1,6 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
@@ -82,7 +83,7 @@ const StudentUnionClient = () => {
   const params = useParams();
   const locale = (params?.locale as string) || "en";
 
-  const { data: mainData, loading: mainLoading } =
+  const { data: mainData, loading: mainLoading, error: mainError } =
     useFetch<StudentUnionMainResponse>(
       `${process.env.NEXT_PUBLIC_API_URL}/website/student-union?page=1&limit=1`,
       locale
@@ -94,14 +95,14 @@ const StudentUnionClient = () => {
     }
   }, [mainData]);
 
-  const { data: sectionsData, loading: sectionsLoading } =
+  const { data: sectionsData, loading: sectionsLoading, error: sectionsError } =
     useFetch<SectionsResponse>(
       studentUnionSlug
         ? `${process.env.NEXT_PUBLIC_API_URL}/website/student-union/${studentUnionSlug}/sections`
         : "",
       locale
     );
-  const { data: achievementsData, loading: achievementsLoading } =
+  const { data: achievementsData, loading: achievementsLoading, error: achievementsError } =
     useFetch<AchievementsResponse>(
       studentUnionSlug
         ? `${process.env.NEXT_PUBLIC_API_URL}/website/student-union/${studentUnionSlug}/achievements`
@@ -110,9 +111,18 @@ const StudentUnionClient = () => {
     );
 
   const isLoading = mainLoading || sectionsLoading || achievementsLoading;
+  const hasError = mainError || sectionsError || achievementsError;
   const mainInfo = mainData?.data?.[0];
   const sections = sectionsData?.data || [];
   const achievements = achievementsData?.data || [];
+
+  if (hasError) return (
+    <div className="my-10 flex_center w-full">
+      <div className="max-w-[1024px] w-full flex_center">
+        <NoData showButton={true} className="my-10" />
+      </div>
+    </div>
+  );
 
   return (
     <div className="w-full flex_center flex-col sm:my-10 my-5">

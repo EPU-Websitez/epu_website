@@ -9,6 +9,7 @@ import Image from "next/image";
 // Components & Icons
 import AcademicStaffHeader from "@/components/AcademicStaffHeader";
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import { GoBriefcase } from "react-icons/go";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
@@ -88,7 +89,7 @@ const Page = () => {
   const endpoint = tab === "qualifications" ? "qualifications" : "experiences";
   const url = `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}/${endpoint}?page=${page}&limit=${LIMIT}`;
 
-  const { data, loading } = useFetch<
+  const { data, loading, error } = useFetch<
     QualificationResponse | ExperienceResponse
   >(url, locale);
 
@@ -201,6 +202,10 @@ const Page = () => {
             <div className="lg:border-l lg:pl-10 w-full">
               {isInitialLoading ? (
                 <SectionSkeleton />
+              ) : error ? (
+                <div className="w-full flex_center">
+                  <NoData showButton={true} className="my-10" />
+                </div>
               ) : (
                 <>
                   {tab === "qualifications" && (
@@ -256,9 +261,9 @@ const Page = () => {
                         ))}
                       </div>
                       {qualifications.length === 0 && !loading && (
-                        <p className="text-center text-gray-500 py-10">
-                          {t("no_data")}
-                        </p>
+                        <div className="w-full flex_center">
+                          <NoData showButton={false} />
+                        </div>
                       )}
                     </div>
                   )}
@@ -299,9 +304,9 @@ const Page = () => {
                         ))}
                       </div>
                       {experiences.length === 0 && !loading && (
-                        <p className="text-center text-gray-500 py-10">
-                          {t("no_data")}
-                        </p>
+                        <div className="w-full flex_center">
+                          <NoData showButton={false} />
+                        </div>
                       )}
                     </div>
                   )}

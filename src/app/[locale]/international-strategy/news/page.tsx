@@ -19,6 +19,7 @@ import InternationalRelationsHeader from "@/components/InternationalRelationsHea
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import SubHeader from "@/components/subHeader";
 import InternationalStrategyHeader from "@/components/InternationalStrategyHeader";
+import NoData from "@/components/NoData";
 
 // --- Interfaces ---
 interface Image {
@@ -200,7 +201,7 @@ const Page = () => {
   }, [id, currentPage, currentSearch, currentDates]);
 
   // --- Data Fetching ---
-  const { data, loading } = useFetch<NewsResponse>(apiUrl, locale);
+  const { data, loading, error } = useFetch<NewsResponse>(apiUrl, locale);
   const isInitialLoading = loading && currentPage === 1;
 
   // --- Handlers to Update URL ---
@@ -259,6 +260,22 @@ const Page = () => {
       year: "numeric",
     });
   };
+  if (error) return (
+  <div className="my-10 flex_center w-full">
+    <div className="max-w-[1024px] w-full flex_center">
+      <NoData showButton={true} className="my-10" />
+    </div>
+  </div>
+);
+
+// For pages with NO data (optional but recommended)
+if (!data) return (
+  <div className="my-10 flex_center w-full">
+    <div className="max-w-[1024px] w-full flex_center">
+      <NoData showButton={false} />
+    </div>
+  </div>
+);
 
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">

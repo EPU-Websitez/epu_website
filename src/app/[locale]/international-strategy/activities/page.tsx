@@ -9,6 +9,7 @@ import React from "react";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
 import useFetch from "@/libs/hooks/useFetch";
+import NoData from "@/components/NoData";
 
 // -------- Interfaces --------
 interface ActivityListItem {
@@ -57,13 +58,22 @@ const Page = () => {
   const activities = data?.data || [];
 
   // Handle error or missing ID
-  if (error || !id) {
-    return (
-      <div className="w-full text-center my-20 text-red-500">
-        {t("error_loading_data")}
-      </div>
-    );
-  }
+  if (error) return (
+  <div className="my-10 flex_center w-full">
+    <div className="max-w-[1024px] w-full flex_center">
+      <NoData showButton={true} className="my-10" />
+    </div>
+  </div>
+);
+
+// For pages with NO data (optional but recommended)
+if (!data) return (
+  <div className="my-10 flex_center w-full">
+    <div className="max-w-[1024px] w-full flex_center">
+      <NoData showButton={false} />
+    </div>
+  </div>
+);
 
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">

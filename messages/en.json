@@ -70,7 +70,11 @@
     "students": "Students",
     "teachers": "Teachers",
     "academics": "Academics",
-    "staff_members": "Staff Members"
+    "staff_members": "Staff Members",
+    "no_data_found": "No Data Found",
+    "error_loading_data": "Error Loading Data",
+    "error_description": "We encountered an error while loading the about page. Please try again later.",
+    "retry": "Retry"
   },
   "PresidentSpeech": {
     "head": "The Message from the President of the University.",
@@ -576,5 +580,12 @@
     "directorate": "Directorates",
     "laboratory": "Laboratories",
     "see_more": "See More"
+  },
+  "Common": {
+    "refresh": "Refresh",
+    "no_data_found": "No data found",
+    "error_loading_data": "Error loading data",
+    "error_description": "We couldn't find any items to show here.",
+    "retry": "Retry"
   }
 }

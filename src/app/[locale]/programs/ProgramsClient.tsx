@@ -1,6 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -104,7 +105,7 @@ const ProgramsClient = () => {
 
   const LIMIT = 50;
 
-  const { data: mainProgramsResponse, loading: mainLoading } =
+  const { data: mainProgramsResponse, loading: mainLoading, error: mainError } =
     useFetch<ProgramListResponse>(
       `${process.env.NEXT_PUBLIC_API_URL}/website/programs?page=1&limit=1`,
       locale
@@ -195,6 +196,10 @@ const ProgramsClient = () => {
 
         {isHeaderLoading ? (
           <HeaderSkeleton />
+        ) : mainError ? (
+          <div className="w-full flex_center">
+            <NoData showButton={true} className="my-10" />
+          </div>
         ) : (
           mainProgramInfo && (
             <div className="w-full bg-primary text-white md:p-10 p-5 flex justify-between md:flex-row flex-col items-start rounded-3xl md:gap-5 gap-10">

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams, useParams, useRouter } from "next/navigation";
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
@@ -50,7 +51,7 @@ const CollegesClient = () => {
   const limit = 10;
 
   const url = `${API_URL}/website/colleges?page=${page}&limit=${limit}&type=${type}`;
-  const { data, loading } = useFetch<Response>(url, locale);
+  const { data, loading, error } = useFetch<Response>(url, locale);
 
   useEffect(() => {
     setItems([]);
@@ -113,43 +114,53 @@ const CollegesClient = () => {
         </div>
 
         <div className="mt-10 w-full flex flex-col gap-6">
-          {isInitialLoading
-            ? Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)
-            : items.map((item) => {
-                // Construct the full subdomain URL
-                const collegeUrl = `https://${item.subdomain}.epu.edu.iq/${locale}`;
+          {isInitialLoading ? (
+            Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)
+          ) : error ? (
+            <div className="w-full flex_center">
+              <NoData showButton={true} className="my-10" />
+            </div>
+          ) : items.length > 0 ? (
+            items.map((item) => {
+              // Construct the full subdomain URL
+              const collegeUrl = `https://${item.subdomain}.epu.edu.iq/${locale}`;
 
-                return (
-                  <div
-                    key={item.id}
-                    className="pt-10 pb-10 border-b w-full border-b-lightBorder flex justify-between items-start gap-5"
-                  >
-                    <div className="flex_start flex-col gap-5">
-                      <a
-                        href={collegeUrl}
-                        title={item.title ?? ""}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="md:text-titleNormal text-lg font-semibold hover:text-primary transition-colors"
-                      >
-                        {item.title ?? ""}
-                      </a>
-                      <p className="font-medium md:text-base text-sm text-secondary/80">
-                        {item.about_content ?? ""}
-                      </p>
-                    </div>
+              return (
+                <div
+                  key={item.id}
+                  className="pt-10 pb-10 border-b w-full border-b-lightBorder flex justify-between items-start gap-5"
+                >
+                  <div className="flex_start flex-col gap-5">
                     <a
                       href={collegeUrl}
                       title={item.title ?? ""}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-lg w-10 h-10 rounded-full bg-golden flex_center text-white flex-shrink-0 hover:bg-golden/80 transition-colors"
+                      className="md:text-titleNormal text-lg font-semibold hover:text-primary transition-colors"
                     >
-                      <FaChevronRight className="rtl:rotate-180" />
+                      {item.title ?? ""}
                     </a>
+                    <p className="font-medium md:text-base text-sm text-secondary/80">
+                      {item.about_content ?? ""}
+                    </p>
                   </div>
-                );
-              })}
+                  <a
+                    href={collegeUrl}
+                    title={item.title ?? ""}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-lg w-10 h-10 rounded-full bg-golden flex_center text-white flex-shrink-0 hover:bg-golden/80 transition-colors"
+                  >
+                    <FaChevronRight className="rtl:rotate-180" />
+                  </a>
+                </div>
+              );
+            })
+          ) : (
+            <div className="w-full flex_center">
+              <NoData showButton={false} />
+            </div>
+          )}
         </div>
 
         {data && !loading && items.length < (data?.total ?? 0) && (

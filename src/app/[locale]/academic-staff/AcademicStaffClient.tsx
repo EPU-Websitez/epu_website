@@ -10,6 +10,7 @@ import {
 
 import MemberCard from "@/components/memberCard";
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -290,7 +291,7 @@ const AcademicStaffClient = () => {
   ]);
 
   const [apiUrl, setApiUrl] = useState(buildApiUrl());
-  const { data, loading } = useFetch<TeacherResponse>(apiUrl, locale);
+  const { data, loading, error } = useFetch<TeacherResponse>(apiUrl, locale);
 
   // Update teachers when data changes
   useEffect(() => {
@@ -420,6 +421,10 @@ const AcademicStaffClient = () => {
         {/* Results Grid */}
         {page === 1 && loading ? (
           <TeacherSkeleton />
+        ) : error ? (
+          <div className="w-full flex_center">
+            <NoData showButton={true} className="my-10" />
+          </div>
         ) : teachers.length > 0 ? (
           <div className="grid w-full lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5 -mt-3">
             {teachers.map((teacher) => (
@@ -435,8 +440,8 @@ const AcademicStaffClient = () => {
           </div>
         ) : (
           !loading && (
-            <div className="text-center w-full py-10">
-              <p className="text-gray-500">{t("no_data_found")}</p>
+            <div className="w-full flex_center">
+              <NoData showButton={true} className="my-10" />
             </div>
           )
         )}

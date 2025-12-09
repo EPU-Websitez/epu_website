@@ -79,7 +79,11 @@
     "students": "Students",
     "teachers": "Teachers",
     "academics": "Academics",
-    "staff_members": "Staff Members"
+    "staff_members": "Staff Members",
+    "no_data_found": "هیچ زانیاریەک نەدۆزرایەوە",
+    "error_loading_data": "هەڵە لە بارکردنی زانیاریەکان",
+    "error_description": "کێشەیەکمان هەبوو لە کاتی بارکردنی پەڕەی دەربارە. تکایە دواتر هەوڵ بدەرەوە.",
+    "retry": "هەوڵ بدەرەوە"
   },
   "PresidentSpeech": {
     "head": "The Message from the President of the University.",
@@ -615,5 +619,12 @@
     "directorate": "Directorates",
     "laboratory": "Laboratories",
     "see_more": "See More"
+  }, 
+  "Common": {
+    "refresh": "بارکردنەوە",
+    "no_data_found": "هیچ زانیاریەک نەدۆزرایەوە",
+    "error_loading_data": "هەڵە لە بارکردنی زانیاریەکان",
+    "error_description": "کێشەیەکمان هەبوو لە کاتی بارکردنی پەڕەی دەربارە. تکایە دواتر هەوڵ بدەرەوە.",
+    "retry": "هەوڵ بدەرەوە"
   }
 }

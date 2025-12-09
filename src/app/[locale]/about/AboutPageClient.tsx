@@ -1,6 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -89,7 +90,7 @@ const AboutPageClient = () => {
   const params = useParams();
   const locale = (params.locale as string) || "en";
 
-  const { data: aboutData, loading: isLoading } = useFetch<AboutUsData>(
+  const { data: aboutData, loading: isLoading, error } = useFetch<AboutUsData>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/universities/about-us`,
     locale
   );
@@ -103,14 +104,38 @@ const AboutPageClient = () => {
     (a, b) => parseInt(a.year) - parseInt(b.year)
   );
 
+
+
   return (
     <div className="w-full flex_center lg:my-10 my-5">
       <div className="max-w-[1024px] lg:px-3 px-5 w-full flex_start flex-col lg:gap-10 gap-5">
         <SubHeader title={t("history")} alt={false} />
 
+        {/* Error State */}
+        {error && !isLoading && (
+          <div className="w-full flex_center">
+            <NoData
+              showButton={true}
+              className="my-10"
+            />
+          </div>
+        )}
+
+        {/* No Data State */}
+        {!error && !isLoading && !aboutData && (
+          <div className="w-full flex_center">
+            <NoData
+              showButton={true}
+              className="my-10"
+            />
+          </div>
+        )}
+
+        {/* Hero Image Section */}
         {isLoading ? (
           <HeroSkeleton />
         ) : (
+          !error &&
           aboutData &&
           aboutData.bg_images.length > 0 && (
             <div className="w-full lg:h-[500px] sm:h-[400px] h-[200px] relative rounded-3xl overflow-hidden">
@@ -143,6 +168,7 @@ const AboutPageClient = () => {
         {isLoading ? (
           <ContentSkeleton />
         ) : (
+          !error &&
           aboutData && (
             <>
               {/* Description (About Us Text) */}

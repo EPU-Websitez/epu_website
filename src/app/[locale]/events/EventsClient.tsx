@@ -1,6 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import {
@@ -105,7 +106,7 @@ const EventsClient = () => {
   }, [currentPage, currentSearch]);
 
   // --- Data Fetching ---
-  const { data: eventsData, loading: eventsLoading } = useFetch<EventsResponse>(
+  const { data: eventsData, loading: eventsLoading, error: eventsError } = useFetch<EventsResponse>(
     apiUrl,
     locale
   );
@@ -267,6 +268,10 @@ const EventsClient = () => {
 
       {isInitialLoading ? (
         <LatestEventsSkeleton />
+      ) : eventsError ? (
+        <div className="max-w-[1040px] w-full flex_center lg:px-0 px-3">
+          <NoData showButton={true} className="my-10" />
+        </div>
       ) : (
         <div className="max-w-[1040px] w-full text-secondary flex_start flex-col gap-8 mt-10 lg:px-0 px-3">
           <div className="w-full flex_center gap-5">
@@ -296,16 +301,8 @@ const EventsClient = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-10 w-full col-span-full">
-              <p className="text-gray-500 text-lg">{t("no_events_found")}</p>
-              {searchInputValue && (
-                <button
-                  onClick={handleClearSearch}
-                  className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
-                >
-                  {t("clear_search")}
-                </button>
-              )}
+            <div className="w-full flex_center">
+              <NoData showButton={false} />
             </div>
           )}
         </div>

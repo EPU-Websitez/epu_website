@@ -139,7 +139,7 @@ const TeachersPageClient = () => {
               <MemberCard
                 key={teacher.id}
                 description={teacher.title}
-                image={teacher.profile_image?.md || "/images/president-alt.png"}
+                image={teacher.profile_image?.md || "/images/placeholder.svg"}
                 link={`/${locale}/academic-staff/${teacher.id}`}
                 staticText={t("view_profile")}
                 title={teacher.full_name}

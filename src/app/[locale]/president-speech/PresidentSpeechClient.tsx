@@ -1,6 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -48,14 +49,27 @@ const PresidentSpeechClient = () => {
   const t = useTranslations("PresidentSpeech");
   const params = useParams();
   const locale = (params?.locale as string) || "en";
-  const { data: messageData, loading: isLoading } =
+  const { data: messageData, loading: isLoading, error } =
     useFetch<PresidentMessageData>(
       `${process.env.NEXT_PUBLIC_API_URL}/website/universities/president-message`,
       locale
     );
 
   if (isLoading) return <PageSkeleton />;
-  if (!messageData) return <div>No data available.</div>;
+  if (error) return (
+    <div className="my-10 flex_center w-full">
+      <div className="max-w-[1024px] w-full flex_center">
+        <NoData showButton={true} className="my-10" />
+      </div>
+    </div>
+  );
+  if (!messageData) return (
+    <div className="my-10 flex_center w-full">
+      <div className="max-w-[1024px] w-full flex_center">
+        <NoData showButton={false} />
+      </div>
+    </div>
+  );
 
   return (
     <div className="w-full flex_center my-10">

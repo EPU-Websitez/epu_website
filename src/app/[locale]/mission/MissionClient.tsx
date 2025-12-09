@@ -1,6 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 
@@ -49,7 +50,7 @@ const MissionClient = () => {
   const params = useParams();
   const locale = (params?.locale as string) || "en";
 
-  const { data: uniData, loading: isLoading } = useFetch<UniversityData>(
+  const { data: uniData, loading: isLoading, error } = useFetch<UniversityData>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/universities`,
     locale
   );
@@ -82,7 +83,20 @@ const MissionClient = () => {
   }, [uniData]); // Rerun when data is loaded
 
   if (isLoading) return <PageSkeleton />;
-  if (!uniData) return <div>No data found.</div>;
+  if (error) return (
+    <div className="my-10 flex_center w-full">
+      <div className="max-w-[1024px] w-full flex_center">
+        <NoData showButton={true} className="my-10" />
+      </div>
+    </div>
+  );
+  if (!uniData) return (
+    <div className="my-10 flex_center w-full">
+      <div className="max-w-[1024px] w-full flex_center">
+        <NoData showButton={false} />
+      </div>
+    </div>
+  );
 
   return (
     <div className="my-10 flex_center w-full">

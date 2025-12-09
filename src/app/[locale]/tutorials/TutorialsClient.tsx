@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import {
@@ -168,7 +169,7 @@ const TutorialsClient = () => {
     }/website/universities/tutorials?${urlParams.toString()}`;
   }, [currentPage, currentSearch]);
 
-  const { data, loading: isLoadingData } = useFetch<TutorialsResponse>(
+  const { data, loading: isLoadingData, error } = useFetch<TutorialsResponse>(
     apiUrl,
     locale
   );
@@ -229,6 +230,14 @@ const TutorialsClient = () => {
     setSelectedTutorial(null);
     document.body.style.overflowY = "auto";
   };
+
+  if (error) return (
+    <div className="my-10 flex_center w-full">
+      <div className="max-w-[1024px] w-full flex_center">
+        <NoData showButton={true} className="my-10" />
+      </div>
+    </div>
+  );
 
   return (
     <div className="sm:my-10 my-8 flex_center w-full">

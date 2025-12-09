@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import {
@@ -265,7 +266,7 @@ const ResearchClient = () => {
     }${endpoint}?${urlParams.toString()}`;
   }, [currentTab, currentPage, currentSearch, currentYear]);
 
-  const { data, loading: isLoadingData } = useFetch<ApiResponse>(
+  const { data, loading: isLoadingData, error } = useFetch<ApiResponse>(
     apiUrl,
     locale
   );
@@ -325,6 +326,14 @@ const ResearchClient = () => {
     document.body.style.overflowY = "auto";
     setModalItem(null);
   };
+
+  if (error) return (
+    <div className="my-10 flex_center w-full">
+      <div className="max-w-[1040px] w-full flex_center">
+        <NoData showButton={true} className="my-10" />
+      </div>
+    </div>
+  );
 
   return (
     <div className="my-10 flex_center w-full flex-col gap-10 sm:px-0 px-3">

@@ -1,6 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -85,12 +86,12 @@ const DirectoratesClient = () => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   // --- API Fetching ---
-  const { data: typesData } = useFetch<DirectoratesTypeResponse>(
+  const { data: typesData, error: typesError } = useFetch<DirectoratesTypeResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/types/list?page=1&limit=4`,
     locale
   );
 
-  const { data: directoratesData } = useFetch<DirectoratesResponse>(
+  const { data: directoratesData, error: directoratesError } = useFetch<DirectoratesResponse>(
     activeTypeId
       ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates?page=${page}&limit=8&directorate_type_id=${activeTypeId}`
       : "",
@@ -226,55 +227,59 @@ const DirectoratesClient = () => {
           )}
 
           <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-5 w-full">
-            {isSwitchingTabs
-              ? [...Array(8)].map((_, i) => <CardSkeleton key={i} />)
-              : directorates.map((item) => (
-                  <Link
-                    key={item.id}
-                    href={`/${locale}/directorate/${item.slug}?parent_id=${item.id}`}
-                    title={item.directorate_type?.name}
-                    className="flex_start flex-col gap-5 bg-backgroundSecondary rounded-lg p-5"
-                  >
-                    <h3 className="md:text-lg text-base font-semibold">
-                      {item?.title}
-                    </h3>
-                    <div className="flex w-full justify-between items-center gap-4 text-white">
-                      <div className="flex -space-x-3">
-                        {item.galleries
-                          .slice(0, 4)
-                          .map((galleryItem, index) => (
-                            <div
-                              key={galleryItem.image?.id}
-                              className="relative group"
-                              style={{ zIndex: item.galleries.length - index }}
-                            >
-                              <Image
-                                src={galleryItem.image?.lg}
-                                alt={`img-${galleryItem.image?.id}`}
-                                width={32}
-                                height={32}
-                                className="w-8 h-8 rounded-full border-2 border-white shadow-lg object-cover"
-                                onError={(e) => {
-                                  e.currentTarget.src =
-                                    "/images/placeholder.svg";
-                                }}
-                              />
-                            </div>
-                          ))}
-                      </div>
-                      <div className="w-5 h-5 rounded-full flex_center bg-white">
-                        <FiChevronRight className="text-sm text-secondary rtl:rotate-180" />
-                      </div>
+            {isSwitchingTabs ? (
+              [...Array(8)].map((_, i) => <CardSkeleton key={i} />)
+            ) : typesError || directoratesError ? (
+              <div className="col-span-full w-full flex_center">
+                <NoData showButton={true} className="my-10" />
+              </div>
+            ) : directorates.length > 0 ? (
+              directorates.map((item) => (
+                <Link
+                  key={item.id}
+                  href={`/${locale}/directorate/${item.slug}?parent_id=${item.id}`}
+                  title={item.directorate_type?.name}
+                  className="flex_start flex-col gap-5 bg-backgroundSecondary rounded-lg p-5"
+                >
+                  <h3 className="md:text-lg text-base font-semibold">
+                    {item?.title}
+                  </h3>
+                  <div className="flex w-full justify-between items-center gap-4 text-white">
+                    <div className="flex -space-x-3">
+                      {item.galleries
+                        .slice(0, 4)
+                        .map((galleryItem, index) => (
+                          <div
+                            key={galleryItem.image?.id}
+                            className="relative group"
+                            style={{ zIndex: item.galleries.length - index }}
+                          >
+                            <Image
+                              src={galleryItem.image?.lg}
+                              alt={`img-${galleryItem.image?.id}`}
+                              width={32}
+                              height={32}
+                              className="w-8 h-8 rounded-full border-2 border-white shadow-lg object-cover"
+                              onError={(e) => {
+                                e.currentTarget.src =
+                                  "/images/placeholder.svg";
+                              }}
+                            />
+                          </div>
+                        ))}
                     </div>
-                  </Link>
-                ))}
+                    <div className="w-5 h-5 rounded-full flex_center bg-white">
+                      <FiChevronRight className="text-sm text-secondary rtl:rotate-180" />
+                    </div>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <div className="col-span-full w-full flex_center">
+                <NoData showButton={false} />
+              </div>
+            )}
           </div>
-
-          {showNoDataMessage && (
-            <div className="w-full text-center py-10 text-gray-500">
-              <p>{t("no_data_found")}</p>
-            </div>
-          )}
 
           {!isSwitchingTabs && directorates.length < total && (
             <button

@@ -1,6 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
@@ -63,16 +64,20 @@ const AccommodationClient = () => {
 
   if (hasError) {
     return (
-      <div className="w-full flex_center my-20">
-        <p className="text-red-500">{t("error_loading_data")}</p>
+      <div className="my-10 flex_center w-full">
+        <div className="max-w-[1024px] w-full flex_center">
+          <NoData showButton={true} className="my-10" />
+        </div>
       </div>
     );
   }
 
   if (!isLoading && !accommodationData) {
     return (
-      <div className="w-full flex_center my-20">
-        <p>{t("no_data_found")}</p>
+      <div className="my-10 flex_center w-full">
+        <div className="max-w-[1024px] w-full flex_center">
+          <NoData showButton={false} />
+        </div>
       </div>
     );
   }

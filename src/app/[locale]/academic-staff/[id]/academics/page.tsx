@@ -1,6 +1,7 @@
 "use client";
 import AcademicStaffHeader from "@/components/AcademicStaffHeader";
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -262,7 +263,7 @@ const Page = () => {
 
   const endpoint = endpoints[tab];
   const url = `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}/${endpoint}?page=${page}&limit=${LIMIT}`;
-  const { data: hookData, loading } = useFetch<PagedResponse<DataItem>>(
+  const { data: hookData, loading, error } = useFetch<PagedResponse<DataItem>>(
     url,
     locale
   );
@@ -402,6 +403,10 @@ const Page = () => {
             <div className="lg:border-l lg:pl-10 w-full min-h-[400px]">
               {loading && page === 1 ? (
                 <SectionSkeleton />
+              ) : error ? (
+                <div className="w-full flex_center">
+                  <NoData showButton={true} className="my-10" />
+                </div>
               ) : (
                 <>
                   <div className="grid lg:max-w-[710px] w-full lg:grid-cols-2 gap-5">

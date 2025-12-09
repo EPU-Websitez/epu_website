@@ -1,6 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -314,7 +315,13 @@ const MouClient = () => {
 
   // If both failed
   if (intlError && localError) {
-    return <div>Error loading data...</div>;
+    return (
+      <div className="my-10 flex_center w-full">
+        <div className="max-w-[1045px] w-full flex_center">
+          <NoData showButton={true} className="my-10" />
+        </div>
+      </div>
+    );
   }
 
   return (

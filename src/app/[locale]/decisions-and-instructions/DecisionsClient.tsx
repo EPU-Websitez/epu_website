@@ -1,6 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
@@ -81,7 +82,7 @@ const DecisionsClient = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
   const [openedAccordion, setOpenedAccordion] = useState<number | null>(null);
 
-  const { data: pageData, loading: isLoading } = useFetch<DecisionsApiResponse>(
+  const { data: pageData, loading: isLoading, error } = useFetch<DecisionsApiResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/universities/decisions-and-instructions`,
     locale
   );
@@ -95,7 +96,20 @@ const DecisionsClient = () => {
   const activeTypeData = pageData?.types?.[activeTab];
 
   if (isLoading) return <PageSkeleton />;
-  if (!pageData) return <div>{t("no_data_found")}</div>;
+  if (error) return (
+    <div className="my-10 flex_center w-full">
+      <div className="max-w-[1024px] w-full flex_center">
+        <NoData showButton={true} className="my-10" />
+      </div>
+    </div>
+  );
+  if (!pageData) return (
+    <div className="my-10 flex_center w-full">
+      <div className="max-w-[1024px] w-full flex_center">
+        <NoData showButton={false} />
+      </div>
+    </div>
+  );
 
   return (
     <div className="my-10 flex_center w-full">

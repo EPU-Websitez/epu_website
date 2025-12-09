@@ -1,6 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -144,7 +145,7 @@ const PostgraduateClient = () => {
   );
 
   const programsListRef = useRef<HTMLDivElement>(null);
-  const { data: programsData, loading: isLoading } =
+  const { data: programsData, loading: isLoading, error } =
     useFetch<PostgraduateResponse>(
       `${process.env.NEXT_PUBLIC_API_URL}/website/programs/postgraduate?page=1&limit=1&is_active=true`,
       locale
@@ -168,6 +169,14 @@ const PostgraduateClient = () => {
   const programInfo = programsData?.data?.[0];
   const allSections = programInfo?.sections || [];
   const requirements = programInfo?.requirements || [];
+
+  if (error) return (
+    <div className="my-10 flex_center w-full">
+      <div className="max-w-[1040px] w-full flex_center">
+        <NoData showButton={true} className="my-10" />
+      </div>
+    </div>
+  );
 
   return (
     <>

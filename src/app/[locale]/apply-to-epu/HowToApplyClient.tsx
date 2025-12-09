@@ -8,6 +8,7 @@ import { TfiShine } from "react-icons/tfi";
 
 import useFetch from "@/libs/hooks/useFetch";
 import { useParams } from "next/navigation";
+import NoData from "@/components/NoData";
 
 // -------- Interfaces --------
 interface ImageFile {
@@ -50,7 +51,7 @@ const HowToApplyClient = () => {
   const t = useTranslations("Apply");
   const locale = useParams()?.locale as string;
 
-  const { data: applyData, loading: isLoading } = useFetch<HowToApplyData>(
+  const { data: applyData, loading: isLoading, error } = useFetch<HowToApplyData>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/universities/how-to-apply`,
     locale
   );
@@ -59,6 +60,23 @@ const HowToApplyClient = () => {
   if (!applyData) return <div>No data available.</div>;
 
   const reasonsToDisplay = applyData.question_sections;
+
+  if (error) return (
+  <div className="my-10 flex_center w-full">
+    <div className="max-w-[1024px] w-full flex_center">
+      <NoData showButton={true} className="my-10" />
+    </div>
+  </div>
+);
+
+// For pages with NO data (optional but recommended)
+if (!applyData) return (
+  <div className="my-10 flex_center w-full">
+    <div className="max-w-[1024px] w-full flex_center">
+      <NoData showButton={false} />
+    </div>
+  </div>
+);
 
   return (
     <div className="my-10 flex_center w-full">

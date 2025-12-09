@@ -1,6 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
@@ -42,7 +43,7 @@ const VisionClient = () => {
   const params = useParams();
   const locale = (params?.locale as string) || "en";
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { data: uniData, loading: isLoading } = useFetch<UniversityData>(
+  const { data: uniData, loading: isLoading, error } = useFetch<UniversityData>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/universities`,
     locale
   );
@@ -75,7 +76,20 @@ const VisionClient = () => {
   }, [uniData]);
 
   if (isLoading) return <PageSkeleton />;
-  if (!uniData) return <div>No data found.</div>;
+  if (error) return (
+    <div className="my-10 flex_center w-full">
+      <div className="max-w-[1024px] w-full flex_center">
+        <NoData showButton={true} className="my-10" />
+      </div>
+    </div>
+  );
+  if (!uniData) return (
+    <div className="my-10 flex_center w-full">
+      <div className="max-w-[1024px] w-full flex_center">
+        <NoData showButton={false} />
+      </div>
+    </div>
+  );
 
   return (
     <div className="my-10 flex_center w-full">

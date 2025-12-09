@@ -1,5 +1,6 @@
 "use client";
 import AcademicStaffHeader from "@/components/AcademicStaffHeader";
+import NoData from "@/components/NoData";
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -161,7 +162,7 @@ const Page = () => {
   >(null);
 
   // 1. Fetch Main Staff Data
-  const { data, loading } = useFetch<AcademicStaff>(
+  const { data, loading, error } = useFetch<AcademicStaff>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}`,
     locale
   );
@@ -259,6 +260,12 @@ const Page = () => {
         {/* Main Content */}
         {loading && !data ? (
           <Skeleton />
+        ) : error ? (
+          <div className="w-full bg-backgroundSecondary border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
+            <div className="mt-10 max-w-[1024px] w-full flex_center">
+              <NoData showButton={true} className="my-10" />
+            </div>
+          </div>
         ) : (
           <div className="w-full bg-backgroundSecondary border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
             <div className="mt-10 flex_start lg:flex-row flex-col gap-10 max-w-[1024px] w-full px-2">

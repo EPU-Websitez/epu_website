@@ -176,7 +176,7 @@ const CouncilPageClient = () => {
                 <Image
                   src={
                     mainLead.teacher?.profile_image?.md ||
-                    "/images/president-alt.png"
+                    "/images/placeholder.svg"
                   }
                   alt={mainLead.teacher?.full_name}
                   fill
@@ -223,8 +223,7 @@ const CouncilPageClient = () => {
                 key={`${member.teacher?.id}-${member.role}`}
                 description={member.role}
                 image={
-                  member.teacher?.profile_image?.md ||
-                  "/images/president-alt.png"
+                  member.teacher?.profile_image?.md || "/images/placeholder.svg"
                 }
                 link={`/${locale}/academic-staff/${member.teacher?.id}`}
                 staticText={t("view_profile")}

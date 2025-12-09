@@ -11,6 +11,7 @@ import { FiExternalLink } from "react-icons/fi";
 import useFetch from "@/libs/hooks/useFetch";
 
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 
 // -------- TYPE DEFINITIONS (UPDATED) --------
 interface CalendarEvent {
@@ -169,7 +170,7 @@ const CalendarClient = () => {
   // --- Data Fetching ---
   const { data: calendarData, loading: calendarLoading } =
     useFetch<CalendarEventsResponse>(calendarUrl, locale);
-  const { data: seasonsData, loading: seasonsLoading } =
+  const { data: seasonsData, loading: seasonsLoading, error } =
     useFetch<SeasonsResponse>(
       `${process.env.NEXT_PUBLIC_API_URL}/website/universities/seasons?page=${page}&limit=${LIMIT}`,
       locale
@@ -212,6 +213,16 @@ const CalendarClient = () => {
     setCurrentDate(new Date(currentYear, currentMonth + direction, 1));
   const handleEventClick = (event: CalendarEvent) => setSelectedEvent(event);
   const handleCloseModal = () => setSelectedEvent(null);
+
+  if (error) return (
+  <div className="my-10 flex_center w-full">
+    <div className="max-w-[1024px] w-full flex_center">
+      <NoData showButton={true} className="my-10" />
+    </div>
+  </div>
+);
+
+
 
   const formatDateForTable = (dateString: string): string => {
     const date = new Date(dateString);

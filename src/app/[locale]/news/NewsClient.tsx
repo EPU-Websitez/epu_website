@@ -1,6 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import { useTranslations } from "next-intl";
 import {
   useParams,
@@ -229,12 +230,12 @@ const NewsClient = () => {
   };
 
   // --- Data Fetching ---
-  const { data: sliderData, loading: sliderLoading } = useFetch<NewsResponse>(
+  const { data: sliderData, loading: sliderLoading, error: sliderError } = useFetch<NewsResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/news?limit=10&page=1`,
     locale
   );
 
-  const { data: categoriesData, loading: categoriesLoading } =
+  const { data: categoriesData, loading: categoriesLoading, error: categoriesError } =
     useFetch<CategoryResponse>(
       `${process.env.NEXT_PUBLIC_API_URL}/website/news/categories/list`,
       locale
@@ -250,7 +251,7 @@ const NewsClient = () => {
     }/website/news?${params.toString()}`;
   }, [searchParams, currentPage]);
 
-  const { data: newsData, loading: newsLoading } = useFetch<NewsResponse>(
+  const { data: newsData, loading: newsLoading, error: newsError } = useFetch<NewsResponse>(
     newsApiUrl,
     locale
   );
@@ -514,6 +515,10 @@ const NewsClient = () => {
         )}
         {showInitialSkeleton ? (
           <NewsListSkeleton />
+        ) : newsError ? (
+          <div className="w-full flex_center">
+            <NoData showButton={true} className="my-10" />
+          </div>
         ) : (
           <>
             {allNews.length > 0 ? (
@@ -531,19 +536,8 @@ const NewsClient = () => {
                 ))}
               </div>
             ) : (
-              <div className="col-span-full text-center py-10 w-full">
-                <p className="text-gray-500 text-lg">{t("no_news_found")}</p>
-                {(currentSearch ||
-                  currentDates.from ||
-                  currentTag ||
-                  currentCategory !== "all") && (
-                  <button
-                    onClick={clearAllFilters}
-                    className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
-                  >
-                    {t("clear_all_filters")}
-                  </button>
-                )}
+              <div className="w-full flex_center">
+                <NoData showButton={false} />
               </div>
             )}
           </>

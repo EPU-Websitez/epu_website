@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 // Components & Hooks
 import AcademicStaffHeader from "@/components/AcademicStaffHeader";
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import useFetch from "@/libs/hooks/useFetch"; // --- CHANGE: Using your primary useFetch hook
 
 // --- TYPE DEFINITIONS ---
@@ -47,7 +48,7 @@ const Page = () => {
   const LIMIT = 10;
 
   // --- CHANGE: Data fetching uses useFetch with the page state in the URL ---
-  const { data, loading } = useFetch<TeachingsResponse>(
+  const { data, loading, error } = useFetch<TeachingsResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}/teachings?page=${page}&limit=${LIMIT}`,
     locale // Pass locale for the header
   );
@@ -120,6 +121,10 @@ const Page = () => {
 
             {isInitialLoading ? (
               <TableSkeleton />
+            ) : error ? (
+              <div className="w-full flex_center">
+                <NoData showButton={true} className="my-10" />
+              </div>
             ) : (
               <>
                 <div className="overflow-x-auto shadow-lg w-full sm:mt-0 -mt-4 custom_scroll">
@@ -150,9 +155,9 @@ const Page = () => {
                         <tr>
                           <td
                             colSpan={4}
-                            className="text-center py-10 text-gray-500"
+                            className="text-center py-10"
                           >
-                            {t("no_data_found")}
+                            <NoData showButton={false} />
                           </td>
                         </tr>
                       )}

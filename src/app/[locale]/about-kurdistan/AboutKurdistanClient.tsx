@@ -1,6 +1,7 @@
 "use client";
 
 import SubHeader from "@/components/subHeader";
+import NoData from "@/components/NoData";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 
@@ -59,13 +60,40 @@ const AboutKurdistanClient = () => {
   const params = useParams();
   const locale = (params.locale as string) || "en";
 
-  const { data: aboutData, loading: isLoading } = useFetch<AboutKurdistanData>(
+  const { data: aboutData, loading: isLoading, error } = useFetch<AboutKurdistanData>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/universities/about-kurdistan`,
     locale
   );
 
   if (isLoading) return <PageSkeleton />;
-  if (!aboutData) return <div>{t("no_data_found")}</div>;
+  
+  // Error State
+  if (error) {
+    return (
+      <div className="w-full flex_center lg:my-10 my-5">
+        <div className="max-w-[1024px] lg:px-3 px-5 w-full flex_start flex-col lg:gap-10 gap-5">
+          <SubHeader title={t("head")} alt={false} />
+          <div className="w-full flex_center">
+            <NoData showButton={true} className="my-10" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // No Data State
+  if (!aboutData) {
+    return (
+      <div className="w-full flex_center lg:my-10 my-5">
+        <div className="max-w-[1024px] lg:px-3 px-5 w-full flex_start flex-col lg:gap-10 gap-5">
+          <SubHeader title={t("head")} alt={false} />
+          <div className="w-full flex_center">
+            <NoData showButton={true} className="my-10" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full flex_center lg:my-10 my-5">
