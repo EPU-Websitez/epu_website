@@ -118,13 +118,9 @@ const Page = () => {
     setPage((prevPage) => prevPage + 1);
   };
 
-  // --- FIX: Corrected the typo from toLocaleDateDateString to toLocaleDateString ---
+  // Format date to show only year
   const formatDate = (dateString: string) =>
-    new Date(dateString).toLocaleDateString(locale, {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
+    String(new Date(dateString).getFullYear());
 
   // Loading states are now derived from the hook
   const isInitialLoading = loading && page === 1;

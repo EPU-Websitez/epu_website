@@ -167,7 +167,8 @@ const Page = () => {
                     {item.teacher?.full_name}
                   </Link>
                   <span className="opacity-80 text-sm">
-                    {item.role_in_international_relations}
+                    {item.role_in_international_relations ||
+                      item.teacher?.title}
                   </span>
                 </div>
                 {/* Note: The API does not provide an email, so this section is omitted to avoid showing incorrect data. */}

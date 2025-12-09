@@ -424,7 +424,7 @@ const Page = () => {
                                   {item?.name || t("untitled")}
                                 </h4>
                                 <span className="text-black/60 text-xs">
-                                  {formatMonthYear(item?.year, locale)}
+                                  {formatYearOnly(item?.year)}
                                 </span>
                               </div>
                             </div>
@@ -483,10 +483,7 @@ const Page = () => {
                                     {item?.title || t("untitled")}
                                   </h4>
                                   <span className="text-black/60 text-xs">
-                                    {formatMonthYear(
-                                      item?.published_date,
-                                      locale
-                                    )}
+                                    {formatYearOnly(item?.published_date)}
                                   </span>
                                 </div>
                               </div>
@@ -570,7 +567,7 @@ const Page = () => {
                                   {item?.title || t("untitled")}
                                 </h4>
                                 <span className="text-black/60 text-xs">
-                                  {formatMonthYear(item?.created_at, locale)}
+                                  {formatYearOnly(item?.created_at)}
                                 </span>
                               </div>
                             </div>
@@ -691,7 +688,7 @@ const Page = () => {
                                   {item?.title || t("untitled")}
                                 </h4>
                                 <span className="text-black/60 text-xs">
-                                  {formatMonthYear(item?.year, locale)}
+                                  {formatYearOnly(item?.year)}
                                 </span>
                               </div>
                             </div>
@@ -758,7 +755,7 @@ const Page = () => {
                                     {item?.title || t("untitled")}
                                   </h4>
                                   <span className="text-black/60 text-xs">
-                                    {formatMonthYear(item?.year, locale)}
+                                    {formatYearOnly(item?.year)}
                                   </span>
                                 </div>
                               </div>
@@ -825,7 +822,7 @@ const Page = () => {
                                   {item?.title || t("untitled")}
                                 </h4>
                                 <span className="text-black/60 text-xs">
-                                  {formatMonthYear(item?.year, locale)}
+                                  {formatYearOnly(item?.year)}
                                 </span>
                               </div>
                             </div>
@@ -940,17 +937,19 @@ const Page = () => {
                         );
                       })}
                   </div>
-                  {hookData && data.length < hookData.total && (
-                    <div className="w-full flex justify-center mt-8">
-                      <button
-                        onClick={handleLoadMore}
-                        disabled={loading}
-                        className="border border-primary text-primary px-8 py-2 rounded-md disabled:opacity-50 disabled:cursor-wait"
-                      >
-                        {loading ? t("loading") : t("see_more")}
-                      </button>
-                    </div>
-                  )}
+                  {hookData &&
+                    data.length > 0 &&
+                    data.length < hookData.total && (
+                      <div className="w-full flex justify-center mt-8">
+                        <button
+                          onClick={handleLoadMore}
+                          disabled={loading}
+                          className="border border-primary text-primary px-8 py-2 rounded-md disabled:opacity-50 disabled:cursor-wait"
+                        >
+                          {loading ? t("loading") : t("see_more")}
+                        </button>
+                      </div>
+                    )}
                   {!loading && data.length === 0 && (
                     <p className="text-center text-gray-500 py-10 w-full">
                       {t("no_data")}

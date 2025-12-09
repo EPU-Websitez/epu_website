@@ -26,6 +26,7 @@ interface Memorandum {
   description: string;
   link: string;
   logo_image: ImageFile;
+  type: string;
 }
 
 interface MouResponse {
@@ -45,8 +46,6 @@ const MouModal = ({
   onClose: () => void;
   mou: Memorandum | null;
 }) => {
-  const t = useTranslations("MemorandumOfUnderstanding");
-
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -122,7 +121,6 @@ const MouCardSkeleton = () => (
 );
 
 const PageSkeleton = () => {
-  const t = useTranslations("MemorandumOfUnderstanding");
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
       <div className="max-w-[1045px] px-3 w-full flex_start flex-col gap-8">
@@ -154,31 +152,65 @@ const MouClient = () => {
   const t = useTranslations("MemorandumOfUnderstanding");
   const params = useParams();
   const locale = (params?.locale as string) || "en";
-
-  const [mous, setMous] = useState<Memorandum[]>([]);
-  const [page, setPage] = useState(1);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMou, setSelectedMou] = useState<Memorandum | null>(null);
   const limit = 12;
 
+  // --- State: International ---
+  const [intlMous, setIntlMous] = useState<Memorandum[]>([]);
+  const [intlPage, setIntlPage] = useState(1);
+  const [intlTotal, setIntlTotal] = useState(0);
+
+  // --- State: Local ---
+  const [localMous, setLocalMous] = useState<Memorandum[]>([]);
+  const [localPage, setLocalPage] = useState(1);
+  const [localTotal, setLocalTotal] = useState(0);
+
+  // --- Modal State ---
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedMou, setSelectedMou] = useState<Memorandum | null>(null);
+
+  // --- API Request: International ---
   const {
-    data: mousData,
-    loading,
-    error,
+    data: intlData,
+    loading: intlLoading,
+    error: intlError,
   } = useFetch<MouResponse>(
-    `${process.env.NEXT_PUBLIC_API_URL}/website/memorandum-of-understanding?page=${page}&limit=${limit}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/memorandum-of-understanding?page=${intlPage}&limit=${limit}&type=INTERNATIONAL_UNIVERSITIES_AND_INSTITUTES`,
     locale
   );
 
-  useEffect(() => {
-    if (mousData?.data) {
-      setMous((prev) =>
-        page === 1 ? mousData.data : [...prev, ...mousData.data]
-      );
-    }
-  }, [mousData, page]);
+  // --- API Request: Local ---
+  const {
+    data: localData,
+    loading: localLoading,
+    error: localError,
+  } = useFetch<MouResponse>(
+    `${process.env.NEXT_PUBLIC_API_URL}/website/memorandum-of-understanding?page=${localPage}&limit=${limit}&type=LOCAL_UNIVERSITIES_AND_INSTITUTES`,
+    locale
+  );
 
-  const handleLoadMore = () => setPage((prev) => prev + 1);
+  // --- Effect: Handle International Data ---
+  useEffect(() => {
+    if (intlData?.data) {
+      setIntlMous((prev) =>
+        intlPage === 1 ? intlData.data : [...prev, ...intlData.data]
+      );
+      setIntlTotal(intlData.total);
+    }
+  }, [intlData, intlPage]);
+
+  // --- Effect: Handle Local Data ---
+  useEffect(() => {
+    if (localData?.data) {
+      setLocalMous((prev) =>
+        localPage === 1 ? localData.data : [...prev, ...localData.data]
+      );
+      setLocalTotal(localData.total);
+    }
+  }, [localData, localPage]);
+
+  // --- Handlers ---
+  const handleLoadMoreIntl = () => setIntlPage((prev) => prev + 1);
+  const handleLoadMoreLocal = () => setLocalPage((prev) => prev + 1);
 
   const handleOpenModal = (mou: Memorandum) => {
     setSelectedMou(mou);
@@ -193,79 +225,139 @@ const MouClient = () => {
     mou.logo_image?.original ||
     `/images/placeholder.png`;
 
-  if (loading && page === 1) return <PageSkeleton />;
-  if (error && page === 1) return <div>Error loading data...</div>;
+  // --- Helpers ---
+  // Reusable function to render a MOU grid section
+  const renderSection = (
+    title: string,
+    data: Memorandum[],
+    loading: boolean,
+    total: number,
+    onLoadMore: () => void
+  ) => {
+    return (
+      <div className="flex_center flex-col gap-10 w-full mb-12">
+        <div className="flex_center w-full gap-5 mt-5">
+          <span className="bg-lightBorder w-full h-[1px]"></span>
+          <h3 className="text-secondary lg:text-xl sm:text-lg text-xs font-medium flex-shrink-0 uppercase">
+            {title}
+          </h3>
+          <span className="bg-lightBorder w-full h-[1px]"></span>
+        </div>
+
+        {data.length > 0 ? (
+          <div className="grid md:grid-cols-3 grid-cols-2 w-full gap-8">
+            {data.map((mou, i) => (
+              <button
+                key={`${mou.id}-${i}-${mou.type}`}
+                onClick={() => handleOpenModal(mou)}
+                className="relative block w-full border-lightBorder border sm:h-[270px] h-[210px] rounded-3xl overflow-hidden group text-left"
+              >
+                <div className="w-full h-full flex justify-center items-start pt-3">
+                  <div className="w-[90%] sm:h-[76%] h-[78%] relative">
+                    <Image
+                      src={getMouImage(mou)}
+                      alt={mou.title}
+                      fill
+                      priority={i < 6}
+                      className="w-full h-full sm:object-contain object-cover rounded-md transition-transform group-hover:scale-105"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="bg-primary absolute bottom-0 px-2 left-0 w-full sm:py-4 py-3 flex_center gap-2 sm:text-base text-xs font-semibold text-white transition-colors group-hover:bg-secondary">
+                  {mou.title}
+                </div>
+              </button>
+            ))}
+          </div>
+        ) : (
+          !loading && (
+            <div className="text-gray-500 text-center w-full py-10">
+              <div className="flex_center flex-col gap-4">
+                <div className="text-4xl">📄</div>
+                <h3 className="text-lg font-medium">{t("no_mous_found")}</h3>
+              </div>
+            </div>
+          )
+        )}
+
+        {/* Loading Skeletons for pagination loading */}
+        {loading && data.length > 0 && (
+          <div className="grid md:grid-cols-3 grid-cols-2 w-full gap-8">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <MouCardSkeleton key={`skeleton-${i}`} />
+            ))}
+          </div>
+        )}
+
+        {data.length < total && (
+          <div className="flex_center w-full my-5">
+            <button
+              onClick={onLoadMore}
+              disabled={loading}
+              className="sm:text-base text-sm border border-primary px-8 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors disabled:opacity-50"
+            >
+              {loading ? t("loading") : t("see_more")}
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // If initial load of both is happening
+  if (intlLoading && intlPage === 1 && localLoading && localPage === 1) {
+    return <PageSkeleton />;
+  }
+
+  // If both failed
+  if (intlError && localError) {
+    return <div>Error loading data...</div>;
+  }
 
   return (
     <>
       <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
         <div className="max-w-[1045px] px-3 w-full flex_start flex-col gap-8">
+          {/* Main Title */}
           <div className="sm:block hidden">
             <SubHeader title={t("head")} alt={false} />
           </div>
           <div className="sm:hidden block">
             <SubHeader title={"MOUs"} alt={false} />
           </div>
-          <div className="flex_center flex-col gap-10 w-full">
-            <div className="flex_center w-full gap-5 mt-5">
-              <span className="bg-lightBorder w-full h-[1px]"></span>
-              <h3 className="text-secondary lg:text-xl sm:text-lg text-xs font-medium flex-shrink-0">
-                {t("local_universities")}
-              </h3>
-              <span className="bg-lightBorder w-full h-[1px]"></span>
-            </div>
 
-            {mous.length > 0 ? (
-              <div className="grid md:grid-cols-3 grid-cols-2 w-full gap-8">
-                {mous.map((mou, i) => (
-                  <button
-                    key={`${mou.id}-${i}`}
-                    onClick={() => handleOpenModal(mou)}
-                    className="relative block w-full border-lightBorder border sm:h-[270px] h-[210px] rounded-3xl overflow-hidden group text-left"
-                  >
-                    <div className="w-full h-full flex justify-center items-start pt-3">
-                      <div className="w-[90%] sm:h-[76%] h-[78%] relative">
-                        <Image
-                          src={getMouImage(mou)}
-                          alt={mou.title}
-                          fill
-                          priority={i < 6}
-                          className="w-full h-full sm:object-contain object-cover rounded-md transition-transform group-hover:scale-105"
-                          onError={(e) => {
-                            e.currentTarget.src = "/images/placeholder.svg";
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="bg-primary absolute bottom-0 px-2 left-0 w-full sm:py-4 py-3 flex_center gap-2 sm:text-base text-xs font-semibold text-white transition-colors group-hover:bg-secondary">
-                      {mou.title}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="text-gray-500 text-center w-full py-10">
-                <div className="flex_center flex-col gap-4">
-                  <div className="text-4xl">📄</div>
-                  <h3 className="text-lg font-medium">{t("no_mous_found")}</h3>
-                </div>
-              </div>
-            )}
+          {/* 1. International Section */}
+          {intlLoading && intlPage === 1 ? (
+            // Simple skeleton for section if this specific part is loading
+            <div className="w-full animate-pulse h-64 bg-gray-100 rounded-xl"></div>
+          ) : (
+            renderSection(
+              t("international_universities") || "International Universities", // Fallback if key missing
+              intlMous,
+              intlLoading,
+              intlTotal,
+              handleLoadMoreIntl
+            )
+          )}
 
-            {mousData && mous.length < mousData.total && (
-              <div className="flex_center w-full my-5">
-                <button
-                  onClick={handleLoadMore}
-                  disabled={loading}
-                  className="sm:text-base text-sm border border-primary px-8 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors disabled:opacity-50"
-                >
-                  {loading ? t("loading") : t("see_more")}
-                </button>
-              </div>
-            )}
-          </div>
+          {/* 2. Local Section */}
+          {localLoading && localPage === 1 ? (
+            <div className="w-full animate-pulse h-64 bg-gray-100 rounded-xl"></div>
+          ) : (
+            renderSection(
+              t("local_universities") || "Local Universities",
+              localMous,
+              localLoading,
+              localTotal,
+              handleLoadMoreLocal
+            )
+          )}
         </div>
       </div>
+
       <MouModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
@@ -274,4 +366,5 @@ const MouClient = () => {
     </>
   );
 };
+
 export default MouClient;

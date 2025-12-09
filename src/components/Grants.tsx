@@ -141,11 +141,7 @@ const Grants = ({ teacherId, locale = "en" }: Props) => {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(locale, {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
+    return new Date(dateString).getFullYear().toString();
   };
 
   const getFileName = (filePath: string) =>

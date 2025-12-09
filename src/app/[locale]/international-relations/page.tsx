@@ -3,7 +3,6 @@
 import InternationalRelationsHeader from "@/components/InternationalRelationsHeader";
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -11,6 +10,7 @@ import { FaChevronDown } from "react-icons/fa6";
 import { FiArrowRight } from "react-icons/fi";
 import { GoBook } from "react-icons/go";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
+import { IoMdClose } from "react-icons/io";
 
 import useFetch from "@/libs/hooks/useFetch";
 
@@ -73,7 +73,7 @@ interface SectionsResponse {
   data: Section[];
 }
 
-// -------- Granular Skeleton Components --------
+// -------- Components --------
 
 const AboutTextSkeleton = () => (
   <div className="space-y-3 animate-pulse">
@@ -91,6 +91,57 @@ const ProgramCardSkeleton = () => (
   <div className="w-full h-[180px] bg-gray-200 rounded-3xl animate-pulse"></div>
 );
 
+const ListModal = ({
+  isOpen,
+  onClose,
+  item,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  item: SectionList | null;
+}) => {
+  useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    if (isOpen) window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [isOpen, onClose]);
+
+  if (!isOpen || !item) return null;
+
+  return (
+    <div
+      className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center p-4 animate-fade-in"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-2xl p-6 sm:p-8 max-w-lg w-full relative shadow-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-black transition-colors"
+          aria-label="Close modal"
+        >
+          <IoMdClose size={24} />
+        </button>
+        <div className="flex flex-col gap-4 mt-2">
+          <h3 className="text-xl sm:text-2xl font-bold text-secondary">
+            {item.title}
+          </h3>
+          <div className="h-[1px] w-full bg-lightBorder"></div>
+          <p className="text-gray-600 sm:text-base text-sm leading-relaxed">
+            {item.description}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// -------- Main Page --------
+
 const Page = () => {
   const t = useTranslations("International");
   const params = useParams();
@@ -101,6 +152,12 @@ const Page = () => {
     number | null
   >(null);
 
+  // Modal State
+  const [selectedListItem, setSelectedListItem] = useState<SectionList | null>(
+    null
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const handleAccordion = (id: number) => {
     if (id !== openedAccordion) {
       setOpenedAccordion(id);
@@ -109,7 +166,17 @@ const Page = () => {
     }
   };
 
-  // 1. Fetch main International Relations data to get the ID
+  const handleOpenModal = (item: SectionList) => {
+    setSelectedListItem(item);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setSelectedListItem(null), 200); // Clear data after animation
+  };
+
+  // 1. Fetch main International Relations data
   const {
     data: relationData,
     loading: relationLoading,
@@ -119,14 +186,13 @@ const Page = () => {
     locale
   );
 
-  // Set the ID once the main data is fetched
   useEffect(() => {
     if (relationData?.data?.[0]?.id) {
       setInternationalRelationId(relationData.data[0].id);
     }
   }, [relationData]);
 
-  // 2. Fetch Units data using the ID from the first call
+  // 2. Fetch Units data
   const {
     data: unitsData,
     loading: unitsLoading,
@@ -138,7 +204,7 @@ const Page = () => {
     locale
   );
 
-  // 3. Fetch Sections data using the ID from the first call
+  // 3. Fetch Sections data
   const {
     data: sectionsData,
     loading: sectionsLoading,
@@ -164,7 +230,6 @@ const Page = () => {
     );
   }
 
-  // This check ensures we don't render a blank page if the initial fetch fails after loading
   if (!isLoading && !mainRelation) {
     return (
       <div className="w-full flex_center my-20">
@@ -174,159 +239,173 @@ const Page = () => {
   }
 
   return (
-    <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
-      <div className="max-w-[1045px] px-3 w-full flex_start flex-col gap-8">
-        <SubHeader title={t("international_relations")} alt={false} />
-        <InternationalRelationsHeader />
-        <h2 className="relative sm:text-[32px] text-lg font-semibold ">
-          <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
-          <span className="z-10 relative">{t("about")}</span>
-        </h2>
+    <>
+      <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
+        <div className="max-w-[1045px] px-3 w-full flex_start flex-col gap-8">
+          <SubHeader title={t("international_relations")} alt={false} />
+          <InternationalRelationsHeader />
+          <h2 className="relative sm:text-[32px] text-lg font-semibold ">
+            <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
+            <span className="z-10 relative">{t("about")}</span>
+          </h2>
 
-        {/* About Text: Skeleton vs Content */}
-        {isLoading ? (
-          <AboutTextSkeleton />
-        ) : (
-          <p className="text-opacity-70 text-secondary text-sm sm:rounded-none rounded-lg sm:border-none border border-lightBorder sm:p-0 p-3">
-            {mainRelation?.about}
-          </p>
-        )}
-
-        {/* Units Section */}
-        {units.length > 0 && (
-          <div className="flex_center w-full gap-5 mt-5">
-            <span className="bg-lightBorder w-full h-[1px]"></span>
-            <h3 className="text-secondary text-xl font-medium">{t("units")}</h3>
-            <span className="bg-lightBorder w-full h-[1px]"></span>
-          </div>
-        )}
-        <div className="flex_start flex-col gap-5 w-full">
+          {/* About Text */}
           {isLoading ? (
-            <>
-              <AccordionSkeleton />
-              <AccordionSkeleton />
-            </>
+            <AboutTextSkeleton />
           ) : (
-            units.map((unit) => (
-              <div
-                key={unit.id}
-                className={`w-full flex_start flex-col rounded-2xl text-secondary border ${
-                  openedAccordion === unit.id
-                    ? "border-golden"
-                    : "border-lightBorder"
-                }`}
-              >
-                <button
-                  type="button"
-                  onClick={() => handleAccordion(unit.id)}
-                  className="flex justify-between items-center w-full p-5 text-left"
-                >
-                  <div className="flex_center gap-4">
-                    <span className="w-6 h-6 bg-golden flex-shrink-0 rounded-full relative block"></span>
-                    <h3 className="font-semibold">{unit.title}</h3>
-                  </div>
-                  <FaChevronDown
-                    className={`duration-200 flex-shrink-0 ${
-                      openedAccordion === unit.id ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
+            <p className="text-opacity-70 text-secondary text-sm sm:rounded-none rounded-lg sm:border-none border border-lightBorder sm:p-0 p-3">
+              {mainRelation?.about}
+            </p>
+          )}
+
+          {/* Units Section */}
+          {units.length > 0 && (
+            <div className="flex_center w-full gap-5 mt-5">
+              <span className="bg-lightBorder w-full h-[1px]"></span>
+              <h3 className="text-secondary text-xl font-medium">
+                {t("units")}
+              </h3>
+              <span className="bg-lightBorder w-full h-[1px]"></span>
+            </div>
+          )}
+          <div className="flex_start flex-col gap-5 w-full">
+            {isLoading ? (
+              <>
+                <AccordionSkeleton />
+                <AccordionSkeleton />
+              </>
+            ) : (
+              units.map((unit) => (
                 <div
-                  className={`flex_start duration-300 flex-col gap-5 ${
+                  key={unit.id}
+                  className={`w-full flex_start flex-col rounded-2xl text-secondary border ${
                     openedAccordion === unit.id
-                      ? "max-h-[700px] p-5 pt-0"
-                      : "max-h-0 overflow-y-hidden"
+                      ? "border-golden"
+                      : "border-lightBorder"
                   }`}
                 >
-                  <p className="sm:text-base text-sm opacity-70">
-                    {unit.description}
-                  </p>
+                  <button
+                    type="button"
+                    onClick={() => handleAccordion(unit.id)}
+                    className="flex justify-between items-center w-full p-5 text-left"
+                  >
+                    <div className="flex_center gap-4">
+                      <span className="w-6 h-6 bg-golden flex-shrink-0 rounded-full relative block"></span>
+                      <h3 className="font-semibold">{unit.title}</h3>
+                    </div>
+                    <FaChevronDown
+                      className={`duration-200 flex-shrink-0 ${
+                        openedAccordion === unit.id ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+                  <div
+                    className={`flex_start duration-300 flex-col gap-5 ${
+                      openedAccordion === unit.id
+                        ? "max-h-[700px] p-5 pt-0"
+                        : "max-h-0 overflow-y-hidden"
+                    }`}
+                  >
+                    <p className="sm:text-base text-sm opacity-70">
+                      {unit.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* Programs Section */}
-        {sections.length > 0 && (
-          <div className="flex_center w-full gap-5 mt-5">
-            <span className="bg-lightBorder w-full h-[1px]"></span>
-            <h3 className="text-secondary text-xl font-medium">
-              {t("programs")}
-            </h3>
-            <span className="bg-lightBorder w-full h-[1px]"></span>
+              ))
+            )}
           </div>
-        )}
-        <div className="w-full grid sm:grid-cols-2 grid-cols-1 gap-5">
-          {isLoading ? (
-            <>
-              <ProgramCardSkeleton />
-              <ProgramCardSkeleton />
-            </>
-          ) : (
-            sections.map((section) => (
-              <div
-                key={section.id}
-                className="flex_start gap-5 rounded-3xl p-5 bg-primary text-white"
-              >
-                <span className="flex-shrink-0 text-xl w-10 h-10 rounded-full lg:flex hidden justify-center items-center bg-white text-secondary">
-                  <GoBook />
-                </span>
-                <div className="flex_start flex-col gap-3 w-full">
-                  <h3 className="lg:text-xl text-lg">{section.title}</h3>
-                  {section.lists.map((item) => (
-                    <Link
-                      href={`/${locale}/international-relations/exchange-programs`} // Assuming this is a generic link, adjust if needed
-                      title={item.title}
-                      key={item.id}
-                      className="flex items-center gap-3 w-full justify-between hover:text-golden transition-colors"
-                    >
-                      <div className="flex_center gap-3">
-                        <span className="w-[10px] h-[10px] flex-shrink-0 rounded-full bg-golden"></span>
-                        <small className="text-xs">{item.title}</small>
-                      </div>
-                      <FiArrowRight className="text-golden text-lg rtl:rotate-180" />
-                    </Link>
-                  ))}
+
+          {/* Programs Section */}
+          {sections.length > 0 && (
+            <div className="flex_center w-full gap-5 mt-5">
+              <span className="bg-lightBorder w-full h-[1px]"></span>
+              <h3 className="text-secondary text-xl font-medium">
+                {t("programs")}
+              </h3>
+              <span className="bg-lightBorder w-full h-[1px]"></span>
+            </div>
+          )}
+          <div className="w-full grid sm:grid-cols-2 grid-cols-1 gap-5">
+            {isLoading ? (
+              <>
+                <ProgramCardSkeleton />
+                <ProgramCardSkeleton />
+              </>
+            ) : (
+              sections.map((section) => (
+                <div
+                  key={section.id}
+                  className="flex_start gap-5 rounded-3xl p-5 bg-primary text-white"
+                >
+                  <span className="flex-shrink-0 text-xl w-10 h-10 rounded-full lg:flex hidden justify-center items-center bg-white text-secondary">
+                    <GoBook />
+                  </span>
+                  <div className="flex_start flex-col gap-3 w-full">
+                    <h3 className="lg:text-xl text-lg">{section.title}</h3>
+                    {section.lists.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => handleOpenModal(item)}
+                        title={item.title}
+                        className="flex items-center gap-3 w-full justify-between hover:text-golden transition-colors text-left"
+                      >
+                        <div className="flex_center gap-3">
+                          <span className="w-[10px] h-[10px] flex-shrink-0 rounded-full bg-golden"></span>
+                          <small className="text-xs line-clamp-1">
+                            {item.title}
+                          </small>
+                        </div>
+                        <FiArrowRight className="text-golden text-lg rtl:rotate-180 flex-shrink-0" />
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* Static Mobile Navigation */}
-        <div className="sm:hidden flex justify-start items-start flex-col gap-4 flex-shrink-0 w-full sm:border-none border-t border-t-lightBorder sm:pt-0 pt-5">
-          <div className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-primary border-primary">
-            <span>{t("about")}</span>
-            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+              ))
+            )}
           </div>
-          <Link
-            href={`/${locale}/international-relations/directory-structure?id=${mainRelation?.id}`}
-            title={t("directory_structure")}
-            className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
-          >
-            <span>{t("directory_structure")}</span>
-            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-          </Link>
-          <Link
-            href={`/${locale}/international-relations/news?id=${mainRelation?.id}`}
-            title={t("news")}
-            className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
-          >
-            <span>{t("news")}</span>
-            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-          </Link>
-          <Link
-            href={`/${locale}/international-relations/office-staff?id=${mainRelation?.id}`}
-            title={t("office_staff")}
-            className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
-          >
-            <span>{t("office_staff")}</span>
-            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-          </Link>
+
+          {/* Static Mobile Navigation */}
+          <div className="sm:hidden flex justify-start items-start flex-col gap-4 flex-shrink-0 w-full sm:border-none border-t border-t-lightBorder sm:pt-0 pt-5">
+            <div className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-primary border-primary">
+              <span>{t("about")}</span>
+              <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+            </div>
+            <Link
+              href={`/${locale}/international-relations/directory-structure?id=${mainRelation?.id}`}
+              title={t("directory_structure")}
+              className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+            >
+              <span>{t("directory_structure")}</span>
+              <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+            </Link>
+            <Link
+              href={`/${locale}/international-relations/news?id=${mainRelation?.id}`}
+              title={t("news")}
+              className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+            >
+              <span>{t("news")}</span>
+              <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+            </Link>
+            <Link
+              href={`/${locale}/international-relations/office-staff?id=${mainRelation?.id}`}
+              title={t("office_staff")}
+              className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+            >
+              <span>{t("office_staff")}</span>
+              <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Modal */}
+      <ListModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        item={selectedListItem}
+      />
+    </>
   );
 };
 export default Page;
