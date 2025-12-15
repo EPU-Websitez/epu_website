@@ -47,7 +47,7 @@ const CollegeHeader = () => {
   const params = useParams();
   const college = params?.college as string;
   const locale = params?.locale as string;
-  const swiperRef = useRef<SwiperCore>();
+  const swiperRef = useRef<SwiperCore>(undefined);
 
   // UPDATED: The fetcher now accepts an array from the SWR key.
   const fetcher = ([url, lang]: [string, string]) =>

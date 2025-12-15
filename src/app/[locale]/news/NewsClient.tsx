@@ -205,7 +205,7 @@ const NewsClient = () => {
   const t = useTranslations("News");
   const params = useParams();
   const locale = (params?.locale as string) || "en";
-  const swiperRef = useRef<SwiperCore>();
+  const swiperRef = useRef<SwiperCore>(undefined);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

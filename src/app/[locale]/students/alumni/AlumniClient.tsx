@@ -172,7 +172,7 @@ const BannerSkeleton = () => (
 
 // -------- Main Component --------
 const AlumniClient = () => {
-  const swiperRef = useRef<SwiperCore>();
+  const swiperRef = useRef<SwiperCore>(undefined);
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedStory, setSelectedStory] = useState<StoryItem | null>(null);
   const [showBgListModal, setShowBgListModal] = useState(false);

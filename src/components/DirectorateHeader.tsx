@@ -50,7 +50,7 @@ const DirectorateHeader = () => {
 
   const id = params?.id as string;
   const locale = params?.locale as string;
-  const swiperRef = useRef<SwiperCore>();
+  const swiperRef = useRef<SwiperCore>(undefined);
 
   const fetcher = ([url, lang]: [string, string]) =>
     fetch(url, {

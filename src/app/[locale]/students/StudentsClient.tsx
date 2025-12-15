@@ -14,7 +14,7 @@ import "swiper/css/pagination";
 import Link from "next/link";
 import { FaChevronRight } from "react-icons/fa6";
 import { LiaSwimmerSolid } from "react-icons/lia";
-import { LuLibraryBig } from "react-icons/lu";
+import { LuLibrary } from "react-icons/lu";
 import { TbOlympics } from "react-icons/tb";
 import { IoArrowForwardOutline } from "react-icons/io5";
 import CollegeMapComponent from "@/components/CollegeMapComponent ";
@@ -107,7 +107,7 @@ const StudentsClient = () => {
   const locale = (params?.locale as string) || "en";
   const [campusLifeSlug, setCampusLifeSlug] = useState<string | null>(null);
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
-  const swiperRef = useRef<SwiperCore>();
+  const swiperRef = useRef<SwiperCore | null>(null);
 
   const {
     data: campusData,
@@ -245,7 +245,7 @@ const StudentsClient = () => {
                   </div>
                   <div className="flex_center gap-3">
                     <span className="w-[35px] h-[35px] flex_center rounded-md bg-white text-secondary text-lg">
-                      <LuLibraryBig />
+                      <LuLibrary />
                     </span>
                     <div className="flex_start flex-col">
                       <span className="opacity-75 text-xs">

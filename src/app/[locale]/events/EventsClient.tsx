@@ -77,7 +77,7 @@ const EventsClient = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const swiperRef = useRef<SwiperCore>();
+  const swiperRef = useRef<SwiperCore>(undefined);
 
   const locale = (params?.locale as string) || "en";
 

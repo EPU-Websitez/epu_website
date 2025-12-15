@@ -51,7 +51,7 @@ const AccommodationClient = () => {
   const t = useTranslations("Students");
   const params = useParams();
   const locale = (params?.locale as string) || "en";
-  const swiperRef = useRef<SwiperCore>();
+  const swiperRef = useRef<SwiperCore>(undefined);
 
   const {
     data: accommodationData,
