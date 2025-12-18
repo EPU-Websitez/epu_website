@@ -7,10 +7,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { IoMdClose } from "react-icons/io";
-import {
-  HiOutlineBuildingLibrary,
-  HiOutlineAcademicCap,
-} from "react-icons/hi2";
+import { HiOutlineBuildingLibrary } from "react-icons/hi2";
 
 // --- Interfaces ---
 
@@ -29,43 +26,38 @@ interface AcademicStaff {
   bg_image: ImageType;
 }
 
-// Nested Objects in the API Response
-interface CollegeData {
-  id: number;
-  subdomain: string;
-  title: string;
-  slug: string;
-}
-
-interface DepartmentData {
-  id: number;
-  college_id?: number; // Optional in case university positions don't have college
-  slug: string;
-  title: string;
-  college?: CollegeData;
-}
-
-interface PositionItem {
-  position_type: string;
+// Department Positions API Response Structure
+interface DepartmentPosition {
   department_id: number;
+  department_name: string;
+  department_slug: string;
   role: string;
-  department: DepartmentData;
+  position_type: string;
 }
 
-interface PositionsResponse {
-  data: PositionItem[];
+interface CollegeWithDepartments {
+  college_id: number;
+  college_name: string;
+  subdomain: string;
+  departments: DepartmentPosition[];
+}
+
+interface DepartmentPositionsResponse {
   total: number;
+  page: number;
+  limit: number;
+  data: CollegeWithDepartments[];
 }
 
 // --- Helper Functions ---
 
 const getExternalUrl = (
   subdomain: string | undefined,
-  departmentId: number | undefined,
+  departmentSlug: string | undefined,
   locale: string
 ) => {
-  if (!subdomain || !departmentId) return "#";
-  return `https://${subdomain}.epu.edu.iq/${locale}/departments/${departmentId}`;
+  if (!subdomain || !departmentSlug) return "#";
+  return `https://${subdomain}.epu.edu.iq/${locale}/departments/${departmentSlug}`;
 };
 
 // --- Sub-Components ---
@@ -80,27 +72,38 @@ const Skeleton = () => (
   </div>
 );
 
-// Reusable Sidebar List Component
-const PositionSidebarList = ({
+// Reusable Sidebar List Component for Department Positions
+const DepartmentPositionSidebarList = ({
   title,
-  items,
+  colleges,
   loading,
   onShowMore,
   locale,
   icon: Icon,
 }: {
   title: string;
-  items: PositionItem[];
+  colleges: CollegeWithDepartments[];
   loading: boolean;
   onShowMore: () => void;
   locale: string;
   icon: any;
 }) => {
-  if (loading || !items || items.length === 0) return null;
+  if (loading || !colleges || colleges.length === 0) return null;
+
+  // Flatten all departments from all colleges
+  const allDepartments = colleges.flatMap((college) =>
+    (college.departments || []).map((dept) => ({
+      ...dept,
+      subdomain: college.subdomain,
+      college_name: college.college_name,
+    }))
+  );
+
+  if (allDepartments.length === 0) return null;
 
   const previewCount = 2;
-  const visibleItems = items.slice(0, previewCount);
-  const remainingCount = Math.max(0, items.length - previewCount);
+  const visibleItems = allDepartments.slice(0, previewCount);
+  const remainingCount = Math.max(0, allDepartments.length - previewCount);
 
   return (
     <div className="flex_start flex-col gap-3 w-full border-t border-gray-100 pt-4">
@@ -109,12 +112,12 @@ const PositionSidebarList = ({
       </span>
 
       <div className="flex flex-col gap-2 w-full">
-        {visibleItems.map((pos, index) => (
+        {visibleItems.map((dept, index) => (
           <a
-            key={`${pos?.department?.id}-${index}`}
+            key={`${dept.department_id}-${index}`}
             href={getExternalUrl(
-              pos?.department?.college?.subdomain,
-              pos?.department?.id,
+              dept.subdomain,
+              dept.department_slug,
               locale
             )}
             target="_blank"
@@ -126,10 +129,10 @@ const PositionSidebarList = ({
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-xs font-semibold text-secondary truncate block">
-                {pos?.department?.title}
+                {dept.department_name}
               </span>
               <span className="text-[10px] text-lightText truncate block">
-                {pos?.department?.college?.title || pos?.role}
+                {dept.college_name || dept.role}
               </span>
             </div>
           </a>
@@ -156,10 +159,8 @@ const Page = () => {
   const id = params?.id as string;
   const locale = params?.locale as string;
 
-  // Modal State: stores which list is currently open ('university' | 'department' | null)
-  const [modalType, setModalType] = useState<
-    "university" | "department" | null
-  >(null);
+  // Modal State: stores if department positions modal is open
+  const [showDepartmentModal, setShowDepartmentModal] = useState(false);
 
   // 1. Fetch Main Staff Data
   const { data, loading, error } = useFetch<AcademicStaff>(
@@ -169,15 +170,8 @@ const Page = () => {
 
   // 2. Fetch Department Positions
   const { data: deptPositions, loading: deptLoading } =
-    useFetch<PositionsResponse>(
-      `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}/department-positions`,
-      locale
-    );
-
-  // 3. Fetch University Positions
-  const { data: uniPositions, loading: uniLoading } =
-    useFetch<PositionsResponse>(
-      `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}/university-positions`,
+    useFetch<DepartmentPositionsResponse>(
+      `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}/lecturing-departments`,
       locale
     );
 
@@ -186,40 +180,22 @@ const Page = () => {
   const specificSpec =
     data?.specific_spec || "Transportation Planning and Design";
 
-  // Get current modal data based on state
-  const currentModalData =
-    modalType === "university" ? uniPositions?.data : deptPositions?.data;
-  const currentModalTitle =
-    modalType === "university"
-      ? t("university_positions") || "University Positions"
-      : t("department_positions") || "Department Positions";
-
   // Grouping logic for the modal (Memoized)
-  const groupedModalPositions = useMemo(() => {
-    if (!currentModalData) return {};
+  const groupedDepartmentPositions = useMemo(() => {
+    if (!deptPositions?.data) return {};
 
-    const groups: Record<string, { title: string; positions: PositionItem[] }> =
-      {};
+    const groups: Record<string, { title: string; colleges: CollegeWithDepartments }> = {};
 
-    currentModalData.forEach((pos) => {
-      // Group by College ID if available, otherwise 'General' (for uni positions without college)
-      const groupKey = pos?.department?.college?.id
-        ? `col-${pos.department.college.id}`
-        : "general";
-
-      const groupTitle = pos?.department?.college?.title || "General / Other";
-
-      if (!groups[groupKey]) {
-        groups[groupKey] = {
-          title: groupTitle,
-          positions: [],
-        };
-      }
-      groups[groupKey].positions.push(pos);
+    deptPositions.data.forEach((college) => {
+      const groupKey = `col-${college.college_id}`;
+      groups[groupKey] = {
+        title: college.college_name,
+        colleges: college,
+      };
     });
 
     return groups;
-  }, [currentModalData]);
+  }, [deptPositions?.data]);
 
   return (
     <div className="flex_center w-full flex-col">
@@ -290,23 +266,13 @@ const Page = () => {
                   </p>
                 </div>
 
-                {/* 1. University Positions List */}
-                <PositionSidebarList
-                  title={t("university_positions") || "University Positions"}
-                  items={uniPositions?.data || []}
-                  loading={uniLoading}
-                  locale={locale}
-                  onShowMore={() => setModalType("university")}
-                  icon={HiOutlineAcademicCap}
-                />
-
-                {/* 2. Department Positions List */}
-                <PositionSidebarList
+                {/* Department Positions List */}
+                <DepartmentPositionSidebarList
                   title={t("department_positions") || "Department Positions"}
-                  items={deptPositions?.data || []}
+                  colleges={deptPositions?.data || []}
                   loading={deptLoading}
                   locale={locale}
-                  onShowMore={() => setModalType("department")}
+                  onShowMore={() => setShowDepartmentModal(true)}
                   icon={HiOutlineBuildingLibrary}
                 />
               </div>
@@ -326,17 +292,17 @@ const Page = () => {
         )}
       </div>
 
-      {/* Shared Modal */}
-      {modalType && (
+      {/* Department Positions Modal */}
+      {showDepartmentModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/60 backdrop-blur-sm transition-opacity">
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl animate-fadeIn">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-5 border-b border-lightBorder shrink-0">
               <h3 className="text-lg font-bold text-primary">
-                {currentModalTitle}
+                {t("department_positions") || "Department Positions"}
               </h3>
               <button
-                onClick={() => setModalType(null)}
+                onClick={() => setShowDepartmentModal(false)}
                 className="p-2 text-gray-400 hover:text-red hover:bg-red/30 rounded-full transition-all"
               >
                 <IoMdClose size={22} />
@@ -346,26 +312,22 @@ const Page = () => {
             {/* Modal Content */}
             <div className="p-5 overflow-y-auto custom-scrollbar">
               <div className="flex flex-col gap-6">
-                {Object.keys(groupedModalPositions).length > 0 ? (
-                  Object.values(groupedModalPositions).map((group, idx) => (
+                {Object.keys(groupedDepartmentPositions).length > 0 ? (
+                  Object.values(groupedDepartmentPositions).map((group: any, idx) => (
                     <div key={idx} className="flex flex-col gap-3">
-                      {/* Only show header if it's not the generic 'general' bucket or if we have multiple groups */}
-                      {(group.title !== "General / Other" ||
-                        Object.keys(groupedModalPositions).length > 1) && (
-                        <div className="flex items-center gap-2 pb-2 border-b border-lightBorder">
-                          <span className="text-sm font-bold text-secondary uppercase tracking-wide">
-                            {group.title}
-                          </span>
-                        </div>
-                      )}
+                      <div className="flex items-center gap-2 pb-2 border-b border-lightBorder">
+                        <span className="text-sm font-bold text-secondary uppercase tracking-wide">
+                          {group.title}
+                        </span>
+                      </div>
 
                       <div className="grid sm:grid-cols-2 gap-3">
-                        {group.positions.map((pos, pIdx) => (
+                        {group.colleges.departments.map((dept: DepartmentPosition, pIdx: number) => (
                           <a
-                            key={`${pos?.department?.id}-${pIdx}`}
+                            key={`${dept.department_id}-${pIdx}`}
                             href={getExternalUrl(
-                              pos?.department?.college?.subdomain,
-                              pos?.department?.id,
+                              group.colleges.subdomain,
+                              dept.department_slug,
                               locale
                             )}
                             target="_blank"
@@ -374,16 +336,12 @@ const Page = () => {
                           >
                             <div className="flex items-start justify-between gap-2">
                               <span className="text-sm font-semibold text-gray-800 group-hover:text-blue-700 transition-colors line-clamp-2">
-                                {pos?.department?.title}
+                                {dept.department_name}
                               </span>
-                              {modalType === "university" ? (
-                                <HiOutlineAcademicCap className="text-secondary group-hover:text-blue-400 shrink-0 mt-0.5" />
-                              ) : (
-                                <HiOutlineBuildingLibrary className="text-secondary group-hover:text-blue-400 shrink-0 mt-0.5" />
-                              )}
+                              <HiOutlineBuildingLibrary className="text-secondary group-hover:text-blue-400 shrink-0 mt-0.5" />
                             </div>
                             <span className="text-xs text-lightText bg-backgroundSecondary self-start px-2 py-0.5 rounded-md mt-1 group-hover:bg-white transition-colors">
-                              {pos?.role}
+                              {dept.role}
                             </span>
                           </a>
                         ))}
