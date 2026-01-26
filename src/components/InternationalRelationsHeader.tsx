@@ -52,7 +52,7 @@ const InternationalRelationsHeader = () => {
     {
       dedupingInterval: 1000 * 60 * 60,
       revalidateOnFocus: false,
-    }
+    },
   );
 
   useEffect(() => {
@@ -99,7 +99,7 @@ const InternationalRelationsHeader = () => {
         }}
       />
       <div className="ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary to-transparent absolute top-0 left-0 w-full h-full z-10"></div>
-      <h3 className="absolute leading-relaxed z-20 text-white top-10 sm:ltr:left-10 ltr:left-5 sm:rtl:right-10 rtl:right-5 lg:text-[28px] text-sm max-w-[710px]">
+      <h3 className="absolute leading-relaxed z-20 text-white top-10 sm:ltr:left-10 ltr:left-5 sm:rtl:right-10 rtl:right-5 lg:text-[22px] text-sm max-w-[710px]">
         {bgDescription}
       </h3>
       <div className="absolute z-20 text-white bottom-10 ltr:left-10 rtl:right-10 sm:flex hidden justify-center items-center gap-5">
