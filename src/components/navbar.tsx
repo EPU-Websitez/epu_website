@@ -20,7 +20,7 @@ import SearchModal from "./Search";
 interface MenuItem {
   id: number;
   parent_id: number | null;
-  type: "ROUTER_PUSH" | "LINK" | "DROPDOWN";
+  type: "ROUTER_PUSH" | "LINK" | "DROPDOWN" | "EXTERNAL";
   title: string;
   link: string | null;
   routerPushReference: string | null;
@@ -78,7 +78,7 @@ const Navbar = () => {
     {
       dedupingInterval: 1000 * 60 * 60,
       revalidateOnFocus: false,
-    }
+    },
   );
 
   useEffect(() => {
@@ -93,8 +93,13 @@ const Navbar = () => {
 
   const getMenuItemUrl = (item: MenuItem) => {
     if (item.type === "LINK" && item.link) return item.link;
-    if (item.type === "ROUTER_PUSH" && item.routerPushReference)
-      return `/${locale}${item.routerPushReference}`;
+    if (item.type === "EXTERNAL" && item.link) return item.link;
+    if (item.type === "ROUTER_PUSH" && item.routerPushReference) {
+      const ref = item.routerPushReference.startsWith("/")
+        ? item.routerPushReference
+        : `/${item.routerPushReference}`;
+      return `/${locale}${ref}`;
+    }
     return "#";
   };
 
@@ -134,7 +139,7 @@ const Navbar = () => {
   };
 
   const [expandedMobileItems, setExpandedMobileItems] = useState<Set<number>>(
-    new Set()
+    new Set(),
   );
   const toggleMobileItem = (itemId: number) => {
     setExpandedMobileItems((prev) => {
@@ -164,6 +169,8 @@ const Navbar = () => {
       >
         <Link
           href={href}
+          target={item.type === "EXTERNAL" ? "_blank" : undefined}
+          rel={item.type === "EXTERNAL" ? "noopener noreferrer" : undefined}
           title={item.title}
           className={`flex justify-between items-center w-full px-4 py-3 text-sm hover:bg-gray-50 hover:text-primary transition-colors ${
             childActive ? "text-primary font-semibold" : "text-gray-700"
@@ -209,6 +216,8 @@ const Navbar = () => {
         >
           <Link
             href={parentHref}
+            target={item.type === "EXTERNAL" ? "_blank" : undefined}
+            rel={item.type === "EXTERNAL" ? "noopener noreferrer" : undefined}
             title={item.title}
             className={`flex_center gap-2 xl:text-base text-[10px] hover:text-opacity-80 transition-colors ${
               parentActive ? desktopActiveClass : ""
@@ -242,10 +251,14 @@ const Navbar = () => {
     return (
       <Link
         key={item.id}
+        target={item.type === "EXTERNAL" ? "_blank" : undefined}
+        rel={item.type === "EXTERNAL" ? "noopener noreferrer" : undefined}
         title={item.title}
         href={parentHref}
         className={`flex_center gap-2 xl:text-base text-[10px] hover:text-opacity-80 transition-colors ${
-          isActiveExact(parentHref) ? desktopActiveClass : ""
+          isActiveExact(parentHref) && item.type !== "EXTERNAL"
+            ? desktopActiveClass
+            : ""
         }`}
       >
         <span>{item.title}</span>
@@ -266,7 +279,10 @@ const Navbar = () => {
       item.children.some((child) => isActiveStartsWith(getMenuItemUrl(child)));
 
     // FIX: parent should only be active if it has a real link and matches exactly
-    const parentActive = parentHref !== "#" && isActiveExact(parentHref);
+    const parentActive =
+      parentHref !== "#" &&
+      isActiveExact(parentHref) &&
+      item.type !== "EXTERNAL";
 
     const isExpanded = expandedMobileItems.has(item.id);
 
@@ -279,6 +295,8 @@ const Navbar = () => {
         >
           <Link
             href={parentHref}
+            target={item.type === "EXTERNAL" ? "_blank" : undefined}
+            rel={item.type === "EXTERNAL" ? "noopener noreferrer" : undefined}
             title={item.title}
             className={`flex-1 ${parentActive ? mobileActiveClass : ""}`}
           >
@@ -307,7 +325,7 @@ const Navbar = () => {
           >
             <div className="ltr:pl-4 rtl:pr-4 pt-2 space-y-2">
               {item.children.map((child) =>
-                renderMobileMenuItem(child, level + 1)
+                renderMobileMenuItem(child, level + 1),
               )}
             </div>
           </div>
