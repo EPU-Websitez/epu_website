@@ -117,20 +117,20 @@ export default function HomePageClient() {
   // --- CHANGE: Added `locale` to all useFetch calls ---
   const { data: uniData, loading: uniLoading } = useFetch<UniversityData>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/universities`,
-    locale
+    locale,
   );
   const { data: newsData, loading: newsLoading } = useFetch<NewsResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/universities/news?page=1&limit=2`,
-    locale
+    locale,
   );
   const { data: eventsData, loading: eventsLoading } = useFetch<EventsResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/universities/events?page=1&limit=3`,
-    locale
+    locale,
   );
   const { data: slidersData, loading: slidersLoading } =
     useFetch<SlidersResponse>(
       `${process.env.NEXT_PUBLIC_API_URL}/website/universities/sliders`,
-      locale
+      locale,
     );
 
   const isLoading =
@@ -149,7 +149,7 @@ export default function HomePageClient() {
       },
       {
         threshold: 0.5, // Play when 50% of the video is visible
-      }
+      },
     );
 
     const currentVideoRef = videoRef.current;
@@ -200,13 +200,28 @@ export default function HomePageClient() {
         {/* Social Icons (No change) */}
         <div className="flex_center flex-col sm:gap-5 gap-2 absolute z-10 sm:right-5 right-10 top-1/2 -translate-y-1/2">
           <span className="w-[1px] sm:h-[70px] h-[30px] bg-primary"></span>
-          <a href="#" className="sm:text-xl text-base text-primary">
+          <a
+            href="https://www.instagram.com/epolytechnicuni/?utm_source=ig_profile_share&igshid=17kx2wfoe1i6y"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="sm:text-xl text-base text-primary"
+          >
             <AiFillInstagram />
           </a>
-          <a href="#" className="sm:text-xl text-base text-primary">
+          <a
+            href="https://www.facebook.com/epu.education/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="sm:text-xl text-base text-primary"
+          >
             <CgFacebook />
           </a>
-          <a href="#" className="sm:text-xl text-base text-primary">
+          <a
+            href="https://www.youtube.com/channel/UCJyQu5LoTlqGxxWgGJMQjog/featured"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="sm:text-xl text-base text-primary"
+          >
             <IoLogoYoutube />
           </a>
           <span className="w-[1px] sm:h-[70px] h-[30px] bg-primary"></span>
@@ -221,7 +236,6 @@ export default function HomePageClient() {
               slidesPerView={1}
               loop={true}
               autoplay={{ delay: 3000, disableOnInteraction: false }}
-              // --- MODIFIED: Point pagination to your new container ---
               pagination={{
                 clickable: true,
                 el: ".hero-swiper-pagination",
@@ -235,7 +249,7 @@ export default function HomePageClient() {
                     alt={slide.title}
                     fill
                     priority={index === 0}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full sm:object-cover object-fill"
                     // Directly set the src of the target element on error
                     onError={(e) => {
                       e.currentTarget.src = "/images/placeholder.svg";

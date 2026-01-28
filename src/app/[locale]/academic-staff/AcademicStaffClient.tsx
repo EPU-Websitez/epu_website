@@ -93,8 +93,8 @@ const customStyles: SelectProps<
     backgroundColor: state.isSelected
       ? "#1B417B"
       : state.isFocused
-      ? "#eff6ff"
-      : "#ffffff",
+        ? "#eff6ff"
+        : "#ffffff",
     color: state.isSelected ? "#ffffff" : "#111827",
     fontSize: "14px",
   }),
@@ -140,7 +140,7 @@ const SearchableSelect = ({
         } catch (error) {
           console.error(
             `Failed to fetch initial option for ID ${initialValueId} from ${apiUrl}`,
-            error
+            error,
           );
         }
       };
@@ -151,7 +151,7 @@ const SearchableSelect = ({
   const loadOptions = async (
     search: string,
     loadedOptions: OptionsOrGroups<SelectOption, GroupBase<SelectOption>>,
-    additional: { page: number } | undefined
+    additional: { page: number } | undefined,
   ) => {
     const page = additional?.page || 1;
     try {
@@ -222,20 +222,102 @@ const AcademicStaffClient = () => {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [page, setPage] = useState(() => Number(searchParams.get("page")) || 1);
   const [searchQuery, setSearchQuery] = useState(
-    () => searchParams.get("search") || ""
+    () => searchParams.get("search") || "",
   );
   const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 
   const [selectedCenter, setSelectedCenter] = useState<SelectOption | null>(
-    null
+    () => {
+      const id = searchParams.get("center_id");
+      return id ? { value: id, label: id } : null;
+    },
   );
   const [selectedDepartment, setSelectedDepartment] =
-    useState<SelectOption | null>(null);
+    useState<SelectOption | null>(() => {
+      const id = searchParams.get("department_id");
+      return id ? { value: id, label: id } : null;
+    });
   const [selectedCollege, setSelectedCollege] = useState<SelectOption | null>(
-    null
+    () => {
+      const id = searchParams.get("college_id");
+      return id ? { value: id, label: id } : null;
+    },
   );
 
+  // Initialize filters from URL
+
   const [isSearchActive, setIsSearchActive] = useState(false);
+
+  // Hydrate filter titles (fetch lists to find matching IDs since individual ID endpoints fail)
+  useEffect(() => {
+    const hydrateFilters = async () => {
+      // Helper to fetch list and find item
+      const findItem = async (endpoint: string, id: string) => {
+        try {
+          const res = await fetch(`${endpoint}?limit=100`, {
+            headers: { "website-language": locale },
+          });
+          if (!res.ok) return null;
+          const json = await res.json();
+          return json.data.find((item: any) => item.id.toString() === id);
+        } catch (e) {
+          console.error(`Failed to hydrate ${endpoint}`, e);
+          return null;
+        }
+      };
+
+      // Hydrate College
+      if (selectedCollege && selectedCollege.value === selectedCollege.label) {
+        findItem(
+          `${process.env.NEXT_PUBLIC_API_URL}/website/colleges`,
+          selectedCollege.value,
+        ).then((item) => {
+          if (item) {
+            setSelectedCollege({
+              value: item.id.toString(),
+              label: item.title,
+            });
+          }
+        });
+      }
+
+      // Hydrate Department
+      if (
+        selectedDepartment &&
+        selectedDepartment.value === selectedDepartment.label
+      ) {
+        findItem(
+          `${process.env.NEXT_PUBLIC_API_URL}/website/departments`,
+          selectedDepartment.value,
+        ).then((item) => {
+          if (item) {
+            setSelectedDepartment({
+              value: item.id.toString(),
+              label: item.title,
+            });
+          }
+        });
+      }
+
+      // Hydrate Center
+      if (selectedCenter && selectedCenter.value === selectedCenter.label) {
+        findItem(
+          `${process.env.NEXT_PUBLIC_API_URL}/website/centers`,
+          selectedCenter.value,
+        ).then((item) => {
+          if (item) {
+            setSelectedCenter({
+              value: item.id.toString(),
+              label: item.title,
+            });
+          }
+        });
+      }
+    };
+
+    hydrateFilters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run once on mount to fix initial ID labels
 
   // Debounce effect
   useEffect(() => {
@@ -328,7 +410,7 @@ const AcademicStaffClient = () => {
     if (page !== 1) setPage(1);
     else
       setApiUrl(
-        `${process.env.NEXT_PUBLIC_API_URL}/website/teachers?page=1&limit=10`
+        `${process.env.NEXT_PUBLIC_API_URL}/website/teachers?page=1&limit=10`,
       );
   };
 
@@ -380,7 +462,6 @@ const AcademicStaffClient = () => {
               placeholder={t("select_center")}
               value={selectedCenter}
               onChange={setSelectedCenter}
-              initialValueId={searchParams.get("center_id") ?? undefined}
             />
           </div>
           <div className="w-full text-sm">
@@ -390,7 +471,6 @@ const AcademicStaffClient = () => {
               placeholder={t("select_department")}
               value={selectedDepartment}
               onChange={setSelectedDepartment}
-              initialValueId={searchParams.get("department_id") ?? undefined}
             />
           </div>
           <div className="w-full text-sm">
@@ -400,7 +480,6 @@ const AcademicStaffClient = () => {
               placeholder={t("select_college")}
               value={selectedCollege}
               onChange={setSelectedCollege}
-              initialValueId={searchParams.get("college_id") ?? undefined}
             />
           </div>
         </div>
