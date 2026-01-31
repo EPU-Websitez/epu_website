@@ -70,7 +70,7 @@ const CollegeHeader = () => {
     {
       dedupingInterval: 1000 * 60 * 60, // 1 hour
       revalidateOnFocus: false,
-    }
+    },
   );
 
   if (isLoading || !data) return <Skeleton />;
@@ -112,7 +112,7 @@ const CollegeHeader = () => {
           </div>
         </div>
       </div>
-      {data.galleries.length > 1 ? (
+      {data.galleries && data.galleries?.length > 1 ? (
         <Swiper
           modules={[Pagination, Autoplay]}
           slidesPerView={1}

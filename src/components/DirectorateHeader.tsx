@@ -71,7 +71,7 @@ const DirectorateHeader = () => {
     {
       dedupingInterval: 1000 * 60 * 60,
       revalidateOnFocus: false,
-    }
+    },
   );
 
   // Logic to validate and update parent_id
@@ -109,7 +109,7 @@ const DirectorateHeader = () => {
 
   return (
     <div className="w-full lg:h-[570px] sm:h-[400px] h-[220px] relative rounded-3xl overflow-hidden">
-      {data.galleries.length > 1 ? (
+      {data.galleries && data.galleries.length > 1 ? (
         <Swiper
           modules={[Pagination]}
           slidesPerView={1}
@@ -138,7 +138,7 @@ const DirectorateHeader = () => {
       ) : (
         <div className="w-full lg:h-[570px] sm:h-[400px] h-[220px] relative rounded-3xl overflow-hidden">
           <Image
-            src={data.galleries[0]?.image?.lg || `/images/bg.svg`}
+            src={data.galleries?.[0]?.image?.lg || `/images/placeholder.svg`}
             alt={`bg`}
             fill
             priority

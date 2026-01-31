@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import LocalSwitcher from "./local-switcher";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { BsChevronDown } from "react-icons/bs";
-import { FiPlus, FiSearch } from "react-icons/fi";
+import { FiSearch } from "react-icons/fi";
 import { useTranslations } from "next-intl";
 import {
   IoChevronForward,
@@ -16,15 +16,21 @@ import {
 
 import useSWR from "swr";
 import SearchModal from "./Search";
+import MegaMenuDropdown from "./MegaMenuDropdown";
+import { API_URL } from "@/libs/env";
 
 interface MenuItem {
   id: number;
   parent_id: number | null;
   type: "ROUTER_PUSH" | "LINK" | "DROPDOWN" | "EXTERNAL";
   title: string;
+  title_en?: string;
+  title_ku?: string;
+  title_ar?: string;
   link: string | null;
   routerPushReference: string | null;
   order_index: number;
+  key?: string;
   created_at: string;
   updated_at: string;
   children: MenuItem[];
@@ -54,7 +60,7 @@ const Navbar = () => {
   const t = useTranslations("Navigation");
   const pathname = usePathname();
   const params = useParams();
-  const college = params?.college as string;
+  const router = useRouter();
   const { normalizedPath, locale } = normalizePathname(pathname);
   const [navIsOpen, setNavIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -72,14 +78,10 @@ const Navbar = () => {
     data: menuData,
     error,
     isLoading: menuLoading,
-  } = useSWR<MenuResponse>(
-    [`${process.env.NEXT_PUBLIC_API_URL}/website/menus`, locale],
-    fetcher,
-    {
-      dedupingInterval: 1000 * 60 * 60,
-      revalidateOnFocus: false,
-    },
-  );
+  } = useSWR<MenuResponse>([`${API_URL}/website/new-menus`, locale], fetcher, {
+    dedupingInterval: 1000 * 60 * 60,
+    revalidateOnFocus: false,
+  });
 
   useEffect(() => {
     document.body.dir = locale === "en" ? "ltr" : "rtl";
@@ -90,6 +92,14 @@ const Navbar = () => {
   const handleMouseEnter = (itemId: number) => setHoveredDropdown(itemId);
   const handleMouseLeave = () => setHoveredDropdown(null);
   if (error) console.error("Failed to load menu data:", error);
+
+  // Helper to get localized title if available, fallback to title
+  const getTitle = (item: MenuItem) => {
+    if (locale === "ku" && item.title_ku) return item.title_ku;
+    if (locale === "ar" && item.title_ar) return item.title_ar;
+    if (locale === "en" && item.title_en) return item.title_en;
+    return item.title;
+  };
 
   const getMenuItemUrl = (item: MenuItem) => {
     if (item.type === "LINK" && item.link) return item.link;
@@ -103,49 +113,102 @@ const Navbar = () => {
     return "#";
   };
 
-  const toLocalPath = (href: string) => {
-    if (!href) return "/";
-    try {
-      const url = new URL(href, window.location.origin);
-      let p = url.pathname || "/";
-      const segs = p.split("/").filter(Boolean);
-      if (segs[0] === locale) {
-        segs.shift();
-      }
-      const out = `/${segs.join("/")}`;
-      return out === "" ? "/" : out;
-    } catch {
-      let p = href.split("?")[0].split("#")[0] || "/";
-      if (!p.startsWith("/")) p = `/${p}`;
-      const segs = p.split("/").filter(Boolean);
-      if (segs[0] === locale) segs.shift();
-      const out = `/${segs.join("/")}`;
-      return out === "" ? "/" : out;
-    }
-  };
-
   const isActiveExact = (href: string) => {
-    const local = toLocalPath(href);
-    return normalizedPath === local;
+    if (href === "#") return false;
+    const current = pathname;
+    return current === href || current === href + "/";
   };
 
-  const isActiveStartsWith = (href: string) => {
-    const local = toLocalPath(href);
-    if (local === "/") return normalizedPath === "/";
-    return (
-      normalizedPath === local ||
-      normalizedPath.startsWith(local.endsWith("/") ? local : `${local}/`)
-    );
+  // Helper to check if any child is active (recursive)
+  const isChildActive = (item: MenuItem): boolean => {
+    const href = getMenuItemUrl(item);
+    if (isActiveExact(href)) return true;
+    if (item.children && item.children.length > 0) {
+      return item.children.some((child) => isChildActive(child));
+    }
+    return false;
   };
 
   const [expandedMobileItems, setExpandedMobileItems] = useState<Set<number>>(
     new Set(),
   );
-  const toggleMobileItem = (itemId: number) => {
+
+  // Mobile: Fetch dynamic children on expand
+  const [mobileDynamicChildren, setMobileDynamicChildren] = useState<
+    Record<number, any[]>
+  >({});
+  const [loadingMobileChildren, setLoadingMobileChildren] = useState<
+    Record<number, boolean>
+  >({});
+
+  const loadMobileDynamicData = async (item: MenuItem) => {
+    if (!item.key) return;
+    if (mobileDynamicChildren[item.id]) return; // Already loaded
+
+    setLoadingMobileChildren((prev) => ({ ...prev, [item.id]: true }));
+
+    try {
+      let url = "";
+      const limit = 100; // Load all for mobile list ideally, or a reasonable amount
+      if (item.key === "GET_COLLEGES")
+        url = `${API_URL}/website/colleges?type=COLLEGE&limit=${limit}`;
+      else if (item.key === "GET_INSTITUTES")
+        url = `${API_URL}/website/colleges?type=INSTITUTE&limit=${limit}`;
+      else if (item.key === "GET_CENTERS")
+        url = `${API_URL}/website/centers?limit=${limit}`;
+      else if (item.key === "GET_DIRECTORATES")
+        url = `${API_URL}/website/directorates?limit=${limit}`;
+
+      if (url) {
+        const res = await fetch(url, {
+          headers: { "website-language": locale as string },
+        });
+        const json = await res.json();
+        if (json.data) {
+          // Transform to MenuItems
+          const mapped = json.data.map((d: any) => ({
+            id: d.id + 99999, // Temp ID to avoid collision
+            title: d.title,
+            type:
+              item.key?.includes("COLLEGE") || item.key?.includes("INSTITUTE")
+                ? "EXTERNAL"
+                : "ROUTER_PUSH",
+            link:
+              (item.key?.includes("COLLEGE") ||
+                item.key?.includes("INSTITUTE")) &&
+              d.subdomain
+                ? `https://${d.subdomain}.epu.edu.iq/${locale}`
+                : null,
+            routerPushReference:
+              item.key === "GET_CENTERS"
+                ? `/centers/${d.slug}`
+                : item.key === "GET_DIRECTORATES"
+                  ? `/directorate/${d.id}`
+                  : null,
+            children: [],
+          }));
+          setMobileDynamicChildren((prev) => ({ ...prev, [item.id]: mapped }));
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load mobile dynamic menu", err);
+    } finally {
+      setLoadingMobileChildren((prev) => ({ ...prev, [item.id]: false }));
+    }
+  };
+
+  const toggleMobileItem = (item: MenuItem) => {
+    const itemId = item.id;
     setExpandedMobileItems((prev) => {
       const next = new Set(prev);
       if (next.has(itemId)) next.delete(itemId);
-      else next.add(itemId);
+      else {
+        next.add(itemId);
+        // Trigger fetch if needed
+        if (item.key && !mobileDynamicChildren[itemId]) {
+          loadMobileDynamicData(item);
+        }
+      }
       return next;
     });
   };
@@ -153,13 +216,14 @@ const Navbar = () => {
   const desktopActiveClass = "border-b-2 border-white pb-1";
   const mobileActiveClass = "border-b-2 !border-primary pb-1";
 
-  // --- Recursive Component for Desktop Submenus ---
   const DesktopSubmenuItem = ({ item }: { item: MenuItem }) => {
     const [isHovered, setIsHovered] = useState(false);
     const hasChildren =
-      Array.isArray(item.children) && item.children.length > 0;
+      (Array.isArray(item.children) && item.children.length > 0) || !!item.key;
+
     const href = getMenuItemUrl(item);
-    const childActive = isActiveStartsWith(href);
+    const title = getTitle(item);
+    const childActive = isActiveExact(href); // Simplified check
 
     return (
       <div
@@ -171,22 +235,60 @@ const Navbar = () => {
           href={href}
           target={item.type === "EXTERNAL" ? "_blank" : undefined}
           rel={item.type === "EXTERNAL" ? "noopener noreferrer" : undefined}
-          title={item.title}
+          title={title}
           className={`flex justify-between items-center w-full px-4 py-3 text-sm hover:bg-gray-50 hover:text-primary transition-colors ${
             childActive ? "text-primary font-semibold" : "text-gray-700"
           }`}
         >
-          <span>{item.title}</span>
+          <span>{title}</span>
           {hasChildren &&
             (locale === "en" ? <IoChevronForward /> : <IoChevronBack />)}
         </Link>
         {hasChildren && isHovered && (
-          <div className="absolute top-0 ltr:left-full rtl:right-full w-64 bg-white shadow-lg rounded-lg border border-gray-200 z-50">
-            <div className="py-2">
-              {item.children.map((child) => (
-                <DesktopSubmenuItem key={child.id} item={child} />
-              ))}
-            </div>
+          <div
+            className={`absolute top-0 ltr:left-full rtl:right-full z-50 transition-all duration-200 ${item.key ? "" : "w-64 bg-white shadow-lg rounded-lg border border-gray-200"}`}
+          >
+            {item.key ? (
+              <div className="relative">
+                {/* 
+                      MegaMenuDropdown usually expects to be top-full. 
+                      We need to style it to be side-aligned or just wrap it.
+                      The component itself has specific styling (absolute top-full). 
+                      We might need to adjust MegaMenuDropdown or override here. 
+                      Since MegaMenuDropdown has 'absolute' in its root, we need to be careful.
+                      
+                      If we wrap it in a relative div, the absolute inside MegaMenu might still position relative to that.
+                      Let's check MegaMenuDropdown content again. 
+                      It says: className="absolute top-full ...".
+                      
+                      If we render it here, it will be top-full relative to THIS <div>.
+                      This <div> is already absolute top-0 left-full.
+                      So top-full means it goes BELOW the side position? No.
+                      
+                      We need to override the class of MegaMenuDropdown or update it to accept class names.
+                      Since I prefer not to edit MegaMenuDropdown interface if possible, I will try to update MegaMenuDropdown to be more flexible first OR
+                      Override via a wrapper if it wasn't absolute. But it IS absolute.
+                      
+                      Actually, looking at MegaMenuDropdown implementation:
+                      className="absolute top-full ltr:-left-10 rtl:-right-10 mt-2 w-[800px] ..."
+                      
+                      For a side menu, we want "top-0 left-0" (relative to the new wrapper) or similar.
+                      
+                      Let's update MegaMenuDropdown to accept a `positionClass` prop.
+                    */}
+                <MegaMenuDropdown
+                  itemKey={item.key}
+                  locale={locale as string}
+                  positionClass="top-0 ltr:left-0 rtl:right-0"
+                />
+              </div>
+            ) : (
+              <div className="py-2">
+                {item.children.map((child) => (
+                  <DesktopSubmenuItem key={child.id} item={child} />
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -196,14 +298,15 @@ const Navbar = () => {
   // --- Main Desktop Menu Item Renderer ---
   const renderDesktopMenuItem = (item: MenuItem) => {
     const hasChildren =
-      Array.isArray(item.children) && item.children.length > 0;
+      (Array.isArray(item.children) && item.children.length > 0) || !!item.key;
     const parentHref = getMenuItemUrl(item);
     const isDropdownOpen = hoveredDropdown === item.id;
-    const anyChildActive =
-      hasChildren &&
-      item.children.some((child) => isActiveStartsWith(getMenuItemUrl(child)));
-    const parentItselfActive =
-      item.link !== null && isActiveStartsWith(parentHref);
+    const title = getTitle(item);
+
+    // Active check
+    const parentItselfActive = isActiveExact(parentHref);
+    // Deep check for children
+    const anyChildActive = isChildActive(item);
     const parentActive = parentItselfActive || anyChildActive;
 
     if (hasChildren) {
@@ -214,35 +317,67 @@ const Navbar = () => {
           onMouseEnter={() => handleMouseEnter(item.id)}
           onMouseLeave={handleMouseLeave}
         >
-          <Link
-            href={parentHref}
-            target={item.type === "EXTERNAL" ? "_blank" : undefined}
-            rel={item.type === "EXTERNAL" ? "noopener noreferrer" : undefined}
-            title={item.title}
-            className={`flex_center gap-2 xl:text-base text-[10px] hover:text-opacity-80 transition-colors ${
-              parentActive ? desktopActiveClass : ""
-            }`}
-          >
-            <span>{item.title}</span>
-            <BsChevronDown
-              className={`text-white transition-transform duration-200 ${
-                isDropdownOpen ? "rotate-180" : ""
-              }`}
-            />
-          </Link>
+          <div className="flex items-center">
+            {/* If it's a dropdown/toggle, clicking it might not navigate if it has no link. 
+                API says DROPDOWN has no link. LINK/ROUTER_PUSH has link.
+            */}
+            {item.type === "DROPDOWN" ? (
+              <button
+                className={`flex_center gap-2 xl:text-base text-[10px] hover:text-opacity-80 transition-colors ${
+                  parentActive ? desktopActiveClass : ""
+                }`}
+              >
+                <span>{title}</span>
+                <BsChevronDown
+                  className={`text-white transition-transform duration-200 ${
+                    isDropdownOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+            ) : (
+              <Link
+                href={parentHref}
+                target={item.type === "EXTERNAL" ? "_blank" : undefined}
+                rel={
+                  item.type === "EXTERNAL" ? "noopener noreferrer" : undefined
+                }
+                title={title}
+                className={`flex_center gap-2 xl:text-base text-[10px] hover:text-opacity-80 transition-colors ${
+                  parentActive ? desktopActiveClass : ""
+                }`}
+              >
+                <span>{title}</span>
+                <BsChevronDown
+                  className={`text-white transition-transform duration-200 ${
+                    isDropdownOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </Link>
+            )}
+          </div>
+
+          {/* Dropdown Content */}
           <div
-            className={`absolute top-full ltr:left-0 rtl:right-0 mt-2 w-64 bg-white shadow-lg rounded-lg border border-gray-200 z-50 transition-all duration-200 ${
+            className={`absolute top-full ltr:left-0 rtl:right-0 mt-2 transition-all duration-200 ${
               isDropdownOpen
                 ? "opacity-100 visible translate-y-0"
                 : "opacity-0 invisible -translate-y-2"
             }`}
           >
-            <div className="absolute -top-2 ltr:left-4 rtl:right-4 w-4 h-4 bg-white border-l border-t border-gray-200 rotate-45"></div>
-            <div className="py-2">
-              {item.children.map((child) => (
-                <DesktopSubmenuItem key={child.id} item={child} />
-              ))}
-            </div>
+            {/* If item has a KEY, use Mega Menu */}
+            {item.key ? (
+              <MegaMenuDropdown itemKey={item.key} locale={locale as string} />
+            ) : (
+              // Standard Recursive Dropdown
+              <div className="w-64 bg-white shadow-lg rounded-lg border border-gray-200 z-50 relative">
+                <div className="absolute -top-2 ltr:left-4 rtl:right-4 w-4 h-4 bg-white border-l border-t border-gray-200 rotate-45"></div>
+                <div className="py-2">
+                  {item.children.map((child) => (
+                    <DesktopSubmenuItem key={child.id} item={child} />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       );
@@ -253,15 +388,13 @@ const Navbar = () => {
         key={item.id}
         target={item.type === "EXTERNAL" ? "_blank" : undefined}
         rel={item.type === "EXTERNAL" ? "noopener noreferrer" : undefined}
-        title={item.title}
+        title={title}
         href={parentHref}
         className={`flex_center gap-2 xl:text-base text-[10px] hover:text-opacity-80 transition-colors ${
-          isActiveExact(parentHref) && item.type !== "EXTERNAL"
-            ? desktopActiveClass
-            : ""
+          parentActive ? desktopActiveClass : ""
         }`}
       >
-        <span>{item.title}</span>
+        <span>{title}</span>
       </Link>
     );
   };
@@ -269,44 +402,54 @@ const Navbar = () => {
   // --- Recursive Mobile Menu Renderer ---
   const renderMobileMenuItem = (item: MenuItem, level: number = 0) => {
     const hasChildren =
-      Array.isArray(item.children) && item.children.length > 0;
+      (Array.isArray(item.children) && item.children.length > 0) || !!item.key;
 
     const parentHref = getMenuItemUrl(item);
+    const title = getTitle(item);
 
-    // Child active check is still needed for expanding the menu
-    const anyChildActive =
-      hasChildren &&
-      item.children.some((child) => isActiveStartsWith(getMenuItemUrl(child)));
-
-    // FIX: parent should only be active if it has a real link and matches exactly
+    // Check active
     const parentActive =
-      parentHref !== "#" &&
       isActiveExact(parentHref) &&
-      item.type !== "EXTERNAL";
+      item.type !== "EXTERNAL" &&
+      item.type !== "DROPDOWN";
 
     const isExpanded = expandedMobileItems.has(item.id);
 
+    // Determine children source
+    let childrenToRender = item.children;
+    if (item.key && mobileDynamicChildren[item.id]) {
+      childrenToRender = [...item.children, ...mobileDynamicChildren[item.id]];
+    }
+    const isLoadingDynamic = item.key && loadingMobileChildren[item.id];
+
     return (
-      <div key={item.id} className="w-full z-10">
+      <div key={item.id} className="w-full z-50">
         <div
           className={`flex justify-between items-center w-full border-b border-b-lightBorder z-10 font-semibold pb-3 ${
             level > 0 ? "pt-3" : ""
           }`}
         >
-          <Link
-            href={parentHref}
-            target={item.type === "EXTERNAL" ? "_blank" : undefined}
-            rel={item.type === "EXTERNAL" ? "noopener noreferrer" : undefined}
-            title={item.title}
-            className={`flex-1 ${parentActive ? mobileActiveClass : ""}`}
-          >
-            {item.title}
-          </Link>
+          {item.type === "DROPDOWN" ? (
+            <span className={`flex-1 ${parentActive ? mobileActiveClass : ""}`}>
+              {title}
+            </span>
+          ) : (
+            <Link
+              href={parentHref}
+              target={item.type === "EXTERNAL" ? "_blank" : undefined}
+              rel={item.type === "EXTERNAL" ? "noopener noreferrer" : undefined}
+              title={title}
+              className={`flex-1 ${parentActive ? mobileActiveClass : ""}`}
+              onClick={() => setNavIsOpen(false)}
+            >
+              {title}
+            </Link>
+          )}
 
           {hasChildren && (
             <button
               className="text-2xl transition-transform duration-300 p-2 -m-2"
-              onClick={() => toggleMobileItem(item.id)}
+              onClick={() => toggleMobileItem(item)}
             >
               <IoChevronDown
                 className={`transition-transform duration-300 ${
@@ -320,11 +463,16 @@ const Navbar = () => {
         {hasChildren && (
           <div
             className={`overflow-hidden transition-all duration-300 ease-in-out ${
-              isExpanded ? "max-h-screen" : "max-h-0"
+              isExpanded ? "max-h-[2000px]" : "max-h-0" // Increased max-height for dynamic content
             }`}
           >
             <div className="ltr:pl-4 rtl:pr-4 pt-2 space-y-2">
-              {item.children.map((child) =>
+              {isLoadingDynamic && (
+                <div className="p-2 text-sm text-gray-500">
+                  {t("loading")}...
+                </div>
+              )}
+              {childrenToRender?.map((child) =>
                 renderMobileMenuItem(child, level + 1),
               )}
             </div>
@@ -335,7 +483,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="w-full flex-col flex justify-center">
+    <div className="w-full flex-col flex justify-center z-40">
       {/* Top Bar */}
       <div className="flex_center w-full">
         <div className="flex justify-between items-center custom_container px-3 py-2">
@@ -392,7 +540,6 @@ const Navbar = () => {
             />
           )}
           {/* Mobile Drawer */}
-          {/* Solution: Separate the button from the scrollable content area */}
           <div
             className={`flex_start overflow-visible flex-col gap-5 rounded-3xl bg-white w-[80%] h-screen fixed top-0 ltr:right-0 rtl:left-0 z-40 text-secondary duration-300 ${
               navIsOpen
@@ -400,7 +547,7 @@ const Navbar = () => {
                 : "max-w-0 overflow-hidden p-0"
             }`}
           >
-            {/* Close button - positioned absolutely, stays outside overflow context */}
+            {/* Close button */}
             {navIsOpen && (
               <button
                 type="button"
@@ -416,12 +563,13 @@ const Navbar = () => {
             )}
 
             {/* Scrollable content area */}
-            <div className="flex flex-col gap-5 overflow-y-auto overflow-x-hidden w-full">
+            <div className="flex flex-col gap-5 overflow-y-auto overflow-x-hidden w-full h-full pb-20">
               {menuData?.data?.map((item) => renderMobileMenuItem(item))}
             </div>
           </div>
+
           {/* Desktop navbar row */}
-          <div className="sm:flex hidden justify-center items-center xl:gap-5 gap-3 flex-grow">
+          <div className="sm:flex hidden justify-center items-center xl:gap-5 gap-3 flex-grow relative">
             {menuData?.data?.map((item, index) => (
               <React.Fragment key={item.id}>
                 {renderDesktopMenuItem(item)}
