@@ -1,5 +1,4 @@
 "use client";
-import { useState, useRef, useEffect } from "react"; // --- CHANGE: Imported useRef & useEffect
 import EventCard from "@/components/eventCards";
 import MapSection from "@/components/HomeComponents/MapSection";
 import NewsCard from "@/components/newsCard";
@@ -9,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AiFillInstagram } from "react-icons/ai";
 import { CgFacebook } from "react-icons/cg";
+import VideoPlayer from "@/components/VideoPlayer";
 import { FaArrowRight } from "react-icons/fa6";
 import { HiOutlineBuildingOffice, HiOutlineUsers } from "react-icons/hi2";
 import { IoLogoYoutube } from "react-icons/io";
@@ -52,8 +52,10 @@ interface UniversityData {
   alumni_feedbacks_count: number;
   alumni_feedbacks: AlumniFeedback[];
   research_paper_publication_url: string;
+  research_paper_publication_title: string;
   confrance_publication_url: string;
   confrance_publication_number: string;
+  confrance_publication_title: string;
   event_description: string;
   news_description: string;
 }
@@ -113,9 +115,6 @@ const HomeSkeleton = () => (
 export default function HomePageClient() {
   const t = useTranslations("IndexPage");
   const locale = useParams()?.locale as string;
-  const videoRef = useRef<HTMLVideoElement>(null); // --- CHANGE: Added ref for the video element
-
-  // --- CHANGE: Added `locale` to all useFetch calls ---
   const { data: uniData, loading: uniLoading } = useFetch<UniversityData>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/universities`,
     locale,
@@ -136,34 +135,6 @@ export default function HomePageClient() {
 
   const isLoading =
     uniLoading || newsLoading || eventsLoading || slidersLoading;
-
-  // --- CHANGE: Logic to play/pause video on scroll ---
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (entry.isIntersecting) {
-          videoRef.current?.play();
-        } else {
-          videoRef.current?.pause();
-        }
-      },
-      {
-        threshold: 0.5, // Play when 50% of the video is visible
-      },
-    );
-
-    const currentVideoRef = videoRef.current;
-    if (currentVideoRef) {
-      observer.observe(currentVideoRef);
-    }
-
-    return () => {
-      if (currentVideoRef) {
-        observer.unobserve(currentVideoRef);
-      }
-    };
-  }, [uniData]); // Rerun when data is loaded
 
   // --- Prepare Alumni Avatars Data (No changes here) ---
   const alumniAvatars = uniData?.alumni_feedbacks?.slice(0, 4) || [];
@@ -411,15 +382,10 @@ export default function HomePageClient() {
 
         {/* --- CHANGE: Replaced Image/Play Button with conditional Video/Image player --- */}
         <div className="max-w-[1000px] w-full relative sm:mt-20 mt-10">
-          <div className="w-full sm:h-[400px] h-[200px] relative rounded-3xl overflow-hidden bg-gray-200">
+          <div className="w-full sm:h-[400px] h-[200px] relative rounded-3xl overflow-hidden bg-gray-200 group">
             {uniData?.intro_image?.media_type === "VIDEO" ? (
-              <video
-                ref={videoRef}
+              <VideoPlayer
                 src={uniData.intro_image.original}
-                autoPlay
-                muted
-                loop
-                playsInline
                 className="w-full h-full object-cover"
               />
             ) : (
@@ -554,7 +520,8 @@ export default function HomePageClient() {
             dangerouslySetInnerHTML={{ __html: uniData?.research_description }}
           />
           <div className="flex_center gap-10">
-            <div className="flex_center flex-col gap-2">
+            <div className="flex_start flex-col gap-2">
+              <h2 className="text-sm font-semibold">{t("research_paper")}</h2>
               <h1 className="sm:text-title text-2xl font-bold text-golden">
                 {formatNumber(uniData?.research_paper_publication_number)}
               </h1>
@@ -564,10 +531,11 @@ export default function HomePageClient() {
                 target="_blank"
                 className="text-secondary text-sm font-medium border-b border-b-lightBorder pb-1"
               >
-                {t("research_paper")}
+                {uniData?.research_paper_publication_title}
               </a>
             </div>
-            <div className="flex_center flex-col gap-2">
+            <div className="flex_start flex-col gap-2">
+              <h2 className="text-sm font-semibold">{t("conference_paper")}</h2>
               <h1 className="sm:text-title text-2xl font-bold text-golden">
                 {formatNumber(uniData?.confrance_publication_number)}
               </h1>
@@ -577,7 +545,7 @@ export default function HomePageClient() {
                 target="_blank"
                 className="text-secondary text-sm font-medium border-b border-b-lightBorder pb-1"
               >
-                {t("conference_paper")}
+                {uniData?.confrance_publication_title}
               </a>
             </div>
           </div>

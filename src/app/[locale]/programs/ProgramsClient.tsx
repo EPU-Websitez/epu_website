@@ -51,6 +51,7 @@ interface Department {
   slug: string;
   title: string;
   student_number: string;
+  featured_image: ImageFile | null;
 }
 
 type CollegeType = "COLLEGE" | "INSTITUTE";
@@ -105,11 +106,14 @@ const ProgramsClient = () => {
 
   const LIMIT = 50;
 
-  const { data: mainProgramsResponse, loading: mainLoading, error: mainError } =
-    useFetch<ProgramListResponse>(
-      `${process.env.NEXT_PUBLIC_API_URL}/website/programs?page=1&limit=1`,
-      locale
-    );
+  const {
+    data: mainProgramsResponse,
+    loading: mainLoading,
+    error: mainError,
+  } = useFetch<ProgramListResponse>(
+    `${process.env.NEXT_PUBLIC_API_URL}/website/programs?page=1&limit=1`,
+    locale,
+  );
 
   const mainProgramInfo = mainProgramsResponse?.data?.[0] ?? null;
 
@@ -138,11 +142,11 @@ const ProgramsClient = () => {
           headers: {
             "website-language": locale || "en",
           },
-        }
+        },
       );
       if (!res.ok)
         throw new Error(
-          `Failed to fetch programs list (page ${pageNum}, type ${type})`
+          `Failed to fetch programs list (page ${pageNum}, type ${type})`,
         );
       const newData: CollegeBlock[] = await res.json();
 
@@ -306,7 +310,7 @@ const ProgramsClient = () => {
                 if (!college) return null;
 
                 const title = college.title || "";
-                const logo = college.logo?.lg || college.logo?.original || "";
+                // const logo = college.logo?.lg || college.logo?.original || ""; // Old logic
                 const departments = getDepartments(block);
 
                 return (
@@ -342,21 +346,21 @@ const ProgramsClient = () => {
                                 <IoArrowForwardOutline className="rtl:rotate-180" />
                               </div>
 
-                              {logo ? (
-                                <Image
-                                  src={logo}
-                                  className="object-cover group-hover:scale-110 transition-transform duration-300"
-                                  alt={dept.title}
-                                  fill
-                                  priority
-                                  onError={(e) => {
-                                    e.currentTarget.src =
-                                      "/images/placeholder.svg";
-                                  }}
-                                />
-                              ) : (
-                                <div className="w-full h-full bg-white/50" />
-                              )}
+                              <Image
+                                src={
+                                  dept.featured_image?.lg ||
+                                  dept.featured_image?.original ||
+                                  "/images/placeholder.svg"
+                                }
+                                className="object-cover group-hover:scale-110 transition-transform duration-300"
+                                alt={dept.title}
+                                fill
+                                priority
+                                onError={(e) => {
+                                  e.currentTarget.src =
+                                    "/images/placeholder.svg";
+                                }}
+                              />
                             </Link>
 
                             <Link

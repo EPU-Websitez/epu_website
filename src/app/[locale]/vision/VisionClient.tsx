@@ -7,7 +7,7 @@ import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useEffect, useRef } from "react";
+import VideoPlayer from "@/components/VideoPlayer";
 
 // -------- Interfaces --------
 interface ImageFile {
@@ -42,54 +42,32 @@ const VisionClient = () => {
   const t = useTranslations("Vision");
   const params = useParams();
   const locale = (params?.locale as string) || "en";
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const { data: uniData, loading: isLoading, error } = useFetch<UniversityData>(
+  const {
+    data: uniData,
+    loading: isLoading,
+    error,
+  } = useFetch<UniversityData>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/universities`,
-    locale
+    locale,
   );
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (entry.isIntersecting) {
-          videoRef.current?.play();
-        } else {
-          videoRef.current?.pause();
-        }
-      },
-      {
-        threshold: 0.5,
-      }
-    );
-
-    const currentVideoRef = videoRef.current;
-    if (currentVideoRef) {
-      observer.observe(currentVideoRef);
-    }
-
-    return () => {
-      if (currentVideoRef) {
-        observer.unobserve(currentVideoRef);
-      }
-    };
-  }, [uniData]);
 
   if (isLoading) return <PageSkeleton />;
-  if (error) return (
-    <div className="my-10 flex_center w-full">
-      <div className="max-w-[1024px] w-full flex_center">
-        <NoData showButton={true} className="my-10" />
+  if (error)
+    return (
+      <div className="my-10 flex_center w-full">
+        <div className="max-w-[1024px] w-full flex_center">
+          <NoData showButton={true} className="my-10" />
+        </div>
       </div>
-    </div>
-  );
-  if (!uniData) return (
-    <div className="my-10 flex_center w-full">
-      <div className="max-w-[1024px] w-full flex_center">
-        <NoData showButton={false} />
+    );
+  if (!uniData)
+    return (
+      <div className="my-10 flex_center w-full">
+        <div className="max-w-[1024px] w-full flex_center">
+          <NoData showButton={false} />
+        </div>
       </div>
-    </div>
-  );
+    );
 
   return (
     <div className="my-10 flex_center w-full">
@@ -97,13 +75,8 @@ const VisionClient = () => {
         <SubHeader title={t("head")} alt={false} />
         <div className="w-full lg:h-[500px] sm:h-[400px] h-[220px] relative rounded-3xl overflow-hidden">
           {uniData?.intro_image?.media_type === "VIDEO" ? (
-            <video
-              ref={videoRef}
+            <VideoPlayer
               src={uniData.intro_image?.original}
-              autoPlay
-              muted
-              loop
-              playsInline
               className="w-full h-full object-cover"
             />
           ) : (
