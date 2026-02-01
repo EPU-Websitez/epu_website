@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import SubHeader from "@/components/subHeader";
 import DirectorateHeader from "@/components/DirectorateHeader";
+import DirectorateSidebar from "@/components/DirectorateSidebar";
 import SubUnits from "@/components/SubUnits";
 
 import useFetch from "@/libs/hooks/useFetch";
@@ -31,6 +32,18 @@ interface CenterResponse {
   data: Center[];
 }
 
+interface DirectorateParentInfo {
+  id: number;
+  title: string;
+  parent_id: number | null;
+  parent?: {
+    slug: string;
+  };
+  directorate_type: {
+    name: string;
+  };
+}
+
 const SkeletonCard = () => (
   <div className="w-full animate-pulse flex justify-between items-end pb-10 border-b border-b-lightBorder">
     <div className="w-[75%] flex flex-col gap-5">
@@ -48,6 +61,7 @@ const CentersClient = () => {
   const params = useParams();
   const locale = params?.locale as string;
   const parentId = searchParams.get("parent_id");
+  const id = params?.id as string;
 
   const [centers, setCenters] = useState<Center[]>([]);
   const [page, setPage] = useState(1);
@@ -59,8 +73,14 @@ const CentersClient = () => {
     }/website/centers?page=${page}&limit=${limit}&directorate_id=${
       parentId || ""
     }`,
-    locale
+    locale,
   );
+
+  const { data: directorateInfo, loading: directorateLoading } =
+    useFetch<DirectorateParentInfo>(
+      id ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}` : "",
+      locale,
+    );
 
   useEffect(() => {
     if (data?.data) {
@@ -87,37 +107,13 @@ const CentersClient = () => {
         <div className="flex_start w-full">
           <div className="w-full border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
             <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
-              <div className="flex_start flex-col gap-4 flex-shrink-0 lg:w-[250px] w-full">
-                <Link
-                  href={`/${locale}/directorate/${params?.id}?parent_id=${parentId}`}
-                  title={tDir("about")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                >
-                  <span>{tDir("about")}</span>
-                  <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                </Link>
-                <Link
-                  href={`/${locale}/directorate/${params?.id}/staff?parent_id=${parentId}`}
-                  title={tDir("staff")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                >
-                  <span>{tDir("staff")}</span>
-                  <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                </Link>
-                <SubUnits />
-                <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-primary border-primary">
-                  <span>{tDir("centers")}</span>
-                  <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                </div>
-                <Link
-                  href={`/${locale}/directorate/${params?.id}/news?parent_id=${parentId}`}
-                  title={tDir("news")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                >
-                  <span>{tDir("news")}</span>
-                  <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                </Link>
-              </div>
+              <DirectorateSidebar
+                activeTab="centers"
+                id={params?.id as string}
+                parentId={parentId}
+                hasParent={!!directorateInfo?.parent}
+                isLoading={directorateLoading}
+              />
 
               <div className="lg:border-l w-full border-l-none lg:border-b-0 border-b text-secondary border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7">
                 <div className="relative sm:text-titleNormal text-lg font-semibold ">

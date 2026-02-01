@@ -17,6 +17,7 @@ import { FaTimes } from "react-icons/fa";
 import useFetch from "@/libs/hooks/useFetch";
 // Removed unused Swiper imports if they aren't being used in the rest of the file
 import DirectorateHeader from "@/components/DirectorateHeader";
+import DirectorateSidebar from "@/components/DirectorateSidebar";
 import SubUnits from "@/components/SubUnits";
 
 // -------- Interfaces --------
@@ -187,13 +188,13 @@ const Page = () => {
 
   const [staffIsOpen, setStaffIsOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
-    null
+    null,
   );
 
   const { data: directorateData, loading: isLoading } =
     useFetch<DirectorateDetail>(
       `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}`,
-      locale
+      locale,
     );
 
   const handleOpenStaff = () => setStaffIsOpen(!staffIsOpen);
@@ -233,37 +234,12 @@ const Page = () => {
               <div className="flex_start w-full">
                 <div className="w-full border-t-lightBorder border-t pb-20 flex_center sm:px-0 px-5">
                   <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
-                    <div className="flex_start flex-col gap-4 flex-shrink-0 lg:w-[250px] w-full">
-                      <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-primary border-primary">
-                        <span>{t("about")}</span>
-                        <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                      </div>
-                      <Link
-                        href={`/${locale}/directorate/${id}/staff?parent_id=${parentId}`}
-                        title={t("staff")}
-                        className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                      >
-                        <span>{t("staff")}</span>
-                        <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                      </Link>
-                      <SubUnits />
-                      <Link
-                        href={`/${locale}/directorate/${id}/centers?parent_id=${parentId}`}
-                        title={t("centers")}
-                        className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                      >
-                        <span>{t("centers")}</span>
-                        <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                      </Link>
-                      <Link
-                        href={`/${locale}/directorate/${id}/news?parent_id=${parentId}`}
-                        title={t("news")}
-                        className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                      >
-                        <span>{t("news")}</span>
-                        <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                      </Link>
-                    </div>
+                    <DirectorateSidebar
+                      activeTab="about"
+                      id={id}
+                      parentId={parentId}
+                      hasParent={!!directorateData.parent}
+                    />
 
                     <div className="lg:border-l w-full border-l-none lg:border-b-0 border-b text-secondary border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7">
                       <h2 className="relative sm:text-titleNormal text-lg font-semibold ">
@@ -272,14 +248,12 @@ const Page = () => {
                       </h2>
                       <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full">
                         {/* --- FIXED SECTION STARTS HERE --- */}
-                        {/* Changed from <p> to <div> and added dangerouslySetInnerHTML */}
                         <div
                           className="text-opacity-70 text-secondary text-sm prose max-w-none"
                           dangerouslySetInnerHTML={{
                             __html: directorateData.about,
                           }}
                         />
-                        {/* --- FIXED SECTION ENDS HERE --- */}
 
                         {directorateData.galleries.length > 0 && (
                           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 w-full">

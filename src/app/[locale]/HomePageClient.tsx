@@ -27,6 +27,7 @@ import "swiper/css/pagination";
 // -------- Interfaces (No changes here) --------
 interface ImageFile {
   lg: string;
+  sm: string;
   original: string;
   media_type: "IMAGE" | "VIDEO";
 }
@@ -244,17 +245,32 @@ export default function HomePageClient() {
             >
               {slidersData?.data.map((slide, index) => (
                 <SwiperSlide key={slide.id}>
-                  <Image
-                    src={slide.image?.lg}
-                    alt={slide.title}
-                    fill
-                    priority={index === 0}
-                    className="w-full h-full sm:object-cover object-fill"
-                    // Directly set the src of the target element on error
-                    onError={(e) => {
-                      e.currentTarget.src = "/images/placeholder.svg";
-                    }}
-                  />
+                  {/* Large Screen Image */}
+                  <div className="hidden sm:block w-full h-full relative">
+                    <Image
+                      src={slide.image?.lg}
+                      alt={slide.title}
+                      fill
+                      priority={index === 0}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
+                    />
+                  </div>
+                  {/* Small Screen Image */}
+                  <div className="block sm:hidden w-full h-full relative">
+                    <Image
+                      src={slide.image?.sm || slide.image?.lg}
+                      alt={slide.title}
+                      fill
+                      priority={index === 0}
+                      className="w-full h-full"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
+                    />
+                  </div>
                 </SwiperSlide>
               ))}
             </Swiper>

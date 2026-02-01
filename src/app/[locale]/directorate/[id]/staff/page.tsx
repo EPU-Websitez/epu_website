@@ -1,6 +1,7 @@
 "use client";
 
 import DirectorateHeader from "@/components/DirectorateHeader";
+import DirectorateSidebar from "@/components/DirectorateSidebar";
 import MemberCard from "@/components/memberCard";
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
@@ -110,9 +111,9 @@ const Page = () => {
     setStaffIsOpen(!staffIsOpen);
   };
   // Fetch parent info for sidebar navigation
-  const { data: directorateInfo } = useFetch<DirectorateParentInfo>(
+  const { data: directorateInfo, loading } = useFetch<DirectorateParentInfo>(
     id ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}` : "",
-    locale
+    locale,
   );
 
   // Fetch data for the lead member
@@ -120,7 +121,7 @@ const Page = () => {
     id
       ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}/leads?page=1&limit=1`
       : "",
-    locale
+    locale,
   );
 
   // Manually handle fetching for paginated staff list
@@ -140,12 +141,12 @@ const Page = () => {
           headers: {
             "website-language": locale || "en",
           },
-        }
+        },
       );
       const newData: StaffResponse = await res.json();
       if (newData.data) {
         setStaffList((prev) =>
-          page === 1 ? newData.data : [...prev, ...newData.data]
+          page === 1 ? newData.data : [...prev, ...newData.data],
         );
         setTotalStaff(newData.total);
       }
@@ -177,37 +178,13 @@ const Page = () => {
               <ContentSkeleton />
             ) : (
               <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
-                <div className="flex_start flex-col gap-4 flex-shrink-0 lg:w-[250px] w-full">
-                  <Link
-                    href={`/${locale}/directorate/${id}?parent_id=${parentId}`}
-                    title={t("about")}
-                    className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                  >
-                    <span>{t("about")}</span>
-                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                  </Link>
-                  <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-primary border-primary">
-                    <span>{t("staff")}</span>
-                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                  </div>
-                  <SubUnits />
-                  <Link
-                    href={`/${locale}/directorate/${id}/centers?parent_id=${parentId}`}
-                    title={t("centers")}
-                    className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                  >
-                    <span>{t("centers")}</span>
-                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                  </Link>
-                  <Link
-                    href={`/${locale}/directorate/${id}/news?parent_id=${parentId}`}
-                    title={t("news")}
-                    className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                  >
-                    <span>{t("news")}</span>
-                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                  </Link>
-                </div>
+                <DirectorateSidebar
+                  activeTab="staff"
+                  id={id}
+                  parentId={parentId}
+                  hasParent={!!directorateInfo?.parent}
+                  isLoading={loading}
+                />
 
                 <div className="lg:border-l text-secondary border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
                   <h2 className="relative sm:text-titleNormal text-lg font-semibold ">

@@ -14,8 +14,9 @@ import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
 import useFetch from "@/libs/hooks/useFetch";
 import NewsCard from "@/components/newsCard";
-import SubUnits from "@/components/SubUnits";
 import DirectorateHeader from "@/components/DirectorateHeader";
+import DirectorateSidebar from "@/components/DirectorateSidebar";
+import SubUnits from "@/components/SubUnits";
 import { CiCalendar, CiSearch } from "react-icons/ci";
 import { FaChevronDown, FaXmark } from "react-icons/fa6";
 
@@ -197,7 +198,7 @@ const Page = () => {
   const { data: directorateInfo, loading: directorateLoading } =
     useFetch<DirectorateParentInfo>(
       id ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}` : "",
-      locale
+      locale,
     );
 
   const newsApiUrl = useMemo(() => {
@@ -217,7 +218,7 @@ const Page = () => {
 
   const { data: newsData, loading: newsLoading } = useFetch<NewsResponse>(
     newsApiUrl,
-    locale
+    locale,
   );
 
   const isInitialLoading =
@@ -358,37 +359,13 @@ const Page = () => {
               <ContentSkeleton />
             ) : (
               <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
-                <div className="flex_start flex-col gap-4 flex-shrink-0 lg:w-auto w-full">
-                  <Link
-                    href={`/${locale}/directorate/${id}?parent_id=${parentId}`}
-                    title={t("about")}
-                    className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                  >
-                    <span>{t("about")}</span>
-                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                  </Link>
-                  <Link
-                    href={`/${locale}/directorate/${id}/staff?parent_id=${parentId}`}
-                    title={t("staff")}
-                    className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                  >
-                    <span>{t("staff")}</span>
-                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                  </Link>
-                  <SubUnits />
-                  <Link
-                    href={`/${locale}/directorate/${id}/centers?parent_id=${parentId}`}
-                    title={t("centers")}
-                    className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                  >
-                    <span>{t("centers")}</span>
-                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                  </Link>
-                  <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-primary border-primary">
-                    <span>{t("news")}</span>
-                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                  </div>
-                </div>
+                <DirectorateSidebar
+                  activeTab="news"
+                  id={id}
+                  parentId={parentId}
+                  hasParent={!!directorateInfo?.parent}
+                  isLoading={directorateLoading}
+                />
                 <div className="lg:border-l text-secondary border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
                   <h2 className="relative sm:text-titleNormal text-lg font-semibold ">
                     <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>

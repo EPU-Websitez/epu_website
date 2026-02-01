@@ -10,8 +10,8 @@ import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
 import useFetch from "@/libs/hooks/useFetch";
 import DirectorateHeader from "@/components/DirectorateHeader";
+import DirectorateSidebar from "@/components/DirectorateSidebar";
 import MemberCard from "@/components/memberCard";
-import SubUnits from "@/components/SubUnits";
 
 // -------- Interfaces --------
 interface ImageFile {
@@ -98,7 +98,7 @@ const Page = () => {
     id
       ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}?parent_id=${parentId}`
       : "",
-    locale
+    locale,
   );
 
   // Fetch the lead member of this unit
@@ -106,7 +106,7 @@ const Page = () => {
     id
       ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}/leads?page=1&limit=1`
       : "",
-    locale
+    locale,
   );
 
   // Manually handle paginated staff list
@@ -126,12 +126,12 @@ const Page = () => {
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/${id}/staff?page=${page}&limit=4`,
-        { headers: { "website-language": locale || "en" } }
+        { headers: { "website-language": locale || "en" } },
       );
       const newData: StaffResponse = await res.json();
       if (newData.data) {
         setStaffList((prev) =>
-          page === 1 ? newData.data : [...prev, ...newData.data]
+          page === 1 ? newData.data : [...prev, ...newData.data],
         );
         setTotalStaff(newData.total);
       }
@@ -160,49 +160,13 @@ const Page = () => {
               <ContentSkeleton />
             ) : (
               <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
-                <div className="flex_start flex-col gap-4 flex-shrink-0 lg:w-auto w-full">
-                  <Link
-                    href={
-                      unitData?.parent?.slug
-                        ? `/${locale}/directorate/${unitData.parent.slug}`
-                        : `/${locale}/directorate/${unitData.slug}`
-                    }
-                    title={t("about")}
-                    className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                  >
-                    <span>{t("about")}</span>
-                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                  </Link>
-                  <Link
-                    href={
-                      unitData?.parent?.slug
-                        ? `/${locale}/directorate/${unitData.parent.slug}/staff`
-                        : `/${locale}/directorate/${unitData.slug}`
-                    }
-                    title={t("staff")}
-                    className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                  >
-                    <span>{t("staff")}</span>
-                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                  </Link>
-                  <SubUnits />
-                  <Link
-                    href={`/${locale}/directorate/${id}/centers?parent_id=${parentId}`}
-                    title={t("centers")}
-                    className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                  >
-                    <span>{t("centers")}</span>
-                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                  </Link>
-                  <Link
-                    href={`/${locale}/directorate/${id}/news`}
-                    title={t("news")}
-                    className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                  >
-                    <span>{t("news")}</span>
-                    <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                  </Link>
-                </div>
+                <DirectorateSidebar
+                  activeTab="about"
+                  id={id}
+                  parentId={parentId}
+                  hasParent={!!unitData?.parent}
+                  isLoading={isLoading || !unitData}
+                />
 
                 <div className="lg:border-l text-secondary border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
                   <h2 className="relative sm:text-titleNormal text-lg font-semibold ">
