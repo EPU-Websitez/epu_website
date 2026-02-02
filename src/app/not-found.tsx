@@ -123,7 +123,8 @@ const NotFound = () => {
           </div>
 
           {/* Header Logo */}
-          <div
+          <Link
+            href="/"
             style={{
               position: "absolute",
               top: "30px",
@@ -131,6 +132,8 @@ const NotFound = () => {
               transform: "translateX(-50%)",
               width: "200px",
               height: "60px",
+              display: "block",
+              zIndex: 20,
             }}
           >
             <Image
@@ -140,7 +143,7 @@ const NotFound = () => {
               style={{ objectFit: "contain" }}
               priority
             />
-          </div>
+          </Link>
 
           {/* Main Content */}
           <div
@@ -214,6 +217,8 @@ const NotFound = () => {
                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                 textDecoration: "none",
                 display: "inline-block",
+                position: "relative",
+                zIndex: 20,
               }}
             >
               Back To Home
