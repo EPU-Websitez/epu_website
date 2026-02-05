@@ -31,6 +31,10 @@ body[dir="rtl"] {
   font-family: rabar;
 }
 
+.rtl_font {
+  font-family: rabar;
+}
+
 /* customize the browser defaults */
 ::selection {
   background-color: #080808a6;

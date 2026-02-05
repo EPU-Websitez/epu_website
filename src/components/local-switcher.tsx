@@ -54,10 +54,10 @@ export default function LocalSwitcher() {
           {localActive === "en"
             ? "English"
             : localActive === "ar"
-            ? "Arabic"
-            : localActive === "ku"
-            ? "Kurdish"
-            : "English"}{" "}
+              ? "عربي"
+              : localActive === "ku"
+                ? "کوردی"
+                : "English"}{" "}
           Language
         </span>
         <BsChevronDown />
@@ -77,16 +77,17 @@ export default function LocalSwitcher() {
         <button
           disabled={isPending}
           onClick={() => onSelectChange("ar")}
-          className={`w-full ${localActive === "ar" ? "text-primary" : ""}`}
+          className={`w-full rtl_font ${localActive === "ar" ? "text-primary" : ""}`}
+          dir="rtl"
         >
-          Arabic
+          عربي
         </button>
         <button
-          className={`w-full ${localActive === "ku" ? "text-primary" : ""}`}
+          className={`w-full rtl_font ${localActive === "ku" ? "text-primary" : ""}`}
           disabled={isPending}
           onClick={() => onSelectChange("ku")}
         >
-          Kurdish
+          کوردی
         </button>
       </div>
       {/* <select

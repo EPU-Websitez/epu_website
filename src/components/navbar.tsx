@@ -66,6 +66,12 @@ const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [hoveredDropdown, setHoveredDropdown] = useState<number | null>(null);
 
+  // Mobile pagination tracking
+  const [mobilePages, setMobilePages] = useState<Record<number, number>>({});
+  const [mobileHasMore, setMobileHasMore] = useState<Record<number, boolean>>(
+    {},
+  );
+
   const fetcher = ([url, lang]: [string, string]) =>
     fetch(url, {
       headers: {
@@ -87,6 +93,18 @@ const Navbar = () => {
     document.body.dir = locale === "en" ? "ltr" : "rtl";
     setNavIsOpen(false); // Close mobile nav on route change
   }, [locale, pathname]);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (navIsOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [navIsOpen]);
 
   const handleNav = () => setNavIsOpen((s) => !s);
   const handleMouseEnter = (itemId: number) => setHoveredDropdown(itemId);
@@ -133,7 +151,6 @@ const Navbar = () => {
     new Set(),
   );
 
-  // Mobile: Fetch dynamic children on expand
   const [mobileDynamicChildren, setMobileDynamicChildren] = useState<
     Record<number, any[]>
   >({});
@@ -141,33 +158,38 @@ const Navbar = () => {
     Record<number, boolean>
   >({});
 
-  const loadMobileDynamicData = async (item: MenuItem) => {
+  const loadMobileDynamicData = async (item: MenuItem, isLoadMore = false) => {
     if (!item.key) return;
-    if (mobileDynamicChildren[item.id]) return; // Already loaded
+
+    // Initial load check
+    if (!isLoadMore && mobileDynamicChildren[item.id]) return;
 
     setLoadingMobileChildren((prev) => ({ ...prev, [item.id]: true }));
 
+    const currentPage = isLoadMore ? (mobilePages[item.id] || 1) + 1 : 1;
+    const limit = 10; // Smaller limit for mobile pagination
+
     try {
       let url = "";
-      const limit = 100; // Load all for mobile list ideally, or a reasonable amount
       if (item.key === "GET_COLLEGES")
-        url = `${API_URL}/website/colleges?type=COLLEGE&limit=${limit}`;
+        url = `${API_URL}/website/colleges?type=COLLEGE&limit=${limit}&page=${currentPage}`;
       else if (item.key === "GET_INSTITUTES")
-        url = `${API_URL}/website/colleges?type=INSTITUTE&limit=${limit}`;
+        url = `${API_URL}/website/colleges?type=INSTITUTE&limit=${limit}&page=${currentPage}`;
       else if (item.key === "GET_CENTERS")
-        url = `${API_URL}/website/centers?limit=${limit}`;
+        url = `${API_URL}/website/centers?limit=${limit}&page=${currentPage}`;
       else if (item.key === "GET_DIRECTORATES")
-        url = `${API_URL}/website/directorates?limit=${limit}`;
+        url = `${API_URL}/website/directorates?limit=${limit}&page=${currentPage}`;
 
       if (url) {
         const res = await fetch(url, {
           headers: { "website-language": locale as string },
         });
         const json = await res.json();
+
         if (json.data) {
           // Transform to MenuItems
           const mapped = json.data.map((d: any) => ({
-            id: d.id + 99999, // Temp ID to avoid collision
+            id: d.id + 99999 + Math.random(), // Unique ID
             title: d.title,
             type:
               item.key?.includes("COLLEGE") || item.key?.includes("INSTITUTE")
@@ -187,7 +209,27 @@ const Navbar = () => {
                   : null,
             children: [],
           }));
-          setMobileDynamicChildren((prev) => ({ ...prev, [item.id]: mapped }));
+
+          setMobileDynamicChildren((prev) => {
+            const existing = prev[item.id] || [];
+            return {
+              ...prev,
+              [item.id]: isLoadMore ? [...existing, ...mapped] : mapped,
+            };
+          });
+
+          setMobilePages((prev) => ({ ...prev, [item.id]: currentPage }));
+
+          // Check if we have more pages
+          // Assuming API returns total or we can infer from length
+          const currentCount =
+            (isLoadMore ? mobileDynamicChildren[item.id]?.length || 0 : 0) +
+            mapped.length;
+          const total = json.total || 0;
+          setMobileHasMore((prev) => ({
+            ...prev,
+            [item.id]: currentCount < total,
+          }));
         }
       }
     } catch (err) {
@@ -250,32 +292,6 @@ const Navbar = () => {
           >
             {item.key ? (
               <div className="relative">
-                {/* 
-                      MegaMenuDropdown usually expects to be top-full. 
-                      We need to style it to be side-aligned or just wrap it.
-                      The component itself has specific styling (absolute top-full). 
-                      We might need to adjust MegaMenuDropdown or override here. 
-                      Since MegaMenuDropdown has 'absolute' in its root, we need to be careful.
-                      
-                      If we wrap it in a relative div, the absolute inside MegaMenu might still position relative to that.
-                      Let's check MegaMenuDropdown content again. 
-                      It says: className="absolute top-full ...".
-                      
-                      If we render it here, it will be top-full relative to THIS <div>.
-                      This <div> is already absolute top-0 left-full.
-                      So top-full means it goes BELOW the side position? No.
-                      
-                      We need to override the class of MegaMenuDropdown or update it to accept class names.
-                      Since I prefer not to edit MegaMenuDropdown interface if possible, I will try to update MegaMenuDropdown to be more flexible first OR
-                      Override via a wrapper if it wasn't absolute. But it IS absolute.
-                      
-                      Actually, looking at MegaMenuDropdown implementation:
-                      className="absolute top-full ltr:-left-10 rtl:-right-10 mt-2 w-[800px] ..."
-                      
-                      For a side menu, we want "top-0 left-0" (relative to the new wrapper) or similar.
-                      
-                      Let's update MegaMenuDropdown to accept a `positionClass` prop.
-                    */}
                 <MegaMenuDropdown
                   itemKey={item.key}
                   locale={locale as string}
@@ -467,13 +483,31 @@ const Navbar = () => {
             }`}
           >
             <div className="ltr:pl-4 rtl:pr-4 pt-2 space-y-2">
-              {isLoadingDynamic && (
-                <div className="p-2 text-sm text-gray-500">
-                  {t("loading")}...
-                </div>
-              )}
               {childrenToRender?.map((child) =>
                 renderMobileMenuItem(child, level + 1),
+              )}
+
+              {item.key && mobileHasMore[item.id] && !isLoadingDynamic && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    loadMobileDynamicData(item, true);
+                  }}
+                  className="mx-4 my-2 text-sm text-primary font-medium hover:underline flex items-center gap-1"
+                >
+                  {t("load_more") || "Load More"}
+                </button>
+              )}
+
+              {isLoadingDynamic && (
+                <div className="space-y-2 px-4 py-2">
+                  {[...Array(3)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-4 bg-gray-100/50 animate-pulse rounded w-3/4"
+                    />
+                  ))}
+                </div>
               )}
             </div>
           </div>

@@ -33,7 +33,7 @@ const MegaMenuDropdown: React.FC<MegaMenuProps> = ({
   const t = useTranslations("Common");
   const [items, setItems] = useState<MegaMenuItem[]>([]);
   const [page, setPage] = useState(1);
-  const limit = 9;
+  const limit = 10;
   const [hasMore, setHasMore] = useState(false);
 
   // Determine API Endpoint based on key
@@ -182,7 +182,7 @@ const MegaMenuDropdown: React.FC<MegaMenuProps> = ({
         </div>
       )}
 
-      {data?.total === 0 && !isLoading && !error && (
+      {items.length === 0 && !isLoading && !error && (
         <div className="col-span-2 text-center py-10 text-gray-500">
           No items found.
         </div>

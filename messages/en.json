@@ -41,7 +41,9 @@
     "about_us": "About Us",
     "vision_mission": "Vision & Mission",
     "news": "News",
-    "events": "Events"
+    "events": "Events",
+    "loading": "Loading...",
+    "load_more": "Load More"
   },
   "Footer": {
     "copyright": "© 2025 Erbil Polytechnic University. All right reserved.",

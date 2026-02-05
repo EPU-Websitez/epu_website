@@ -176,7 +176,7 @@ const MouClient = () => {
     error: intlError,
   } = useFetch<MouResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/memorandum-of-understanding?page=${intlPage}&limit=${limit}&type=INTERNATIONAL_UNIVERSITIES_AND_INSTITUTES`,
-    locale
+    locale,
   );
 
   // --- API Request: Local ---
@@ -186,15 +186,20 @@ const MouClient = () => {
     error: localError,
   } = useFetch<MouResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/memorandum-of-understanding?page=${localPage}&limit=${limit}&type=LOCAL_UNIVERSITIES_AND_INSTITUTES`,
-    locale
+    locale,
   );
 
   // --- Effect: Handle International Data ---
   useEffect(() => {
     if (intlData?.data) {
-      setIntlMous((prev) =>
-        intlPage === 1 ? intlData.data : [...prev, ...intlData.data]
-      );
+      setIntlMous((prev) => {
+        if (intlPage === 1) return intlData.data;
+        // Filter out duplicates
+        const newItems = intlData.data.filter(
+          (item) => !prev.some((p) => p.id === item.id),
+        );
+        return [...prev, ...newItems];
+      });
       setIntlTotal(intlData.total);
     }
   }, [intlData, intlPage]);
@@ -202,9 +207,14 @@ const MouClient = () => {
   // --- Effect: Handle Local Data ---
   useEffect(() => {
     if (localData?.data) {
-      setLocalMous((prev) =>
-        localPage === 1 ? localData.data : [...prev, ...localData.data]
-      );
+      setLocalMous((prev) => {
+        if (localPage === 1) return localData.data;
+        // Filter out duplicates
+        const newItems = localData.data.filter(
+          (item) => !prev.some((p) => p.id === item.id),
+        );
+        return [...prev, ...newItems];
+      });
       setLocalTotal(localData.total);
     }
   }, [localData, localPage]);
@@ -233,7 +243,7 @@ const MouClient = () => {
     data: Memorandum[],
     loading: boolean,
     total: number,
-    onLoadMore: () => void
+    onLoadMore: () => void,
   ) => {
     return (
       <div className="flex_center flex-col gap-10 w-full mb-12">
@@ -346,7 +356,7 @@ const MouClient = () => {
               intlMous,
               intlLoading,
               intlTotal,
-              handleLoadMoreIntl
+              handleLoadMoreIntl,
             )
           )}
 
@@ -359,7 +369,7 @@ const MouClient = () => {
               localMous,
               localLoading,
               localTotal,
-              handleLoadMoreLocal
+              handleLoadMoreLocal,
             )
           )}
         </div>

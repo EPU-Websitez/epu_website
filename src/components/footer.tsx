@@ -89,7 +89,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="max-w-[1024px] w-full border-t border-t-white border-opacity-30 pt-10 flex justify-between items-center gap-3 mt-5 px-4 md:flex-row flex-col">
-        <div className="lg:w-[200px] sm:w-[150px] w-[200px] lg:h-[50px] h-[40px] relative">
+        <div className="w-[150px] sm:w-[200px]  lg:h-[50px] h-[40px] relative">
           <Image
             src={"/images/logo-alt.png"}
             alt="My Image"
