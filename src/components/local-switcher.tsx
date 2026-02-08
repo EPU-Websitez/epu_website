@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale } from "next-intl";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "@/navigation";
 import { ChangeEvent, useState, useTransition } from "react";
 import { BsChevronDown } from "react-icons/bs";
 
@@ -11,24 +11,11 @@ export default function LocalSwitcher() {
   const localActive = useLocale();
   const pathname = usePathname();
 
-  const onSelectChange = (e: string) => {
-    const nextLocale = e;
-
-    // Check if the URL already has a locale prefix
-    const hasLocalePrefix = pathname.startsWith(`/${localActive}/`);
-
-    // Only redirect if the chosen locale is different or there's no prefix
-    if (nextLocale !== localActive || !hasLocalePrefix) {
-      const currentPath = pathname.replace(/^\/([^\/]+)\//, ""); // Extract remaining path
-
-      const newUrl = hasLocalePrefix
-        ? `/${nextLocale}/${currentPath}`
-        : `/${nextLocale}`;
-
-      startTransition(() => {
-        router.replace(newUrl);
-      });
-    }
+  const onSelectChange = (nextLocale: string) => {
+    startTransition(() => {
+      // @ts-ignore -- known issue with next-intl types for dynamic locale
+      router.replace(pathname, { locale: nextLocale });
+    });
   };
 
   const [langIsOpen, setLangIsOpen] = useState(false);
@@ -90,15 +77,6 @@ export default function LocalSwitcher() {
           کوردی
         </button>
       </div>
-      {/* <select
-        defaultValue={localActive}
-        className="bg-transparent py-2"
-        onChange={onSelectChange}
-        disabled={isPending}
-      >
-        <option value="en">English</option>
-        <option value="kr">Kurdish</option>
-      </select> */}
     </div>
   );
 }

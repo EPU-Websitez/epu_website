@@ -2,11 +2,10 @@
 import React, { useEffect, useState } from "react";
 import LocalSwitcher from "./local-switcher";
 import Image from "next/image";
-import Link from "next/link";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { Link, usePathname, useRouter } from "@/navigation";
 import { BsChevronDown } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import {
   IoChevronForward,
   IoChevronBack,
@@ -41,27 +40,11 @@ interface MenuResponse {
   message: string;
 }
 
-// --- helpers
-const normalizePathname = (pathname: string) => {
-  const segments = pathname.split("/");
-  let locale = "en"; // Default locale
-  if (segments.length > 1 && /^[a-z]{2}$/.test(segments[1])) {
-    locale = segments[1];
-    segments.splice(1, 1);
-  }
-  const normalized = segments.join("/") || "/";
-  return {
-    normalizedPath: normalized.startsWith("/") ? normalized : `/${normalized}`,
-    locale,
-  };
-};
-
 const Navbar = () => {
   const t = useTranslations("Navigation");
   const pathname = usePathname();
-  const params = useParams();
   const router = useRouter();
-  const { normalizedPath, locale } = normalizePathname(pathname);
+  const locale = useLocale();
   const [navIsOpen, setNavIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [hoveredDropdown, setHoveredDropdown] = useState<number | null>(null);
@@ -126,7 +109,7 @@ const Navbar = () => {
       const ref = item.routerPushReference.startsWith("/")
         ? item.routerPushReference
         : `/${item.routerPushReference}`;
-      return `/${locale}${ref}`;
+      return ref;
     }
     return "#";
   };
@@ -134,7 +117,12 @@ const Navbar = () => {
   const isActiveExact = (href: string) => {
     if (href === "#") return false;
     const current = pathname;
-    return current === href || current === href + "/";
+    const normalize = (p: string) => (p.startsWith("/") ? p : `/${p}`);
+    // href from getMenuItemUrl might not have slash if external or something, but internal ones do
+    return (
+      normalize(current) === normalize(href) ||
+      normalize(current) === normalize(href) + "/"
+    );
   };
 
   // Helper to check if any child is active (recursive)
