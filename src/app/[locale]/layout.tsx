@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 
-const inter = Inter({ subsets: ["latin"] });
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-poppins",
+});
 
 export const metadata: Metadata = {
   title: "Epu",
@@ -29,7 +33,7 @@ export default async function RootLayout(props: Readonly<RootLayoutProps>) {
 
   return (
     <html lang={locale}>
-      <body>
+      <body className={poppins.className}>
         <NextIntlClientProvider messages={messages}>
           <div className="flex justify-start items-start flex-col w-full min-h-screen">
             <Navbar />
