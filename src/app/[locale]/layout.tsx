@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/footer";
+import packageJson from "../../../package.json";
 import Navbar from "@/components/navbar";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
@@ -38,7 +39,7 @@ export default async function RootLayout(props: Readonly<RootLayoutProps>) {
           <div className="flex justify-start items-start flex-col w-full min-h-screen">
             <Navbar />
             <div className="w-full pt-5">{children}</div>
-            <Footer />
+            <Footer version={packageJson.version} />
           </div>
         </NextIntlClientProvider>
       </body>

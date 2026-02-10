@@ -20,24 +20,25 @@ export async function generateMetadata({
   const { locale } = await params;
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/website/alumni-students/main`,
+      `${process.env.NEXT_PUBLIC_API_URL}/website/alumni-students`,
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
-      }
+      },
     );
 
     if (!response.ok) {
       throw new Error("Failed to fetch alumni data");
     }
 
-    const alumniData: AlumniMetadata = await response.json();
+    const responseData = await response.json();
+    const alumniData: AlumniMetadata = responseData.data[0];
 
-    const pageTitle = `${alumniData.feedback_title} | EPU Alumni`;
-    const pageDescription = alumniData.feedback_description
-      .substring(0, 160)
+    const pageTitle = `${alumniData?.feedback_title} | EPU Alumni`;
+    const pageDescription = alumniData?.feedback_description
+      ?.substring(0, 160)
       .trim();
-    const imageUrl = alumniData.bg_image?.lg || "/images/alumni-bg.png";
+    const imageUrl = alumniData?.bg_image?.lg || "/images/alumni-bg.png";
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {

@@ -40,7 +40,7 @@ interface BgListItem {
   title: string;
   description: string;
 }
-interface AlumniResponse {
+interface AlumniItem {
   id: number;
   feedback_title: string;
   feedback_description: string;
@@ -52,6 +52,10 @@ interface AlumniResponse {
   feedbacks: FeedbackItem[];
   stories: StoryItem[];
   bg_lists: BgListItem[];
+}
+
+interface AlumniResponse {
+  data: AlumniItem[];
 }
 
 // -------- Modals --------
@@ -186,8 +190,8 @@ const AlumniClient = () => {
     loading: isLoading,
     error: hasError,
   } = useFetch<AlumniResponse>(
-    `${process.env.NEXT_PUBLIC_API_URL}/website/alumni-students/main`,
-    locale
+    `${process.env.NEXT_PUBLIC_API_URL}/website/alumni-students`,
+    locale,
   );
 
   if (hasError) {
@@ -200,7 +204,7 @@ const AlumniClient = () => {
     );
   }
 
-  if (!isLoading && !alumniData) {
+  if (!isLoading && !alumniData?.data?.length) {
     return (
       <div className="my-10 flex_center w-full">
         <div className="max-w-[1024px] w-full flex_center">
@@ -209,6 +213,8 @@ const AlumniClient = () => {
       </div>
     );
   }
+
+  const currentAlumniData = alumniData?.data[0];
 
   return (
     <>
@@ -225,10 +231,10 @@ const AlumniClient = () => {
             <div className="md:hidden text-secondary text-center flex justify-center items-center flex-col gap-5 px-5">
               <h5 className="text-sm font-semibold">{t("feedback")}</h5>
               <h1 className="text-titleNormal font-semibold">
-                {alumniData?.feedback_title}
+                {currentAlumniData?.feedback_title}
               </h1>
               <span className="text-base">
-                {alumniData?.feedback_description}
+                {currentAlumniData?.feedback_description}
               </span>
             </div>
             <div className="lg:w-[45%] md:w-[50%] w-full flex-shrink-0 z-10 md:-mr-16 mr-0">
@@ -246,7 +252,7 @@ const AlumniClient = () => {
                   setActiveIndex(swiper.realIndex);
                 }}
               >
-                {alumniData?.feedbacks.map((slide, index) => (
+                {currentAlumniData?.feedbacks?.map((slide, index) => (
                   <SwiperSlide key={slide.id}>
                     <div
                       className={`rounded-3xl flex md:justify-end justify-start lg:gap-10 gap-5 md:items-end items-start lg:p-10 p-5 flex-col transition-all duration-300 ${
@@ -308,10 +314,10 @@ const AlumniClient = () => {
               <div className="flex_start flex-col gap-7 lg:px-6 px-10">
                 <h5 className="text-sm font-semibold">{t("feedback")}</h5>
                 <h1 className="max-w-[350px] lg:text-title text-titleNormal font-semibold">
-                  {alumniData?.feedback_title}
+                  {currentAlumniData?.feedback_title}
                 </h1>
                 <span className="max-w-[460px] lg:text-lg text-base">
-                  {alumniData?.feedback_description}
+                  {currentAlumniData?.feedback_description}
                 </span>
                 <div className="flex_center gap-4">
                   <button
@@ -339,10 +345,10 @@ const AlumniClient = () => {
           ) : (
             <>
               <h1 className="text-[30px] font-semibold">
-                {alumniData?.stories_title}
+                {currentAlumniData?.stories_title}
               </h1>
               <p className="text-sm max-w-[660px] text-center">
-                {alumniData?.stories_description}
+                {currentAlumniData?.stories_description}
               </p>
             </>
           )}
@@ -352,7 +358,7 @@ const AlumniClient = () => {
                 <StoryCardSkeleton /> <StoryCardSkeleton />
               </>
             ) : (
-              alumniData?.stories.map((story, index) => (
+              currentAlumniData?.stories?.map((story, index) => (
                 <div
                   key={story.id}
                   className="border rounded-3xl flex_start flex-col w-full"
@@ -400,9 +406,9 @@ const AlumniClient = () => {
               src={
                 bgImageError
                   ? "/images/placeholder.svg"
-                  : alumniData?.bg_image?.lg || "/images/alumni-bg.png"
+                  : currentAlumniData?.bg_image?.lg || "/images/alumni-bg.png"
               }
-              alt={alumniData?.bg_title || "Alumni"}
+              alt={currentAlumniData?.bg_title || "Alumni"}
               fill
               priority
               className="w-full h-full object-cover"
@@ -411,13 +417,13 @@ const AlumniClient = () => {
             <div className="opacity-40 bg-primary absolute left-0 top-0 w-full h-full z-10"></div>
             <div className="w-[1024px] text-white text-opacity-90 px-3 flex_start flex-col gap-5 z-20">
               <h1 className="md:text-4xl text-2xl font-semibold z-20">
-                {alumniData?.bg_title}
+                {currentAlumniData?.bg_title}
               </h1>
               <p className="md:text-base text-sm">
-                {alumniData?.bg_description}
+                {currentAlumniData?.bg_description}
               </p>
 
-              {alumniData?.bg_lists.slice(0, 2).map((item, index) => (
+              {currentAlumniData?.bg_lists?.slice(0, 2).map((item, index) => (
                 <div
                   key={item.id}
                   className="flex_start gap-5 w-full max-w-[600px] md:mt-10 mt-5"
@@ -438,14 +444,15 @@ const AlumniClient = () => {
                 </div>
               ))}
 
-              {alumniData?.bg_lists && alumniData?.bg_lists.length > 3 && (
-                <button
-                  onClick={() => setShowBgListModal(true)}
-                  className="mt-5 bg-white text-primary font-semibold px-4 py-2 rounded-md"
-                >
-                  {t("show_more")}
-                </button>
-              )}
+              {currentAlumniData?.bg_lists &&
+                currentAlumniData?.bg_lists.length > 3 && (
+                  <button
+                    onClick={() => setShowBgListModal(true)}
+                    className="mt-5 bg-white text-primary font-semibold px-4 py-2 rounded-md"
+                  >
+                    {t("show_more")}
+                  </button>
+                )}
             </div>
           </div>
         )}
@@ -460,7 +467,7 @@ const AlumniClient = () => {
 
       {showBgListModal && (
         <BgListModal
-          list={alumniData?.bg_lists || []}
+          list={currentAlumniData?.bg_lists || []}
           onClose={() => setShowBgListModal(false)}
           title={t("all_items")}
         />

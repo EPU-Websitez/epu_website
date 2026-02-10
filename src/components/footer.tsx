@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { FaFacebookF, FaInstagram } from "react-icons/fa6";
 
-export default function Footer() {
+// Define props interface if needed, or inline
+export default function Footer({ version }: { version: string }) {
   const t = useTranslations("Footer");
   const params = useParams();
   const locale = params.locale as string;
@@ -101,7 +102,10 @@ export default function Footer() {
             }}
           />
         </div>
-        <span className="opacity-80 text-sm">{t("copyright")}</span>
+        <div className="flex flex-col items-center">
+          <span className="opacity-80 text-sm">{t("copyright")}</span>
+          <span className="opacity-60 text-xs mt-1">v{version}</span>
+        </div>
         <div className="flex_center gap-5">
           {/* <a
             href="https://www.facebook.com/epu.education"
