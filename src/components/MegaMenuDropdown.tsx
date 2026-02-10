@@ -8,16 +8,18 @@ import { FaChevronRight } from "react-icons/fa6";
 import { useTranslations } from "next-intl";
 
 interface MegaMenuProps {
-  itemKey: string; // e.g. "GET_COLLEGES"
+  itemKey?: string; // Optional now
   locale: string;
   positionClass?: string;
+  customItems?: MegaMenuItem[]; // For standard dropdowns
 }
 
 interface MegaMenuItem {
   id: number;
   title: string;
-  link: string; // Constructed link
+  link: string;
   description?: string;
+  target?: string;
 }
 
 interface ApiResponse {
@@ -29,17 +31,24 @@ const MegaMenuDropdown: React.FC<MegaMenuProps> = ({
   itemKey,
   locale,
   positionClass,
+  customItems,
 }) => {
   const t = useTranslations("Common");
-  const [items, setItems] = useState<MegaMenuItem[]>([]);
+  const [fetchedItems, setFetchedItems] = useState<MegaMenuItem[]>([]);
   const [page, setPage] = useState(1);
   const limit = 10;
   const [hasMore, setHasMore] = useState(false);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
   const [style, setStyle] = useState<React.CSSProperties>({});
 
+  // Use custom items if provided
+  const items = customItems || fetchedItems;
+  const isLarge = items.length > 12;
+  const isMsg = items.length > 6 && items.length <= 12;
+
   // Determine API Endpoint based on key
   const getEndpoint = () => {
+    if (!itemKey) return null;
     switch (itemKey) {
       case "GET_COLLEGES":
         return `/website/colleges?type=COLLEGE&page=${page}&limit=${limit}`;
@@ -64,8 +73,12 @@ const MegaMenuDropdown: React.FC<MegaMenuProps> = ({
       },
     }).then((res) => res.json());
 
-  const { data, error, isLoading } = useSWR<ApiResponse>(
-    endpoint ? [`${API_URL}${endpoint}`, locale] : null,
+  const {
+    data,
+    error,
+    isLoading: isSwrLoading,
+  } = useSWR<ApiResponse>(
+    endpoint && !customItems ? [`${API_URL}${endpoint}`, locale] : null,
     fetcher,
     {
       keepPreviousData: true,
@@ -73,17 +86,19 @@ const MegaMenuDropdown: React.FC<MegaMenuProps> = ({
     },
   );
 
+  const isLoading = !customItems && isSwrLoading;
+
   useEffect(() => {
-    if (data?.data) {
+    if (data?.data && !customItems) {
       const mappedItems: MegaMenuItem[] = data.data.map((item: any) => {
         let title = item.title;
         let link = "#";
+        let target = undefined;
 
         if (itemKey === "GET_COLLEGES" || itemKey === "GET_INSTITUTES") {
-          // Colleges structure
-          // Assuming existing logic from CollegesClient: subdomains
           const subdomain = item.subdomain;
           link = subdomain ? `https://${subdomain}.epu.edu.iq/${locale}` : "#";
+          target = "_blank";
         } else if (itemKey === "GET_CENTERS") {
           link = `/${locale}/centers/${item.slug}`;
         } else if (itemKey === "GET_DIRECTORATES") {
@@ -95,19 +110,20 @@ const MegaMenuDropdown: React.FC<MegaMenuProps> = ({
           title: title,
           link: link,
           description: item.about_content || item.description || "",
+          target,
         };
       });
 
-      setItems((prev) => {
+      setFetchedItems((prev) => {
         if (page === 1) return mappedItems;
         const existingIds = new Set(prev.map((i) => i.id));
         const newItems = mappedItems.filter((i) => !existingIds.has(i.id));
         return [...prev, ...newItems];
       });
 
-      setHasMore(items.length + mappedItems.length < (data.total || 0));
+      setHasMore(fetchedItems.length + mappedItems.length < (data.total || 0));
     }
-  }, [data, itemKey, locale, page]);
+  }, [data, itemKey, locale, page, customItems]); // removed items dependency to avoid loop
 
   // --- Smart Positioning Logic ---
   useEffect(() => {
@@ -115,76 +131,81 @@ const MegaMenuDropdown: React.FC<MegaMenuProps> = ({
       if (dropdownRef.current) {
         const rect = dropdownRef.current.getBoundingClientRect();
         const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
 
         let newStyle: React.CSSProperties = {};
 
-        // 1. Horizontal Overflow Detection
-        // Default is usually aligned somewhat to left or right. We check if it goes off screen.
+        // If Large (3 cols), Center on Page
+        if (items.length > 12) {
+          // We want to be centered in viewport.
+          // Since we are absolute relative to `offsetParent`, we need to compensate.
+          const offsetParent = dropdownRef.current.offsetParent;
+          if (offsetParent) {
+            const parentRect = offsetParent.getBoundingClientRect();
+            const targetWidth = 800; // Fixed width for large
+            const targetLeft = (viewportWidth - targetWidth) / 2;
 
-        // Reset left/right first to measure "natural" position if we want,
-        // but here we are measuring where it rendered *with* the default classes.
+            // Calculate left relative to offsetParent
+            const relativeLeft = targetLeft - parentRect.left;
 
-        const overflowRight = rect.right > viewportWidth;
-        const overflowLeft = rect.left < 0;
+            newStyle.left = `${relativeLeft}px`;
+            newStyle.right = "auto"; // Reset right if set by classes
+            newStyle.width = `${targetWidth}px`;
+            newStyle.maxWidth = "95vw"; // Safety
+          }
+        } else {
+          const overflowRight = rect.right > viewportWidth;
+          const overflowLeft = rect.left < 0;
 
-        if (overflowRight) {
-          // If it overflows right, we anchor it to the right edge of the screen (with some margin)
-          // OR we switch to scaling relative to parent.
-          // Since we are absolute relative to parent, `right: 0` aligns with parent right edge.
-          // We might need a negative right value if the parent is far left but the menu is huge.
-
-          // Simple strategy: If slightly overflowing, shift it.
-          // A more robust strategy for "Mega Menu" is often to center it on the screen
-          // OR limit width. Our width is fixed 500px.
-
-          // If standard "right:0" (rtl) or "left:0" (ltr) isn't enough, we might need manual offset.
-
-          // Let's try attempting to center it if it's hitting an edge,
-          // BUT keeping it `absolute` makes centering relative to viewport hard without `fixed`.
-
-          // Strategy: If overflow Right, set `left: auto`, `right: 0`.
-          // If that is still not enough (e.g. parent is far right), we might need negative right.
-          if (rect.right > viewportWidth - 20) {
-            const diff = rect.right - viewportWidth + 20;
-            // We can't easily modify 'right' pixel value without knowing current computed 'right'.
-            // Whatever, let's just force it to align right of parent if in LTR,
-            // or shift it by translation.
-            newStyle.transform = `translateX(-${diff}px)`;
+          if (overflowRight) {
+            if (rect.right > viewportWidth - 20) {
+              const diff = rect.right - viewportWidth + 20;
+              newStyle.transform = `translateX(-${diff}px)`;
+            }
+          }
+          if (overflowLeft) {
+            if (rect.left < 20) {
+              const diff = 20 - rect.left;
+              newStyle.transform = `translateX(${diff}px)`;
+            }
           }
         }
 
-        if (overflowLeft) {
-          if (rect.left < 20) {
-            const diff = 20 - rect.left;
-            newStyle.transform = `translateX(${diff}px)`;
-          }
-        }
-
-        // 2. Vertical Overflow / Max Height
-        const spaceBelow = viewportHeight - rect.top - 20; // 20px buffer
-        // Set max-height to fit in visible space, but at least some reasonable min (e.g. 200px)
-        // If space is widely available, cap it at something reasonable (e.g. 80vh)
+        // Vertical overflow logic (shared)
+        const viewportHeight = window.innerHeight;
+        const spaceBelow = viewportHeight - rect.top - 20;
         const activeMaxHeight = Math.max(
           200,
           Math.min(spaceBelow, viewportHeight * 0.8),
         );
         newStyle.maxHeight = `${activeMaxHeight}px`;
 
-        setStyle(newStyle);
+        setStyle((prev) => {
+          // Only update if changed to avoid loop?
+          // Simple check
+          if (
+            prev.left !== newStyle.left ||
+            prev.maxHeight !== newStyle.maxHeight ||
+            prev.transform !== newStyle.transform ||
+            prev.width !== newStyle.width
+          ) {
+            return newStyle;
+          }
+          return prev;
+        });
       }
     };
 
     // Run on mount and resize
+
     adjustPosition();
     window.addEventListener("resize", adjustPosition);
-    window.addEventListener("scroll", adjustPosition); // Scroll might change viewport relative position
+    window.addEventListener("scroll", adjustPosition);
 
     return () => {
       window.removeEventListener("resize", adjustPosition);
       window.removeEventListener("scroll", adjustPosition);
     };
-  }, [items /* Re-calc if items change (though height is main factor) */]); // We assume it's always "open" if rendered
+  }, [items.length]);
 
   const handleLoadMore = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -192,28 +213,31 @@ const MegaMenuDropdown: React.FC<MegaMenuProps> = ({
     setPage((p) => p + 1);
   };
 
-  if (!endpoint) return null;
-  // We can pass `isOpen` prop if we want to conditionally render inside, but usually parent handles it.
+  if (!endpoint && !customItems) return null;
+
+  // Width classes
+  let widthClass = "w-64";
+  if (items.length > 12) widthClass = "w-[800px]";
+  else if (items.length > 6) widthClass = "w-[500px]";
+
+  // Grid classes
+  let gridClass = "grid-cols-1";
+  if (items.length > 12) gridClass = "grid-cols-3";
+  else if (items.length > 6) gridClass = "grid-cols-2";
 
   return (
     <div
       ref={dropdownRef}
       style={style}
-      className={`absolute ${positionClass || "top-full ltr:-left-10 rtl:-right-10 mt-2"} w-[500px] bg-white shadow-xl rounded-lg border border-gray-200 z-50 p-6 cursor-default overflow-y-auto transition-all duration-200`}
+      className={`absolute ${positionClass || "top-full ltr:-left-10 rtl:-right-10 mt-2"} ${!style.width ? widthClass : ""} bg-white shadow-xl rounded-lg border border-gray-200 z-50 p-6 cursor-default overflow-y-auto transition-all duration-200`}
     >
-      {/* Arrow - Hide if we have a custom transform maybe? Or just keep it. 
-          If we shift the box, the arrow might detach from the trigger visually. 
-          For now, let's hide arrow if we detect we are shifting significantly, OR just keep it. 
-      */}
-      {!positionClass && !style.transform && (
+      {/* Arrow - Hide if centered (isLarge) or if explicitly shifting? */}
+      {!positionClass && !style.transform && !isLarge && (
         <div className="absolute -top-2 ltr:left-16 rtl:right-16 w-4 h-4 bg-white border-l border-t border-gray-200 rotate-45"></div>
       )}
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className={`grid ${gridClass} gap-4`}>
         {items.map((item) => {
-          const isExternal =
-            itemKey === "GET_COLLEGES" || itemKey === "GET_INSTITUTES";
-
           const content = (
             <div className="flex justify-between items-center">
               <span className="font-semibold text-sm text-gray-800 group-hover:text-primary line-clamp-2 leading-tight">
@@ -224,9 +248,9 @@ const MegaMenuDropdown: React.FC<MegaMenuProps> = ({
           );
 
           const className =
-            "flex flex-col p-3 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100 group";
+            "flex flex-col p-3 font-semibold rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100 group";
 
-          if (isExternal) {
+          if (item.target === "_blank") {
             return (
               <a
                 key={item.id}
@@ -255,7 +279,7 @@ const MegaMenuDropdown: React.FC<MegaMenuProps> = ({
           ))}
       </div>
 
-      {hasMore && (
+      {hasMore && !customItems && (
         <div className="mt-4 pt-3 border-t border-gray-100 flex justify-center">
           <button
             onClick={handleLoadMore}
@@ -268,7 +292,7 @@ const MegaMenuDropdown: React.FC<MegaMenuProps> = ({
       )}
 
       {items.length === 0 && !isLoading && !error && (
-        <div className="col-span-2 text-center py-10 text-gray-500">
+        <div className="col-span-full text-center py-10 text-gray-500">
           No items found.
         </div>
       )}

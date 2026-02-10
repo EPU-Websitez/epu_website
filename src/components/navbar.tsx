@@ -300,7 +300,11 @@ const Navbar = () => {
   };
 
   // --- Main Desktop Menu Item Renderer ---
-  const renderDesktopMenuItem = (item: MenuItem) => {
+  const renderDesktopMenuItem = (
+    item: MenuItem,
+    index: number,
+    total: number,
+  ) => {
     const hasChildren =
       (Array.isArray(item.children) && item.children.length > 0) || !!item.key;
     const parentHref = getMenuItemUrl(item);
@@ -312,6 +316,12 @@ const Navbar = () => {
     // Deep check for children
     const anyChildActive = isChildActive(item);
     const parentActive = parentItselfActive || anyChildActive;
+
+    // Check if this is one of the last items to align dropdown on the right
+    const isLast = index >= total - 2;
+    const alignmentClass = isLast
+      ? "ltr:right-0 rtl:left-0"
+      : "ltr:left-0 rtl:right-0";
 
     if (hasChildren) {
       return (
@@ -362,7 +372,7 @@ const Navbar = () => {
 
           {/* Dropdown Content */}
           <div
-            className={`absolute top-full ltr:left-0 rtl:right-0 mt-2 transition-all duration-200 ${
+            className={`absolute top-full ${alignmentClass} mt-2 transition-all duration-200 ${
               isDropdownOpen
                 ? "opacity-100 visible translate-y-0"
                 : "opacity-0 invisible -translate-y-2"
@@ -370,17 +380,24 @@ const Navbar = () => {
           >
             {/* If item has a KEY, use Mega Menu */}
             {item.key ? (
-              <MegaMenuDropdown itemKey={item.key} locale={locale as string} />
+              <MegaMenuDropdown
+                itemKey={item.key}
+                locale={locale as string}
+                positionClass={`top-0 ${alignmentClass}`}
+              />
             ) : (
-              // Standard Recursive Dropdown
-              <div className="w-64 bg-white shadow-lg rounded-lg border border-gray-200 z-50 relative">
-                <div className="absolute -top-2 ltr:left-4 rtl:right-4 w-4 h-4 bg-white border-l border-t border-gray-200 rotate-45"></div>
-                <div className="py-2">
-                  {item.children.map((child) => (
-                    <DesktopSubmenuItem key={child.id} item={child} />
-                  ))}
-                </div>
-              </div>
+              // Standard Recursive Dropdown -> Now using MegaMenuDropdown logic for consistency
+              <MegaMenuDropdown
+                locale={locale as string}
+                positionClass={`top-0 ${alignmentClass}`}
+                customItems={item.children.map((child) => ({
+                  id: child.id,
+                  title: getTitle(child),
+                  link: getMenuItemUrl(child),
+                  description: "",
+                  target: child.type === "EXTERNAL" ? "_blank" : undefined,
+                }))}
+              />
             )}
           </div>
         </div>
@@ -594,7 +611,7 @@ const Navbar = () => {
           <div className="sm:flex hidden justify-center items-center xl:gap-5 gap-3 flex-grow relative">
             {menuData?.data?.map((item, index) => (
               <React.Fragment key={item.id}>
-                {renderDesktopMenuItem(item)}
+                {renderDesktopMenuItem(item, index, menuData.data.length)}
                 {index < (menuData?.data?.length || 0) - 1 && (
                   <span className="h-[30px] w-[1px] bg-[#81B1CE] bg-opacity-50"></span>
                 )}
