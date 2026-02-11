@@ -71,7 +71,7 @@ const DirectoratesClient = () => {
 
   // --- State Management ---
   const [directorateTypes, setDirectorateTypes] = useState<DirectorateType[]>(
-    []
+    [],
   );
   const [activeTypeId, setActiveTypeId] = useState<number | null>(null);
   const [directorates, setDirectorates] = useState<Directorate[]>([]);
@@ -86,23 +86,25 @@ const DirectoratesClient = () => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   // --- API Fetching ---
-  const { data: typesData, error: typesError } = useFetch<DirectoratesTypeResponse>(
-    `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/types/list?page=1&limit=4`,
-    locale
-  );
+  const { data: typesData, error: typesError } =
+    useFetch<DirectoratesTypeResponse>(
+      `${process.env.NEXT_PUBLIC_API_URL}/website/directorates/types/list?page=1&limit=4`,
+      locale,
+    );
 
-  const { data: directoratesData, error: directoratesError } = useFetch<DirectoratesResponse>(
-    activeTypeId
-      ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates?page=${page}&limit=8&directorate_type_id=${activeTypeId}`
-      : "",
-    locale
-  );
+  const { data: directoratesData, error: directoratesError } =
+    useFetch<DirectoratesResponse>(
+      activeTypeId
+        ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates?page=${page}&limit=8&directorate_type_id=${activeTypeId}`
+        : "",
+      locale,
+    );
 
   // --- Effects to Process Data ---
   useEffect(() => {
     if (typesData?.data) {
       const sortedTypes = [...typesData.data].sort(
-        (a, b) => a.priority - b.priority
+        (a, b) => a.priority - b.priority,
       );
       setDirectorateTypes(sortedTypes);
       if (sortedTypes.length > 0) {
@@ -246,27 +248,24 @@ const DirectoratesClient = () => {
                   </h3>
                   <div className="flex w-full justify-between items-center gap-4 text-white">
                     <div className="flex -space-x-3">
-                      {item.galleries
-                        .slice(0, 4)
-                        .map((galleryItem, index) => (
-                          <div
-                            key={galleryItem.image?.id}
-                            className="relative group"
-                            style={{ zIndex: item.galleries.length - index }}
-                          >
-                            <Image
-                              src={galleryItem.image?.lg}
-                              alt={`img-${galleryItem.image?.id}`}
-                              width={32}
-                              height={32}
-                              className="w-8 h-8 rounded-full border-2 border-white shadow-lg object-cover"
-                              onError={(e) => {
-                                e.currentTarget.src =
-                                  "/images/placeholder.svg";
-                              }}
-                            />
-                          </div>
-                        ))}
+                      {item.galleries.slice(0, 4).map((galleryItem, index) => (
+                        <div
+                          key={galleryItem.image?.id}
+                          className="relative group"
+                          style={{ zIndex: item.galleries.length + index }}
+                        >
+                          <Image
+                            src={galleryItem.image?.lg}
+                            alt={`img-${galleryItem.image?.id}`}
+                            width={32}
+                            height={32}
+                            className="w-8 h-8 rounded-full border-2 border-white shadow-lg object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = "/images/placeholder.svg";
+                            }}
+                          />
+                        </div>
+                      ))}
                     </div>
                     <div className="w-5 h-5 rounded-full flex_center bg-white">
                       <FiChevronRight className="text-sm text-secondary rtl:rotate-180" />

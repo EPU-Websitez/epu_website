@@ -337,7 +337,7 @@ const Navbar = () => {
             */}
             {item.type === "DROPDOWN" ? (
               <button
-                className={`flex_center gap-2 xl:text-base text-[10px] hover:text-opacity-80 transition-colors ${
+                className={`flex_center gap-2 text-[clamp(0.65rem,0.9vw,1rem)] hover:text-opacity-80 transition-colors ${
                   parentActive ? desktopActiveClass : ""
                 }`}
               >
@@ -356,7 +356,7 @@ const Navbar = () => {
                   item.type === "EXTERNAL" ? "noopener noreferrer" : undefined
                 }
                 title={title}
-                className={`flex_center gap-2 xl:text-base text-[10px] hover:text-opacity-80 transition-colors ${
+                className={`flex_center gap-2 text-[clamp(0.65rem,0.9vw,1rem)] hover:text-opacity-80 transition-colors ${
                   parentActive ? desktopActiveClass : ""
                 }`}
               >
@@ -384,19 +384,26 @@ const Navbar = () => {
                 itemKey={item.key}
                 locale={locale as string}
                 positionClass={`top-0 ${alignmentClass}`}
+                title={title}
               />
             ) : (
               // Standard Recursive Dropdown -> Now using MegaMenuDropdown logic for consistency
               <MegaMenuDropdown
                 locale={locale as string}
                 positionClass={`top-0 ${alignmentClass}`}
-                customItems={item.children.map((child) => ({
-                  id: child.id,
-                  title: getTitle(child),
-                  link: getMenuItemUrl(child),
-                  description: "",
-                  target: child.type === "EXTERNAL" ? "_blank" : undefined,
-                }))}
+                title={title}
+                customItems={item.children.map((child) => {
+                  const mapItem = (c: MenuItem): any => ({
+                    id: c.id,
+                    title: getTitle(c),
+                    link: getMenuItemUrl(c),
+                    description: "",
+                    target: c.type === "EXTERNAL" ? "_blank" : undefined,
+                    itemKey: c.key,
+                    children: c.children?.map(mapItem),
+                  });
+                  return mapItem(child);
+                })}
               />
             )}
           </div>
@@ -411,7 +418,7 @@ const Navbar = () => {
         rel={item.type === "EXTERNAL" ? "noopener noreferrer" : undefined}
         title={title}
         href={parentHref}
-        className={`flex_center gap-2 xl:text-base text-[10px] hover:text-opacity-80 transition-colors ${
+        className={`flex_center gap-2 text-[clamp(0.65rem,0.9vw,1rem)] hover:text-opacity-80 transition-colors ${
           parentActive ? desktopActiveClass : ""
         }`}
       >
@@ -608,7 +615,7 @@ const Navbar = () => {
           </div>
 
           {/* Desktop navbar row */}
-          <div className="sm:flex hidden justify-center items-center xl:gap-5 gap-3 flex-grow relative">
+          <div className="sm:flex hidden justify-start px-3 items-center xl:gap-5 gap-3 flex-grow relative">
             {menuData?.data?.map((item, index) => (
               <React.Fragment key={item.id}>
                 {renderDesktopMenuItem(item, index, menuData.data.length)}

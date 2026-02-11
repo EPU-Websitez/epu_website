@@ -26,7 +26,7 @@ export default function UsefulLink() {
         <div className="flex sm:justify-between justify-center sm:flex-row flex-col sm:items-center sm:gap-5 gap-8 items-start h-full max-w-[1000px] w-full z-10 px-3">
           <div className="flex_start flex-col sm:gap-8 gap-3">
             <p className="text-secondary">{t("you_may_also_like")}</p>
-            <h1 className="md:text-[54px] text-3xl max-w-[15ch] text-secondary font-semibold leading-normal">
+            <h1 className="md:text-[54px] text-3xl max-w-[13ch] text-secondary font-semibold leading-normal">
               {t("most_useful_links")}
             </h1>
           </div>

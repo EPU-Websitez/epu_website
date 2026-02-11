@@ -98,7 +98,7 @@ interface EventsResponse {
 const HomeSkeleton = () => (
   <div className="flex_center flex-col gap-5 w-full mt-8 animate-pulse">
     <div className="relative custom_container sm:px-3 px-5 w-full">
-      <div className="w-full lg:h-[500px] sm:h-[400px] h-[220px] bg-gray-200 rounded-2xl"></div>
+      <div className="w-full lg:h-[500px] sm:h-[456px] h-[220px] bg-gray-200 rounded-2xl"></div>
     </div>
     <div className="custom_container flex-col flex_center gap-5 sm:mt-10 mt-5 sm:px-3 px-5">
       <div className="h-10 w-1/2 bg-gray-200 rounded-full"></div>
@@ -202,7 +202,7 @@ export default function HomePageClient() {
         <div className="relative w-full">
           {" "}
           {/* Added a wrapper div */}
-          <div className="w-full lg:h-[500px] sm:h-[400px] h-[220px] relative sm:rounded-3xl rounded-md overflow-hidden">
+          <div className="w-full lg:h-[500px] sm:h-[456px] h-[220px] relative sm:rounded-3xl rounded-md overflow-hidden">
             <Swiper
               modules={[Pagination, Autoplay]}
               slidesPerView={1}
@@ -380,9 +380,8 @@ export default function HomePageClient() {
           </div>
         </div>
 
-        {/* --- CHANGE: Replaced Image/Play Button with conditional Video/Image player --- */}
         <div className="max-w-[1000px] w-full relative sm:mt-20 mt-10">
-          <div className="w-full sm:h-[400px] h-[200px] relative rounded-3xl overflow-hidden bg-gray-200 group">
+          <div className="w-full sm:h-[456px] h-[200px] relative rounded-3xl overflow-hidden bg-gray-200 group">
             {uniData?.intro_image?.media_type === "VIDEO" ? (
               <VideoPlayer
                 src={uniData.intro_image.original}

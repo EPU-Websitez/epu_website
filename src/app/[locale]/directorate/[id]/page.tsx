@@ -256,25 +256,51 @@ const Page = () => {
                         />
 
                         {directorateData.galleries.length > 0 && (
-                          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
-                            {directorateData.galleries.map((item, index) => (
-                              <button
-                                key={item.id}
-                                onClick={() => handleOpenModal(index)}
-                                className="group relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 shadow-sm hover:shadow-md transition-all duration-300"
-                              >
-                                <Image
-                                  src={item.image.lg}
-                                  alt={directorateData.directorate_type.name}
-                                  fill
-                                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                                  className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
-                                />
-
-                                {/* Optional: Dark Overlay on Hover for better UX */}
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-                              </button>
-                            ))}
+                          <div className="w-full">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 auto-rows-[180px] sm:auto-rows-[200px] gap-3 w-full">
+                              {directorateData.galleries.map((item, index) => (
+                                <button
+                                  key={item.id}
+                                  onClick={() => handleOpenModal(index)}
+                                  className={`group relative overflow-hidden rounded-2xl bg-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 ${
+                                    index === 0 ? "col-span-2 row-span-2" : ""
+                                  }`}
+                                >
+                                  <Image
+                                    src={item.image.lg}
+                                    alt={directorateData.directorate_type.name}
+                                    fill
+                                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                                    onError={(e) => {
+                                      e.currentTarget.src =
+                                        "/images/placeholder.svg";
+                                    }}
+                                  />
+                                  {/* Gradient overlay on hover */}
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                  {/* Expand icon */}
+                                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <span className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="w-5 h-5 text-gray-800"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                                        />
+                                      </svg>
+                                    </span>
+                                  </div>
+                                </button>
+                              ))}
+                            </div>
                           </div>
                         )}
                       </div>
@@ -287,7 +313,6 @@ const Page = () => {
                             </span>
                           </h2>
                           <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full">
-                            {/* --- FIXED SECTION STARTS HERE --- */}
                             {/* Changed from <p> to <div> and added dangerouslySetInnerHTML */}
                             <div
                               className="text-opacity-70 text-secondary text-sm prose max-w-none"
@@ -305,8 +330,6 @@ const Page = () => {
                             <span className="z-10 relative">{t("vision")}</span>
                           </h2>
                           <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full">
-                            {/* --- FIXED SECTION STARTS HERE --- */}
-                            {/* Changed from <p> to <div> and added dangerouslySetInnerHTML */}
                             <div
                               className="text-opacity-70 text-secondary text-sm prose max-w-none"
                               dangerouslySetInnerHTML={{
