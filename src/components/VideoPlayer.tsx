@@ -71,7 +71,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, className }) => {
       />
 
       {/* Overlay UI */}
-      <div className="absolute inset-0 z-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20">
+      <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20">
         <div className="flex gap-4">
           <button
             onClick={togglePlay}
