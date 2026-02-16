@@ -1,15 +1,12 @@
 "use client";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import { Link } from "@/navigation";
 import { FaFacebookF, FaInstagram } from "react-icons/fa6";
 
 // Define props interface if needed, or inline
 export default function Footer({ version }: { version: string }) {
   const t = useTranslations("Footer");
-  const params = useParams();
-  const locale = params.locale as string;
 
   return (
     <div className="w-full flex_center flex-col gap-5 py-10 px-5 bg-primary text-white">
@@ -23,45 +20,33 @@ export default function Footer({ version }: { version: string }) {
         <div className="flex_start flex-col gap-3">
           <h3 className="text-lg font-medium">{t("academics")}</h3>
           <Link
-            href={`/${locale}/colleges?type=INSTITUTE`}
+            href="/colleges?type=INSTITUTE"
             className="opacity-50"
             title={t("institutions")}
           >
             {t("institutions")}
           </Link>
-          <Link
-            href={`/${locale}/colleges`}
-            className="opacity-50"
-            title={t("colleges")}
-          >
+          <Link href="/colleges" className="opacity-50" title={t("colleges")}>
             {t("colleges")}
           </Link>
-          <Link
-            href={`/${locale}/centers`}
-            className="opacity-50"
-            title={t("centers")}
-          >
+          <Link href="/centers" className="opacity-50" title={t("centers")}>
             {t("centers")}
           </Link>
         </div>
         <div className="flex_start flex-col gap-3">
           <h3 className="text-lg font-medium">{t("about")}</h3>
-          <Link
-            href={`/${locale}/about`}
-            title={t("history")}
-            className="opacity-50"
-          >
+          <Link href="/about" title={t("history")} className="opacity-50">
             {t("history")}
           </Link>
           <Link
-            href={`/${locale}/president-speech`}
+            href="/president-speech"
             title={t("president_speech")}
             className="opacity-50"
           >
             {t("president_speech")}
           </Link>
           <Link
-            href={`/${locale}/academic-staff`}
+            href="/academic-staff"
             title={t("academic_staff")}
             className="opacity-50"
           >
@@ -71,14 +56,14 @@ export default function Footer({ version }: { version: string }) {
         <div className="flex_start flex-col gap-3">
           <h3 className="text-lg font-medium">{t("relations")}</h3>
           <Link
-            href={`/${locale}/international-strategy`}
+            href="/international-strategy"
             className="opacity-50"
             title={t("strategy")}
           >
             {t("strategy")}
           </Link>
           <Link
-            href={`/${locale}/memorandum-of-understanding`}
+            href="/memorandum-of-understanding"
             className="opacity-50"
             title="MOUs"
           >

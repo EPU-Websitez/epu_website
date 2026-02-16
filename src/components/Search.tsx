@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/navigation";
 import {
   CiSearch,
   CiPaperplane,
@@ -136,7 +136,7 @@ const SearchModal = ({
         if (tab === "all") {
           const newResults = (apiResponse.data as SearchResponseData) || {};
           setResults(
-            loadMore ? (prev) => ({ ...prev, ...newResults }) : newResults
+            loadMore ? (prev) => ({ ...prev, ...newResults }) : newResults,
           );
         } else {
           const newItems = (
@@ -166,7 +166,7 @@ const SearchModal = ({
         setIsLoadingMore(false);
       }
     },
-    [locale]
+    [locale],
   );
 
   useEffect(() => {
@@ -193,7 +193,7 @@ const SearchModal = ({
   };
 
   const hasResults = Object.values(results).some(
-    (arr) => arr && arr.length > 0
+    (arr) => arr && arr.length > 0,
   );
 
   const pluralActiveTabKey = (
@@ -345,8 +345,8 @@ const SearchModal = ({
                           } else {
                             return (
                               <Link
-                                href={`/${locale}/${getLinkPathByType(
-                                  item.type
+                                href={`/${getLinkPathByType(
+                                  item.type,
                                 )}/${item.slug}`}
                                 key={`${item.type}-${item.id}`}
                                 title={item.title}
@@ -370,7 +370,7 @@ const SearchModal = ({
                       </div>
                     )}
                   </div>
-                ) : null
+                ) : null,
               )}
 
               {canLoadMore && (

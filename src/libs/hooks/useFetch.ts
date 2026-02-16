@@ -10,13 +10,21 @@ interface UseFetchReturn<T> {
 // 1. Accept 'language' as a new parameter
 const useFetch = <T = any>(
   url: string,
-  language: string = "en"
+  language: string = "en",
 ): UseFetchReturn<T> => {
   const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(!!url);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Skip fetch if URL is empty (used for dependent/conditional fetches)
+    if (!url) {
+      setData(null);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
     let isMounted = true;
 
     const fetchData = async () => {
@@ -51,7 +59,7 @@ const useFetch = <T = any>(
       } catch (err) {
         if (isMounted) {
           setError(
-            err instanceof Error ? err.message : "An unknown error occurred"
+            err instanceof Error ? err.message : "An unknown error occurred",
           );
         }
       } finally {
@@ -92,7 +100,7 @@ const useFetch = <T = any>(
       setData(responseData);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "An unknown error occurred"
+        err instanceof Error ? err.message : "An unknown error occurred",
       );
     } finally {
       setLoading(false);

@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import useSWR from "swr";
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { API_URL } from "@/libs/env";
 import { FaChevronRight } from "react-icons/fa6";
 import { useTranslations } from "next-intl";
@@ -194,9 +194,9 @@ const MegaMenuDropdown: React.FC<MegaMenuProps> = ({
           link = subdomain ? `https://${subdomain}.epu.edu.iq/${locale}` : "#";
           target = "_blank";
         } else if (itemKey === "GET_CENTERS") {
-          link = `/${locale}/centers/${item.slug}`;
+          link = `/centers/${item.slug}`;
         } else if (itemKey === "GET_DIRECTORATES") {
-          link = `/${locale}/directorate/${item.id}`;
+          link = `/directorate/${item.id}`;
         }
 
         return {

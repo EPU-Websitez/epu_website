@@ -83,11 +83,14 @@ const StudentUnionClient = () => {
   const params = useParams();
   const locale = (params?.locale as string) || "en";
 
-  const { data: mainData, loading: mainLoading, error: mainError } =
-    useFetch<StudentUnionMainResponse>(
-      `${process.env.NEXT_PUBLIC_API_URL}/website/student-union?page=1&limit=1`,
-      locale
-    );
+  const {
+    data: mainData,
+    loading: mainLoading,
+    error: mainError,
+  } = useFetch<StudentUnionMainResponse>(
+    `${process.env.NEXT_PUBLIC_API_URL}/website/student-union?page=1&limit=1`,
+    locale,
+  );
 
   useEffect(() => {
     if (mainData?.data?.[0]?.slug) {
@@ -95,20 +98,26 @@ const StudentUnionClient = () => {
     }
   }, [mainData]);
 
-  const { data: sectionsData, loading: sectionsLoading, error: sectionsError } =
-    useFetch<SectionsResponse>(
-      studentUnionSlug
-        ? `${process.env.NEXT_PUBLIC_API_URL}/website/student-union/${studentUnionSlug}/sections`
-        : "",
-      locale
-    );
-  const { data: achievementsData, loading: achievementsLoading, error: achievementsError } =
-    useFetch<AchievementsResponse>(
-      studentUnionSlug
-        ? `${process.env.NEXT_PUBLIC_API_URL}/website/student-union/${studentUnionSlug}/achievements`
-        : "",
-      locale
-    );
+  const {
+    data: sectionsData,
+    loading: sectionsLoading,
+    error: sectionsError,
+  } = useFetch<SectionsResponse>(
+    studentUnionSlug
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/student-union/${studentUnionSlug}/sections`
+      : "",
+    locale,
+  );
+  const {
+    data: achievementsData,
+    loading: achievementsLoading,
+    error: achievementsError,
+  } = useFetch<AchievementsResponse>(
+    studentUnionSlug
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/student-union/${studentUnionSlug}/achievements`
+      : "",
+    locale,
+  );
 
   const isLoading = mainLoading || sectionsLoading || achievementsLoading;
   const hasError = mainError || sectionsError || achievementsError;
@@ -116,13 +125,14 @@ const StudentUnionClient = () => {
   const sections = sectionsData?.data || [];
   const achievements = achievementsData?.data || [];
 
-  if (hasError) return (
-    <div className="my-10 flex_center w-full">
-      <div className="max-w-[1024px] w-full flex_center">
-        <NoData showButton={true} className="my-10" />
+  if (hasError)
+    return (
+      <div className="my-10 flex_center w-full">
+        <div className="max-w-[1024px] w-full flex_center">
+          <NoData showButton={true} className="my-10" />
+        </div>
       </div>
-    </div>
-  );
+    );
 
   return (
     <div className="w-full flex_center flex-col sm:my-10 my-5">
@@ -197,7 +207,7 @@ const StudentUnionClient = () => {
                 >
                   <div className="flex_center text-3xl rounded-full w-[50px] h-[50px] text-white bg-golden">
                     <Image
-                      src={item.icon_image.lg}
+                      src={item.icon_image?.lg || "/images/placeholder.svg"}
                       alt={item.title}
                       width={28}
                       height={28}
@@ -226,7 +236,7 @@ const StudentUnionClient = () => {
             >
               <div className="lg:w-[510px] md:w-[475px] w-full flex-shrink-0 lg:h-[328px] md:h-[293px] h-[226px] relative">
                 <Image
-                  src={section.image.lg}
+                  src={section.image?.lg || "/images/placeholder.svg"}
                   alt={section.title}
                   fill
                   priority
