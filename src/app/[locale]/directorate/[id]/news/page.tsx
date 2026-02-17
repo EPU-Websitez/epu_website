@@ -19,6 +19,7 @@ import DirectorateSidebar from "@/components/DirectorateSidebar";
 import SubUnits from "@/components/SubUnits";
 import { CiCalendar, CiSearch } from "react-icons/ci";
 import { FaChevronDown, FaXmark } from "react-icons/fa6";
+import { formatDate } from "@/libs/formatDate";
 
 // -------- Interfaces --------
 interface ImageFile {
@@ -34,6 +35,7 @@ interface NewsItem {
   published_at: string;
   excerpt: string;
   cover_image: ImageFile;
+  scheduled_publish_at: string;
 }
 interface NewsResponse {
   total: number;
@@ -277,14 +279,6 @@ const Page = () => {
     }
   }, [newsData, currentPage]);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(locale, {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  };
-
   const parentTitle = directorateInfo?.title || "";
 
   return (
@@ -379,7 +373,11 @@ const Page = () => {
                           image={newsItem.cover_image?.lg}
                           link={`/${locale}/news/${newsItem.slug}`}
                           author={newsItem.author}
-                          createdAt={formatDate(newsItem.published_at)}
+                          createdAt={formatDate(
+                            newsItem.published_at ||
+                              newsItem.scheduled_publish_at,
+                            locale,
+                          )}
                           description={newsItem.excerpt}
                           title={newsItem.title}
                         />

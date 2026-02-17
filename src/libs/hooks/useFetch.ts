@@ -34,6 +34,7 @@ const useFetch = <T = any>(
       try {
         const response = await fetch(url, {
           method: "GET",
+          cache: "no-store",
           headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
@@ -84,6 +85,7 @@ const useFetch = <T = any>(
     try {
       const response = await fetch(url, {
         method: "GET",
+        cache: "no-store",
         headers: {
           "Content-Type": "application/json",
           // 4. Also add the language header to the refetch function

@@ -13,6 +13,7 @@ import { FaClock, FaCalendarAlt, FaHourglassEnd } from "react-icons/fa";
 import useFetch from "@/libs/hooks/useFetch";
 
 import CollegeMapComponent from "@/components/CollegeMapComponent ";
+import { formatDate } from "@/libs/formatDate";
 
 // -------- Interfaces --------
 interface ImageFile {
@@ -97,23 +98,16 @@ const EventDetailClient = () => {
   // Fetch the main event data
   const { data: eventData, loading: eventLoading } = useFetch<EventDetail>(
     slug ? `${process.env.NEXT_PUBLIC_API_URL}/website/events/${slug}` : "",
-    locale
+    locale,
   );
 
   // Fetch other events
   const { data: otherEventsData } = useFetch<EventsResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/events?page=1&limit=20`,
-    locale
+    locale,
   );
 
   const isLoading = eventLoading || !eventData;
-
-  const formatDate = (dateString: string) =>
-    new Date(dateString).toLocaleDateString(locale, {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
 
   // Safely filter and slice similar events
   const similarEvents =
@@ -295,7 +289,7 @@ const EventDetailClient = () => {
                         }
                         link={`/${locale}/events/${event?.slug}`}
                         type={event?.categories?.[0]?.name || "Event"}
-                        createdAt={formatDate(event?.created_at)}
+                        createdAt={formatDate(event?.created_at, locale)}
                         time={event?.schedule?.time_string || ""}
                         title={event?.title}
                       />

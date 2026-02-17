@@ -20,6 +20,7 @@ import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import SubHeader from "@/components/subHeader";
 import InternationalStrategyHeader from "@/components/InternationalStrategyHeader";
 import NoData from "@/components/NoData";
+import { formatDate } from "@/libs/formatDate";
 
 // --- Interfaces ---
 interface Image {
@@ -45,6 +46,7 @@ interface NewsItem {
   cover_image_id: number;
   Gallery: Gallery[];
   cover_image: cover_image;
+  scheduled_publish_at: string;
 }
 interface NewsResponse {
   total: number;
@@ -253,13 +255,7 @@ const Page = () => {
       news.cover_image?.md || news.Gallery?.[0]?.Image?.md || "/images/news.png"
     );
   };
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(locale, {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  };
+
   if (error) return (
   <div className="my-10 flex_center w-full">
     <div className="max-w-[1024px] w-full flex_center">
@@ -427,7 +423,7 @@ if (!data) return (
                           link={`/${locale}/news/${item.slug}`}
                           title={item.title}
                           description={item.excerpt}
-                          createdAt={formatDate(item.published_at)}
+                          createdAt={formatDate(item.published_at || item.scheduled_publish_at, locale)}
                           author={item.author}
                         />
                       ))}

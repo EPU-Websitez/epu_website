@@ -45,6 +45,7 @@ interface News {
   published_at: string;
   cover_image: ImageFile;
   gallery: Gallery[];
+  scheduled_publish_at: string;
 }
 interface NewsResponse {
   total: number;
@@ -212,7 +213,7 @@ const NewsClient = () => {
 
   // State for UI elements
   const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("search") || ""
+    searchParams.get("search") || "",
   );
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false);
   const [allNews, setAllNews] = useState<News[]>([]);
@@ -230,16 +231,23 @@ const NewsClient = () => {
   };
 
   // --- Data Fetching ---
-  const { data: sliderData, loading: sliderLoading, error: sliderError } = useFetch<NewsResponse>(
+  const {
+    data: sliderData,
+    loading: sliderLoading,
+    error: sliderError,
+  } = useFetch<NewsResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/news?limit=10&page=1`,
-    locale
+    locale,
   );
 
-  const { data: categoriesData, loading: categoriesLoading, error: categoriesError } =
-    useFetch<CategoryResponse>(
-      `${process.env.NEXT_PUBLIC_API_URL}/website/news/categories/list`,
-      locale
-    );
+  const {
+    data: categoriesData,
+    loading: categoriesLoading,
+    error: categoriesError,
+  } = useFetch<CategoryResponse>(
+    `${process.env.NEXT_PUBLIC_API_URL}/website/news/categories/list`,
+    locale,
+  );
 
   // --- UPDATED: API URL now automatically includes any existing search params (including tag) ---
   const newsApiUrl = useMemo(() => {
@@ -251,10 +259,11 @@ const NewsClient = () => {
     }/website/news?${params.toString()}`;
   }, [searchParams, currentPage]);
 
-  const { data: newsData, loading: newsLoading, error: newsError } = useFetch<NewsResponse>(
-    newsApiUrl,
-    locale
-  );
+  const {
+    data: newsData,
+    loading: newsLoading,
+    error: newsError,
+  } = useFetch<NewsResponse>(newsApiUrl, locale);
 
   useEffect(() => {
     if (newsData?.data) {
@@ -412,7 +421,7 @@ const NewsClient = () => {
             >
               {currentDates.from && currentDates.to
                 ? `${formatDate(currentDates.from)} to ${formatDate(
-                    currentDates.to
+                    currentDates.to,
                   )}`
                 : t("select_date")}
             </button>
@@ -529,7 +538,9 @@ const NewsClient = () => {
                     image={getNewsImage(news)}
                     link={`/${locale}/news/${news.slug}`}
                     author={news.author}
-                    createdAt={formatDate(news.published_at)}
+                    createdAt={formatDate(
+                      news.published_at || news.scheduled_publish_at,
+                    )}
                     description={news.excerpt}
                     title={news.title}
                   />

@@ -15,6 +15,7 @@ import useFetch from "@/libs/hooks/useFetch";
 import { useEffect, useState, useMemo, useRef } from "react";
 import { CiCalendar, CiSearch } from "react-icons/ci";
 import { FaChevronDown, FaXmark } from "react-icons/fa6";
+import { formatDate } from "@/libs/formatDate";
 
 // --- Interfaces ---
 interface Image {
@@ -40,6 +41,7 @@ interface NewsItem {
   cover_image_id: number;
   Gallery: Gallery[];
   cover_image: cover_image;
+  scheduled_publish_at: string;
 }
 interface NewsResponse {
   total: number;
@@ -245,13 +247,6 @@ const Page = () => {
       news.cover_image?.md || news.Gallery?.[0]?.Image?.md || "/images/news.png"
     );
   };
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(locale, {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  };
 
   return (
     <div className="w-full flex justify-center items-start sm:my-10 my-6 min-h-screen">
@@ -371,7 +366,10 @@ const Page = () => {
                   link={`/${locale}/news/${item.slug}`}
                   title={item.title}
                   description={item.excerpt}
-                  createdAt={formatDate(item.published_at)}
+                  createdAt={formatDate(
+                    item.published_at || item.scheduled_publish_at,
+                    locale,
+                  )}
                   author={item.author}
                 />
               ))}

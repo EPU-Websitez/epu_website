@@ -22,6 +22,7 @@ import { FaXmark } from "react-icons/fa6";
 import EventCard from "@/components/eventCards";
 
 import useFetch from "@/libs/hooks/useFetch";
+import { formatDate } from "@/libs/formatDate";
 
 // -------- Interfaces --------
 interface ImageFile {
@@ -106,10 +107,11 @@ const EventsClient = () => {
   }, [currentPage, currentSearch]);
 
   // --- Data Fetching ---
-  const { data: eventsData, loading: eventsLoading, error: eventsError } = useFetch<EventsResponse>(
-    apiUrl,
-    locale
-  );
+  const {
+    data: eventsData,
+    loading: eventsLoading,
+    error: eventsError,
+  } = useFetch<EventsResponse>(apiUrl, locale);
   const isInitialLoading = eventsLoading && currentPage === 1;
 
   // --- Data Aggregation ---
@@ -149,12 +151,6 @@ const EventsClient = () => {
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const formatDate = (dateString: string) =>
-    new Date(dateString).toLocaleDateString(locale, {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
   const formatTime = (dateString: string) =>
     new Date(dateString).toLocaleTimeString(locale, {
       hour: "2-digit",
@@ -294,7 +290,7 @@ const EventsClient = () => {
                     event.event_category_event[0]?.event_category.name ||
                     "Event"
                   }
-                  createdAt={formatDate(event.created_at)}
+                  createdAt={formatDate(event.created_at, locale)}
                   time={formatTime(event.created_at)}
                   title={event.title}
                 />

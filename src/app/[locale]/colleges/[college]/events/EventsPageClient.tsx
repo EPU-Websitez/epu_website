@@ -14,6 +14,7 @@ import EventCard from "@/components/eventCards";
 import useFetch from "@/libs/hooks/useFetch";
 import { CiSearch } from "react-icons/ci";
 import { FaXmark } from "react-icons/fa6";
+import { formatDate } from "@/libs/formatDate";
 
 // --- TYPE DEFINITIONS ---
 interface Image {
@@ -107,7 +108,7 @@ const EventsPageClient = () => {
   // --- Data Fetching ---
   const { data: eventsData, loading: eventsLoading } = useFetch<EventsResponse>(
     apiUrl,
-    locale
+    locale,
   );
   const isInitialLoading = eventsLoading && currentPage === 1;
 
@@ -145,15 +146,6 @@ const EventsPageClient = () => {
     const params = new URLSearchParams(searchParams);
     params.set("page", (currentPage + 1).toString());
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString(locale, {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
   };
 
   const getEventImage = (event: Event) => {
@@ -219,7 +211,8 @@ const EventsPageClient = () => {
                   "General"
                 }
                 createdAt={
-                  event.schedule?.date_string || formatDate(event.created_at)
+                  event.schedule?.date_string ||
+                  formatDate(event.created_at, locale)
                 }
                 time={event.schedule?.time_string || ""}
                 title={event.title}

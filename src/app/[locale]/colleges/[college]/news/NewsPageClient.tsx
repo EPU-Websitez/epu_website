@@ -17,6 +17,7 @@ import NewsCard from "@/components/newsCard";
 import { CiCalendar, CiSearch } from "react-icons/ci";
 import { FaChevronDown, FaXmark } from "react-icons/fa6";
 import { useState, useRef, useEffect, useMemo } from "react";
+import { formatDate } from "@/libs/formatDate";
 
 // --- (Interfaces, DatePicker, and Skeletons remain unchanged) ---
 interface Image {
@@ -56,6 +57,7 @@ interface News {
   cover_image_id: number;
   Gallery: Gallery[];
   cover_image: cover_image;
+  scheduled_publish_at: string;
 }
 interface NewsResponse {
   total: number;
@@ -236,7 +238,7 @@ const NewsPageClient = () => {
   const { data: categoriesData, loading: categoriesLoading } =
     useFetch<CategoryResponse>(
       `${process.env.NEXT_PUBLIC_API_URL}/website/news/categories/list`,
-      locale
+      locale,
     );
 
   const newsApiUrl = useMemo(() => {
@@ -260,7 +262,7 @@ const NewsPageClient = () => {
 
   const { data: newsData, loading: newsLoading } = useFetch<NewsResponse>(
     newsApiUrl,
-    locale
+    locale,
   );
 
   useEffect(() => {
@@ -271,7 +273,7 @@ const NewsPageClient = () => {
       } else {
         setAllNews((prevNews) => {
           const newNews = newsData.data.filter(
-            (n) => !prevNews.some((p) => p.id === n.id)
+            (n) => !prevNews.some((p) => p.id === n.id),
           );
           return [...prevNews, ...newNews];
         });
@@ -319,13 +321,6 @@ const NewsPageClient = () => {
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") handleSearch();
   };
-
-  const formatDate = (dateString: string) =>
-    new Date(dateString).toLocaleDateString(locale, {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
 
   const getNewsImage = (news: News) => {
     return news.cover_image?.md || "/images/news.png";
@@ -449,7 +444,10 @@ const NewsPageClient = () => {
                   image={getNewsImage(news)}
                   link={`/news/${news.slug}`}
                   author={news.author}
-                  createdAt={formatDate(news.published_at)}
+                  createdAt={formatDate(
+                    news.published_at || news.scheduled_publish_at,
+                    locale,
+                  )}
                   description={news.excerpt}
                   title={news.title}
                 />

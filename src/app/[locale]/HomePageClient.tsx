@@ -23,6 +23,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import { formatDate } from "@/libs/formatDate";
 
 // -------- Interfaces (No changes here) --------
 interface ImageFile {
@@ -146,13 +147,6 @@ export default function HomePageClient() {
       image: { lg: "/images/placeholder.svg" },
     });
   }
-
-  const formatDate = (dateString: string) =>
-    new Date(dateString).toLocaleDateString(locale, {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
 
   const formatNumber = (numStr: string | undefined) => {
     if (!numStr) return "0";
@@ -437,7 +431,7 @@ export default function HomePageClient() {
               image={news.cover_image?.lg}
               link={`/${locale}/news/${news.slug}`}
               author={news.author}
-              createdAt={formatDate(news.published_at)}
+              createdAt={formatDate(news.published_at, locale)}
               description={news.excerpt}
               title={news.title}
             />
@@ -483,7 +477,7 @@ export default function HomePageClient() {
               type={
                 event.event_category_event[0]?.event_category.name || "Event"
               }
-              createdAt={formatDate(event.created_at)}
+              createdAt={formatDate(event.created_at, locale)}
               time={event.schedule?.time_string || ""}
               title={event.title}
             />

@@ -13,8 +13,11 @@ export default function LocalSwitcher() {
 
   const onSelectChange = (nextLocale: string) => {
     startTransition(() => {
+      // Preserve search params (e.g., ?id=1) when switching locale
+      const search =
+        typeof window !== "undefined" ? window.location.search : "";
       // @ts-ignore -- known issue with next-intl types for dynamic locale
-      router.replace(pathname, { locale: nextLocale });
+      router.replace(`${pathname}${search}`, { locale: nextLocale });
     });
   };
 

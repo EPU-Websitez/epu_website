@@ -20,6 +20,7 @@ import {
 } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
 import Link from "next/link";
+import { formatDate } from "@/libs/formatDate";
 
 // --- START: Types ---
 interface Img {
@@ -83,6 +84,7 @@ interface NewsDetail {
   news_category_news: NewsCategoryNews[];
   files: NewsFile[];
   links: NewsLink[];
+  scheduled_publish_at: string;
 }
 
 interface NewsListResponse {
@@ -132,14 +134,14 @@ const NewsDetailClient = () => {
   const [listLoading, setListLoading] = useState(false);
   const [showGalleryModal, setShowGalleryModal] = useState(false);
   const [activeGalleryItem, setActiveGalleryItem] = useState<Gallery | null>(
-    null
+    null,
   );
   const [downloadingIds, setDownloadingIds] = useState<Set<number>>(new Set());
 
   // --- Data Fetching ---
   const { data: mainNews, loading: mainNewsLoading } = useFetch<NewsDetail>(
     slug ? `${process.env.NEXT_PUBLIC_API_URL}/website/news/${slug}` : "",
-    locale
+    locale,
   );
 
   const relatedUrl = useMemo(() => {
@@ -166,7 +168,7 @@ const NewsDetailClient = () => {
         setNewsList((prev) => {
           const existingIds = new Set(prev.map((item) => item.id));
           const uniqueNewItems = relatedNewsData.data.filter(
-            (item) => !existingIds.has(item.id)
+            (item) => !existingIds.has(item.id),
           );
           return [...prev, ...uniqueNewItems];
         });
@@ -226,21 +228,11 @@ const NewsDetailClient = () => {
     );
   };
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return "";
-    const d = new Date(dateString);
-    return d.toLocaleDateString(locale, {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  };
-
   const allGalleries = mainNews?.gallery ?? [];
   const inlineGalleries = allGalleries.slice(0, GALLERY_INLINE_COUNT);
   const remainingGalleryCount = Math.max(
     0,
-    allGalleries.length - GALLERY_INLINE_COUNT
+    allGalleries.length - GALLERY_INLINE_COUNT,
   );
 
   return (
@@ -276,7 +268,10 @@ const NewsDetailClient = () => {
                 <p>{mainNews.author}</p>
                 <span>-</span>
                 <span className="opacity-70">
-                  {formatDate(mainNews.published_at || mainNews.created_at)}
+                  {formatDate(
+                    mainNews.published_at || mainNews.scheduled_publish_at,
+                    locale,
+                  )}
                 </span>
               </div>
 
@@ -291,7 +286,7 @@ const NewsDetailClient = () => {
                         >
                           {news_category.name}
                         </span>
-                      )
+                      ),
                   )}
                 </div>
               )}
@@ -466,22 +461,25 @@ const NewsDetailClient = () => {
                 </div>
               ))
             : newsList.length > 0
-            ? newsList.map((news) => (
-                <NewsCard
-                  key={news.id}
-                  image={getNewsImage(news)}
-                  link={`/${locale}/news/${news.slug}`}
-                  author={news.author || "Unknown"}
-                  createdAt={formatDate(news.published_at || news.created_at)}
-                  description={news.excerpt || ""}
-                  title={news.title || ""}
-                />
-              ))
-            : !listLoading && (
-                <p className="col-span-full text-center opacity-70">
-                  {t("no_news_found")}
-                </p>
-              )}
+              ? newsList.map((news) => (
+                  <NewsCard
+                    key={news.id}
+                    image={getNewsImage(news)}
+                    link={`/${locale}/news/${news.slug}`}
+                    author={news.author || "Unknown"}
+                    createdAt={formatDate(
+                      news.published_at || news.scheduled_publish_at,
+                      locale,
+                    )}
+                    description={news.excerpt || ""}
+                    title={news.title || ""}
+                  />
+                ))
+              : !listLoading && (
+                  <p className="col-span-full text-center opacity-70">
+                    {t("no_news_found")}
+                  </p>
+                )}
         </div>
 
         {newsList.length < totalNews && (
@@ -552,13 +550,13 @@ const NewsDetailClient = () => {
               <button
                 onClick={() => {
                   const isDownloading = downloadingIds.has(
-                    activeGalleryItem.id
+                    activeGalleryItem.id,
                   );
                   if (!isDownloading) {
                     handleDownload(
                       activeGalleryItem.image.original,
                       `gallery-item-${activeGalleryItem.id}`,
-                      activeGalleryItem.id
+                      activeGalleryItem.id,
                     );
                   }
                 }}
