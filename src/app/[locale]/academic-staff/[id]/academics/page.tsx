@@ -247,7 +247,7 @@ const Page = () => {
   const [data, setData] = useState<DataItem[]>([]);
   const [page, setPage] = useState(1);
   const [downloadingFiles, setDownloadingFiles] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
 
   const endpoints: Record<typeof tab, string> = {
@@ -263,10 +263,11 @@ const Page = () => {
 
   const endpoint = endpoints[tab];
   const url = `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}/${endpoint}?page=${page}&limit=${LIMIT}`;
-  const { data: hookData, loading, error } = useFetch<PagedResponse<DataItem>>(
-    url,
-    locale
-  );
+  const {
+    data: hookData,
+    loading,
+    error,
+  } = useFetch<PagedResponse<DataItem>>(url, locale);
 
   useEffect(() => {
     setData([]);
@@ -292,7 +293,7 @@ const Page = () => {
 
   const handleFileDownload = async (
     filePath?: string | null,
-    suggestedName?: string | null
+    suggestedName?: string | null,
   ) => {
     if (!filePath) return;
     setDownloadingFiles((prev) => new Set(prev).add(filePath));
@@ -444,7 +445,7 @@ const Page = () => {
                                       !isDownloading &&
                                       handleFileDownload(
                                         file,
-                                        fileNameFromPath(file)
+                                        fileNameFromPath(file),
                                       )
                                     }
                                     disabled={isDownloading}
@@ -484,7 +485,7 @@ const Page = () => {
                                   <CiSearch />
                                 </div>
                                 <div>
-                                  <h4 className="font-medium text-sm">
+                                  <h4 className="font-medium text-sm text-start">
                                     {item?.title || t("untitled")}
                                   </h4>
                                   <span className="text-black/60 text-xs">
@@ -530,7 +531,7 @@ const Page = () => {
                                       !isDownloading &&
                                       handleFileDownload(
                                         firstFile,
-                                        fileNameFromPath(firstFile)
+                                        fileNameFromPath(firstFile),
                                       )
                                     }
                                     disabled={isDownloading}
@@ -551,7 +552,7 @@ const Page = () => {
                               </div>
                             </div>
                           );
-                        }
+                        },
                       )}
                     {tab === "researchIntrest" &&
                       safeArray<Research>(data as Research[]).map((item) => {
@@ -587,7 +588,7 @@ const Page = () => {
                                       !isDownloading &&
                                       handleFileDownload(
                                         file,
-                                        fileNameFromPath(file)
+                                        fileNameFromPath(file),
                                       )
                                     }
                                     disabled={isDownloading}
@@ -619,7 +620,7 @@ const Page = () => {
                       })}
                     {tab === "supervisingResearch" &&
                       safeArray<SupervisingResearch>(
-                        data as SupervisingResearch[]
+                        data as SupervisingResearch[],
                       ).map((item) => (
                         <div
                           key={item.id}
@@ -716,7 +717,7 @@ const Page = () => {
                                       !isDownloading &&
                                       handleFileDownload(
                                         file,
-                                        fileNameFromPath(file)
+                                        fileNameFromPath(file),
                                       )
                                     }
                                     disabled={isDownloading}
@@ -783,7 +784,7 @@ const Page = () => {
                                         !isDownloading &&
                                         handleFileDownload(
                                           file,
-                                          fileNameFromPath(file)
+                                          fileNameFromPath(file),
                                         )
                                       }
                                       disabled={isDownloading}
@@ -805,7 +806,7 @@ const Page = () => {
                               </div>
                             </div>
                           );
-                        }
+                        },
                       )}
                     {tab === "trainings" &&
                       safeArray<Training>(data as Training[]).map((item) => {
@@ -854,7 +855,7 @@ const Page = () => {
                                       !isDownloading &&
                                       handleFileDownload(
                                         file,
-                                        fileNameFromPath(file)
+                                        fileNameFromPath(file),
                                       )
                                     }
                                     disabled={isDownloading}
@@ -918,7 +919,7 @@ const Page = () => {
                                       !isDownloading &&
                                       handleFileDownload(
                                         firstFile,
-                                        fileNameFromPath(firstFile)
+                                        fileNameFromPath(firstFile),
                                       )
                                     }
                                     disabled={isDownloading}

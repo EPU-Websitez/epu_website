@@ -132,7 +132,7 @@
     "teaching": "وانەوتنەوە",
     "education": "خوێندن",
     "professional_engagement": "پابەندبوونی پیشەیی",
-    "academics": "ناونیشانی زانستی",
+    "academics": "ئەکادیمیاکان",
     "general_specialization": "پسپۆڕیی گشتی",
     "specific_specialization": "پسپۆڕیی تایبەت",
     "lecturer_at": "مامۆستای وانەبێژ لە",
@@ -140,6 +140,7 @@
     "biography": "ژیاننامە",
     "subject": "بابەت",
     "year": "ساڵ",
+    "academic_year": "ساڵی ئەکادیمی",
     "semester": "سێمێستەر",
     "stage": "قۆناغ",
     "qualifications": "بڕوانامەکان",
@@ -186,7 +187,10 @@
     "no_data_found": "هیچ داتایەک نەدۆزرایەوە",
     "error_loading_data": "هەڵە لە بارکردنی داتا",
     "university_positions": "پۆستەکانی زانکۆ",
-    "department_positions": "پۆستەکانی بەش"
+    "department_positions": "پۆستەکانی بەش",
+    "degree": "نمرە",
+    "department": "بەش",
+    "scientific_title": "ناونیشانی زانستی"
   },
   "Apply": {
     "head": "چۆنیەتی داواکردن بۆ زانکۆی پۆلیتەکنیکی هەولێر؟",

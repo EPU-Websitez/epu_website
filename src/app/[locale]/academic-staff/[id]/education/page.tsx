@@ -242,7 +242,7 @@ const Page = () => {
                             <div className="flex_start w-full gap-5 lg:flex-row flex-col">
                               <div className="flex_start flex-col lg:w-1/2 w-full">
                                 <span className="text-black opacity-60 text-xs">
-                                  Degree
+                                  {t("degree")}
                                 </span>
                                 <p className="lg:text-sm text-xs">
                                   {item.degree}
@@ -250,7 +250,7 @@ const Page = () => {
                               </div>
                               <div className="flex_start flex-col lg:w-1/2 w-full">
                                 <span className="text-black opacity-60 text-xs">
-                                  Department
+                                  {t("department")}
                                 </span>
                                 <p className="lg:text-sm text-xs">
                                   {item.department}
@@ -293,7 +293,7 @@ const Page = () => {
                             <div className="flex_start w-full gap-5 lg:flex-row flex-col">
                               <div className="flex_start flex-col w-full">
                                 <span className="text-black opacity-60 text-xs">
-                                  Scientific Title
+                                  {t("scientific_title")}
                                 </span>
                                 <p className="lg:text-sm text-xs">
                                   {item.scientific_title}

@@ -132,7 +132,7 @@
     "teaching": "التدريس",
     "education": "التعليم",
     "professional_engagement": "المشاركة المهنية",
-    "academics": "الدرجة الأكاديمية",
+    "academics": "الأكاديمية",
     "general_specialization": "الاختصاص العام",
     "specific_specialization": "الاختصاص الدقيق",
     "lecturer_at": "محاضر في",
@@ -140,6 +140,7 @@
     "biography": "السيرة الشخصية",
     "subject": "الموضوع",
     "year": "السنة",
+    "academic_year": "السنة الأكاديمية",
     "semester": "الفصل الدراسي",
     "stage": "المرحلة",
     "qualifications": "المؤهلات",
@@ -186,7 +187,10 @@
     "no_data_found": "لم يتم العثور على بيانات",
     "error_loading_data": "خطأ في تحميل البيانات",
     "university_positions": "المناصب الجامعية",
-    "department_positions": "مناصب القسم"
+    "department_positions": "مناصب القسم",
+    "degree": "الدرجة",
+    "department": "القسم",
+    "scientific_title": "المسمى العلمي"
   },
   "Apply": {
     "head": "كيفية التقديم لجامعة أربيل التقنية؟",
