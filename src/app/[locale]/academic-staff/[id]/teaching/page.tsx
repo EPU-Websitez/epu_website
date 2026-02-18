@@ -50,7 +50,7 @@ const Page = () => {
   // --- CHANGE: Data fetching uses useFetch with the page state in the URL ---
   const { data, loading, error } = useFetch<TeachingsResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}/teachings?page=${page}&limit=${LIMIT}`,
-    locale // Pass locale for the header
+    locale, // Pass locale for the header
   );
 
   // --- CHANGE: useEffect to append new data when it arrives ---
@@ -129,7 +129,22 @@ const Page = () => {
               <>
                 <div className="overflow-x-auto shadow-lg w-full sm:mt-0 -mt-4 custom_scroll">
                   <table className="w-full bg-white min-w-[700px]">
-                    <thead>{/* ...thead... */}</thead>
+                    <thead>
+                      <tr className="bg-primary text-white text-sm">
+                        <th className="md:px-6 px-3 md:py-4 py-3 text-start font-semibold">
+                          {t("subject")}
+                        </th>
+                        <th className="md:px-6 px-3 md:py-4 py-3 text-center font-semibold border-x border-white/20">
+                          {t("stage")}
+                        </th>
+                        <th className="md:px-6 px-3 md:py-4 py-3 text-center font-semibold border-x border-white/20">
+                          {t("semester")}
+                        </th>
+                        <th className="md:px-6 px-3 md:py-4 py-3 text-center font-semibold">
+                          {t("academic_year")}
+                        </th>
+                      </tr>
+                    </thead>
                     <tbody className="divide-y divide-gray-200">
                       {teachings.length > 0 ? (
                         teachings.map((row) => (
@@ -153,10 +168,7 @@ const Page = () => {
                         ))
                       ) : (
                         <tr>
-                          <td
-                            colSpan={4}
-                            className="text-center py-10"
-                          >
+                          <td colSpan={4} className="text-center py-10">
                             <NoData showButton={false} />
                           </td>
                         </tr>

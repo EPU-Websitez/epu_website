@@ -140,6 +140,7 @@
     "biography": "Biography",
     "subject": "Subject",
     "year": "Year",
+    "academic_year": "Academic Year",
     "semester": "Semester",
     "stage": "Stage",
     "qualifications": "Qualifications",
@@ -186,7 +187,10 @@
     "no_data_found": "No Data Found",
     "error_loading_data": "error loading data",
     "university_positions": "University Positions",
-    "department_positions": "Department Positions"
+    "department_positions": "Department Positions",
+    "degree": "Degree",
+    "department": "Department",
+    "scientific_title": "Scientific Title"
   },
   "Apply": {
     "head": "How to apply for EPU?",
