@@ -1,0 +1,35 @@
+name: Deploy EPU Website
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: SSH Deploy to Server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          command_timeout: 30m
+          script: |
+            cd /home/epuser6/Projects/EPU_WEBSITE
+
+            echo ">>> Git pull"
+            git fetch origin
+            git reset --hard origin/main
+
+            echo ">>> Docker rebuild"
+            docker-compose down
+            docker-compose build --no-cache
+            docker-compose up -d
+
+            echo ">>> Done"
+            docker ps --filter name=epu_website_web --format "{{.Names}} {{.Status}}"
