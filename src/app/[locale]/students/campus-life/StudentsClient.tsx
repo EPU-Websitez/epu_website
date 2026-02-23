@@ -51,6 +51,9 @@ interface Section {
   subtitle: string;
   description: string;
   images: ImageFile[];
+  campus_life: {
+    title: string;
+  };
 }
 interface SectionsResponse {
   total: number;
@@ -164,6 +167,7 @@ const StudentsClient = () => {
   const mainCampus = campusData?.data?.[0];
   const sections = sectionsData?.data || [];
   const galleries = galleriesData?.data || [];
+  console.log(mainCampus?.description);
 
   useEffect(() => {
     if (galleries.length > 0) {
@@ -218,6 +222,7 @@ const StudentsClient = () => {
                 <h2 className="lg:text-smallTitle sm:text-lg text-sm font-semibold">
                   {mainCampus.title}
                 </h2>
+                <p className="text-sm opacity-75">{mainCampus.description}</p>
                 <div className="flex justify-start h-full items-end gap-5 w-full flex-wrap">
                   <div className="flex_center gap-3">
                     <span className="w-[35px] h-[35px] flex_center rounded-md bg-white text-secondary text-lg">
@@ -302,8 +307,10 @@ const StudentsClient = () => {
               } flex-col-reverse`}
             >
               <div className="flex_start flex-col gap-3">
-                {section.subtitle && (
-                  <span className="text-xs relative">{section.subtitle}</span>
+                {section.campus_life?.title && (
+                  <span className="text-xs relative">
+                    {section.campus_life.title}
+                  </span>
                 )}
                 <h1 className="lg:text-titleNormal text-xl font-semibold relative">
                   {section.title}

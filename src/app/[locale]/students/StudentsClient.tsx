@@ -115,7 +115,7 @@ const StudentsClient = () => {
     error: campusError,
   } = useFetch<CampusLifeResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/campus-life?page=1&limit=1`,
-    locale
+    locale,
   );
 
   useEffect(() => {
@@ -132,7 +132,7 @@ const StudentsClient = () => {
     campusLifeSlug
       ? `${process.env.NEXT_PUBLIC_API_URL}/website/campus-life/${campusLifeSlug}/sections?page=1&limit=20`
       : "",
-    locale
+    locale,
   );
 
   const {
@@ -143,7 +143,7 @@ const StudentsClient = () => {
     campusLifeSlug
       ? `${process.env.NEXT_PUBLIC_API_URL}/website/campus-life/${campusLifeSlug}/address`
       : "",
-    locale
+    locale,
   );
 
   const {
@@ -154,7 +154,7 @@ const StudentsClient = () => {
     campusLifeSlug
       ? `${process.env.NEXT_PUBLIC_API_URL}/website/campus-life/${campusLifeSlug}/galleries?page=1&limit=20`
       : "",
-    locale
+    locale,
   );
 
   const isLoading =
@@ -169,7 +169,7 @@ const StudentsClient = () => {
     if (galleries.length > 0) {
       const timer = setInterval(() => {
         setCurrentGalleryIndex(
-          (prevIndex) => (prevIndex + 1) % galleries.length
+          (prevIndex) => (prevIndex + 1) % galleries.length,
         );
       }, 5000);
       return () => clearInterval(timer);
@@ -214,10 +214,13 @@ const StudentsClient = () => {
         ) : (
           mainCampus && (
             <div className="w-full lg:h-[373px] h-[290px] relative sm:mt-10 mt-5 rounded-3xl overflow-hidden">
-              <div className="absolute z-10 left-0 top-0 w-full bg-secondary text-white bg-opacity-70 h-full sm:p-10 p-7 flex_start flex-col sm:gap-20 gap-5">
-                <h2 className="lg:text-smallTitle sm:text-lg text-sm font-semibold">
+              <div className="absolute z-10 left-0 top-0 w-full bg-secondary text-white bg-opacity-70 h-full sm:p-10 p-4 flex_start flex-col lg:gap-20 sm:gap-10 gap-5">
+                <h2 className="lg:text-smallTitle sm:text-lg text-base font-semibold">
                   {mainCampus.title}
                 </h2>
+                <p className="sm:text-base text-xs opacity-75 sm:max-w-[80%] max-w-full">
+                  {mainCampus.description}
+                </p>
                 <div className="flex justify-start h-full items-end gap-5 w-full flex-wrap">
                   <div className="flex_center gap-3">
                     <span className="w-[35px] h-[35px] flex_center rounded-md bg-white text-secondary text-lg">
@@ -227,7 +230,7 @@ const StudentsClient = () => {
                       <span className="opacity-75 text-xs">
                         {t("stadiums")}
                       </span>
-                      <p className="text-sm">
+                      <p className="text-xs">
                         + {mainCampus.stadiums} {t("stadiums")}
                       </p>
                     </div>
@@ -238,7 +241,7 @@ const StudentsClient = () => {
                     </span>
                     <div className="flex_start flex-col">
                       <span className="opacity-75 text-xs">{t("pools")}</span>
-                      <p className="text-sm">
+                      <p className="text-xs">
                         + {mainCampus.pools} {t("pools")}
                       </p>
                     </div>
@@ -251,7 +254,7 @@ const StudentsClient = () => {
                       <span className="opacity-75 text-xs">
                         {t("libraries")}
                       </span>
-                      <p className="text-sm">
+                      <p className="text-xs">
                         + {mainCampus.libraries} {t("libraries")}
                       </p>
                     </div>
