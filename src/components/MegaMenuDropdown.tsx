@@ -151,9 +151,9 @@ const MegaMenuDropdown: React.FC<MegaMenuProps> = ({
       case "GET_INSTITUTES":
         return `/website/colleges?type=INSTITUTE&page=${page}&limit=${limit}`;
       case "GET_CENTERS":
-        return `/website/centers?page=${page}&limit=${limit}&is_main=true`;
+        return `/website/centers?page=${page}&limit=${limit}`;
       case "GET_DIRECTORATES":
-        return `/website/directorates?page=${page}&limit=${limit}&is_main=true`;
+        return `/website/directorates?page=${page}&limit=${limit}`;
       default:
         return null;
     }

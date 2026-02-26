@@ -387,7 +387,9 @@
     "search": "Search",
     "mission": "Mission",
     "vision": "Vision",
-    "centers": "Centers"
+    "centers": "Centers",
+    "location": "Location",
+    "contact_info": "Contact Information"
   },
   "International": {
     "international_strategy": "International Strategy",

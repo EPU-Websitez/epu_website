@@ -387,7 +387,9 @@
     "search": "بحث",
     "mission": "الرسالة",
     "vision": "الرؤية",
-    "centers": "المراكز"
+    "centers": "المراكز",
+    "location": "الموقع",
+    "contact_info": "معلومات الاتصال"
   },
   "International": {
     "international_strategy": "الاستراتيجية الدولية",

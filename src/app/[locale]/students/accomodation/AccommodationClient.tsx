@@ -59,7 +59,7 @@ const AccommodationClient = () => {
     error: hasError,
   } = useFetch<AccommodationResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/student-accommodation/main`,
-    locale
+    locale,
   );
 
   if (hasError) {
@@ -85,7 +85,10 @@ const AccommodationClient = () => {
   return (
     <div className="w-full flex_center flex-col sm:my-10 my-5">
       <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-5 w-full">
-        <SubHeader title={t("accomodation")} alt={false} />
+        <SubHeader
+          title={accommodationData?.title || t("accomodation")}
+          alt={false}
+        />
 
         {isLoading ? (
           <ImageSkeleton />

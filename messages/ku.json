@@ -387,7 +387,9 @@
     "search": "گەڕان",
     "mission": "ئەرک",
     "vision": "بینین",
-    "centers": "ناوەندەکان"
+    "centers": "ناوەندەکان",
+    "location": "شوێن",
+    "contact_info": "پەیوەندییەکان"
   },
   "International": {
     "international_strategy": "ستراتیجی نێودەوڵەتی",

@@ -11,16 +11,41 @@ import {
   MdKeyboardDoubleArrowRight,
   MdNavigateNext,
   MdNavigateBefore,
+  MdLocationOn,
+  MdEmail,
+  MdPhone,
 } from "react-icons/md";
 import { FaTimes } from "react-icons/fa";
 
 import useFetch from "@/libs/hooks/useFetch";
+import MapComponent from "@/components/CollegeMapComponent ";
 // Removed unused Swiper imports if they aren't being used in the rest of the file
 import DirectorateHeader from "@/components/DirectorateHeader";
 import DirectorateSidebar from "@/components/DirectorateSidebar";
 import SubUnits from "@/components/SubUnits";
 
 // -------- Interfaces --------
+interface Contact {
+  id: number;
+  directorate_id: number;
+  type: string;
+  value: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Address {
+  id: number;
+  latitude: string;
+  longitude: string;
+  location: string;
+  created_at: string;
+  updated_at: string;
+  college_id: number | null;
+  department_id: number | null;
+  directorate_id: number;
+}
+
 interface ImageFile {
   id: number;
   original: string;
@@ -72,6 +97,8 @@ interface DirectorateDetail {
   staff_count: number;
   news_count: number;
   children_count: number;
+  contacts?: Contact[];
+  address?: Address | null;
 }
 
 // -------- Modal Component --------
@@ -339,6 +366,84 @@ const Page = () => {
                           </div>
                         </>
                       )}
+                      {directorateData.contacts &&
+                        directorateData.contacts.length > 0 && (
+                          <>
+                            <h2 className="relative sm:text-titleNormal text-lg font-semibold ">
+                              <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
+                              <span className="z-10 relative">
+                                {t("contact_info") || "Contact Information"}
+                              </span>
+                            </h2>
+                            <div className="p-5 flex_start flex-col gap-4 rounded-3xl border border-lightBorder w-full">
+                              {directorateData.contacts.map((contact) => (
+                                <div
+                                  key={contact.id}
+                                  className="flex items-center gap-3 text-secondary"
+                                >
+                                  {contact.type === "EMAIL" ? (
+                                    <MdEmail
+                                      size={20}
+                                      className="text-golden"
+                                    />
+                                  ) : contact.type === "PHONE" ||
+                                    contact.type === "MOBILE" ? (
+                                    <MdPhone
+                                      size={20}
+                                      className="text-golden"
+                                    />
+                                  ) : (
+                                    <MdLocationOn
+                                      size={20}
+                                      className="text-golden"
+                                    />
+                                  )}
+                                  <span className="font-medium text-sm">
+                                    {contact.value}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      {directorateData.address &&
+                        directorateData.address.latitude &&
+                        directorateData.address.longitude && (
+                          <>
+                            <h2 className="relative sm:text-titleNormal text-lg font-semibold ">
+                              <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
+                              <span className="z-10 relative">
+                                {t("location") || "Location"}
+                              </span>
+                            </h2>
+                            <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full overflow-hidden">
+                              <div className="flex items-start gap-3 text-secondary mb-2">
+                                <MdLocationOn
+                                  size={24}
+                                  className="text-golden flex-shrink-0 mt-0.5"
+                                />
+                                <span className="text-sm font-medium">
+                                  {directorateData.address.location}
+                                </span>
+                              </div>
+                              <div className="w-full h-[300px] rounded-xl overflow-hidden">
+                                <MapComponent
+                                  lat={parseFloat(
+                                    directorateData.address.latitude,
+                                  )}
+                                  lng={parseFloat(
+                                    directorateData.address.longitude,
+                                  )}
+                                  title={directorateData.title}
+                                  address={
+                                    directorateData.address.location || ""
+                                  }
+                                  zoom={15}
+                                />
+                              </div>
+                            </div>
+                          </>
+                        )}
                     </div>
                   </div>
                 </div>

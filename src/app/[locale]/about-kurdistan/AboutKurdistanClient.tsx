@@ -60,13 +60,17 @@ const AboutKurdistanClient = () => {
   const params = useParams();
   const locale = (params.locale as string) || "en";
 
-  const { data: aboutData, loading: isLoading, error } = useFetch<AboutKurdistanData>(
+  const {
+    data: aboutData,
+    loading: isLoading,
+    error,
+  } = useFetch<AboutKurdistanData>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/universities/about-kurdistan`,
-    locale
+    locale,
   );
 
   if (isLoading) return <PageSkeleton />;
-  
+
   // Error State
   if (error) {
     return (
@@ -97,9 +101,9 @@ const AboutKurdistanClient = () => {
 
   return (
     <div className="w-full flex_center lg:my-10 my-5">
-      <div className="max-w-[1024px] lg:px-3 px-5 w-full flex_start flex-col lg:gap-10 gap-5">
-        <SubHeader title={aboutData.title || t("head")} alt={false} />
-        <div className="w-full lg:h-[500px] sm:h-[400px] h-[300px] relative">
+      <div className="max-w-[1042px] lg:px-3 px-5 w-full flex_start flex-col lg:gap-10 gap-5">
+        <SubHeader title={t("head")} alt={false} />
+        <div className="w-full lg:h-[532px] sm:h-[400px] h-[300px] relative">
           <Image
             src={aboutData.bg_image.lg || "/images/kurdistan.png"}
             alt={aboutData.title}
