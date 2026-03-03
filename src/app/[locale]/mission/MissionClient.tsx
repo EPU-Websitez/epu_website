@@ -22,7 +22,7 @@ interface UniversityData {
   title: string;
   mission: string;
   vision: string;
-  intro_image: ImageFile;
+  mission_bg_image: ImageFile;
 }
 
 // -------- Skeleton Component --------
@@ -82,23 +82,16 @@ const MissionClient = () => {
       <div className="max-w-[1024px] sm:px-3 px-5 w-full flex_start flex-col gap-10">
         <SubHeader title={t("head")} alt={false} />
         <div className="w-full lg:h-[500px] sm:h-[400px] h-[220px] relative rounded-3xl overflow-hidden">
-          {uniData?.intro_image?.media_type === "VIDEO" ? (
-            <VideoPlayer
-              src={uniData.intro_image?.original}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <Image
-              src={uniData?.intro_image?.lg || "/images/placeholder.svg"}
-              alt="University Intro"
-              fill
-              priority
-              className="object-cover"
-              onError={(e) => {
-                e.currentTarget.src = "/images/placeholder.svg";
-              }}
-            />
-          )}
+          <Image
+            src={uniData?.mission_bg_image?.lg || "/images/placeholder.svg"}
+            alt="University Intro"
+            fill
+            priority
+            className="object-cover"
+            onError={(e) => {
+              e.currentTarget.src = "/images/placeholder.svg";
+            }}
+          />
         </div>
 
         {/* Mission Section */}
