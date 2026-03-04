@@ -37,6 +37,17 @@ interface Tutorial {
   images: TutorialImage[];
 }
 
+interface TutorialCategory {
+  id: number;
+  name: string;
+  order_index: number;
+}
+
+interface CategoryResponse {
+  total: number;
+  data: TutorialCategory[];
+}
+
 interface TutorialsResponse {
   total: number;
   data: Tutorial[];
@@ -52,7 +63,7 @@ const VideoModal = ({
 }) => {
   // Extract video URL safely
   const videoSrc = tutorial.images.find(
-    (img) => img.image.media_type === "VIDEO"
+    (img) => img.image.media_type === "VIDEO",
   )?.image.original;
 
   return (
@@ -146,13 +157,14 @@ const TutorialsClient = () => {
   // --- State derived from URL ---
   const currentPage = parseInt(searchParams.get("page") || "1", 10);
   const currentSearch = searchParams.get("search") || "";
+  const currentCategory = searchParams.get("category_id") || "all";
 
   // --- Local UI State ---
   const [searchTerm, setSearchTerm] = useState(currentSearch);
   const [tutorials, setTutorials] = useState<Tutorial[]>([]);
   // Changed from storing string ID/URL to storing the whole object
   const [selectedTutorial, setSelectedTutorial] = useState<Tutorial | null>(
-    null
+    null,
   );
 
   // --- Data Fetching ---
@@ -164,21 +176,31 @@ const TutorialsClient = () => {
     if (currentSearch) {
       urlParams.append("search", currentSearch);
     }
+    if (currentCategory && currentCategory !== "all") {
+      urlParams.append("category_id", currentCategory);
+    }
     return `${
       process.env.NEXT_PUBLIC_API_URL
     }/website/universities/tutorials?${urlParams.toString()}`;
-  }, [currentPage, currentSearch]);
+  }, [currentPage, currentSearch, currentCategory]);
 
-  const { data, loading: isLoadingData, error } = useFetch<TutorialsResponse>(
-    apiUrl,
-    locale
-  );
+  const { data: categoriesData, loading: categoriesLoading } =
+    useFetch<CategoryResponse>(
+      `${process.env.NEXT_PUBLIC_API_URL}/website/universities/tutorial-categories`,
+      locale,
+    );
+
+  const {
+    data,
+    loading: isLoadingData,
+    error,
+  } = useFetch<TutorialsResponse>(apiUrl, locale);
 
   // --- Effect to update tutorials list from fetched data ---
   useEffect(() => {
     if (data?.data) {
       setTutorials((prev) =>
-        currentPage === 1 ? data.data : [...prev, ...data.data]
+        currentPage === 1 ? data.data : [...prev, ...data.data],
       );
     }
   }, [data, currentPage]);
@@ -188,23 +210,29 @@ const TutorialsClient = () => {
   const isLoadingMore = isLoadingData && currentPage > 1;
 
   // --- Handlers to update URL ---
-  const handleSearch = () => {
-    const params = new URLSearchParams(searchParams);
-    params.set("page", "1");
-    if (searchTerm) {
-      params.set("search", searchTerm);
-    } else {
-      params.delete("search");
-    }
-    router.push(`${pathname}?${params.toString()}`);
+  const updateUrlParams = (newParams: Record<string, string | number>) => {
+    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value) {
+        current.set(key, String(value));
+      } else {
+        current.delete(key);
+      }
+    });
+    // Always reset to page 1 when any filter changes
+    current.set("page", "1");
+    router.push(`${pathname}?${current.toString()}`);
+  };
+
+  const handleSearch = () => updateUrlParams({ search: searchTerm });
+
+  const handleCategoryChange = (categoryId: string) => {
+    updateUrlParams({ category_id: categoryId === "all" ? "" : categoryId });
   };
 
   const handleClearSearch = () => {
     setSearchTerm("");
-    const params = new URLSearchParams(searchParams);
-    params.delete("search");
-    params.set("page", "1");
-    router.push(`${pathname}?${params.toString()}`);
+    updateUrlParams({ search: "" });
   };
 
   const handleLoadMore = () => {
@@ -217,7 +245,7 @@ const TutorialsClient = () => {
   const handleOpenModal = (tutorial: Tutorial) => {
     // Only open if there is actually a video
     const hasVideo = tutorial.images.some(
-      (img) => img.image.media_type === "VIDEO"
+      (img) => img.image.media_type === "VIDEO",
     );
 
     if (hasVideo) {
@@ -231,18 +259,51 @@ const TutorialsClient = () => {
     document.body.style.overflowY = "auto";
   };
 
-  if (error) return (
-    <div className="my-10 flex_center w-full">
-      <div className="max-w-[1024px] w-full flex_center">
-        <NoData showButton={true} className="my-10" />
+  if (error)
+    return (
+      <div className="my-10 flex_center w-full">
+        <div className="max-w-[1024px] w-full flex_center">
+          <NoData showButton={true} className="my-10" />
+        </div>
       </div>
-    </div>
-  );
+    );
 
   return (
     <div className="sm:my-10 my-8 flex_center w-full">
       <div className="max-w-[1024px] px-3 w-full flex_start flex-col sm:gap-10 gap-8">
         <SubHeader title={t("head")} alt={false} />
+
+        {/* Categories Filter */}
+        {!categoriesLoading &&
+          categoriesData?.data &&
+          categoriesData.data.length > 0 && (
+            <div className="w-full flex justify-start items-center gap-3 overflow-x-auto pb-2 custom-scrollbar no-scrollbar">
+              <button
+                onClick={() => handleCategoryChange("all")}
+                className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                  currentCategory === "all"
+                    ? "bg-primary text-white shadow-md shadow-primary/20"
+                    : "bg-backgroundSecondary text-black hover:bg-gray-200"
+                }`}
+              >
+                All
+              </button>
+              {categoriesData.data.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => handleCategoryChange(category.id.toString())}
+                  className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                    currentCategory === category.id.toString()
+                      ? "bg-primary text-white shadow-md shadow-primary/20"
+                      : "bg-backgroundSecondary text-black hover:bg-gray-200"
+                  }`}
+                >
+                  {category.name}
+                </button>
+              ))}
+            </div>
+          )}
+
         <div className="w-full flex_center sm:gap-10 gap-3">
           <div className="relative w-full sm:h-14 h-10">
             <span className="pointer-events-none text-black opacity-50 absolute ltr:left-5 rtl:right-5 top-1/2 -translate-y-1/2 z-10 text-xl">
@@ -271,16 +332,17 @@ const TutorialsClient = () => {
           <div className="grid sm:grid-cols-2 grid-cols-1 w-full gap-5 mt-10">
             {tutorials.map((tutorial) => {
               const videoWithThumbnail = tutorial.images.find(
-                (img) => img.image.media_type === "VIDEO" && img.image.thumbnail
+                (img) =>
+                  img.image.media_type === "VIDEO" && img.image.thumbnail,
               );
               const imageThumbnail = tutorial.images.find(
-                (img) => img.image.media_type === "IMAGE"
+                (img) => img.image.media_type === "IMAGE",
               )?.image.lg;
               const thumbnail =
                 videoWithThumbnail?.image.thumbnail || imageThumbnail;
 
               const hasVideo = tutorial.images.some(
-                (img) => img.image.media_type === "VIDEO"
+                (img) => img.image.media_type === "VIDEO",
               );
 
               return (

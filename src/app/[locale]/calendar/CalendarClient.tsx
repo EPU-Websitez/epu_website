@@ -19,10 +19,18 @@ interface CalendarEvent {
   event_date: string;
   title: string;
   description: string; // Added description
-  link: string;
+  link: string | null;
+  order_index?: number;
+  created_at?: string;
+  updated_at?: string;
+  university_id?: number;
+  university?: any;
 }
 
 interface CalendarEventsResponse {
+  total: number;
+  page: number;
+  limit: number;
   data: CalendarEvent[];
 }
 
@@ -149,7 +157,7 @@ const CalendarClient = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState<{ [key: string]: CalendarEvent[] }>({});
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
-    null
+    null,
   ); // State for modal
 
   const currentMonth = currentDate.getMonth();
@@ -160,7 +168,7 @@ const CalendarClient = () => {
   const endDate = new Date(currentYear, currentMonth + 1, 0)
     .toISOString()
     .split("T")[0];
-  const calendarUrl = `${process.env.NEXT_PUBLIC_API_URL}/website/universities/calendar-events?start_date=${startDate}&end_date=${endDate}&limit=100`;
+  const calendarUrl = `${process.env.NEXT_PUBLIC_API_URL}/website/universities/calendar-events?start_date=${startDate}&end_date=${endDate}&limit=100&university_id=17`;
 
   // --- State for Seasons Tables (Load More) ---
   const [seasons, setSeasons] = useState<Season[]>([]);
@@ -170,11 +178,14 @@ const CalendarClient = () => {
   // --- Data Fetching ---
   const { data: calendarData, loading: calendarLoading } =
     useFetch<CalendarEventsResponse>(calendarUrl, locale);
-  const { data: seasonsData, loading: seasonsLoading, error } =
-    useFetch<SeasonsResponse>(
-      `${process.env.NEXT_PUBLIC_API_URL}/website/universities/seasons?page=${page}&limit=${LIMIT}`,
-      locale
-    );
+  const {
+    data: seasonsData,
+    loading: seasonsLoading,
+    error,
+  } = useFetch<SeasonsResponse>(
+    `${process.env.NEXT_PUBLIC_API_URL}/website/universities/seasons?page=${page}&limit=${LIMIT}`,
+    locale,
+  );
 
   // --- Effects to Process Fetched Data ---
   useEffect(() => {
@@ -200,7 +211,7 @@ const CalendarClient = () => {
       setSeasons((prev) => {
         const existingIds = new Set(prev.map((s) => s.id));
         const newSeasons = seasonsData.data.filter(
-          (s) => !existingIds.has(s.id)
+          (s) => !existingIds.has(s.id),
         );
         return [...prev, ...newSeasons];
       });
@@ -214,15 +225,14 @@ const CalendarClient = () => {
   const handleEventClick = (event: CalendarEvent) => setSelectedEvent(event);
   const handleCloseModal = () => setSelectedEvent(null);
 
-  if (error) return (
-  <div className="my-10 flex_center w-full">
-    <div className="max-w-[1024px] w-full flex_center">
-      <NoData showButton={true} className="my-10" />
-    </div>
-  </div>
-);
-
-
+  if (error)
+    return (
+      <div className="my-10 flex_center w-full">
+        <div className="max-w-[1024px] w-full flex_center">
+          <NoData showButton={true} className="my-10" />
+        </div>
+      </div>
+    );
 
   const formatDateForTable = (dateString: string): string => {
     const date = new Date(dateString);
@@ -273,7 +283,7 @@ const CalendarClient = () => {
           <div className="text-sm font-medium">
             {(daysInPrevMonth - i).toString().padStart(2, "0")}
           </div>
-        </div>
+        </div>,
       );
     }
     for (let day = 1; day <= daysInMonth; day++) {
@@ -300,7 +310,7 @@ const CalendarClient = () => {
               </button>
             ))}
           </div>
-        </div>
+        </div>,
       );
     }
     const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
@@ -313,7 +323,7 @@ const CalendarClient = () => {
           <div className="text-sm font-medium">
             {day.toString().padStart(2, "0")}
           </div>
-        </div>
+        </div>,
       );
     }
     return days;
