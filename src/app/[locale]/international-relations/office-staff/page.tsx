@@ -42,6 +42,16 @@ interface StaffResponse {
   limit: number;
   data: StaffItem[];
 }
+// Lead interfaces (for department head)
+interface Lead {
+  id: number;
+  role: string;
+  teacher: Teacher;
+}
+
+interface LeadsResponse {
+  data: Lead[];
+}
 
 // -------- Skeleton Component for Dynamic Content --------
 
@@ -52,6 +62,15 @@ const StaffCardSkeleton = () => (
     <div className="h-4 bg-gray-200 rounded w-1/2 mb-3"></div>
     <div className="w-full h-14 border-t border-t-lightBorder flex_center">
       <div className="h-4 bg-gray-200 rounded w-full"></div>
+    </div>
+  </div>
+);
+const InternationalRelationsHeadSkeleton = () => (
+  <div className="flex_center gap-10 sm:w-auto w-full border sm:border-none sm:p-0 p-5 sm:rounded-none rounded-3xl border-lightBorder animate-pulse">
+    <div className="sm:w-[200px] w-[125px] sm:h-[190px] h-[125px] bg-gray-300 sm:rounded-3xl rounded-lg"></div>
+    <div className="flex_start flex-col gap-5">
+      <div className="h-4 bg-gray-300 rounded w-32"></div>
+      <div className="h-6 bg-gray-300 rounded w-48"></div>
     </div>
   </div>
 );
@@ -76,7 +95,7 @@ const Page = () => {
     id
       ? `${process.env.NEXT_PUBLIC_API_URL}/website/international-relations/international-relation/${id}/staff?page=${page}&limit=${limit}`
       : "",
-    locale
+    locale,
   );
 
   useEffect(() => {
@@ -88,6 +107,18 @@ const Page = () => {
       }
     }
   }, [staffData]);
+  // State for Department Head (from leads endpoint)
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const { data: leadsData, loading: leadsLoading } = useFetch<LeadsResponse>(
+    `${process.env.NEXT_PUBLIC_API_URL}/website/international-relations/international-relation/${id}/leads?page=1&limit=10`,
+    locale,
+  );
+  // Effect to process leads data
+  useEffect(() => {
+    if (leadsData?.data) {
+      setLeads(leadsData.data);
+    }
+  }, [leadsData]);
 
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
@@ -99,6 +130,21 @@ const Page = () => {
       item.teacher?.profile_image?.md ||
       item.teacher?.profile_image?.original ||
       `/images/placeholder.svg` // Fallback image
+    );
+  };
+  const internationalRelationHead = leads.find((lead) =>
+    ["head", "رئيس", "dean", "عميد", "ڕاگر", "سەرۆک"].some((role) =>
+      lead.role.toLowerCase().includes(role),
+    ),
+  );
+  const isInitialLoading = leadsLoading && staff.length === 0 && page === 1;
+  const getProfileImage = (teacher: Teacher | undefined) => {
+    if (!teacher?.profile_image) return "/images/placeholder.svg";
+    return (
+      teacher.profile_image?.lg ||
+      teacher.profile_image?.md ||
+      teacher.profile_image?.original ||
+      "/images/placeholder.svg"
     );
   };
 
@@ -127,6 +173,54 @@ const Page = () => {
           <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
           <span className="z-10 relative">{t("office_staff")}</span>
         </h2>
+        {isInitialLoading ? (
+          <InternationalRelationsHeadSkeleton />
+        ) : (
+          internationalRelationHead && (
+            <Link
+              title={internationalRelationHead.teacher?.full_name}
+              href={`/${locale}/academic-staff/${internationalRelationHead.teacher?.id}`}
+              className="flex_start gap-10 sm:w-auto w-full border sm:border-none sm:p-0 p-5 sm:rounded-none rounded-3xl border-lightBorder"
+            >
+              <div className="sm:w-[200px] w-[125px] sm:h-[190px] h-[125px] relative">
+                <Image
+                  src={getProfileImage(internationalRelationHead.teacher)}
+                  alt={
+                    internationalRelationHead.teacher?.full_name ||
+                    "International Relation Head"
+                  }
+                  fill
+                  priority
+                  className="w-full h-auto object-cover sm:rounded-3xl rounded-lg"
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/placeholder.svg";
+                  }}
+                />
+              </div>
+              <div className="flex_start flex-col gap-5">
+                <h3 className="text-golden sm:text-lg text-sm font-semibold">
+                  {internationalRelationHead.role}
+                </h3>
+                <h1 className="max-w-[250px] lg:text-xl sm:text-lg text-xs font-semibold relative">
+                  <span className="relative z-10">
+                    {internationalRelationHead.teacher?.full_name}
+                  </span>
+                  <span className="absolute ltr:left-0 rtl:right-0 -bottom-3 w-[80%] h-6">
+                    <Image
+                      src="/images/title-shape.svg"
+                      alt="shape"
+                      fill
+                      priority
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
+                    />
+                  </span>
+                </h1>
+              </div>
+            </Link>
+          )
+        )}
 
         {/* Dynamic Grid for Staff */}
         <div className="w-full grid lg:grid-cols-4 md:grid-cols-2 gap-5 text-secondary text-center">

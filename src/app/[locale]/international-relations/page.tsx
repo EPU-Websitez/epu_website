@@ -63,6 +63,7 @@ interface Section {
   id: number;
   title: string;
   description: string;
+  image: Image;
   lists: SectionList[];
 }
 
@@ -140,6 +141,71 @@ const ListModal = ({
   );
 };
 
+const SectionModal = ({
+  isOpen,
+  onClose,
+  item,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  item: Section | null;
+}) => {
+  useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    if (isOpen) window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [isOpen, onClose]);
+
+  if (!isOpen || !item) return null;
+
+  return (
+    <div
+      className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center p-4 animate-fade-in"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-2xl p-6 sm:p-8 max-w-2xl w-full relative shadow-xl overflow-y-auto max-h-[90vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-black transition-colors z-10 bg-white/80 rounded-full p-1"
+          aria-label="Close modal"
+        >
+          <IoMdClose size={24} />
+        </button>
+        <div className="flex flex-col gap-6 mt-2">
+          <div className="flex flex-col gap-2">
+            <h3 className="text-2xl sm:text-3xl font-bold text-secondary">
+              {item.title}
+            </h3>
+            <div className="h-[2px] w-20 bg-golden"></div>
+          </div>
+
+          {item.image?.lg && (
+            <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-md">
+              <img
+                src={item.image.lg}
+                alt={item.title}
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          )}
+
+          <div className="flex flex-col gap-4">
+            <p className="text-gray-700 sm:text-lg text-base leading-relaxed whitespace-pre-line">
+              {item.description}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // -------- Main Page --------
 
 const Page = () => {
@@ -154,9 +220,11 @@ const Page = () => {
 
   // Modal State
   const [selectedListItem, setSelectedListItem] = useState<SectionList | null>(
-    null
+    null,
   );
+  const [selectedSection, setSelectedSection] = useState<Section | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
 
   const handleAccordion = (id: number) => {
     if (id !== openedAccordion) {
@@ -171,9 +239,19 @@ const Page = () => {
     setIsModalOpen(true);
   };
 
+  const handleOpenSectionModal = (section: Section) => {
+    setSelectedSection(section);
+    setIsSectionModalOpen(true);
+  };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setTimeout(() => setSelectedListItem(null), 200); // Clear data after animation
+  };
+
+  const handleCloseSectionModal = () => {
+    setIsSectionModalOpen(false);
+    setTimeout(() => setSelectedSection(null), 200);
   };
 
   // 1. Fetch main International Relations data
@@ -183,7 +261,7 @@ const Page = () => {
     error: relationError,
   } = useFetch<InternationalRelationResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/international-relations?page=1&limit=1`,
-    locale
+    locale,
   );
 
   useEffect(() => {
@@ -201,7 +279,7 @@ const Page = () => {
     internationalRelationId
       ? `${process.env.NEXT_PUBLIC_API_URL}/website/international-relations/international-relation/${internationalRelationId}/units`
       : "",
-    locale
+    locale,
   );
 
   // 3. Fetch Sections data
@@ -213,7 +291,7 @@ const Page = () => {
     internationalRelationId
       ? `${process.env.NEXT_PUBLIC_API_URL}/website/international-relations/international-relation/${internationalRelationId}/sections`
       : "",
-    locale
+    locale,
   );
 
   const isLoading = relationLoading || unitsLoading || sectionsLoading;
@@ -337,11 +415,23 @@ const Page = () => {
                   key={section.id}
                   className="flex_start gap-5 rounded-3xl p-5 bg-primary text-white"
                 >
-                  <span className="flex-shrink-0 text-xl w-10 h-10 rounded-full lg:flex hidden justify-center items-center bg-white text-secondary">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenSectionModal(section)}
+                    className="flex-shrink-0 text-xl w-10 h-10 rounded-full lg:flex hidden justify-center items-center bg-white text-secondary hover:bg-golden hover:text-white duration-300"
+                  >
                     <GoBook />
-                  </span>
+                  </button>
                   <div className="flex_start flex-col gap-3 w-full">
-                    <h3 className="lg:text-xl text-lg">{section.title}</h3>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenSectionModal(section)}
+                      className="text-left hover:text-golden transition-colors"
+                    >
+                      <h3 className="lg:text-xl text-lg font-semibold">
+                        {section.title}
+                      </h3>
+                    </button>
                     {section.lists.map((item) => (
                       <button
                         key={item.id}
@@ -399,11 +489,16 @@ const Page = () => {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Modals */}
       <ListModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         item={selectedListItem}
+      />
+      <SectionModal
+        isOpen={isSectionModalOpen}
+        onClose={handleCloseSectionModal}
+        item={selectedSection}
       />
     </>
   );
