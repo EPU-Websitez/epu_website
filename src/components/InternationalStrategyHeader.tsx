@@ -16,6 +16,7 @@ interface RelationItem {
   id: number;
   bg_title: string;
   bg_description: string;
+  strategy_description: string;
   bg_image: ImageType;
 }
 
@@ -54,7 +55,7 @@ const InternationalStrategyHeader = () => {
     {
       dedupingInterval: 1000 * 60 * 60, // 1 hour cache
       revalidateOnFocus: false,
-    }
+    },
   );
 
   const headerData = data?.data?.[0];
@@ -90,6 +91,7 @@ const InternationalStrategyHeader = () => {
   const bgTitle = headerData.bg_title || "International Relations";
   const bgDescription =
     headerData.bg_description || t("international_strategy_text");
+  const description = headerData.strategy_description;
 
   return (
     <div className="w-full lg:h-[400px] sm:h-[300px] h-[220px] relative overflow-hidden rounded-3xl">
@@ -105,9 +107,12 @@ const InternationalStrategyHeader = () => {
       />
       <div className="ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary to-transparent absolute top-0 left-0 w-full h-full z-10"></div>
       {bgDescription && (
-        <h3 className="absolute leading-relaxed z-20 text-white top-10 sm:ltr:left-10 ltr:left-3 sm:rtl:right-10 rtl:right-3 lg:text-[28px] text-sm max-w-[710px]">
-          {bgDescription.substring(0, 300)}...
-        </h3>
+        <div className="absolute z-20 text-white top-10 sm:ltr:left-10 ltr:left-3 sm:rtl:right-10 rtl:right-3">
+          <h3 className=" leading-relaxed lg:text-[28px] text-sm max-w-[710px] mb-5">
+            {bgDescription.substring(0, 300)}...
+          </h3>
+          <span className="text-base">{description}</span>
+        </div>
       )}
     </div>
   );

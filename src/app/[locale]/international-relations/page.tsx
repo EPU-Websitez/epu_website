@@ -7,10 +7,11 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa6";
-import { FiArrowRight } from "react-icons/fi";
+import { FiArrowRight, FiChevronRight } from "react-icons/fi";
 import { GoBook } from "react-icons/go";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
+import Image from "next/image";
 
 import useFetch from "@/libs/hooks/useFetch";
 
@@ -40,17 +41,24 @@ interface InternationalRelationResponse {
   data: InternationalRelation[];
 }
 
-interface Unit {
+interface Gallery {
   id: number;
-  title: string;
-  description: string;
+  image: Image;
 }
 
-interface UnitsResponse {
+interface Directorate {
+  id: number;
+  slug: string;
+  title: string;
+  directorate_type: {
+    name: string;
+  };
+  galleries: Gallery[];
+}
+
+interface DirectoratesResponse {
   total: number;
-  page: number;
-  limit: number;
-  data: Unit[];
+  data: Directorate[];
 }
 
 interface SectionList {
@@ -90,6 +98,10 @@ const AccordionSkeleton = () => (
 
 const ProgramCardSkeleton = () => (
   <div className="w-full h-[180px] bg-gray-200 rounded-3xl animate-pulse"></div>
+);
+
+const CardSkeleton = () => (
+  <div className="flex flex-col gap-5 bg-gray-200 rounded-lg p-5 h-[150px] animate-pulse"></div>
 );
 
 const ListModal = ({
@@ -213,10 +225,15 @@ const Page = () => {
   const params = useParams();
   const locale = params?.locale as string;
 
-  const [openedAccordion, setOpenedAccordion] = useState<number | null>(null);
   const [internationalRelationId, setInternationalRelationId] = useState<
     number | null
   >(null);
+
+  // Pagination for Directorates
+  const [directoratesPage, setDirectoratesPage] = useState(1);
+  const [totalDirectorates, setTotalDirectorates] = useState(0);
+  const [allDirectorates, setAllDirectorates] = useState<Directorate[]>([]);
+  const [isLoadingMoreDir, setIsLoadingMoreDir] = useState(false);
 
   // Modal State
   const [selectedListItem, setSelectedListItem] = useState<SectionList | null>(
@@ -225,14 +242,6 @@ const Page = () => {
   const [selectedSection, setSelectedSection] = useState<Section | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
-
-  const handleAccordion = (id: number) => {
-    if (id !== openedAccordion) {
-      setOpenedAccordion(id);
-    } else {
-      setOpenedAccordion(null);
-    }
-  };
 
   const handleOpenModal = (item: SectionList) => {
     setSelectedListItem(item);
@@ -270,17 +279,38 @@ const Page = () => {
     }
   }, [relationData]);
 
-  // 2. Fetch Units data
+  // 2. Fetch Directorates data
   const {
-    data: unitsData,
-    loading: unitsLoading,
-    error: unitsError,
-  } = useFetch<UnitsResponse>(
+    data: directoratesData,
+    loading: directoratesLoading,
+    error: directoratesError,
+  } = useFetch<DirectoratesResponse>(
     internationalRelationId
-      ? `${process.env.NEXT_PUBLIC_API_URL}/website/international-relations/international-relation/${internationalRelationId}/units`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates?international_relations_id=${internationalRelationId}&page=${directoratesPage}&limit=6`
       : "",
     locale,
   );
+
+  useEffect(() => {
+    if (directoratesData?.data) {
+      setTotalDirectorates(directoratesData.total);
+      if (directoratesPage === 1) {
+        setAllDirectorates(directoratesData.data);
+      } else {
+        setAllDirectorates((prev) => {
+          const ids = new Set(prev.map((p) => p.id));
+          const unique = directoratesData.data.filter((d) => !ids.has(d.id));
+          return [...prev, ...unique];
+        });
+      }
+      setIsLoadingMoreDir(false);
+    }
+  }, [directoratesData, directoratesPage]);
+
+  const handleSeeMoreDirectorates = () => {
+    setIsLoadingMoreDir(true);
+    setDirectoratesPage((prev) => prev + 1);
+  };
 
   // 3. Fetch Sections data
   const {
@@ -294,10 +324,10 @@ const Page = () => {
     locale,
   );
 
-  const isLoading = relationLoading || unitsLoading || sectionsLoading;
-  const hasError = relationError || unitsError || sectionsError;
+  const isLoading = relationLoading || directoratesLoading || sectionsLoading;
+  const hasError = relationError || directoratesError || sectionsError;
   const mainRelation = relationData?.data?.[0];
-  const units = unitsData?.data || [];
+  const directorates = directoratesData?.data || [];
   const sections = sectionsData?.data || [];
 
   if (hasError) {
@@ -328,7 +358,7 @@ const Page = () => {
           </h2>
 
           {/* About Text */}
-          {isLoading ? (
+          {relationLoading ? (
             <AboutTextSkeleton />
           ) : (
             <p className="text-opacity-70 text-secondary text-sm sm:rounded-none rounded-lg sm:border-none border border-lightBorder sm:p-0 p-3">
@@ -336,8 +366,8 @@ const Page = () => {
             </p>
           )}
 
-          {/* Units Section */}
-          {units.length > 0 && (
+          {/* Directorates Section */}
+          {directorates.length > 0 && (
             <div className="flex_center w-full gap-5 mt-5">
               <span className="bg-lightBorder w-full h-[1px]"></span>
               <h3 className="text-secondary text-xl font-medium">
@@ -346,51 +376,68 @@ const Page = () => {
               <span className="bg-lightBorder w-full h-[1px]"></span>
             </div>
           )}
-          <div className="flex_start flex-col gap-5 w-full">
-            {isLoading ? (
-              <>
-                <AccordionSkeleton />
-                <AccordionSkeleton />
-              </>
-            ) : (
-              units.map((unit) => (
-                <div
-                  key={unit.id}
-                  className={`w-full flex_start flex-col rounded-2xl text-secondary border ${
-                    openedAccordion === unit.id
-                      ? "border-golden"
-                      : "border-lightBorder"
-                  }`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => handleAccordion(unit.id)}
-                    className="flex justify-between items-center w-full p-5 text-left"
+          <div className="flex_center flex-col gap-8 w-full">
+            <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 w-full">
+              {directoratesLoading && directoratesPage === 1 ? (
+                <>
+                  <CardSkeleton />
+                  <CardSkeleton />
+                  <CardSkeleton />
+                </>
+              ) : (
+                allDirectorates.map((item) => (
+                  <Link
+                    key={item.id}
+                    href={`/${locale}/directorate/${item.slug}?parent_id=${item.id}`}
+                    title={item.directorate_type?.name}
+                    className="flex_start flex-col gap-5 bg-backgroundSecondary rounded-lg p-5"
                   >
-                    <div className="flex_center gap-4">
-                      <span className="w-6 h-6 bg-golden flex-shrink-0 rounded-full relative block"></span>
-                      <h3 className="font-semibold">{unit.title}</h3>
+                    <h3 className="md:text-lg text-base font-semibold">
+                      {item?.title}
+                    </h3>
+                    <div className="flex w-full justify-between items-center gap-4 text-white">
+                      <div className="flex -space-x-3">
+                        {item.galleries
+                          .slice(0, 4)
+                          .map((galleryItem, index) => (
+                            <div
+                              key={galleryItem.image?.id}
+                              className="relative group"
+                              style={{ zIndex: item.galleries.length + index }}
+                            >
+                              <Image
+                                src={galleryItem.image?.lg}
+                                alt={`img-${galleryItem.image?.id}`}
+                                width={32}
+                                height={32}
+                                className="w-8 h-8 rounded-full border-2 border-white shadow-lg object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.src =
+                                    "/images/placeholder.svg";
+                                }}
+                              />
+                            </div>
+                          ))}
+                      </div>
+                      <div className="w-5 h-5 rounded-full flex_center bg-white">
+                        <FiChevronRight className="text-sm text-secondary rtl:rotate-180" />
+                      </div>
                     </div>
-                    <FaChevronDown
-                      className={`duration-200 flex-shrink-0 ${
-                        openedAccordion === unit.id ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-                  <div
-                    className={`flex_start duration-300 flex-col gap-5 ${
-                      openedAccordion === unit.id
-                        ? "max-h-[700px] p-5 pt-0"
-                        : "max-h-0 overflow-y-hidden"
-                    }`}
-                  >
-                    <p className="sm:text-base text-sm opacity-70">
-                      {unit.description}
-                    </p>
-                  </div>
-                </div>
-              ))
-            )}
+                  </Link>
+                ))
+              )}
+            </div>
+
+            {!directoratesLoading &&
+              allDirectorates.length < totalDirectorates && (
+                <button
+                  onClick={handleSeeMoreDirectorates}
+                  disabled={isLoadingMoreDir}
+                  className="bg-primary hover:bg-opacity-90 transition-all text-white px-8 py-2.5 rounded-full disabled:bg-opacity-70 flex_center gap-2"
+                >
+                  {isLoadingMoreDir ? t("loading") : t("see_more")}
+                </button>
+              )}
           </div>
 
           {/* Programs Section */}
@@ -404,7 +451,7 @@ const Page = () => {
             </div>
           )}
           <div className="w-full grid sm:grid-cols-2 grid-cols-1 gap-5">
-            {isLoading ? (
+            {sectionsLoading ? (
               <>
                 <ProgramCardSkeleton />
                 <ProgramCardSkeleton />

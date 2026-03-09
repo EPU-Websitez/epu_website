@@ -55,28 +55,30 @@ const Page = () => {
     id
       ? `${process.env.NEXT_PUBLIC_API_URL}/website/international-strategies/international-strategy/${id}/goals`
       : "",
-    locale
+    locale,
   );
 
   const goals = data?.data || [];
 
   // Handle error or missing ID
-  if (error) return (
-  <div className="my-10 flex_center w-full">
-    <div className="max-w-[1024px] w-full flex_center">
-      <NoData showButton={true} className="my-10" />
-    </div>
-  </div>
-);
+  if (error)
+    return (
+      <div className="my-10 flex_center w-full">
+        <div className="max-w-[1024px] w-full flex_center">
+          <NoData showButton={true} className="my-10" />
+        </div>
+      </div>
+    );
 
-// For pages with NO data (optional but recommended)
-if (!data) return (
-  <div className="my-10 flex_center w-full">
-    <div className="max-w-[1024px] w-full flex_center">
-      <NoData showButton={false} />
-    </div>
-  </div>
-);
+  // For pages with NO data (optional but recommended)
+  if (!data)
+    return (
+      <div className="my-10 flex_center w-full">
+        <div className="max-w-[1024px] w-full flex_center">
+          <NoData showButton={false} />
+        </div>
+      </div>
+    );
 
   return (
     <div className="w-full flex_center flex-col sm:mb-10 mb-5 mt-5">
@@ -93,14 +95,6 @@ if (!data) return (
                   className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
                 >
                   <span>{t("strategy")}</span>
-                  <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-                </Link>
-                <Link
-                  href={`/${locale}/international-strategy/news?id=${id || ""}`}
-                  title={t("news")}
-                  className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-secondary opacity-70 border-lightBorder"
-                >
-                  <span>{t("news")}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
                 </Link>
                 <div className="lg:w-[250px] w-full lg:h-[45px] sm:h-[60px] h-[45px] flex items-center justify-between border px-3 bg-background sm:rounded-3xl rounded-xl text-primary border-primary">
