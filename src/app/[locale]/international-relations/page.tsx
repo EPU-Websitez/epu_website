@@ -6,8 +6,14 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
-import { FiArrowRight, FiChevronRight } from "react-icons/fi";
+import {
+  FaChevronDown,
+  FaGlobe,
+  FaMapMarkerAlt,
+  FaPhoneAlt,
+  FaShareAlt,
+} from "react-icons/fa";
+import { FiArrowRight, FiChevronRight, FiMail } from "react-icons/fi";
 import { GoBook } from "react-icons/go";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
@@ -25,6 +31,12 @@ interface Image {
   sm: string;
 }
 
+interface Contact {
+  id: number;
+  type: "EMAIL" | "PHONE" | "ADDRESS" | "WEBSITE" | "SOCIAL_MEDIA";
+  value: string;
+}
+
 interface InternationalRelation {
   id: number;
   slug: string;
@@ -32,6 +44,7 @@ interface InternationalRelation {
   bg_image: Image;
   bg_title: string;
   bg_description: string;
+  contacts: Contact[];
 }
 
 interface InternationalRelationResponse {
@@ -361,9 +374,77 @@ const Page = () => {
           {relationLoading ? (
             <AboutTextSkeleton />
           ) : (
-            <p className="text-opacity-70 text-secondary text-sm sm:rounded-none rounded-lg sm:border-none border border-lightBorder sm:p-0 p-3">
-              {mainRelation?.about}
-            </p>
+            <div className="w-full flex flex-col gap-6">
+              <p className="text-opacity-70 text-secondary text-sm sm:rounded-none rounded-lg sm:border-none border border-lightBorder sm:p-0 p-3">
+                {mainRelation?.about}
+              </p>
+
+              {/* Contacts section */}
+              {mainRelation?.contacts && mainRelation.contacts.length > 0 && (
+                <div className="flex flex-wrap gap-4 mt-2">
+                  {mainRelation.contacts.map((contact) => {
+                    const iconMap = {
+                      EMAIL: <FiMail className="text-golden" />,
+                      PHONE: <FaPhoneAlt className="text-golden" />,
+                      ADDRESS: <FaMapMarkerAlt className="text-golden" />,
+                      WEBSITE: <FaGlobe className="text-golden" />,
+                      SOCIAL_MEDIA: <FaShareAlt className="text-golden" />,
+                    };
+
+                    const getHref = () => {
+                      switch (contact.type) {
+                        case "EMAIL":
+                          return `mailto:${contact.value}`;
+                        case "PHONE":
+                          return `tel:+964${contact.value.startsWith("0") ? contact.value.substring(1) : contact.value}`;
+                        case "WEBSITE":
+                        case "SOCIAL_MEDIA":
+                          return contact.value.startsWith("http")
+                            ? contact.value
+                            : `https://${contact.value}`;
+                        default:
+                          return null;
+                      }
+                    };
+
+                    const href = getHref();
+                    const Tag = href ? "a" : "div";
+
+                    return (
+                      <Tag
+                        key={contact.id}
+                        href={href || undefined}
+                        target={
+                          href &&
+                          !href.startsWith("mailto") &&
+                          !href.startsWith("tel")
+                            ? "_blank"
+                            : undefined
+                        }
+                        rel={
+                          href &&
+                          !href.startsWith("mailto") &&
+                          !href.startsWith("tel")
+                            ? "noopener noreferrer"
+                            : undefined
+                        }
+                        className="flex items-center gap-2 bg-backgroundSecondary px-4 py-2 rounded-full border border-lightBorder hover:border-golden transition-colors group"
+                      >
+                        <span className="text-lg group-hover:scale-110 transition-transform duration-300">
+                          {iconMap[contact.type]}
+                        </span>
+                        <span className="text-sm font-medium text-secondary opacity-80 whitespace-nowrap">
+                          {contact.type === "PHONE" &&
+                          !contact.value.startsWith("+964")
+                            ? `+964 ${contact.value}`
+                            : contact.value}
+                        </span>
+                      </Tag>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           )}
 
           {/* Directorates Section */}

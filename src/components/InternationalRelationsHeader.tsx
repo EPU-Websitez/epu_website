@@ -99,9 +99,14 @@ const InternationalRelationsHeader = () => {
         }}
       />
       <div className="ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary to-transparent absolute top-0 left-0 w-full h-full z-10"></div>
-      <h3 className="absolute leading-relaxed z-20 text-white top-10 sm:ltr:left-10 ltr:left-5 sm:rtl:right-10 rtl:right-5 lg:text-[22px] text-sm max-w-[710px]">
-        {bgDescription}
-      </h3>
+      <div className="absolute z-20 text-white top-10 sm:ltr:left-10 ltr:left-5 sm:rtl:right-10 rtl:right-5">
+        <h2 className="leading-relaxed lg:text-[32px] text-lg max-w-[710px]">
+          {bgTitle}
+        </h2>
+        <h3 className="leading-relaxed lg:text-[20px] text-sm max-w-[710px] mt-5">
+          {bgDescription}
+        </h3>
+      </div>
       <div className="absolute z-20 text-white bottom-10 ltr:left-10 rtl:right-10 sm:flex hidden justify-center items-center gap-5">
         <Link
           href={`${aboutPath}?id=${headerData.id}`}
