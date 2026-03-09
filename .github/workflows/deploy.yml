@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -28,8 +29,9 @@ jobs:
 
             echo ">>> Docker rebuild"
             docker-compose down
-            docker-compose build --no-cache
-            docker-compose up -d
+            docker image prune -f
+            docker-compose build --no-cache --pull
+            docker-compose up -d --force-recreate
 
             echo ">>> Done"
             docker ps --filter name=epu_website_web --format "{{.Names}} {{.Status}}"
