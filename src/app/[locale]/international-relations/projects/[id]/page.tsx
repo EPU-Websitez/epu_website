@@ -326,7 +326,7 @@ const Page = () => {
                             alt="Gallery thumbnail"
                             fill
                             sizes="150px"
-                            className="object-cover transition-transform duration-500 group-hover:scale-110"
+                            className="object-contain transition-transform duration-500 group-hover:scale-110"
                             onError={(e) => {
                               e.currentTarget.src = "/images/placeholder.svg";
                             }}
