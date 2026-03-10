@@ -53,7 +53,7 @@ const Page = () => {
 
   const { data, loading, error } = useFetch<CenterResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/centers/${slug}`,
-    locale
+    locale,
   );
 
   const email = data?.contacts.find((c) => c.type === "EMAIL")?.value;
@@ -66,7 +66,7 @@ const Page = () => {
 
         <div className="md:w-[720px] w-full sm:my-10 my-5 sm:h-[50px] h-[35px] grid grid-cols-3 justify-center items-center bg-lightBorder text-secondary rounded-3xl">
           <p className="bg-primary text-white rounded-3xl h-full flex_center sm:text-lg text-sm font-medium">
-            {t("vision_mission")}
+            {t("about")}
           </p>
           <Link
             href={`/${locale}/centers/${slug}/staff`}
@@ -115,6 +115,20 @@ const Page = () => {
           </div>
         ) : (
           <div className="w-full flex_start flex-col gap-10">
+            {/* description */}
+            <div className="sm:mt-10 mt-5 sm:pb-10 pb-5 border-b w-full border-b-lightBorder flex_start flex-col gap-5">
+              <h2 className="md:text-3xl relative text-lg font-semibold ">
+                <span className="absolute ltr:left-0 right-0 bottom-1 h-[40%] bg-golden w-[7ch]"></span>
+                <span className="z-10 relative">{t("description")}</span>
+              </h2>
+              {/* <p className="font-medium md:text-base text-sm">{data.mission}</p> */}
+              <div
+                className="font-medium md:text-base text-sm"
+                dangerouslySetInnerHTML={{
+                  __html: data.description,
+                }}
+              />
+            </div>
             {/* Vision */}
             <div className="sm:mt-10 mt-5 sm:pb-10 pb-5 border-b w-full border-b-lightBorder flex_start flex-col gap-5">
               <h2 className="md:text-3xl relative text-lg font-semibold ">

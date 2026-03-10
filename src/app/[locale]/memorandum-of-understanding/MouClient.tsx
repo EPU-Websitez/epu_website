@@ -88,7 +88,7 @@ const MouModal = ({
             }
             alt={mou.title}
             fill
-            className="object-cover sm:rounded-3xl rounded-lg"
+            className="object-contain sm:rounded-3xl rounded-lg"
             onError={(e) => {
               e.currentTarget.src = "/images/placeholder.svg";
             }}
@@ -104,7 +104,7 @@ const MouModal = ({
             {mou.title}
             <FiLink className="opacity-70" />
           </a>
-          <p className="text-sm sm:text-base text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600 max-h-[200px] overflow-y-auto">
             {mou.description}
           </p>
         </div>

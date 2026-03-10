@@ -224,7 +224,9 @@
     "clear": "Clear",
     "apply": "Apply",
     "search": "Search",
-    "no_news_found": "No Data Found"
+    "no_news_found": "No Data Found",
+    "about": "About",
+    "description": "Description"
   },
   "Students": {
     "head": "Campus Life",

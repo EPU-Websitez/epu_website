@@ -116,7 +116,7 @@ const Page = () => {
     slug
       ? `${process.env.NEXT_PUBLIC_API_URL}/website/centers/${slug}/staff?page=${page}&limit=${limit}`
       : "",
-    locale
+    locale,
   );
 
   // --- ADDED: Fetch for Lead Member ---
@@ -124,7 +124,7 @@ const Page = () => {
     slug
       ? `${process.env.NEXT_PUBLIC_API_URL}/website/centers/${slug}/leads?page=1&limit=1`
       : "",
-    locale
+    locale,
   );
   // --- END ---
 
@@ -163,7 +163,7 @@ const Page = () => {
             title={t("vision_mission")}
             className="opacity-70 flex_center sm:text-lg text-sm font-medium"
           >
-            {t("vision_mission")}
+            {t("about")}
           </Link>
           <p className="bg-primary text-white rounded-3xl h-full flex_center sm:text-lg text-sm font-medium">
             {t("staff")}

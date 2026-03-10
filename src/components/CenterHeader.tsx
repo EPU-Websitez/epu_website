@@ -15,7 +15,7 @@ interface CenterResponse {
   id: number;
   slug: string;
   title: string;
-  description: string;
+  bg_title: string;
   galleries: {
     id: number;
     center_id: number;
@@ -70,7 +70,7 @@ const CenterHeader = () => {
     {
       dedupingInterval: 1000 * 60 * 60, // 1 hour
       revalidateOnFocus: false,
-    }
+    },
   );
 
   useEffect(() => {
@@ -89,15 +89,15 @@ const CenterHeader = () => {
         <SubHeader title={data?.title || slug} alt={false} />
       </div>
       <div className="w-full relative sm:mt-14 mt-6 min-h-80">
-        {data.description && (
+        {data.bg_title && (
           <div className="absolute lg:-top-14 top-10 ltr:left-10 right-10 sm:flex hidden flex-col max-w-[520px] z-10 p-4">
-            {/* <h2 className="bg-primary text-white text-xl font-semibold z-10 p-5">
-              {data.description.substring(0, 150)}
-            </h2> */}
-            <div
+            <h2 className="bg-primary text-white text-xl font-semibold z-10 p-5">
+              {data.bg_title}
+            </h2>
+            {/* <div
               className="bg-primary text-white text-xl font-semibold z-10 p-5 max-h-72 overflow-y-auto"
               dangerouslySetInnerHTML={{ __html: data.description }}
-            />
+            /> */}
             <div className="triangle -mt-14 rotate-90"></div>
           </div>
         )}

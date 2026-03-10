@@ -42,6 +42,10 @@ interface DirectorateParentInfo {
   directorate_type: {
     name: string;
   };
+  news_count: number;
+  staff_count: number;
+  centers_count: number;
+  children_count: number;
 }
 
 const SkeletonCard = () => (
@@ -113,6 +117,10 @@ const CentersClient = () => {
                 parentId={parentId}
                 hasParent={!!directorateInfo?.parent}
                 isLoading={directorateLoading}
+                newsCount={directorateInfo?.news_count}
+                staffCount={directorateInfo?.staff_count}
+                centersCount={directorateInfo?.centers_count}
+                unitsCount={directorateInfo?.children_count}
               />
 
               <div className="lg:border-l w-full border-l-none lg:border-b-0 border-b text-secondary border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7">

@@ -53,6 +53,10 @@ interface UnitDetail {
   mission: string;
   about: string;
   parent_id: number;
+  news_count: number;
+  staff_count: number;
+  centers_count: number;
+  children_count: number;
   directorate_type: {
     name: string;
   };
@@ -161,11 +165,15 @@ const Page = () => {
             ) : (
               <div className="flex_start gap-10 w-full mt-10 max-w-[1024px] px-2 lg:flex-row flex-col-reverse">
                 <DirectorateSidebar
-                  activeTab="about"
+                  activeTab="units"
                   id={id}
                   parentId={parentId}
                   hasParent={!!unitData?.parent}
                   isLoading={isLoading || !unitData}
+                  newsCount={unitData?.news_count}
+                  staffCount={unitData?.staff_count}
+                  centersCount={unitData?.centers_count}
+                  unitsCount={unitData?.children_count}
                 />
 
                 <div className="lg:border-l text-secondary border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">

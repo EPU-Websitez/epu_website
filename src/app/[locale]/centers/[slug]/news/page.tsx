@@ -319,7 +319,7 @@ const Page = () => {
             href={`/${locale}/centers/${slug}`}
             className="opacity-70 flex_center sm:text-lg text-sm font-medium h-full"
           >
-            {t("vision_mission")}
+            {t("about")}
           </Link>
           <Link
             title={t("staff")}

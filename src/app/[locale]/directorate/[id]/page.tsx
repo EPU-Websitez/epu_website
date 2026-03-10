@@ -97,6 +97,7 @@ interface DirectorateDetail {
   staff_count: number;
   news_count: number;
   children_count: number;
+  centers_count: number;
   contacts?: Contact[];
   address?: Address | null;
 }
@@ -266,6 +267,10 @@ const Page = () => {
                       id={id}
                       parentId={parentId}
                       hasParent={!!directorateData.parent}
+                      newsCount={directorateData.news_count}
+                      staffCount={directorateData.staff_count}
+                      centersCount={directorateData.centers_count}
+                      unitsCount={directorateData.children_count}
                     />
 
                     <div className="lg:border-l w-full border-l-none lg:border-b-0 border-b text-secondary border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7">

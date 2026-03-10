@@ -7,11 +7,15 @@ import { useParams } from "next/navigation";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
 interface DirectorateSidebarProps {
-  activeTab: "about" | "staff" | "centers" | "news";
+  activeTab: "about" | "staff" | "centers" | "news" | "units";
   id: string;
   parentId: string | null;
   hasParent: boolean;
   isLoading?: boolean;
+  newsCount?: number;
+  staffCount?: number;
+  centersCount?: number;
+  unitsCount?: number;
 }
 
 const DirectorateSidebar = ({
@@ -20,6 +24,10 @@ const DirectorateSidebar = ({
   parentId,
   hasParent,
   isLoading = false,
+  newsCount = 0,
+  staffCount = 0,
+  centersCount = 0,
+  unitsCount = 0,
 }: DirectorateSidebarProps) => {
   const t = useTranslations("Directorate");
   const params = useParams();
@@ -50,26 +58,28 @@ const DirectorateSidebar = ({
         </Link>
       )}
 
-      {isActive("staff") ? (
-        <div className={activeClass}>
-          <span>{t("staff")}</span>
-          <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-        </div>
-      ) : (
-        <Link
-          href={`/${locale}/directorate/${id}/staff?parent_id=${parentId}`}
-          title={t("staff")}
-          className={inactiveClass}
-        >
-          <span>{t("staff")}</span>
-          <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-        </Link>
-      )}
+      {(staffCount > 0 || isActive("staff")) &&
+        (isActive("staff") ? (
+          <div className={activeClass}>
+            <span>{t("staff")}</span>
+            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+          </div>
+        ) : (
+          <Link
+            href={`/${locale}/directorate/${id}/staff?parent_id=${parentId}`}
+            title={t("staff")}
+            className={inactiveClass}
+          >
+            <span>{t("staff")}</span>
+            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+          </Link>
+        ))}
 
-      <SubUnits />
+      {(unitsCount > 0 || isActive("units")) && <SubUnits />}
 
-      {/* Show centers link if it's a parent directorate (hasParent is false or null) AND not loading */}
-      {!hasParent &&
+      {/* Show centers link if it's a parent directorate (hasParent is false or null) AND not loading AND has centers */}
+      {(centersCount > 0 || isActive("centers")) &&
+        !hasParent &&
         !isLoading &&
         (isActive("centers") ? (
           <div className={activeClass}>
@@ -87,21 +97,22 @@ const DirectorateSidebar = ({
           </Link>
         ))}
 
-      {isActive("news") ? (
-        <div className={activeClass}>
-          <span>{t("news")}</span>
-          <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-        </div>
-      ) : (
-        <Link
-          href={`/${locale}/directorate/${id}/news?parent_id=${parentId}`}
-          title={t("news")}
-          className={inactiveClass}
-        >
-          <span>{t("news")}</span>
-          <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-        </Link>
-      )}
+      {(newsCount > 0 || isActive("news")) &&
+        (isActive("news") ? (
+          <div className={activeClass}>
+            <span>{t("news")}</span>
+            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+          </div>
+        ) : (
+          <Link
+            href={`/${locale}/directorate/${id}/news?parent_id=${parentId}`}
+            title={t("news")}
+            className={inactiveClass}
+          >
+            <span>{t("news")}</span>
+            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+          </Link>
+        ))}
     </div>
   );
 };
