@@ -85,6 +85,7 @@ const InternationalRelationsHeader = () => {
   const directoryPath = `/${locale}/international-relations/directory-structure`;
   const newsPath = `/${locale}/international-relations/news`;
   const staffPath = `/${locale}/international-relations/office-staff`;
+  const projectsPath = `/${locale}/international-relations/projects`;
 
   return (
     <div className="w-full lg:h-[400px] sm:h-[300px] h-[220px] relative overflow-hidden rounded-3xl">
@@ -146,6 +147,16 @@ const InternationalRelationsHeader = () => {
           }
         >
           {t("office_staff")}
+        </Link>
+        <span className="h-[20px] w-[1px] bg-white"></span>
+        <Link
+          href={`${projectsPath}?id=${headerData.id}`}
+          title={t("projects")}
+          className={
+            pathname === projectsPath ? "border-b-2 border-white pb-1" : ""
+          }
+        >
+          {t("projects")}
         </Link>
       </div>
     </div>

@@ -438,7 +438,10 @@
     "international_universities": "الجامعات والمعاهد الدولية",
     "no_mous_found": "لم يتم العثور على مذكرات تفاهم",
     "loading": "جاري التحميل...",
-    "see_more": "شاهد المزيد"
+    "see_more": "شاهد المزيد",
+    "gallery": "معرض الصور",
+    "attachments": "المرفقات",
+    "project_details": "تفاصيل المشروع"
   },
   "ResearchesAndPublications": {
     "head": "البحوث والمنشورات",
