@@ -211,7 +211,7 @@ export default function HomePageClient() {
               {slidersData?.data.map((slide, index) => (
                 <SwiperSlide key={slide.id}>
                   {/* Large Screen Image */}
-                  <div className="hidden sm:block w-full h-full relative">
+                  <div className="w-full h-full relative">
                     <Image
                       src={slide.image?.lg}
                       alt={slide.title}
@@ -224,7 +224,7 @@ export default function HomePageClient() {
                     />
                   </div>
                   {/* Small Screen Image */}
-                  <div className="block sm:hidden w-full h-full relative">
+                  {/* <div className="block sm:hidden w-full h-full relative">
                     <Image
                       src={slide.image?.sm || slide.image?.lg}
                       alt={slide.title}
@@ -235,7 +235,7 @@ export default function HomePageClient() {
                         e.currentTarget.src = "/images/placeholder.svg";
                       }}
                     />
-                  </div>
+                  </div> */}
                 </SwiperSlide>
               ))}
             </Swiper>

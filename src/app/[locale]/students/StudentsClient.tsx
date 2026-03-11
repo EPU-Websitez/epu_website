@@ -20,6 +20,7 @@ import { IoArrowForwardOutline } from "react-icons/io5";
 import CollegeMapComponent from "@/components/CollegeMapComponent ";
 
 import useFetch from "@/libs/hooks/useFetch";
+import MapSection from "@/components/HomeComponents/MapSection";
 
 // -------- Interfaces --------
 interface ImageFile {
@@ -50,7 +51,12 @@ interface Section {
   title: string;
   subtitle: string;
   description: string;
+  list: string[] | null;
+  action_link: string | null;
   images: ImageFile[];
+  campus_life: {
+    title: string;
+  };
 }
 interface SectionsResponse {
   total: number;
@@ -314,6 +320,30 @@ const StudentsClient = () => {
                 <p className="text-sm max-w-[440px] opacity-70">
                   {section.description}
                 </p>
+                {section.list && (
+                  <ul className="text-sm space-y-1">
+                    {section.list?.map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex justify-start items-center gap-2"
+                      >
+                        <span className="flex-shrink-0 w-3 h-3 bg-golden rounded-full"></span>
+                        <li>{item}</li>
+                      </div>
+                    ))}
+                  </ul>
+                )}
+                {section.action_link && (
+                  <Link
+                    href={section.action_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 bg-gradient-to-r px-8 py-3 rounded-xl from-blue to-secondary text-white font-semibold text-sm mt-2 hover:underline"
+                  >
+                    {t("see_more")}
+                    <IoArrowForwardOutline className="rtl:rotate-180" />
+                  </Link>
+                )}
               </div>
               {section.images?.[0] && (
                 <div className="md:w-1/2 w-full lg:h-[460px] sm:h-[400px] h-[340px] relative mt-10 rounded-3xl overflow-hidden flex-shrink-0">
@@ -377,33 +407,7 @@ const StudentsClient = () => {
         )}
       </div>
 
-      {isLoading && !addressData ? (
-        <MapSkeleton />
-      ) : (
-        <div className="w-full sm:h-[500px] h-[400px] relative flex justify-center items-start my-10 bg-[#fff]">
-          <div className="w-full h-full absolute top-0 left-0">
-            {addressData ? (
-              <CollegeMapComponent
-                lat={parseFloat(addressData.latitude)}
-                lng={parseFloat(addressData.longitude)}
-                title={addressData.campus_life.title}
-                address={addressData.location}
-              />
-            ) : (
-              <Image
-                src={"/images/map.png"}
-                alt="Map"
-                fill
-                priority
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.src = "/images/placeholder.svg";
-                }}
-              />
-            )}
-          </div>
-        </div>
-      )}
+      {isLoading && !addressData ? <MapSkeleton /> : <MapSection />}
     </div>
   );
 };

@@ -50,6 +50,8 @@ interface Section {
   title: string;
   subtitle: string;
   description: string;
+  list: string[] | null;
+  action_link: string | null;
   images: ImageFile[];
   campus_life: {
     title: string;
@@ -318,6 +320,30 @@ const StudentsClient = () => {
                 <p className="text-sm max-w-[440px] opacity-70">
                   {section.description}
                 </p>
+                {section.list && (
+                  <ul className="text-sm space-y-1 opacity-70">
+                    {section.list?.map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex justify-center items-center gap-2"
+                      >
+                        <span className="flex-shrink-0 w-5 h-5 bg-golden"></span>
+                        <li>{item}111</li>
+                      </div>
+                    ))}
+                  </ul>
+                )}
+                {(section.action_link ||
+                  (section.id === 4 ? "https://example.com" : null)) && (
+                  <Link
+                    href={section.action_link || "https://example.com"}
+                    target="_blank"
+                    className="flex items-center gap-2 text-primary font-semibold text-sm mt-2 hover:underline"
+                  >
+                    ({t("see_more")})
+                    <IoArrowForwardOutline className="rtl:rotate-180" />
+                  </Link>
+                )}
               </div>
               {section.images?.[0] && (
                 <div className="md:w-1/2 w-full lg:h-[460px] sm:h-[400px] h-[340px] relative mt-10 rounded-3xl overflow-hidden flex-shrink-0">
