@@ -49,27 +49,32 @@ const PresidentSpeechClient = () => {
   const t = useTranslations("PresidentSpeech");
   const params = useParams();
   const locale = (params?.locale as string) || "en";
-  const { data: messageData, loading: isLoading, error } =
-    useFetch<PresidentMessageData>(
-      `${process.env.NEXT_PUBLIC_API_URL}/website/universities/president-message`,
-      locale
-    );
+  const {
+    data: messageData,
+    loading: isLoading,
+    error,
+  } = useFetch<PresidentMessageData>(
+    `${process.env.NEXT_PUBLIC_API_URL}/website/universities/president-message`,
+    locale,
+  );
 
   if (isLoading) return <PageSkeleton />;
-  if (error) return (
-    <div className="my-10 flex_center w-full">
-      <div className="max-w-[1024px] w-full flex_center">
-        <NoData showButton={true} className="my-10" />
+  if (error)
+    return (
+      <div className="my-10 flex_center w-full">
+        <div className="max-w-[1024px] w-full flex_center">
+          <NoData showButton={true} className="my-10" />
+        </div>
       </div>
-    </div>
-  );
-  if (!messageData) return (
-    <div className="my-10 flex_center w-full">
-      <div className="max-w-[1024px] w-full flex_center">
-        <NoData showButton={false} />
+    );
+  if (!messageData)
+    return (
+      <div className="my-10 flex_center w-full">
+        <div className="max-w-[1024px] w-full flex_center">
+          <NoData showButton={false} />
+        </div>
       </div>
-    </div>
-  );
+    );
 
   return (
     <div className="w-full flex_center my-10">
@@ -134,15 +139,15 @@ const PresidentSpeechClient = () => {
         <h3 className="text-[#4A4A4A] sm:text-base text-sm font-semibold">
           {messageData.subtitle}
         </h3>
-        {/* <p className="text-[#4A4A4A] sm:text-base text-sm">
+        <p className="text-[#4A4A4A] sm:text-base text-sm">
           {messageData.description}
-        </p> */}
-        <div
+        </p>
+        {/* <div
           className="text-[#4A4A4A] sm:text-base text-sm"
           dangerouslySetInnerHTML={{
             __html: messageData.description,
           }}
-        />
+        /> */}
         <div className="w-full flex items-end justify-end">
           <div className="sm:w-[111px] w-14 sm:h-[111px] h-14 relative rotate-180">
             <Image

@@ -98,6 +98,7 @@ interface DirectorateDetail {
   news_count: number;
   children_count: number;
   centers_count: number;
+  labs_count: number;
   contacts?: Contact[];
   address?: Address | null;
 }
@@ -271,6 +272,7 @@ const Page = () => {
                       staffCount={directorateData.staff_count}
                       centersCount={directorateData.centers_count}
                       unitsCount={directorateData.children_count}
+                      labsCount={directorateData.labs_count}
                     />
 
                     <div className="lg:border-l w-full border-l-none lg:border-b-0 border-b text-secondary border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7">
@@ -280,12 +282,15 @@ const Page = () => {
                       </h2>
                       <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full">
                         {/* --- FIXED SECTION STARTS HERE --- */}
-                        <div
+                        {/* <div
                           className="text-opacity-70 text-secondary text-sm prose max-w-none"
                           dangerouslySetInnerHTML={{
                             __html: directorateData.about,
                           }}
-                        />
+                        /> */}
+                        <p className="text-opacity-70 text-secondary text-sm prose max-w-none">
+                          {directorateData.about}
+                        </p>
 
                         {directorateData.galleries.length > 0 && (
                           <div className="w-full">
@@ -346,12 +351,15 @@ const Page = () => {
                           </h2>
                           <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full">
                             {/* Changed from <p> to <div> and added dangerouslySetInnerHTML */}
-                            <div
+                            {/* <div
                               className="text-opacity-70 text-secondary text-sm prose max-w-none"
                               dangerouslySetInnerHTML={{
                                 __html: directorateData.mission,
                               }}
-                            />
+                            /> */}
+                            <p className="text-opacity-70 text-secondary text-sm prose max-w-none">
+                              {directorateData.mission}
+                            </p>
                           </div>
                         </>
                       )}
@@ -362,12 +370,15 @@ const Page = () => {
                             <span className="z-10 relative">{t("vision")}</span>
                           </h2>
                           <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full">
-                            <div
+                            {/* <div
                               className="text-opacity-70 text-secondary text-sm prose max-w-none"
                               dangerouslySetInnerHTML={{
                                 __html: directorateData.vision,
                               }}
-                            />
+                            /> */}
+                            <p className="text-opacity-70 text-secondary text-sm prose max-w-none">
+                              {directorateData.vision}
+                            </p>
                           </div>
                         </>
                       )}

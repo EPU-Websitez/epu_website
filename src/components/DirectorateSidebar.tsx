@@ -7,7 +7,7 @@ import { useParams } from "next/navigation";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
 interface DirectorateSidebarProps {
-  activeTab: "about" | "staff" | "centers" | "news" | "units";
+  activeTab: "about" | "staff" | "centers" | "news" | "units" | "laboratories";
   id: string;
   parentId: string | null;
   hasParent: boolean;
@@ -16,6 +16,7 @@ interface DirectorateSidebarProps {
   staffCount?: number;
   centersCount?: number;
   unitsCount?: number;
+  labsCount?: number;
 }
 
 const DirectorateSidebar = ({
@@ -28,6 +29,7 @@ const DirectorateSidebar = ({
   staffCount = 0,
   centersCount = 0,
   unitsCount = 0,
+  labsCount = 0,
 }: DirectorateSidebarProps) => {
   const t = useTranslations("Directorate");
   const params = useParams();
@@ -93,6 +95,23 @@ const DirectorateSidebar = ({
             className={inactiveClass}
           >
             <span>{t("centers")}</span>
+            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+          </Link>
+        ))}
+
+      {(labsCount > 0 || isActive("laboratories")) &&
+        (isActive("laboratories") ? (
+          <div className={activeClass}>
+            <span>{t("labs")}</span>
+            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+          </div>
+        ) : (
+          <Link
+            href={`/${locale}/directorate/${id}/laboratories?parent_id=${parentId}`}
+            title={t("labs")}
+            className={inactiveClass}
+          >
+            <span>{t("labs")}</span>
             <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
           </Link>
         ))}

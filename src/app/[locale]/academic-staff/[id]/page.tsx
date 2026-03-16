@@ -54,7 +54,7 @@ interface DepartmentPositionsResponse {
 const getExternalUrl = (
   subdomain: string | undefined,
   departmentSlug: string | undefined,
-  locale: string
+  locale: string,
 ) => {
   if (!subdomain || !departmentSlug) return "#";
   return `https://${subdomain}.epu.edu.iq/${locale}/departments/${departmentSlug}`;
@@ -96,7 +96,7 @@ const DepartmentPositionSidebarList = ({
       ...dept,
       subdomain: college.subdomain,
       college_name: college.college_name,
-    }))
+    })),
   );
 
   if (allDepartments.length === 0) return null;
@@ -115,11 +115,7 @@ const DepartmentPositionSidebarList = ({
         {visibleItems.map((dept, index) => (
           <a
             key={`${dept.department_id}-${index}`}
-            href={getExternalUrl(
-              dept.subdomain,
-              dept.department_slug,
-              locale
-            )}
+            href={getExternalUrl(dept.subdomain, dept.department_slug, locale)}
             target="_blank"
             rel="noopener noreferrer"
             className="group flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200"
@@ -165,14 +161,14 @@ const Page = () => {
   // 1. Fetch Main Staff Data
   const { data, loading, error } = useFetch<AcademicStaff>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}`,
-    locale
+    locale,
   );
 
   // 2. Fetch Department Positions
   const { data: deptPositions, loading: deptLoading } =
     useFetch<DepartmentPositionsResponse>(
       `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}/lecturing-departments`,
-      locale
+      locale,
     );
 
   const biography = data?.biography || "Biography not available.";
@@ -184,7 +180,10 @@ const Page = () => {
   const groupedDepartmentPositions = useMemo(() => {
     if (!deptPositions?.data) return {};
 
-    const groups: Record<string, { title: string; colleges: CollegeWithDepartments }> = {};
+    const groups: Record<
+      string,
+      { title: string; colleges: CollegeWithDepartments }
+    > = {};
 
     deptPositions.data.forEach((college) => {
       const groupKey = `col-${college.college_id}`;
@@ -282,10 +281,13 @@ const Page = () => {
                 <h2 className="sm:text-2xl text-lg font-semibold text-gray-900">
                   {t("biography")}
                 </h2>
-                <div
+                {/* <div
                   className="lg:text-lg sm:text-base text-sm text-gray-600 leading-relaxed text-justify"
                   dangerouslySetInnerHTML={{ __html: biography }}
-                />
+                /> */}
+                <p className="lg:text-lg sm:text-base text-sm text-gray-600 leading-relaxed text-justify">
+                  {biography}
+                </p>
               </div>
             </div>
           </div>
@@ -313,41 +315,45 @@ const Page = () => {
             <div className="p-5 overflow-y-auto custom-scrollbar">
               <div className="flex flex-col gap-6">
                 {Object.keys(groupedDepartmentPositions).length > 0 ? (
-                  Object.values(groupedDepartmentPositions).map((group: any, idx) => (
-                    <div key={idx} className="flex flex-col gap-3">
-                      <div className="flex items-center gap-2 pb-2 border-b border-lightBorder">
-                        <span className="text-sm font-bold text-secondary uppercase tracking-wide">
-                          {group.title}
-                        </span>
-                      </div>
+                  Object.values(groupedDepartmentPositions).map(
+                    (group: any, idx) => (
+                      <div key={idx} className="flex flex-col gap-3">
+                        <div className="flex items-center gap-2 pb-2 border-b border-lightBorder">
+                          <span className="text-sm font-bold text-secondary uppercase tracking-wide">
+                            {group.title}
+                          </span>
+                        </div>
 
-                      <div className="grid sm:grid-cols-2 gap-3">
-                        {group.colleges.departments.map((dept: DepartmentPosition, pIdx: number) => (
-                          <a
-                            key={`${dept.department_id}-${pIdx}`}
-                            href={getExternalUrl(
-                              group.colleges.subdomain,
-                              dept.department_slug,
-                              locale
-                            )}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex flex-col gap-1 p-3 rounded-xl border border-lightBorder hover:border-blue/10 hover:bg-blue/10 transition-all group"
-                          >
-                            <div className="flex items-start justify-between gap-2">
-                              <span className="text-sm font-semibold text-gray-800 group-hover:text-blue-700 transition-colors line-clamp-2">
-                                {dept.department_name}
-                              </span>
-                              <HiOutlineBuildingLibrary className="text-secondary group-hover:text-blue-400 shrink-0 mt-0.5" />
-                            </div>
-                            <span className="text-xs text-lightText bg-backgroundSecondary self-start px-2 py-0.5 rounded-md mt-1 group-hover:bg-white transition-colors">
-                              {dept.role}
-                            </span>
-                          </a>
-                        ))}
+                        <div className="grid sm:grid-cols-2 gap-3">
+                          {group.colleges.departments.map(
+                            (dept: DepartmentPosition, pIdx: number) => (
+                              <a
+                                key={`${dept.department_id}-${pIdx}`}
+                                href={getExternalUrl(
+                                  group.colleges.subdomain,
+                                  dept.department_slug,
+                                  locale,
+                                )}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex flex-col gap-1 p-3 rounded-xl border border-lightBorder hover:border-blue/10 hover:bg-blue/10 transition-all group"
+                              >
+                                <div className="flex items-start justify-between gap-2">
+                                  <span className="text-sm font-semibold text-gray-800 group-hover:text-blue-700 transition-colors line-clamp-2">
+                                    {dept.department_name}
+                                  </span>
+                                  <HiOutlineBuildingLibrary className="text-secondary group-hover:text-blue-400 shrink-0 mt-0.5" />
+                                </div>
+                                <span className="text-xs text-lightText bg-backgroundSecondary self-start px-2 py-0.5 rounded-md mt-1 group-hover:bg-white transition-colors">
+                                  {dept.role}
+                                </span>
+                              </a>
+                            ),
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    ),
+                  )
                 ) : (
                   <p className="text-center text-gray-500 py-10">
                     {t("no_data_found") || "No positions found."}

@@ -76,10 +76,13 @@ const DetailsModal = ({
           </button>
         </div>
         <div className="p-8">
-          <div
+          {/* <div
             className="prose prose-sm max-w-none text-secondary opacity-80"
             dangerouslySetInnerHTML={{ __html: item.description }}
-          />
+          /> */}
+          <p className="prose prose-sm max-w-none text-secondary opacity-80">
+            {item.description}
+          </p>
         </div>
       </div>
     </div>
@@ -115,21 +118,25 @@ const AnniversaryClient = () => {
   const locale = useParams()?.locale as string;
 
   const [modalItem, setModalItem] = useState<SliderItem | GridItem | null>(
-    null
+    null,
   );
   const [gridItems, setGridItems] = useState<GridItem[]>([]);
   const [page, setPage] = useState(1);
 
-  const { data: anniversaryData, loading: sliderLoading, error: sliderError } =
-    useFetch<AnniversaryData>(
-      `${process.env.NEXT_PUBLIC_API_URL}/website/anniversary`,
-      locale
-    );
-  const gridUrl = `${process.env.NEXT_PUBLIC_API_URL}/website/anniversary/items?page=${page}&limit=6`;
-  const { data: gridData, loading: gridLoading, error: gridError } = useFetch<ItemsResponse>(
-    gridUrl,
-    locale
+  const {
+    data: anniversaryData,
+    loading: sliderLoading,
+    error: sliderError,
+  } = useFetch<AnniversaryData>(
+    `${process.env.NEXT_PUBLIC_API_URL}/website/anniversary`,
+    locale,
   );
+  const gridUrl = `${process.env.NEXT_PUBLIC_API_URL}/website/anniversary/items?page=${page}&limit=6`;
+  const {
+    data: gridData,
+    loading: gridLoading,
+    error: gridError,
+  } = useFetch<ItemsResponse>(gridUrl, locale);
 
   useEffect(() => {
     if (gridData?.data) {
@@ -137,7 +144,7 @@ const AnniversaryClient = () => {
       setGridItems((prev) => {
         const existingIds = new Set(prev.map((item) => item.id));
         const newItems = gridData.data.filter(
-          (item) => !existingIds.has(item.id)
+          (item) => !existingIds.has(item.id),
         );
         return [...prev, ...newItems];
       });

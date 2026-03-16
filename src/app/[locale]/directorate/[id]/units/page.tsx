@@ -57,6 +57,7 @@ interface UnitDetail {
   staff_count: number;
   centers_count: number;
   children_count: number;
+  labs_count: number;
   directorate_type: {
     name: string;
   };
@@ -174,6 +175,7 @@ const Page = () => {
                   staffCount={unitData?.staff_count}
                   centersCount={unitData?.centers_count}
                   unitsCount={unitData?.children_count}
+                  labsCount={unitData?.labs_count}
                 />
 
                 <div className="lg:border-l text-secondary border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
@@ -187,15 +189,15 @@ const Page = () => {
                     <h4 className="sm:text-base text-sm font-semibold">
                       {t("about")}
                     </h4>
-                    {/* <p className="opacity-70 sm:text-sm text-xs">
+                    <p className="opacity-70 sm:text-sm text-xs">
                       {unitData?.about || t("no_description_available")}
-                    </p> */}
-                    <div
+                    </p>
+                    {/* <div
                       className="text-opacity-70 text-secondary text-sm prose max-w-none"
                       dangerouslySetInnerHTML={{
                         __html: unitData.about,
                       }}
-                    />
+                    /> */}
                   </div>
                   {unitData.mission && (
                     <>
@@ -206,12 +208,15 @@ const Page = () => {
                       <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full">
                         {/* --- FIXED SECTION STARTS HERE --- */}
                         {/* Changed from <p> to <div> and added dangerouslySetInnerHTML */}
-                        <div
+                        {/* <div
                           className="text-opacity-70 text-secondary text-sm prose max-w-none"
                           dangerouslySetInnerHTML={{
                             __html: unitData.mission,
                           }}
-                        />
+                        /> */}
+                        <p className="text-opacity-70 text-secondary text-sm prose max-w-none">
+                          {unitData.mission}
+                        </p>
                       </div>
                     </>
                   )}
@@ -224,12 +229,15 @@ const Page = () => {
                       <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full">
                         {/* --- FIXED SECTION STARTS HERE --- */}
                         {/* Changed from <p> to <div> and added dangerouslySetInnerHTML */}
-                        <div
+                        {/* <div
                           className="text-opacity-70 text-secondary text-sm prose max-w-none"
                           dangerouslySetInnerHTML={{
                             __html: unitData.vision,
                           }}
-                        />
+                        /> */}
+                        <p className="text-opacity-70 text-secondary text-sm prose max-w-none">
+                          {unitData.vision}
+                        </p>
                       </div>
                     </>
                   )}
