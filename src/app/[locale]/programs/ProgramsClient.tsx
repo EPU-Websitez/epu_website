@@ -330,15 +330,17 @@ const ProgramsClient = () => {
                       }`}
                     >
                       {departments.map((dept) => {
-                        const deptLink = `/${locale}/colleges/${college.subdomain}/departments/${dept.slug}`;
+                        const deptLink = `https://${college.subdomain}.epu.edu.iq/${locale}/departments/${dept.slug}`;
 
                         return (
                           <div
                             key={dept.id}
                             className="relative border border-lightBorder rounded-2xl p-2 flex_center flex-col gap-3 text-center"
                           >
-                            <Link
+                            <a
                               href={deptLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               title={dept.title}
                               className="w-full h-[165px] relative overflow-hidden rounded-2xl group"
                             >
@@ -355,16 +357,16 @@ const ProgramsClient = () => {
                                 className="object-cover group-hover:scale-110 transition-transform duration-300"
                                 alt={dept.title}
                                 fill
-                                priority
                                 onError={(e) => {
                                   e.currentTarget.src =
                                     "/images/placeholder.svg";
                                 }}
                               />
-                            </Link>
+                            </a>
 
                             <Link
                               href={`/${locale}/department/${dept.slug}`}
+                              prefetch={false}
                               title={dept.title}
                               className="sm:text-sm text-[10px] font-semibold hover:text-primary transition-colors h-10 flex items-center"
                             >
@@ -381,7 +383,7 @@ const ProgramsClient = () => {
                                     {dept.student_number || "-"}
                                   </small>
                                   <small className="sm:text-[8px] text-[6px] text-black opacity-60">
-                                    Students
+                                    {t("students")}
                                   </small>
                                 </div>
                               </div>

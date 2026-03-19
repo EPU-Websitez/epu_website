@@ -7,7 +7,6 @@ import NoData from "@/components/NoData";
 
 import useFetch from "@/libs/hooks/useFetch";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import { FaChevronRight } from "react-icons/fa6";
 import { API_URL } from "@/libs/env";
 

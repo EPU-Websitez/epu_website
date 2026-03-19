@@ -320,7 +320,6 @@ const PostgraduateClient = () => {
                                   src={item.icon_image?.lg}
                                   alt={item.title}
                                   fill
-                                  priority
                                   className="object-cover"
                                   onError={(e) => {
                                     e.currentTarget.src =
