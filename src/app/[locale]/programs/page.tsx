@@ -80,6 +80,47 @@ export async function generateMetadata({
 }
 
 // --- The default export that renders the client component ---
-export default function ProgramsPage() {
-  return <ProgramsClient />;
+export default async function ProgramsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+
+  // Fetch initial data in parallel
+  const [mainRes, listRes] = await Promise.all([
+    fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/website/programs?page=1&limit=1`,
+      {
+        headers: { "website-language": locale || "en" },
+        next: { revalidate: 3600 },
+      }
+    ),
+    fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/website/programs/departments-by-college?college_type=COLLEGE&limit=50&page=1`,
+      {
+        headers: { "website-language": locale || "en" },
+        next: { revalidate: 3600 },
+      }
+    ),
+  ]);
+
+  let initialMainProgramInfo = null;
+  let initialListData = [];
+
+  if (mainRes.ok) {
+    const mainData = await mainRes.json();
+    initialMainProgramInfo = mainData?.data?.[0] || null;
+  }
+
+  if (listRes.ok) {
+    initialListData = await listRes.json();
+  }
+
+  return (
+    <ProgramsClient
+      initialMainProgramInfo={initialMainProgramInfo}
+      initialListData={initialListData}
+    />
+  );
 }

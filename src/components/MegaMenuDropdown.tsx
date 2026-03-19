@@ -80,6 +80,7 @@ const NestedItem = ({
       ) : (
         <Link
           href={item.link}
+          prefetch={false}
           className="flex items-center justify-between gap-3 px-4 py-3 rounded-md hover:bg-white/10 transition-colors group/nested"
         >
           <span className="text-sm font-medium text-white/90 group-hover/nested:text-white transition-colors line-clamp-2 leading-tight">
@@ -352,7 +353,12 @@ const MegaMenuDropdown: React.FC<MegaMenuProps> = ({
           }
 
           return (
-            <Link key={item.id} href={item.link} className={cls}>
+            <Link
+              key={item.id}
+              href={item.link}
+              prefetch={false}
+              className={cls}
+            >
               {inner}
             </Link>
           );

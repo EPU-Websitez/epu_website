@@ -90,32 +90,45 @@ const CardGridSkeleton = () => (
     Page
 ============================ */
 
-const ProgramsClient = () => {
+interface ProgramsClientProps {
+  initialMainProgramInfo?: ProgramMain | null;
+  initialListData?: CollegeBlock[];
+}
+
+const ProgramsClient = ({
+  initialMainProgramInfo,
+  initialListData = [],
+}: ProgramsClientProps) => {
   const t = useTranslations("Programs");
   const params = useParams();
   const locale = (params?.locale as string) || "en";
 
+  const LIMIT = 50;
+
   const [tab, setTab] = useState<"colleges" | "institution">("colleges");
   const programsListRef = useRef<HTMLDivElement>(null);
 
-  const [listData, setListData] = useState<CollegeBlock[]>([]);
+  const [listData, setListData] = useState<CollegeBlock[]>(initialListData);
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(initialListData.length === LIMIT);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [isInitialListFetchDone, setIsInitialListFetchDone] = useState(false);
-
-  const LIMIT = 50;
+  const [isInitialListFetchDone, setIsInitialListFetchDone] = useState(
+    initialListData.length > 0
+  );
 
   const {
     data: mainProgramsResponse,
     loading: mainLoading,
     error: mainError,
   } = useFetch<ProgramListResponse>(
-    `${process.env.NEXT_PUBLIC_API_URL}/website/programs?page=1&limit=1`,
-    locale,
+    initialMainProgramInfo
+      ? ""
+      : `${process.env.NEXT_PUBLIC_API_URL}/website/programs?page=1&limit=1`,
+    locale
   );
 
-  const mainProgramInfo = mainProgramsResponse?.data?.[0] ?? null;
+  const mainProgramInfo =
+    initialMainProgramInfo || (mainProgramsResponse?.data?.[0] ?? null);
 
   const tabToCollegeType = (t: "colleges" | "institution"): CollegeType =>
     t === "colleges" ? "COLLEGE" : "INSTITUTE";
@@ -172,6 +185,10 @@ const ProgramsClient = () => {
   };
 
   useEffect(() => {
+    if (page === 1 && tab === "colleges" && initialListData.length > 0) {
+      // Data already provided by server, skip initial fetch
+      return;
+    }
     setListData([]);
     setPage(1);
     setHasMore(true);

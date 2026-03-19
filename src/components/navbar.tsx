@@ -263,6 +263,7 @@ const Navbar = () => {
       >
         <Link
           href={href}
+          prefetch={false}
           target={item.type === "EXTERNAL" ? "_blank" : undefined}
           rel={item.type === "EXTERNAL" ? "noopener noreferrer" : undefined}
           title={title}
@@ -351,6 +352,7 @@ const Navbar = () => {
             ) : (
               <Link
                 href={parentHref}
+                prefetch={false}
                 target={item.type === "EXTERNAL" ? "_blank" : undefined}
                 rel={
                   item.type === "EXTERNAL" ? "noopener noreferrer" : undefined
@@ -414,6 +416,7 @@ const Navbar = () => {
     return (
       <Link
         key={item.id}
+        prefetch={false}
         target={item.type === "EXTERNAL" ? "_blank" : undefined}
         rel={item.type === "EXTERNAL" ? "noopener noreferrer" : undefined}
         title={title}
@@ -464,6 +467,7 @@ const Navbar = () => {
           ) : (
             <Link
               href={parentHref}
+              prefetch={false}
               target={item.type === "EXTERNAL" ? "_blank" : undefined}
               rel={item.type === "EXTERNAL" ? "noopener noreferrer" : undefined}
               title={title}
@@ -540,6 +544,7 @@ const Navbar = () => {
           </div>
           <Link
             href="/"
+            prefetch={false}
             title="Home"
             className="md:w-[195px] w-[160px] md:h-[53px] h-[45px] relative sm:block hidden"
           >
@@ -562,6 +567,7 @@ const Navbar = () => {
         <div className="custom_container flex justify-between items-center xl:gap-5 gap-2">
           <Link
             href={"/"}
+            prefetch={false}
             title="Home"
             className="w-[110px] h-[25px] relative sm:hidden block"
           >
