@@ -296,7 +296,7 @@ const NewsDetailClient = () => {
               </h1>
 
               <div
-                className="lg:text-xl md:text-base text-sm opacity-70 prose prose-sm max-w-none prose-p:my-2 prose-headings:my-4"
+                className="lg:text-xl md:text-base text-sm opacity-70 prose prose-sm max-w-none prose-p:my-2 prose-headings:my-4 w-full"
                 dangerouslySetInnerHTML={{ __html: mainNews.content || "" }}
               />
               {/*<p className="lg:text-xl md:text-base text-sm opacity-70 prose prose-sm max-w-none prose-p:my-2 prose-headings:my-4">
