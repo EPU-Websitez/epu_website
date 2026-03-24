@@ -295,13 +295,14 @@ const NewsDetailClient = () => {
                 {mainNews.title}
               </h1>
 
-              {/* <div
+              <div
                 className="lg:text-xl md:text-base text-sm opacity-70 prose prose-sm max-w-none prose-p:my-2 prose-headings:my-4"
                 dangerouslySetInnerHTML={{ __html: mainNews.content || "" }}
-              /> */}
-              <p className="lg:text-xl md:text-base text-sm opacity-70 prose prose-sm max-w-none prose-p:my-2 prose-headings:my-4">
+              />
+              {/*<p className="lg:text-xl md:text-base text-sm opacity-70 prose prose-sm max-w-none prose-p:my-2 prose-headings:my-4">
                 {mainNews.content}
               </p>
+              */}
 
               {mainNews.excerpt && (
                 <div className="mt-6 p-4 border-l-4 border-golden bg-backgroundSecondary/50 rounded-r-lg">

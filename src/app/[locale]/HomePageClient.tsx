@@ -158,19 +158,15 @@ export default function HomePageClient() {
 
   return (
     <div className="flex_center flex-col gap-5 w-full mt-2">
-      {/* --- CHANGE: Removed Video Modal --- */}
-
       {/* main section */}
       <div className="relative custom_container sm:px-3 px-5 flex_center flex-col">
-        {/* Add flex-col here */}
-        {/* Social Icons (No change) */}
-        <div className="flex_center flex-col sm:gap-5 gap-2 absolute z-10 sm:right-5 right-10 top-1/2 -translate-y-1/2">
-          <span className="w-[1px] sm:h-[70px] h-[30px] bg-primary"></span>
+        <div className="flex_center flex-col sm:gap-5 gap-1 absolute z-10 sm:right-5 right-10 top-1/2 -translate-y-1/2">
+          <span className="w-[1px] sm:h-[70px] h-[25px] bg-primary"></span>
           <a
             href="https://www.instagram.com/epolytechnicuni/?utm_source=ig_profile_share&igshid=17kx2wfoe1i6y"
             target="_blank"
             rel="noopener noreferrer"
-            className="sm:text-xl text-base text-primary"
+            className="sm:text-xl text-sm text-primary"
           >
             <AiFillInstagram />
           </a>
@@ -178,7 +174,7 @@ export default function HomePageClient() {
             href="https://www.facebook.com/epu.education/"
             target="_blank"
             rel="noopener noreferrer"
-            className="sm:text-xl text-base text-primary"
+            className="sm:text-xl text-sm text-primary"
           >
             <CgFacebook />
           </a>
@@ -186,17 +182,17 @@ export default function HomePageClient() {
             href="https://www.youtube.com/channel/UCJyQu5LoTlqGxxWgGJMQjog/featured"
             target="_blank"
             rel="noopener noreferrer"
-            className="sm:text-xl text-base text-primary"
+            className="sm:text-xl text-sm text-primary"
           >
             <IoLogoYoutube />
           </a>
-          <span className="w-[1px] sm:h-[70px] h-[30px] bg-primary"></span>
+          <span className="w-[1px] sm:h-[70px] h-[25px] bg-primary"></span>
         </div>
         {/* Main container for Swiper and Alumni Box */}
         <div className="relative w-full">
           {" "}
           {/* Added a wrapper div */}
-          <div className="w-full lg:h-[500px] sm:h-[456px] h-[220px] relative sm:rounded-3xl rounded-md overflow-hidden">
+          <div className="w-full lg:h-[500px] sm:h-[456px] h-[180px] relative sm:rounded-3xl rounded-md overflow-hidden">
             <Swiper
               modules={[Pagination, Autoplay]}
               slidesPerView={1}
@@ -206,36 +202,48 @@ export default function HomePageClient() {
                 clickable: true,
                 el: ".hero-swiper-pagination",
               }}
+              breakpoints={{
+                0: {
+                  slidesPerView: 1,
+                },
+                640: {
+                  slidesPerView: 1,
+                },
+                1024: {
+                  slidesPerView: 1,
+                },
+              }}
               className="w-full h-full"
             >
               {slidersData?.data.map((slide, index) => (
                 <SwiperSlide key={slide.id}>
-                  {/* Large Screen Image */}
+                  {/* Image Container with Responsive Switches */}
                   <div className="w-full h-full relative">
+                    {/* Desktop/Large Screen Image */}
                     <Image
                       src={slide.image?.lg}
                       alt={slide.title}
                       fill
                       priority={index === 0}
-                      className="w-full h-full object-cover"
+                      className="hidden sm:block w-full h-full"
+                      sizes="(max-width: 640px) 100vw, 100vw"
                       onError={(e) => {
                         e.currentTarget.src = "/images/placeholder.svg";
                       }}
                     />
-                  </div>
-                  {/* Small Screen Image */}
-                  {/* <div className="block sm:hidden w-full h-full relative">
+                    {/* Mobile/Small Screen Image */}
                     <Image
                       src={slide.image?.sm || slide.image?.lg}
                       alt={slide.title}
                       fill
                       priority={index === 0}
-                      className="w-full h-full"
+                      className="block sm:hidden w-full h-full"
+                      sizes="(max-width: 640px) 100vw, 100vw"
                       onError={(e) => {
                         e.currentTarget.src = "/images/placeholder.svg";
                       }}
                     />
-                  </div> */}
+                  </div>
                 </SwiperSlide>
               ))}
             </Swiper>
@@ -251,9 +259,9 @@ export default function HomePageClient() {
               <path d="M 40 80 c 22 0 40 -22 40 -40 v 40 Z" />
             </svg>
           </div>
-          <div className="sm:w-[36%] z-10 w-[41%] lg:h-[290px] sm:h-[230px] h-[125px] bg-white absolute left-0 bottom-0 sm:rounded-tr-2xl rounded-tr-xl sm:pt-5 sm:pr-5 pt-2 pr-2">
+          <div className="sm:w-[36%] z-10 w-[41%] lg:h-[290px] sm:h-[230px] h-[110px] bg-white absolute left-0 bottom-0 sm:rounded-tr-2xl rounded-tr-xl sm:pt-5 sm:pr-5 pt-2 pr-2">
             {/* ... content of alumni box ... */}
-            <div className="flex_start flex-col w-full h-full gap-5 bg-primary sm:p-5 p-2 sm:rounded-3xl rounded-md relative">
+            <div className="flex_start flex-col w-full h-full sm:gap-5 gap-2 bg-primary sm:p-5 p-2 sm:rounded-3xl rounded-md relative">
               <svg
                 className="card__arc_alumni_alt"
                 viewBox="0 0 80 80"
