@@ -16,11 +16,9 @@ import { FaChevronRight } from "react-icons/fa6";
 import { LiaSwimmerSolid } from "react-icons/lia";
 import { LuLibrary } from "react-icons/lu";
 import { TbOlympics } from "react-icons/tb";
-import { IoArrowForwardOutline } from "react-icons/io5";
 import CollegeMapComponent from "@/components/CollegeMapComponent ";
 
 import useFetch from "@/libs/hooks/useFetch";
-import MapSection from "@/components/HomeComponents/MapSection";
 
 // -------- Interfaces --------
 interface ImageFile {
@@ -46,12 +44,21 @@ interface CampusLifeResponse {
   limit: number;
   data: CampusLife[];
 }
+interface SectionText {
+  id: number;
+  section_id: number;
+  lang: string;
+  value: string;
+  order_no: number;
+  created_at: string;
+}
 interface Section {
   id: number;
   title: string;
   subtitle: string;
   description: string;
   list: string[] | null;
+  texts: SectionText[];
   action_link: string | null;
   images: ImageFile[];
   campus_life: {
@@ -170,6 +177,7 @@ const StudentsClient = () => {
   const mainCampus = campusData?.data?.[0];
   const sections = sectionsData?.data || [];
   const galleries = galleriesData?.data || [];
+  console.log(mainCampus?.description);
 
   useEffect(() => {
     if (galleries.length > 0) {
@@ -220,13 +228,11 @@ const StudentsClient = () => {
         ) : (
           mainCampus && (
             <div className="w-full lg:h-[373px] h-[290px] relative sm:mt-10 mt-5 rounded-3xl overflow-hidden">
-              <div className="absolute z-10 left-0 top-0 w-full bg-secondary text-white bg-opacity-70 h-full sm:p-10 p-4 flex_start flex-col lg:gap-20 sm:gap-10 gap-5">
-                <h2 className="lg:text-smallTitle sm:text-lg text-base font-semibold">
+              <div className="absolute z-10 left-0 top-0 w-full bg-secondary text-white bg-opacity-70 h-full sm:p-10 p-7 flex_start flex-col sm:gap-20 gap-5">
+                {/* <h2 className="lg:text-smallTitle sm:text-lg text-sm font-semibold">
                   {mainCampus.title}
-                </h2>
-                <p className="sm:text-base text-xs opacity-75 sm:max-w-[80%] max-w-full">
-                  {mainCampus.description}
-                </p>
+                </h2> */}
+                <p className="text-sm opacity-75">{mainCampus.description}</p>
                 <div className="flex justify-start h-full items-end gap-5 w-full flex-wrap">
                   <div className="flex_center gap-3">
                     <span className="w-[35px] h-[35px] flex_center rounded-md bg-white text-secondary text-lg">
@@ -236,7 +242,7 @@ const StudentsClient = () => {
                       <span className="opacity-75 text-xs">
                         {t("stadiums")}
                       </span>
-                      <p className="text-xs">
+                      <p className="text-sm">
                         + {mainCampus.stadiums} {t("stadiums")}
                       </p>
                     </div>
@@ -247,7 +253,7 @@ const StudentsClient = () => {
                     </span>
                     <div className="flex_start flex-col">
                       <span className="opacity-75 text-xs">{t("pools")}</span>
-                      <p className="text-xs">
+                      <p className="text-sm">
                         + {mainCampus.pools} {t("pools")}
                       </p>
                     </div>
@@ -260,7 +266,7 @@ const StudentsClient = () => {
                       <span className="opacity-75 text-xs">
                         {t("libraries")}
                       </span>
-                      <p className="text-xs">
+                      <p className="text-sm">
                         + {mainCampus.libraries} {t("libraries")}
                       </p>
                     </div>
@@ -311,8 +317,10 @@ const StudentsClient = () => {
               } flex-col-reverse`}
             >
               <div className="flex_start flex-col gap-3">
-                {section.subtitle && (
-                  <span className="text-xs relative">{section.subtitle}</span>
+                {section.campus_life?.title && (
+                  <span className="text-xs relative">
+                    {section.campus_life.title}
+                  </span>
                 )}
                 <h1 className="lg:text-titleNormal text-xl font-semibold relative">
                   {section.title}
@@ -320,15 +328,15 @@ const StudentsClient = () => {
                 <p className="text-sm max-w-[440px] opacity-70">
                   {section.description}
                 </p>
-                {section.list && (
-                  <ul className="text-sm space-y-1">
-                    {section.list?.map((item, i) => (
+                {section.texts && section.texts.length > 0 && (
+                  <ul className="text-sm space-y-1 opacity-70">
+                    {section.texts.map((item) => (
                       <div
-                        key={i}
+                        key={item.id}
                         className="flex justify-start items-center gap-2"
                       >
-                        <span className="flex-shrink-0 w-3 h-3 bg-golden rounded-full"></span>
-                        <li>{item}</li>
+                        <span className="flex-shrink-0 w-2 h-2 bg-golden rounded-full"></span>
+                        <li>{item.value}</li>
                       </div>
                     ))}
                   </ul>
@@ -337,11 +345,10 @@ const StudentsClient = () => {
                   <Link
                     href={section.action_link}
                     target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 bg-gradient-to-r px-8 py-3 rounded-xl from-blue to-secondary text-white font-semibold text-sm mt-2 hover:underline"
+                    className="flex items-center gap-2 bg-gradient-to-r from-primary to-blue text-white sm:px-12 px-6 sm:py-4 py-2 rounded-xl text-sm mt-2"
                   >
                     {t("see_more")}
-                    <IoArrowForwardOutline className="rtl:rotate-180" />
+                    <FaChevronRight className="rtl:rotate-180 text-sm" />
                   </Link>
                 )}
               </div>
@@ -407,7 +414,33 @@ const StudentsClient = () => {
         )}
       </div>
 
-      {isLoading && !addressData ? <MapSkeleton /> : <MapSection />}
+      {isLoading && !addressData ? (
+        <MapSkeleton />
+      ) : (
+        <div className="w-full sm:h-[500px] h-[400px] relative flex justify-center items-start my-10 bg-[#fff]">
+          <div className="w-full h-full absolute top-0 left-0">
+            {addressData ? (
+              <CollegeMapComponent
+                lat={parseFloat(addressData.latitude)}
+                lng={parseFloat(addressData.longitude)}
+                title={addressData.campus_life.title}
+                address={addressData.location}
+              />
+            ) : (
+              <Image
+                src={"/images/map.png"}
+                alt="Map"
+                fill
+                priority
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
+              />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

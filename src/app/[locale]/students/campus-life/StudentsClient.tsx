@@ -45,12 +45,21 @@ interface CampusLifeResponse {
   limit: number;
   data: CampusLife[];
 }
+interface SectionText {
+  id: number;
+  section_id: number;
+  lang: string;
+  value: string;
+  order_no: number;
+  created_at: string;
+}
 interface Section {
   id: number;
   title: string;
   subtitle: string;
   description: string;
   list: string[] | null;
+  texts: SectionText[];
   action_link: string | null;
   images: ImageFile[];
   campus_life: {
@@ -221,9 +230,9 @@ const StudentsClient = () => {
           mainCampus && (
             <div className="w-full lg:h-[373px] h-[290px] relative sm:mt-10 mt-5 rounded-3xl overflow-hidden">
               <div className="absolute z-10 left-0 top-0 w-full bg-secondary text-white bg-opacity-70 h-full sm:p-10 p-7 flex_start flex-col sm:gap-20 gap-5">
-                <h2 className="lg:text-smallTitle sm:text-lg text-sm font-semibold">
+                {/* <h2 className="lg:text-smallTitle sm:text-lg text-sm font-semibold">
                   {mainCampus.title}
-                </h2>
+                </h2> */}
                 <p className="text-sm opacity-75">{mainCampus.description}</p>
                 <div className="flex justify-start h-full items-end gap-5 w-full flex-wrap">
                   <div className="flex_center gap-3">
@@ -320,28 +329,27 @@ const StudentsClient = () => {
                 <p className="text-sm max-w-[440px] opacity-70">
                   {section.description}
                 </p>
-                {section.list && (
+                {section.texts && section.texts.length > 0 && (
                   <ul className="text-sm space-y-1 opacity-70">
-                    {section.list?.map((item, i) => (
+                    {section.texts.map((item) => (
                       <div
-                        key={i}
-                        className="flex justify-center items-center gap-2"
+                        key={item.id}
+                        className="flex justify-start items-center gap-2"
                       >
-                        <span className="flex-shrink-0 w-5 h-5 bg-golden"></span>
-                        <li>{item}111</li>
+                        <span className="flex-shrink-0 w-2 h-2 bg-golden rounded-full"></span>
+                        <li>{item.value}</li>
                       </div>
                     ))}
                   </ul>
                 )}
-                {(section.action_link ||
-                  (section.id === 4 ? "https://example.com" : null)) && (
+                {section.action_link && (
                   <Link
-                    href={section.action_link || "https://example.com"}
+                    href={section.action_link}
                     target="_blank"
-                    className="flex items-center gap-2 text-primary font-semibold text-sm mt-2 hover:underline"
+                    className="flex items-center gap-2 bg-gradient-to-r from-primary to-blue text-white sm:px-12 px-6 sm:py-4 py-2 rounded-xl text-sm mt-2"
                   >
-                    ({t("see_more")})
-                    <IoArrowForwardOutline className="rtl:rotate-180" />
+                    {t("see_more")}
+                    <FaChevronRight className="rtl:rotate-180 text-sm" />
                   </Link>
                 )}
               </div>
