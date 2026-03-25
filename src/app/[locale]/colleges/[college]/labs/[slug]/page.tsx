@@ -8,7 +8,7 @@ import LabDetailsPageClient from "./LabDetailsPageClient";
 interface LabMetadata {
   name: string;
   description: string;
-  images: { image: { lg: string } }[];
+  images: { image: { lg: string; original: string } }[];
 }
 
 // Fetches lab data on the server to generate dynamic metadata
@@ -25,7 +25,7 @@ export async function generateMetadata({
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 },
-      }
+      },
     );
 
     if (!response.ok) throw new Error("Failed to fetch lab metadata");
@@ -36,7 +36,10 @@ export async function generateMetadata({
     const pageDescription =
       labData.description?.substring(0, 160) ||
       `Details about the ${labData.name} at Erbil Polytechnic University.`;
-    const imageUrl = labData.images?.[0]?.image?.lg || "/small-logo.png";
+    const imageUrl =
+      labData.images?.[0]?.image?.original ||
+      labData.images?.[0]?.image?.lg ||
+      "/small-logo.png";
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {

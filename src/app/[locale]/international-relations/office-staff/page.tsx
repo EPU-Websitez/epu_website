@@ -126,9 +126,9 @@ const Page = () => {
 
   const getStaffImage = (item: StaffItem) => {
     return (
+      item.teacher?.profile_image?.original ||
       item.teacher?.profile_image?.lg ||
       item.teacher?.profile_image?.md ||
-      item.teacher?.profile_image?.original ||
       `/images/placeholder.svg` // Fallback image
     );
   };
@@ -141,9 +141,9 @@ const Page = () => {
   const getProfileImage = (teacher: Teacher | undefined) => {
     if (!teacher?.profile_image) return "/images/placeholder.svg";
     return (
+      teacher.profile_image?.original ||
       teacher.profile_image?.lg ||
       teacher.profile_image?.md ||
-      teacher.profile_image?.original ||
       "/images/placeholder.svg"
     );
   };

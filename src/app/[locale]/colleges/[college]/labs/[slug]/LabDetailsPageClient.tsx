@@ -176,7 +176,7 @@ const LabDetailsPageClient = () => {
     error: labError,
   } = useFetch<Laboratory>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/colleges/${college}/laboratories/${slug}`,
-    locale
+    locale,
   );
 
   if (labLoading) {
@@ -309,8 +309,8 @@ const LabDetailsPageClient = () => {
             <div className="md:h-[360px] h-[260px] md:w-[695px] w-full relative rounded-3xl overflow-hidden">
               <Image
                 src={
-                  labData.images?.[0]?.image?.lg ||
                   labData.images?.[0]?.image?.original ||
+                  labData.images?.[0]?.image?.lg ||
                   "/images/lab.png"
                 }
                 className="object-cover"

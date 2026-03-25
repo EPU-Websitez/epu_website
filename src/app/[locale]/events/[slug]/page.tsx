@@ -9,6 +9,7 @@ interface EventMetadata {
   galleries: {
     image: {
       lg: string;
+      original: string;
     };
   }[];
 }
@@ -29,7 +30,7 @@ export async function generateMetadata({
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
-      }
+      },
     );
 
     if (!response.ok) {
@@ -45,7 +46,10 @@ export async function generateMetadata({
         .substring(0, 160)
         .trim() + "...";
 
-    const imageUrl = eventData.galleries?.[0]?.image?.lg || "/images/event.png";
+    const imageUrl =
+      eventData.galleries?.[0]?.image?.original ||
+      eventData.galleries?.[0]?.image?.lg ||
+      "/images/event.png";
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {

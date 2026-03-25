@@ -19,6 +19,7 @@ import { formatDate } from "@/libs/formatDate";
 interface ImageFile {
   id: number;
   lg: string;
+  original: string;
 }
 interface GalleryItem {
   id: number;
@@ -144,7 +145,11 @@ const EventDetailClient = () => {
                   {eventData?.galleries?.map((slide) => (
                     <SwiperSlide key={slide?.id}>
                       <Image
-                        src={slide?.image?.lg || "/images/placeholder.svg"}
+                        src={
+                          slide?.image?.original ||
+                          slide?.image?.lg ||
+                          "/images/placeholder.svg"
+                        }
                         alt={eventData?.title || "Event Image"}
                         fill
                         priority
@@ -284,6 +289,7 @@ const EventDetailClient = () => {
                       <EventCard
                         key={event?.id}
                         image={
+                          event?.galleries?.[0]?.image?.original ||
                           event?.galleries?.[0]?.image?.lg ||
                           "/images/event.png"
                         }

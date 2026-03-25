@@ -51,9 +51,13 @@ const HowToApplyClient = () => {
   const t = useTranslations("Apply");
   const locale = useParams()?.locale as string;
 
-  const { data: applyData, loading: isLoading, error } = useFetch<HowToApplyData>(
+  const {
+    data: applyData,
+    loading: isLoading,
+    error,
+  } = useFetch<HowToApplyData>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/universities/how-to-apply`,
-    locale
+    locale,
   );
 
   if (isLoading) return <PageSkeleton />;
@@ -61,22 +65,24 @@ const HowToApplyClient = () => {
 
   const reasonsToDisplay = applyData.question_sections;
 
-  if (error) return (
-  <div className="my-10 flex_center w-full">
-    <div className="max-w-[1024px] w-full flex_center">
-      <NoData showButton={true} className="my-10" />
-    </div>
-  </div>
-);
+  if (error)
+    return (
+      <div className="my-10 flex_center w-full">
+        <div className="max-w-[1024px] w-full flex_center">
+          <NoData showButton={true} className="my-10" />
+        </div>
+      </div>
+    );
 
-// For pages with NO data (optional but recommended)
-if (!applyData) return (
-  <div className="my-10 flex_center w-full">
-    <div className="max-w-[1024px] w-full flex_center">
-      <NoData showButton={false} />
-    </div>
-  </div>
-);
+  // For pages with NO data (optional but recommended)
+  if (!applyData)
+    return (
+      <div className="my-10 flex_center w-full">
+        <div className="max-w-[1024px] w-full flex_center">
+          <NoData showButton={false} />
+        </div>
+      </div>
+    );
 
   return (
     <div className="my-10 flex_center w-full">
@@ -134,7 +140,9 @@ if (!applyData) return (
                 <div className="flex items-center gap-4">
                   <span className="relative sm:w-12 sm:h-12 w-9 h-9 flex-shrink-0">
                     <Image
-                      src={reason?.icon_image?.lg}
+                      src={
+                        reason?.icon_image?.original || reason?.icon_image?.lg
+                      }
                       alt={reason.title}
                       fill
                       priority

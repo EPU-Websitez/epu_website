@@ -335,9 +335,9 @@ const NewsClient = () => {
     });
 
   const getNewsImage = (news: News) =>
-    news.cover_image?.md ||
-    news.cover_image?.lg ||
     news.cover_image?.original ||
+    news.cover_image?.lg ||
+    news.cover_image?.md ||
     "/images/placeholder.svg";
 
   const showInitialSkeleton = newsLoading && currentPage === 1;

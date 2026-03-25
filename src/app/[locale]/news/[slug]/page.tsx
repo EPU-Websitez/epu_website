@@ -8,10 +8,12 @@ interface NewsMetadata {
   excerpt: string;
   cover_image: {
     lg: string;
+    original: string;
   };
   gallery: {
     image: {
       lg: string;
+      original: string;
     };
   }[];
 }
@@ -29,7 +31,7 @@ export async function generateMetadata({
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
-      }
+      },
     );
 
     if (!response.ok) {
@@ -42,7 +44,9 @@ export async function generateMetadata({
       newsData.excerpt || "An article from Erbil Polytechnic University.";
 
     const imageUrl =
+      newsData.cover_image?.original ||
       newsData.cover_image?.lg ||
+      newsData.gallery?.[0]?.image?.original ||
       newsData.gallery?.[0]?.image?.lg ||
       "/images/news.png";
 

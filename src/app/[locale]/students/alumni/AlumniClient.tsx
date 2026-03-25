@@ -406,7 +406,9 @@ const AlumniClient = () => {
               src={
                 bgImageError
                   ? "/images/placeholder.svg"
-                  : currentAlumniData?.bg_image?.lg || "/images/alumni-bg.png"
+                  : currentAlumniData?.bg_image?.original ||
+                    currentAlumniData?.bg_image?.lg ||
+                    "/images/alumni-bg.png"
               }
               alt={currentAlumniData?.bg_title || "Alumni"}
               fill

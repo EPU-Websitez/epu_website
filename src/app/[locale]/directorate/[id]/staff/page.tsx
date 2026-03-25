@@ -209,8 +209,8 @@ const Page = () => {
                       <div className="sm:w-[200px] w-[125px] sm:h-[190px] h-[125px] relative flex-shrink-0">
                         <Image
                           src={
-                            leadMember.teacher?.profile_image?.lg ||
                             leadMember.teacher?.profile_image?.original ||
+                            leadMember.teacher?.profile_image?.lg ||
                             "/images/placeholder.svg"
                           }
                           alt={leadMember.teacher?.full_name}
@@ -251,7 +251,10 @@ const Page = () => {
                       <MemberCard
                         key={member.teacher.id}
                         description={member.role}
-                        image={member?.teacher?.profile_image?.lg}
+                        image={
+                          member?.teacher?.profile_image?.original ||
+                          member?.teacher?.profile_image?.lg
+                        }
                         link={`/${locale}/academic-staff/${member.teacher.id}`}
                         staticText={t("view_profile")}
                         title={member.teacher.full_name}

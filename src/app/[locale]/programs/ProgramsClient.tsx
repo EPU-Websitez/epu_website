@@ -113,7 +113,7 @@ const ProgramsClient = ({
   const [hasMore, setHasMore] = useState(initialListData.length === LIMIT);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isInitialListFetchDone, setIsInitialListFetchDone] = useState(
-    initialListData.length > 0
+    initialListData.length > 0,
   );
 
   const {
@@ -124,7 +124,7 @@ const ProgramsClient = ({
     initialMainProgramInfo
       ? ""
       : `${process.env.NEXT_PUBLIC_API_URL}/website/programs?page=1&limit=1`,
-    locale
+    locale,
   );
 
   const mainProgramInfo =
@@ -263,9 +263,9 @@ const ProgramsClient = ({
                 </div>
               </div>
               <div className="relative md:h-[276px] h-[192px] md:w-[420px] w-full">
-                {mainProgramInfo?.bg_image?.lg ? (
+                {mainProgramInfo?.bg_image?.original ? (
                   <Image
-                    src={mainProgramInfo.bg_image.lg}
+                    src={mainProgramInfo?.bg_image?.original}
                     alt={mainProgramInfo?.title || "Programs"}
                     fill
                     priority
@@ -367,8 +367,8 @@ const ProgramsClient = ({
 
                               <Image
                                 src={
-                                  dept.featured_image?.lg ||
                                   dept.featured_image?.original ||
+                                  dept.featured_image?.lg ||
                                   "/images/placeholder.svg"
                                 }
                                 className="object-cover group-hover:scale-110 transition-transform duration-300"

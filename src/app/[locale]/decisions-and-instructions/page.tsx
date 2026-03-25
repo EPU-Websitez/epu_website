@@ -7,6 +7,7 @@ interface DecisionsMetadata {
   description: string;
   bg_image: {
     lg: string;
+    original: string;
   };
 }
 
@@ -18,7 +19,7 @@ export async function generateMetadata({}: {}): Promise<Metadata> {
       {
         headers: { "website-language": "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
-      }
+      },
     );
 
     if (!response.ok) {
@@ -30,7 +31,8 @@ export async function generateMetadata({}: {}): Promise<Metadata> {
     const pageDescription =
       pageData.description ||
       "Official decisions, instructions, and guidelines from the university.";
-    const imageUrl = pageData.bg_image?.lg || "/small-logo.png";
+    const imageUrl =
+      pageData.bg_image?.original || pageData.bg_image?.lg || "/small-logo.png";
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {

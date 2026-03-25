@@ -9,6 +9,7 @@ interface PresidentMessageMetadata {
   galleries: {
     image: {
       lg: string;
+      original: string;
     };
   }[];
 }
@@ -26,7 +27,7 @@ export async function generateMetadata({
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
-      }
+      },
     );
 
     if (!response.ok) {
@@ -39,7 +40,9 @@ export async function generateMetadata({
       .substring(0, 160)
       .trim();
     const imageUrl =
-      messageData.galleries?.[0]?.image?.lg || "/images/president.png"; // Assuming a fallback image
+      messageData.galleries?.[0]?.image?.original ||
+      messageData.galleries?.[0]?.image?.lg ||
+      "/images/president.png"; // Assuming a fallback image
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {

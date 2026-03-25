@@ -7,6 +7,7 @@ interface MouMetadata {
   data: {
     logo_image?: {
       lg: string;
+      original: string;
     };
   }[];
 }
@@ -25,11 +26,14 @@ export async function generateMetadata({
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
-      }
+      },
     );
 
     const mouData: MouMetadata = await response.json();
-    const imageUrl = mouData?.data?.[0]?.logo_image?.lg || "/small-logo.png";
+    const imageUrl =
+      mouData?.data?.[0]?.logo_image?.original ||
+      mouData?.data?.[0]?.logo_image?.lg ||
+      "/small-logo.png";
 
     const pageTitle = "Memorandum of Understanding | EPU";
     const pageDescription =

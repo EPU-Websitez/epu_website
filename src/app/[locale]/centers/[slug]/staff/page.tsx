@@ -197,8 +197,8 @@ const Page = () => {
                   <div className="sm:w-[200px] w-[125px] sm:h-[190px] h-[125px] relative flex-shrink-0">
                     <Image
                       src={
-                        leadMember?.teacher?.profile_image?.lg ||
                         leadMember?.teacher?.profile_image?.original ||
+                        leadMember?.teacher?.profile_image?.lg ||
                         "/images/placeholder.svg"
                       }
                       alt={leadMember?.teacher?.full_name}
@@ -253,7 +253,10 @@ const Page = () => {
                           className="sm:w-[100px] w-[65px] sm:h-[100px] h-[65px] relative"
                         >
                           <Image
-                            src={item.teacher?.profile_image?.lg}
+                            src={
+                              item.teacher?.profile_image?.original ||
+                              item.teacher?.profile_image?.lg
+                            }
                             alt={item.teacher?.full_name}
                             fill
                             className="w-full h-full rounded-full object-cover"

@@ -8,7 +8,7 @@ interface BoardMetadata {
   teacher: {
     full_name: string;
     profile_image: {
-      lg: string;
+      original: string;
     };
   };
 }
@@ -30,7 +30,7 @@ export async function generateMetadata({
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
-      }
+      },
     );
 
     if (!response.ok) {
@@ -47,7 +47,7 @@ export async function generateMetadata({
     const pageTitle = `${presidentData.role} | EPU`;
     const pageDescription = `Meet the ${presidentData.role} of Erbil Polytechnic University, ${presidentData.teacher.full_name}, and the university council members.`;
     const imageUrl =
-      presidentData.teacher.profile_image?.lg || "/images/bg.svg";
+      presidentData.teacher.profile_image?.original || "/images/bg.svg";
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {

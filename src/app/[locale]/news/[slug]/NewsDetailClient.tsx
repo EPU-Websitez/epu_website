@@ -220,10 +220,10 @@ const NewsDetailClient = () => {
   const getNewsImage = (news: NewsDetail | null | undefined) => {
     if (!news) return "/images/news.png";
     return (
-      news.cover_image?.lg ||
       news.cover_image?.original ||
-      news.gallery?.[0]?.image?.lg ||
+      news.cover_image?.lg ||
       news.gallery?.[0]?.image?.original ||
+      news.gallery?.[0]?.image?.lg ||
       "/images/news.png"
     );
   };
@@ -333,9 +333,9 @@ const NewsDetailClient = () => {
                         ) : (
                           <Image
                             src={
-                              g.image?.md ||
-                              g.image?.lg ||
                               g.image?.original ||
+                              g.image?.lg ||
+                              g.image?.md ||
                               "/images/news.png"
                             }
                             alt="Gallery thumbnail"

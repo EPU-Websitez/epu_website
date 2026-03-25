@@ -207,7 +207,11 @@ const StudentUnionClient = () => {
                 >
                   <div className="flex_center text-3xl rounded-full w-[50px] h-[50px] text-white bg-golden">
                     <Image
-                      src={item.icon_image?.lg || "/images/placeholder.svg"}
+                      src={
+                        item.icon_image?.original ||
+                        item.icon_image?.lg ||
+                        "/images/placeholder.svg"
+                      }
                       alt={item.title}
                       width={28}
                       height={28}
@@ -236,7 +240,11 @@ const StudentUnionClient = () => {
             >
               <div className="lg:w-[510px] md:w-[475px] w-full flex-shrink-0 lg:h-[328px] md:h-[293px] h-[226px] relative">
                 <Image
-                  src={section.image?.lg || "/images/placeholder.svg"}
+                  src={
+                    section.image?.original ||
+                    section.image?.lg ||
+                    "/images/placeholder.svg"
+                  }
                   alt={section.title}
                   fill
                   priority

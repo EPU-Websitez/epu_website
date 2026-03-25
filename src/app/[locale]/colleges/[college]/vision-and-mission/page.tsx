@@ -8,6 +8,7 @@ interface College {
   vision: string;
   logo: {
     lg: string;
+    original: string;
   };
 }
 
@@ -26,7 +27,7 @@ export async function generateMetadata({
       {
         headers: { "website-language": locale },
         next: { revalidate: 3600 }, // Cache for 1 hour
-      }
+      },
     );
 
     if (!response.ok) throw new Error("College is not found");
@@ -36,7 +37,10 @@ export async function generateMetadata({
     const pageDescription =
       collegeData.vision ||
       `Learn about the vision and mission of ${collegeData.title}.`;
-    const imageUrl = collegeData.logo?.lg || `${baseUrl}/small-logo.png`;
+    const imageUrl =
+      collegeData.logo?.original ||
+      collegeData.logo?.lg ||
+      `${baseUrl}/small-logo.png`;
 
     return {
       metadataBase: new URL(baseUrl),

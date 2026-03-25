@@ -144,15 +144,18 @@ const Page = () => {
   const getProjectImage = (proj: ProjectDetail | null) => {
     if (!proj) return "/images/placeholder.svg";
     return (
-      proj.image?.lg ||
       proj.image?.original ||
+      proj.image?.lg ||
+      proj.gallery?.[0]?.image?.original ||
       proj.gallery?.[0]?.image?.lg ||
       "/images/placeholder.svg"
     );
   };
 
   const getSectionImage = (sec: Section) => {
-    return sec.image?.lg || sec.image?.original || "/images/placeholder.svg";
+    return (
+      sec.image?.original || sec.image?.lg || "/images/placeholder.svg"
+    );
   };
 
   // --- Memos ---
@@ -318,9 +321,9 @@ const Page = () => {
                         ) : (
                           <Image
                             src={
+                              g.image?.original ||
                               g.image?.md ||
                               g.image?.lg ||
-                              g.image?.original ||
                               "/images/placeholder.svg"
                             }
                             alt="Gallery thumbnail"

@@ -9,6 +9,7 @@ import useSWR from "swr";
 
 // --- Type Definitions for the API Response ---
 interface ImageType {
+  original: string;
   lg: string;
 }
 
@@ -87,7 +88,10 @@ const InternationalStrategyHeader = () => {
     );
   }
 
-  const bgImage = headerData.bg_image?.lg || "/images/international-lg.png";
+  const bgImage =
+    headerData.bg_image?.original ||
+    headerData.bg_image?.lg ||
+    "/images/international-lg.png";
   const bgTitle = headerData.bg_title || "International Relations";
   const bgDescription =
     headerData.bg_description || t("international_strategy_text");

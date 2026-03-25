@@ -82,6 +82,7 @@ const MouModal = ({
         <div className="relative sm:w-[300px] w-full h-[250px] sm:h-[300px] flex-shrink-0 mt-5">
           <Image
             src={
+              mou.logo_image?.original ||
               mou.logo_image?.lg ||
               mou.logo_image?.md ||
               "/images/placeholder.png"
@@ -231,9 +232,9 @@ const MouClient = () => {
   const handleCloseModal = () => setIsModalOpen(false);
 
   const getMouImage = (mou: Memorandum) =>
+    mou.logo_image?.original ||
     mou.logo_image?.lg ||
     mou.logo_image?.md ||
-    mou.logo_image?.original ||
     `/images/placeholder.png`;
 
   // --- Helpers ---

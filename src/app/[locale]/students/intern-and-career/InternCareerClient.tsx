@@ -119,7 +119,9 @@ const JobDetailModal = ({ job, onClose }: JobDetailModalProps) => {
                     className="flex items-center gap-2 bg-gray-100 p-2 rounded-lg"
                   >
                     <Image
-                      src={service?.icon_image?.lg}
+                      src={
+                        service?.icon_image?.original || service?.icon_image?.lg
+                      }
                       alt={service.title}
                       width={24}
                       height={24}
@@ -209,7 +211,7 @@ const InternCareerClient = () => {
   const locale = (params?.locale as string) || "en";
   const [internCareerSlug, setInternCareerSlug] = useState<string | null>(null);
   const [jobOpportunities, setJobOpportunities] = useState<JobOpportunity[]>(
-    []
+    [],
   );
   const [jobPage, setJobPage] = useState(1);
   const [totalJobs, setTotalJobs] = useState(0);
@@ -219,7 +221,7 @@ const InternCareerClient = () => {
   const { data: mainData, loading: mainLoading } =
     useFetch<InternCareerMainResponse>(
       `${process.env.NEXT_PUBLIC_API_URL}/website/intern-career?page=1&limit=1`,
-      locale
+      locale,
     );
 
   useEffect(() => {
@@ -233,19 +235,19 @@ const InternCareerClient = () => {
       internCareerSlug
         ? `${process.env.NEXT_PUBLIC_API_URL}/website/intern-career/${internCareerSlug}/galleries`
         : "",
-      locale
+      locale,
     );
   const { data: offersData, loading: offersLoading } = useFetch<OffersResponse>(
     internCareerSlug
       ? `${process.env.NEXT_PUBLIC_API_URL}/website/intern-career/${internCareerSlug}/offers`
       : "",
-    locale
+    locale,
   );
   const { data: staffData, loading: staffLoading } = useFetch<StaffResponse>(
     internCareerSlug
       ? `${process.env.NEXT_PUBLIC_API_URL}/website/intern-career/${internCareerSlug}/staff`
       : "",
-    locale
+    locale,
   );
 
   const fetchJobs = async (page: number) => {
@@ -257,12 +259,12 @@ const InternCareerClient = () => {
           headers: {
             "website-language": locale || "en",
           },
-        }
+        },
       );
       const newData: JobOpportunitiesResponse = await res.json();
       if (newData.data) {
         setJobOpportunities((prev) =>
-          page === 1 ? newData.data : [...prev, ...newData.data]
+          page === 1 ? newData.data : [...prev, ...newData.data],
         );
         setTotalJobs(newData.total);
       }
@@ -323,7 +325,7 @@ const InternCareerClient = () => {
                       className={`relative rounded-xl overflow-hidden ${gridClass}`}
                     >
                       <Image
-                        src={item?.image?.lg}
+                        src={item?.image?.original || item?.image?.lg}
                         alt={`Gallery Image ${index + 1}`}
                         fill
                         priority
@@ -382,7 +384,7 @@ const InternCareerClient = () => {
                   >
                     <span className="w-10 h-10 rounded bg-secondary bg-opacity-10 text-xl flex_center z-10">
                       <Image
-                        src={offer?.icon_image?.lg}
+                        src={offer?.icon_image?.original || offer?.icon_image?.lg}
                         alt={offer.title}
                         width={24}
                         height={24}
@@ -429,7 +431,7 @@ const InternCareerClient = () => {
                   <div className="md:w-[160px] w-[120px] md:h-[175px] h-[130px] relative">
                     <Image
                       src={
-                        member?.teacher?.profile_image?.lg || "placeholder.svg"
+                        member?.teacher?.profile_image?.original || member?.teacher?.profile_image?.lg || "placeholder.svg"
                       }
                       alt={member.teacher?.full_name}
                       fill
@@ -477,7 +479,7 @@ const InternCareerClient = () => {
                         <div className="w-[82px] h-[82px] flex-shrink-0 flex_center rounded-xl border border-lightBorder">
                           <div className="w-[60px] h-[60px] relative">
                             <Image
-                              src={job.services[0]?.icon_image?.lg}
+                              src={job.services[0]?.icon_image?.original || job.services[0]?.icon_image?.lg}
                               alt={job.title}
                               fill
                               priority

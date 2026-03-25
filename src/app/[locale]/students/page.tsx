@@ -8,6 +8,7 @@ interface CampusLifeMetadata {
   description: string;
   background_image: {
     lg: string | null;
+    original: string | null;
   } | null;
 }
 
@@ -28,7 +29,7 @@ export async function generateMetadata({
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
-      }
+      },
     );
 
     if (!response.ok) {
@@ -46,7 +47,10 @@ export async function generateMetadata({
     const pageDescription = campusData?.description
       ? campusData?.description?.substring(0, 160).trim()
       : "Explore campus life at Erbil Polytechnic University.";
-    const imageUrl = campusData.background_image?.lg || "/images/campus.png";
+    const imageUrl =
+      campusData.background_image?.original ||
+      campusData.background_image?.lg ||
+      "/images/campus.png";
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {

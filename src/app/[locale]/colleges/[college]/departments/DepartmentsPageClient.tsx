@@ -111,7 +111,7 @@ const DepartmentsPageClient = () => {
     error,
   } = useFetch<DepartmentsResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/departments?page=${page}&limit=${limit}&college_subdomain=${college}`,
-    locale
+    locale,
   );
 
   useEffect(() => {
@@ -129,7 +129,11 @@ const DepartmentsPageClient = () => {
   };
 
   const getDepartmentImage = (department: Department) => {
-    return department.galleries?.[0]?.image?.lg || `/images/campus.png`;
+    return (
+      department.galleries?.[0]?.image?.original ||
+      department.galleries?.[0]?.image?.lg ||
+      `/images/campus.png`
+    );
   };
 
   if (error && page === 1 && !loading) {

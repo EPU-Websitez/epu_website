@@ -83,7 +83,11 @@ const MissionClient = () => {
         <SubHeader title={t("head")} alt={false} />
         <div className="w-full lg:h-[500px] sm:h-[400px] h-[220px] relative rounded-3xl overflow-hidden">
           <Image
-            src={uniData?.mission_bg_image?.lg || "/images/placeholder.svg"}
+            src={
+              uniData?.mission_bg_image?.original ||
+              uniData?.mission_bg_image?.lg ||
+              "/images/placeholder.svg"
+            }
             alt="University Intro"
             fill
             priority

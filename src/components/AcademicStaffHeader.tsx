@@ -96,7 +96,7 @@ const AcademicStaffHeader = () => {
       ? [`${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}`, locale]
       : null,
     fetcher,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
 
   useEffect(() => {
@@ -153,8 +153,10 @@ const AcademicStaffHeader = () => {
     title_lists = [],
   } = data;
 
-  const profileImage = profile_image?.lg || "/images/placeholder.svg";
-  const bgImage = bg_image?.lg || "/images/academic-bg.png";
+  const profileImage =
+    profile_image?.original || profile_image?.lg || "/images/placeholder.svg";
+  const bgImage =
+    bg_image?.original || bg_image?.lg || "/images/academic-bg.png";
   const email = user?.email;
 
   const MAX_INLINE = 2;

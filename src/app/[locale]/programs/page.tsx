@@ -8,6 +8,7 @@ interface ProgramMetadata {
   description: string;
   bg_image: {
     lg: string | null;
+    original: string | null;
   } | null;
 }
 
@@ -28,7 +29,7 @@ export async function generateMetadata({
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
-      }
+      },
     );
 
     if (!response.ok) {
@@ -44,7 +45,10 @@ export async function generateMetadata({
 
     const pageTitle = `${programData.title} | EPU`;
     const pageDescription = programData.description.substring(0, 160).trim();
-    const imageUrl = programData.bg_image?.lg || "/images/programs-bg.png"; // Assuming a fallback image
+    const imageUrl =
+      programData.bg_image?.original ||
+      programData.bg_image?.lg ||
+      "/images/programs-bg.png"; // Assuming a fallback image
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {
@@ -94,14 +98,14 @@ export default async function ProgramsPage({
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 },
-      }
+      },
     ),
     fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/website/programs/departments-by-college?college_type=COLLEGE&limit=50&page=1`,
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 },
-      }
+      },
     ),
   ]);
 

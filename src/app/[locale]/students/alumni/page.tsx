@@ -8,6 +8,7 @@ interface AlumniMetadata {
   feedback_description: string;
   bg_image: {
     lg: string;
+    original: string;
   };
 }
 
@@ -38,7 +39,10 @@ export async function generateMetadata({
     const pageDescription = alumniData?.feedback_description
       ?.substring(0, 160)
       .trim();
-    const imageUrl = alumniData?.bg_image?.lg || "/images/alumni-bg.png";
+    const imageUrl =
+      alumniData?.bg_image?.original ||
+      alumniData?.bg_image?.lg ||
+      "/images/alumni-bg.png";
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {

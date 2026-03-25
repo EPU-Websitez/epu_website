@@ -144,7 +144,11 @@ const CollegeHeader = () => {
       ) : (
         <div className="md:h-[437px] sm:h-[300px] h-[225px] w-full relative">
           <Image
-            src={`${data?.galleries[0]?.image?.lg}`}
+            src={
+              data?.galleries[0]?.image?.original ||
+              data?.galleries[0]?.image?.lg ||
+              "/images/placeholder.svg"
+            }
             alt={data.title}
             fill
             priority

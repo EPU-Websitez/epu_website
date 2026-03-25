@@ -511,7 +511,11 @@ const AcademicStaffClient = () => {
                 key={teacher.id}
                 title={teacher.full_name}
                 description={teacher.title}
-                image={teacher?.profile_image?.lg || "/images/placeholder.svg"}
+                image={
+                  teacher?.profile_image?.original ||
+                  teacher?.profile_image?.lg ||
+                  "/images/placeholder.svg"
+                }
                 link={`/${locale}/academic-staff/${teacher.id}`}
                 staticText={t("view_profile")}
               />

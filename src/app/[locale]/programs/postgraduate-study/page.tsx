@@ -8,6 +8,7 @@ interface PostgraduateMetadata {
   description: string;
   bg_image: {
     lg: string;
+    original: string;
   };
 }
 
@@ -28,7 +29,7 @@ export async function generateMetadata({
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
-      }
+      },
     );
 
     if (!response.ok) {
@@ -44,7 +45,10 @@ export async function generateMetadata({
 
     const pageTitle = `Postgraduate | EPU`;
     const pageDescription = programData.description.substring(0, 160).trim();
-    const imageUrl = programData.bg_image?.lg || "/images/programs-bg.png";
+    const imageUrl =
+      programData.bg_image?.original ||
+      programData.bg_image?.lg ||
+      "/images/programs-bg.png";
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {

@@ -35,7 +35,7 @@ interface ImageFile {
 interface AlumniFeedback {
   id: string;
   name: string;
-  image: { lg: string };
+  image: { lg: string; original: string };
 }
 interface UniversityData {
   title: string;
@@ -144,7 +144,10 @@ export default function HomePageClient() {
     displayAvatars.push({
       id: `placeholder-${displayAvatars.length}`,
       name: "Alumni",
-      image: { lg: "/images/placeholder.svg" },
+      image: {
+        lg: "/images/placeholder.svg",
+        original: "/images/placeholder.svg",
+      },
     });
   }
 
@@ -221,7 +224,7 @@ export default function HomePageClient() {
                   <div className="w-full h-full relative">
                     {/* Desktop/Large Screen Image */}
                     <Image
-                      src={slide.image?.lg}
+                      src={slide.image?.original}
                       alt={slide.title}
                       fill
                       priority={index === 0}
@@ -233,7 +236,7 @@ export default function HomePageClient() {
                     />
                     {/* Mobile/Small Screen Image */}
                     <Image
-                      src={slide.image?.sm || slide.image?.lg}
+                      src={slide.image?.original || slide.image?.lg}
                       alt={slide.title}
                       fill
                       priority={index === 0}
@@ -299,7 +302,7 @@ export default function HomePageClient() {
                       style={{ zIndex: displayAvatars.length - index }}
                     >
                       <Image
-                        src={alumni.image?.lg}
+                        src={alumni.image?.original || alumni.image?.lg}
                         alt={alumni.name}
                         width={46}
                         height={46}
@@ -391,7 +394,7 @@ export default function HomePageClient() {
               />
             ) : (
               <Image
-                src={uniData?.intro_image?.lg || "/images/placeholder.svg"}
+                src={uniData?.intro_image?.original || uniData?.intro_image?.lg || "/images/placeholder.svg"}
                 alt="University Intro"
                 fill
                 priority
@@ -480,7 +483,11 @@ export default function HomePageClient() {
           {eventsData?.data.map((event) => (
             <EventCard
               key={event.id}
-              image={event.galleries[0]?.image?.lg || "/images/event.png"}
+              image={
+                event.galleries[0]?.image?.original ||
+                event.galleries[0]?.image?.lg ||
+                "/images/event.png"
+              }
               link={`/${locale}/events/${event.slug}`}
               type={
                 event.event_category_event[0]?.event_category.name || "Event"
@@ -498,7 +505,11 @@ export default function HomePageClient() {
         <div className="flex justify-start items-start md:w-[50%] w-full py-5 flex-shrink-0">
           <div className="lg:w-[500px] w-full lg:h-[390px] md:h-[340px] sm:h-[420px] h-[270px] relative">
             <Image
-              src={uniData?.research_image?.lg || "/images/research.png"}
+              src={
+                uniData?.research_image?.original ||
+                uniData?.research_image?.lg ||
+                "/images/research.png"
+              }
               alt="Research"
               fill
               priority

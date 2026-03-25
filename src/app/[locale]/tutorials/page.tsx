@@ -6,7 +6,7 @@ import TutorialsClient from "./TutorialsClient";
 interface TutorialMetadata {
   images: {
     image: {
-      lg: string;
+      original: string;
       media_type: "IMAGE" | "VIDEO";
     };
   }[];
@@ -29,7 +29,7 @@ export async function generateMetadata({
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
-      }
+      },
     );
 
     if (!response.ok) {
@@ -40,7 +40,7 @@ export async function generateMetadata({
     const firstTutorial = responseData?.data?.[0];
     const imageUrl =
       firstTutorial?.images?.find((img) => img.image.media_type === "IMAGE")
-        ?.image?.lg || "/images/placeholder.svg"; // Fallback image
+        ?.image?.original || "/images/placeholder.svg"; // Fallback image
 
     const pageTitle = "Tutorials | EPU";
     const pageDescription =

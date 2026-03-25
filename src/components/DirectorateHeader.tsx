@@ -138,7 +138,11 @@ const DirectorateHeader = () => {
       ) : (
         <div className="w-full lg:h-[570px] sm:h-[400px] h-[220px] relative rounded-3xl overflow-hidden">
           <Image
-            src={data.galleries?.[0]?.image?.lg || `/images/placeholder.svg`}
+            src={
+              data.galleries?.[0]?.image?.original ||
+              data.galleries?.[0]?.image?.lg ||
+              `/images/placeholder.svg`
+            }
             alt={`bg`}
             fill
             priority

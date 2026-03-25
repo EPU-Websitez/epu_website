@@ -8,6 +8,7 @@ interface UniversityMetadata {
   mission: string;
   intro_image: {
     lg: string;
+    original: string;
   };
 }
 
@@ -24,7 +25,7 @@ export async function generateMetadata({
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
-      }
+      },
     );
 
     if (!response.ok) {
@@ -34,7 +35,10 @@ export async function generateMetadata({
     const uniData: UniversityMetadata = await response.json();
     const pageTitle = `Mission & Vision | ${uniData.title}`;
     const pageDescription = uniData.mission.substring(0, 160).trim() + "...";
-    const imageUrl = uniData.intro_image?.lg || "/small-logo.png";
+    const imageUrl =
+      uniData.intro_image?.original ||
+      uniData.intro_image?.lg ||
+      "/small-logo.png";
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {

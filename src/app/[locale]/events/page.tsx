@@ -12,11 +12,13 @@ export async function generateMetadata({}: {}): Promise<Metadata> {
       {
         headers: { "website-language": "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
-      }
+      },
     );
     const eventsData = await response.json();
     const imageUrl =
-      eventsData?.data?.[0]?.galleries?.[0]?.image?.lg || "/images/event.png";
+      eventsData?.data?.[0]?.galleries?.[0]?.image?.original ||
+      eventsData?.data?.[0]?.galleries?.[0]?.image?.lg ||
+      "/images/event.png";
 
     // Use static translations for title and description
     const pageTitle = `Events | EPU`;

@@ -10,6 +10,7 @@ interface AccommodationMetadata {
     id: number;
     image: {
       lg: string;
+      original: string;
     };
   }[];
 }
@@ -27,7 +28,7 @@ export async function generateMetadata({
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
-      }
+      },
     );
 
     if (!response.ok) {
@@ -41,7 +42,9 @@ export async function generateMetadata({
       .substring(0, 160)
       .trim();
     const imageUrl =
-      accommodationData.galleries?.[0]?.image?.lg || "/images/accomodation.png";
+      accommodationData.galleries?.[0]?.image?.original ||
+      accommodationData.galleries?.[0]?.image?.lg ||
+      "/images/accomodation.png";
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {

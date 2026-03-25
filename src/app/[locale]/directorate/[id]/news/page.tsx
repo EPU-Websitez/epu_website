@@ -378,7 +378,10 @@ const Page = () => {
                       newsList.map((newsItem) => (
                         <NewsCard
                           key={newsItem.id}
-                          image={newsItem.cover_image?.lg}
+                          image={
+                            newsItem.cover_image?.original ||
+                            newsItem.cover_image?.lg
+                          }
                           link={`/${locale}/news/${newsItem.slug}`}
                           author={newsItem.author}
                           createdAt={formatDate(

@@ -209,10 +209,10 @@ const SectionModal = ({
             <div className="h-[2px] w-20 bg-golden"></div>
           </div>
 
-          {item.image?.lg && (
+          {item.image && (
             <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-md">
               <img
-                src={item.image.lg}
+                src={item.image?.original || item.image?.lg}
                 alt={item.title}
                 className="w-full h-full object-cover"
                 loading="lazy"
@@ -487,7 +487,10 @@ const Page = () => {
                               style={{ zIndex: item.galleries.length + index }}
                             >
                               <Image
-                                src={galleryItem.image?.lg}
+                                src={
+                                  galleryItem.image?.original ||
+                                  galleryItem.image?.lg
+                                }
                                 alt={`img-${galleryItem.image?.id}`}
                                 width={32}
                                 height={32}

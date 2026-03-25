@@ -141,15 +141,18 @@ const PostgraduateClient = () => {
   const [openedAccordion, setOpenedAccordion] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProgram, setSelectedProgram] = useState<ProgramItem | null>(
-    null
+    null,
   );
 
   const programsListRef = useRef<HTMLDivElement>(null);
-  const { data: programsData, loading: isLoading, error } =
-    useFetch<PostgraduateResponse>(
-      `${process.env.NEXT_PUBLIC_API_URL}/website/programs/postgraduate?page=1&limit=1&is_active=true`,
-      locale
-    );
+  const {
+    data: programsData,
+    loading: isLoading,
+    error,
+  } = useFetch<PostgraduateResponse>(
+    `${process.env.NEXT_PUBLIC_API_URL}/website/programs/postgraduate?page=1&limit=1&is_active=true`,
+    locale,
+  );
 
   const handleAccordion = (id: number) => {
     setOpenedAccordion(openedAccordion === id ? null : id);
@@ -170,13 +173,14 @@ const PostgraduateClient = () => {
   const allSections = programInfo?.sections || [];
   const requirements = programInfo?.requirements || [];
 
-  if (error) return (
-    <div className="my-10 flex_center w-full">
-      <div className="max-w-[1040px] w-full flex_center">
-        <NoData showButton={true} className="my-10" />
+  if (error)
+    return (
+      <div className="my-10 flex_center w-full">
+        <div className="max-w-[1040px] w-full flex_center">
+          <NoData showButton={true} className="my-10" />
+        </div>
       </div>
-    </div>
-  );
+    );
 
   return (
     <>
@@ -317,7 +321,10 @@ const PostgraduateClient = () => {
                             {item.icon_image ? (
                               <span className="relative w-5 h-5 flex_center">
                                 <Image
-                                  src={item.icon_image?.lg}
+                                  src={
+                                    item.icon_image?.original ||
+                                    item.icon_image?.lg
+                                  }
                                   alt={item.title}
                                   fill
                                   className="object-cover"

@@ -7,6 +7,7 @@ interface NewsMetadata {
   data: {
     cover_image?: {
       lg: string;
+      original: string;
     };
   }[];
 }
@@ -25,11 +26,14 @@ export async function generateMetadata({
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 }, // Cache for 1 hour
-      }
+      },
     );
 
     const newsData: NewsMetadata = await response.json();
-    const imageUrl = newsData?.data?.[0]?.cover_image?.lg || "/images/news.png";
+    const imageUrl =
+      newsData?.data?.[0]?.cover_image?.original ||
+      newsData?.data?.[0]?.cover_image?.lg ||
+      "/images/news.png";
 
     const pageTitle = "News & Announcements | EPU";
     const pageDescription =

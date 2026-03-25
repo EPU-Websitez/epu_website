@@ -90,21 +90,23 @@ const AboutPageClient = () => {
   const params = useParams();
   const locale = (params.locale as string) || "en";
 
-  const { data: aboutData, loading: isLoading, error } = useFetch<AboutUsData>(
+  const {
+    data: aboutData,
+    loading: isLoading,
+    error,
+  } = useFetch<AboutUsData>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/universities/about-us`,
-    locale
+    locale,
   );
 
   const { data: statsData } = useFetch<UniversityStatsData>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/universities`,
-    locale
+    locale,
   );
 
   const sortedTimeline = aboutData?.timeline_lists.sort(
-    (a, b) => parseInt(a.year) - parseInt(b.year)
+    (a, b) => parseInt(a.year) - parseInt(b.year),
   );
-
-
 
   return (
     <div className="w-full flex_center lg:my-10 my-5">
@@ -114,20 +116,14 @@ const AboutPageClient = () => {
         {/* Error State */}
         {error && !isLoading && (
           <div className="w-full flex_center">
-            <NoData
-              showButton={true}
-              className="my-10"
-            />
+            <NoData showButton={true} className="my-10" />
           </div>
         )}
 
         {/* No Data State */}
         {!error && !isLoading && !aboutData && (
           <div className="w-full flex_center">
-            <NoData
-              showButton={true}
-              className="my-10"
-            />
+            <NoData showButton={true} className="my-10" />
           </div>
         )}
 
@@ -218,7 +214,10 @@ const AboutPageClient = () => {
                       </video>
                     ) : (
                       <Image
-                        src={aboutData.timeline_image?.lg}
+                        src={
+                          aboutData.timeline_image?.original ||
+                          aboutData.timeline_image?.lg
+                        }
                         alt={`Historical event image for year ${
                           sortedTimeline?.[0]?.year || "university"
                         }`}

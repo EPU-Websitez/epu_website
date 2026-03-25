@@ -8,7 +8,7 @@ import AboutCollegePageClient from "./AboutCollegePageClient";
 interface CollegeMetadata {
   title: string;
   about_content: string;
-  logo: { lg: string };
+  logo: { lg: string; original: string };
 }
 
 // Fetches college data on the server to generate dynamic metadata
@@ -25,7 +25,7 @@ export async function generateMetadata({
       {
         headers: { "website-language": locale || "en" },
         next: { revalidate: 3600 },
-      }
+      },
     );
 
     if (!response.ok) throw new Error("Failed to fetch college metadata");
@@ -35,7 +35,8 @@ export async function generateMetadata({
     const pageDescription =
       collegeData.about_content?.substring(0, 160) ||
       `Learn more about ${collegeData.title}, its mission, vision, and contact information at Erbil Polytechnic University.`;
-    const imageUrl = collegeData.logo?.lg || "/small-logo.png";
+    const imageUrl =
+      collegeData.logo?.original || collegeData.logo?.lg || "/small-logo.png";
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";
 
     return {

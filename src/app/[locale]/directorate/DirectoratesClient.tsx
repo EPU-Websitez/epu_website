@@ -255,7 +255,10 @@ const DirectoratesClient = () => {
                           style={{ zIndex: item.galleries.length + index }}
                         >
                           <Image
-                            src={galleryItem.image?.lg}
+                            src={
+                              galleryItem.image?.original ||
+                              galleryItem.image?.lg
+                            }
                             alt={`img-${galleryItem.image?.id}`}
                             width={32}
                             height={32}
