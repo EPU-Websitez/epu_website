@@ -537,7 +537,7 @@ const Navbar = () => {
       {/* Top Bar */}
       <div className="flex_center w-full">
         <div className="flex justify-between items-center custom_container px-3 py-2">
-          <div className="flex_center gap-2 text-secondary sm:text-sm text-xs">
+          <div className="flex_center gap-2 text-secondary md:text-sm text-xs">
             <span>Conference (IEC2023)</span>
             <span>|</span>
             <span>Journals</span>
@@ -546,7 +546,7 @@ const Navbar = () => {
             href="/"
             prefetch={false}
             title="Home"
-            className="md:w-[195px] w-[160px] md:h-[53px] h-[45px] relative sm:block hidden"
+            className="md:w-[195px] w-[160px] md:h-[53px] h-[45px] relative md:block hidden"
           >
             <Image
               src="/images/logo.svg"
@@ -563,13 +563,13 @@ const Navbar = () => {
       </div>
 
       {/* Main Navbar */}
-      <div className="flex_center w-full bg-primary text-white lg:py-5 py-3 font-medium sm:px-3 px-3">
+      <div className="flex_center w-full bg-primary text-white lg:py-5 py-3 font-medium md:px-3 px-3">
         <div className="custom_container flex justify-between items-center xl:gap-5 gap-2">
           <Link
             href={"/"}
             prefetch={false}
             title="Home"
-            className="w-[110px] h-[25px] relative sm:hidden block"
+            className="w-[110px] h-[25px] relative md:hidden block"
           >
             <Image
               src={"/images/logo-alt.png"}
@@ -621,7 +621,7 @@ const Navbar = () => {
           </div>
 
           {/* Desktop navbar row */}
-          <div className="sm:flex hidden justify-start px-3 items-center xl:gap-5 gap-3 flex-grow relative">
+          <div className="md:flex hidden justify-start px-3 items-center xl:gap-5 gap-3 flex-grow relative">
             {menuData?.data?.map((item, index) => (
               <React.Fragment key={item.id}>
                 {renderDesktopMenuItem(item, index, menuData.data.length)}
@@ -633,7 +633,7 @@ const Navbar = () => {
           </div>
           <div className="flex_center gap-4">
             <button
-              className="sm:text-2xl text-lg"
+              className="md:text-2xl text-lg"
               aria-label="Open search"
               onClick={() => setIsSearchOpen(true)}
             >
@@ -642,7 +642,7 @@ const Navbar = () => {
             <button
               type="button"
               onClick={handleNav}
-              className="sm:hidden block text-lg"
+              className="md:hidden block text-lg"
               aria-label="Open menu"
             >
               <IoMenu />

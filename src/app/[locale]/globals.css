@@ -354,7 +354,6 @@ p {
 }
 @media screen and (max-width: 640px) {
   .card__arc_alumni {
-    bottom: 56%;
     width: 20px;
     height: 20px;
   }
