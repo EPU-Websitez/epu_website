@@ -34,6 +34,7 @@ interface NewsItem {
   author: string;
   published_at: string;
   excerpt: string;
+  editable_created_at: string;
   cover_image: ImageFile;
   scheduled_publish_at: string;
 }
@@ -385,8 +386,8 @@ const Page = () => {
                           link={`/${locale}/news/${newsItem.slug}`}
                           author={newsItem.author}
                           createdAt={formatDate(
-                            newsItem.published_at ||
-                              newsItem.scheduled_publish_at,
+                            newsItem.editable_created_at ||
+                              newsItem.published_at,
                             locale,
                           )}
                           description={newsItem.excerpt}

@@ -1,4 +1,3 @@
-import { TbExternalLink } from "react-icons/tb";
 import Image from "next/image";
 import Link from "next/link";
 import { IoArrowForwardOutline } from "react-icons/io5";

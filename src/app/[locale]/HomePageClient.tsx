@@ -74,6 +74,7 @@ interface NewsItem {
   title: string;
   author: string;
   published_at: string;
+  editable_created_at: string;
   excerpt: string;
   cover_image: ImageFile;
 }
@@ -394,7 +395,11 @@ export default function HomePageClient() {
               />
             ) : (
               <Image
-                src={uniData?.intro_image?.original || uniData?.intro_image?.lg || "/images/placeholder.svg"}
+                src={
+                  uniData?.intro_image?.original ||
+                  uniData?.intro_image?.lg ||
+                  "/images/placeholder.svg"
+                }
                 alt="University Intro"
                 fill
                 priority
@@ -442,7 +447,10 @@ export default function HomePageClient() {
               image={news.cover_image?.lg}
               link={`/${locale}/news/${news.slug}`}
               author={news.author}
-              createdAt={formatDate(news.published_at, locale)}
+              createdAt={formatDate(
+                news.editable_created_at || news.published_at,
+                locale,
+              )}
               description={news.excerpt}
               title={news.title}
             />

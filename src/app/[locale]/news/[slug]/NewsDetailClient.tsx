@@ -85,6 +85,7 @@ interface NewsDetail {
   files: NewsFile[];
   links: NewsLink[];
   scheduled_publish_at: string;
+  editable_created_at: string;
 }
 
 interface NewsListResponse {
@@ -471,10 +472,7 @@ const NewsDetailClient = () => {
                     image={getNewsImage(news)}
                     link={`/${locale}/news/${news.slug}`}
                     author={news.author || "Unknown"}
-                    createdAt={formatDate(
-                      news.published_at || news.scheduled_publish_at,
-                      locale,
-                    )}
+                    createdAt={formatDate(news.editable_created_at, locale)}
                     description={news.excerpt || ""}
                     title={news.title || ""}
                   />

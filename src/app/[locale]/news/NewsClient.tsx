@@ -43,6 +43,7 @@ interface News {
   excerpt: string;
   author: string;
   published_at: string;
+  editable_created_at: string;
   cover_image: ImageFile;
   gallery: Gallery[];
   scheduled_publish_at: string;
@@ -539,7 +540,7 @@ const NewsClient = () => {
                     link={`/${locale}/news/${news.slug}`}
                     author={news.author}
                     createdAt={formatDate(
-                      news.published_at || news.scheduled_publish_at,
+                      news.editable_created_at || news.published_at,
                     )}
                     description={news.excerpt}
                     title={news.title}

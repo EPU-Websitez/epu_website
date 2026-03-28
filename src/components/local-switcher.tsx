@@ -1,84 +1,79 @@
 "use client";
-
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/navigation";
-import { ChangeEvent, useState, useTransition } from "react";
-import { BsChevronDown } from "react-icons/bs";
+import { useState, useTransition } from "react";
+import { IoGlobeOutline } from "react-icons/io5";
 
 export default function LocalSwitcher() {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
-  const localActive = useLocale();
+  const localeActive = useLocale();
   const pathname = usePathname();
+  const t = useTranslations("Language");
 
   const onSelectChange = (nextLocale: string) => {
+    if (nextLocale === localeActive) return;
+    
     startTransition(() => {
-      // Preserve search params (e.g., ?id=1) when switching locale
-      const search =
-        typeof window !== "undefined" ? window.location.search : "";
-      // @ts-ignore -- known issue with next-intl types for dynamic locale
+      const search = typeof window !== "undefined" ? window.location.search : "";
+      // @ts-ignore -- next-intl types
       router.replace(`${pathname}${search}`, { locale: nextLocale });
     });
+    setLangIsOpen(false);
   };
 
   const [langIsOpen, setLangIsOpen] = useState(false);
-  const handleOpenLang = () => {
-    setLangIsOpen(!langIsOpen);
-  };
+  const toggleDropdown = () => setLangIsOpen(!langIsOpen);
 
   return (
     <div className="relative">
+      {/* Backdrop for closing dropdown */}
       {langIsOpen && (
-        <button
-          type="button"
-          onClick={handleOpenLang}
-          className="fixed top-0 left-0 w-full h-full"
-        ></button>
+        <div
+          className="fixed inset-0 z-10"
+          onClick={() => setLangIsOpen(false)}
+        />
       )}
+
       <button
         type="button"
-        onClick={handleOpenLang}
-        className="flex_center font-medium md:gap-3 gap-2 rounded-md border-lightBorder text-lightText border sm:px-3 px-1 py-1 md:text-base sm:text-sm text-xs"
+        onClick={toggleDropdown}
+        className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-lightBorder bg-white/50 hover:bg-white hover:border-primary/30 transition-all duration-300 text-sm md:text-base group shadow-sm"
       >
-        <span>
-          {localActive === "en"
-            ? "English"
-            : localActive === "ar"
-              ? "عربي"
-              : localActive === "ku"
-                ? "کوردی"
-                : "English"}{" "}
-          Language
+        <IoGlobeOutline className={`text-lg text-secondary group-hover:text-primary transition-colors ${isPending ? "animate-spin" : ""}`} />
+        <span className="font-medium text-secondary group-hover:text-primary transition-colors">
+          {t(localeActive)}
         </span>
-        <BsChevronDown />
       </button>
+
+      {/* Dropdown Menu */}
       <div
-        className={`flex_center flex-col gap-2 absolute duration-300 top-12 p-2 left-0 bg-white border-lightBorder border w-full rounded-md ${
-          langIsOpen ? "opacity-100 z-10" : "opacity-0 -z-10"
+        className={`absolute top-full mt-2 ltr:right-0 rtl:left-0 min-w-[140px] p-1.5 rounded-2xl bg-white/80 backdrop-blur-xl border border-white/20 shadow-xl overflow-hidden transition-all duration-300 transform origin-top-right ${
+          langIsOpen 
+            ? "opacity-100 translate-y-0 scale-100 z-50" 
+            : "opacity-0 -translate-y-2 scale-95 pointer-events-none -z-10"
         }`}
       >
-        <button
-          className={`w-full ${localActive === "en" ? "text-primary" : ""}`}
-          disabled={isPending}
-          onClick={() => onSelectChange("en")}
-        >
-          English
-        </button>
-        <button
-          disabled={isPending}
-          onClick={() => onSelectChange("ar")}
-          className={`w-full rtl_font ${localActive === "ar" ? "text-primary" : ""}`}
-          dir="rtl"
-        >
-          عربي
-        </button>
-        <button
-          className={`w-full rtl_font ${localActive === "ku" ? "text-primary" : ""}`}
-          disabled={isPending}
-          onClick={() => onSelectChange("ku")}
-        >
-          کوردی
-        </button>
+        <div className="flex flex-col gap-1">
+          {[
+            { id: "en", label: t("en"), font: "" },
+            { id: "ar", label: t("ar"), font: "rtl_font" },
+            { id: "ku", label: t("ku"), font: "rtl_font" },
+          ].map((lang) => (
+            <button
+              key={lang.id}
+              disabled={isPending}
+              onClick={() => onSelectChange(lang.id)}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm transition-all duration-200 group/item ${
+                localeActive === lang.id
+                  ? "bg-primary text-white shadow-md font-semibold"
+                  : "text-secondary hover:bg-primary/5 hover:text-primary"
+              } ${lang.font}`}
+            >
+              <span>{lang.label}</span>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

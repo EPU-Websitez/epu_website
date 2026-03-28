@@ -40,6 +40,22 @@ interface MenuResponse {
   message: string;
 }
 
+interface TopMenuItem {
+  id: number;
+  title: string;
+  link_url: string;
+  type: string;
+  is_logo: boolean;
+  logo: {
+    original: string;
+  } | null;
+}
+interface TopMenuResponse {
+  success: boolean;
+  data: TopMenuItem[];
+  message: string;
+}
+
 const Navbar = () => {
   const t = useTranslations("Navigation");
   const pathname = usePathname();
@@ -67,10 +83,32 @@ const Navbar = () => {
     data: menuData,
     error,
     isLoading: menuLoading,
-  } = useSWR<MenuResponse>([`${API_URL}/website/new-menus`, locale], fetcher, {
-    dedupingInterval: 1000 * 60 * 60,
-    revalidateOnFocus: false,
-  });
+  } = useSWR<MenuResponse>(
+    locale
+      ? [`${process.env.NEXT_PUBLIC_API_URL}/website/new-menus`, locale]
+      : null,
+    fetcher,
+    {
+      dedupingInterval: 1000 * 60 * 60, // 1 hour
+      revalidateOnFocus: false,
+    },
+  );
+
+  const { data: topMenuResponse } = useSWR<TopMenuResponse>(
+    locale
+      ? [`${process.env.NEXT_PUBLIC_API_URL}/website/top-menus`, locale]
+      : null,
+    fetcher,
+    {
+      dedupingInterval: 1000 * 60 * 60, // 1 hour
+      revalidateOnFocus: false,
+    },
+  );
+
+  const topMenus = topMenuResponse?.data || [];
+  const logoItem = topMenus.find((item) => item.is_logo && item.logo?.original);
+  const desktopLogoUrl = logoItem?.logo?.original || "/images/logo.svg";
+  const mobileLogoUrl = logoItem?.logo?.original || "/images/logo-alt.png";
 
   useEffect(() => {
     document.body.dir = locale === "en" ? "ltr" : "rtl";
@@ -537,10 +575,46 @@ const Navbar = () => {
       {/* Top Bar */}
       <div className="flex_center w-full">
         <div className="flex justify-between items-center custom_container px-3 py-2">
-          <div className="flex_center gap-2 text-secondary md:text-sm text-xs">
-            <span>Conference (IEC2023)</span>
-            <span>|</span>
-            <span>Journals</span>
+          <div
+            className={`flex items-center gap-2 text-secondary md:text-sm text-xs whitespace-nowrap [&::-webkit-scrollbar]:hidden ${
+              topMenus.length > 4
+                ? "overflow-x-auto max-w-[140px] min-[400px]:max-w-[200px] sm:max-w-[300px] md:max-w-[450px] lg:max-w-[600px]"
+                : ""
+            }`}
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {topMenus.length > 0 ? (
+              topMenus.map((item, index, arr) => {
+                const title = item.title;
+                return (
+                  <React.Fragment key={item.id}>
+                    <a
+                      href={item.link_url || "#"}
+                      target={
+                        item.link_url?.startsWith("http") ? "_blank" : undefined
+                      }
+                      rel={
+                        item.link_url?.startsWith("http")
+                          ? "noopener noreferrer"
+                          : undefined
+                      }
+                      className="hover:text-primary transition-colors flex-shrink-0"
+                    >
+                      {title}
+                    </a>
+                    {index < arr.length - 1 && (
+                      <span className="flex-shrink-0">|</span>
+                    )}
+                  </React.Fragment>
+                );
+              })
+            ) : (
+              <>
+                <span>Conference (IEC2023)</span>
+                <span>|</span>
+                <span>Journals</span>
+              </>
+            )}
           </div>
           <Link
             href="/"
@@ -549,12 +623,13 @@ const Navbar = () => {
             className="md:w-[195px] w-[160px] md:h-[53px] h-[45px] relative md:block hidden"
           >
             <Image
-              src="/images/logo.svg"
+              src={desktopLogoUrl}
               alt="Navbar logo"
               fill
               priority
+              className="object-contain"
               onError={(e) => {
-                e.currentTarget.src = "/images/placeholder.svg";
+                e.currentTarget.src = "/images/logo.svg";
               }}
             />
           </Link>
@@ -572,13 +647,13 @@ const Navbar = () => {
             className="w-[110px] h-[25px] relative md:hidden block"
           >
             <Image
-              src={"/images/logo-alt.png"}
+              src={mobileLogoUrl}
               alt="Logo"
               fill
               priority
-              className="w-full h-full"
+              className="object-contain"
               onError={(e) => {
-                e.currentTarget.src = "/images/placeholder.svg";
+                e.currentTarget.src = "/images/logo-alt.png";
               }}
             />
           </Link>

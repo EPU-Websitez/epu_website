@@ -41,6 +41,7 @@ interface NewsItem {
   cover_image_id: number;
   Gallery: Gallery[];
   cover_image: cover_image;
+  editable_created_at: string;
   scheduled_publish_at: string;
 }
 interface NewsResponse {
@@ -367,7 +368,7 @@ const Page = () => {
                   title={item.title}
                   description={item.excerpt}
                   createdAt={formatDate(
-                    item.published_at || item.scheduled_publish_at,
+                    item.editable_created_at || item.published_at,
                     locale,
                   )}
                   author={item.author}

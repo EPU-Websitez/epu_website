@@ -610,5 +610,11 @@
     "error_loading_data": "Error loading data",
     "error_description": "We couldn't find any items to show here.",
     "retry": "Retry"
+  },
+  "Language": {
+    "label": "Language",
+    "en": "English",
+    "ar": "Arabic",
+    "ku": "Kurdish"
   }
 }
