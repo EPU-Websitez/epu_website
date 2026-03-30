@@ -204,7 +204,7 @@ const Navbar = () => {
       else if (item.key === "GET_CENTERS")
         url = `${API_URL}/website/centers?limit=${limit}&page=${currentPage}&university_id=17`;
       else if (item.key === "GET_DIRECTORATES")
-        url = `${API_URL}/website/directorates/sub-directorates?limit=${limit}&page=${currentPage}&university_id=17`;
+        url = `${API_URL}/website/directorates/sub-directorates?limit=${limit}&page=${currentPage}&university_id=17&in_menu=true`;
 
       if (url) {
         const res = await fetch(url, {
