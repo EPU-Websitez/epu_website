@@ -19,6 +19,7 @@ import { TbOlympics } from "react-icons/tb";
 import CollegeMapComponent from "@/components/CollegeMapComponent ";
 
 import useFetch from "@/libs/hooks/useFetch";
+import MapSection from "@/components/HomeComponents/MapSection";
 
 // -------- Interfaces --------
 interface ImageFile {
@@ -420,12 +421,13 @@ const StudentsClient = () => {
         <div className="w-full sm:h-[500px] h-[400px] relative flex justify-center items-start my-10 bg-[#fff]">
           <div className="w-full h-full absolute top-0 left-0">
             {addressData ? (
-              <CollegeMapComponent
-                lat={parseFloat(addressData.latitude)}
-                lng={parseFloat(addressData.longitude)}
-                title={addressData.campus_life.title}
-                address={addressData.location}
-              />
+              // <CollegeMapComponent
+              //   lat={parseFloat(addressData.latitude)}
+              //   lng={parseFloat(addressData.longitude)}
+              //   title={addressData.campus_life.title}
+              //   address={addressData.location}
+              // />
+              <MapSection />
             ) : (
               <Image
                 src={"/images/map.png"}
