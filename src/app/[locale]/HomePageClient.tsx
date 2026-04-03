@@ -64,6 +64,7 @@ interface SliderItem {
   id: number;
   title: string;
   image: ImageFile;
+  link?: string;
 }
 interface SlidersResponse {
   data: SliderItem[];
@@ -196,7 +197,7 @@ export default function HomePageClient() {
         <div className="relative w-full">
           {" "}
           {/* Added a wrapper div */}
-          <div className="w-full lg:h-[500px] sm:h-[456px] h-[180px] relative sm:rounded-3xl rounded-md overflow-hidden">
+          <div className="w-full lg:h-[500px] sm:h-[456px] h-[170px] relative sm:rounded-3xl rounded-md overflow-hidden">
             <Swiper
               modules={[Pagination, Autoplay]}
               slidesPerView={1}
@@ -222,32 +223,66 @@ export default function HomePageClient() {
               {slidersData?.data.map((slide, index) => (
                 <SwiperSlide key={slide.id}>
                   {/* Image Container with Responsive Switches */}
-                  <div className="w-full h-full relative">
-                    {/* Desktop/Large Screen Image */}
-                    <Image
-                      src={slide.image?.original}
-                      alt={slide.title}
-                      fill
-                      priority={index === 0}
-                      className="hidden sm:block w-full h-full"
-                      sizes="(max-width: 640px) 100vw, 100vw"
-                      onError={(e) => {
-                        e.currentTarget.src = "/images/placeholder.svg";
-                      }}
-                    />
-                    {/* Mobile/Small Screen Image */}
-                    <Image
-                      src={slide.image?.original || slide.image?.lg}
-                      alt={slide.title}
-                      fill
-                      priority={index === 0}
-                      className="block sm:hidden w-full h-full"
-                      sizes="(max-width: 640px) 100vw, 100vw"
-                      onError={(e) => {
-                        e.currentTarget.src = "/images/placeholder.svg";
-                      }}
-                    />
-                  </div>
+                  {slide.link ? (
+                    <a
+                      href={slide.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full h-full block relative"
+                    >
+                      {/* Desktop/Large Screen Image */}
+                      <Image
+                        src={slide.image?.original}
+                        alt={slide.title}
+                        fill
+                        priority={index === 0}
+                        className="hidden sm:block w-full h-full"
+                        sizes="(max-width: 640px) 100vw, 100vw"
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/placeholder.svg";
+                        }}
+                      />
+                      {/* Mobile/Small Screen Image */}
+                      <Image
+                        src={slide.image?.original || slide.image?.lg}
+                        alt={slide.title}
+                        fill
+                        priority={index === 0}
+                        className="block sm:hidden w-full h-full"
+                        sizes="(max-width: 640px) 100vw, 100vw"
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/placeholder.svg";
+                        }}
+                      />
+                    </a>
+                  ) : (
+                    <div className="w-full h-full relative">
+                      {/* Desktop/Large Screen Image */}
+                      <Image
+                        src={slide.image?.original}
+                        alt={slide.title}
+                        fill
+                        priority={index === 0}
+                        className="hidden sm:block w-full h-full"
+                        sizes="(max-width: 640px) 100vw, 100vw"
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/placeholder.svg";
+                        }}
+                      />
+                      {/* Mobile/Small Screen Image */}
+                      <Image
+                        src={slide.image?.original || slide.image?.lg}
+                        alt={slide.title}
+                        fill
+                        priority={index === 0}
+                        className="block sm:hidden w-full h-full"
+                        sizes="(max-width: 640px) 100vw, 100vw"
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/placeholder.svg";
+                        }}
+                      />
+                    </div>
+                  )}
                 </SwiperSlide>
               ))}
             </Swiper>

@@ -412,14 +412,14 @@ const Page = () => {
             <span>{t("office_staff")}</span>
             <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
           </Link>
-          {/* <Link
-              href={`/${locale}/international-relations/contact?id=${id}`}
-              title={t("contact")}
-              className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
-            >
-              <span>{t("contact")}</span>
-              <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
-            </Link> */}
+          <Link
+            href={`/${locale}/international-relations/contact?id=${id}`}
+            title={t("contact")}
+            className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+          >
+            <span>{t("contact")}</span>
+            <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+          </Link>
         </div>
       </div>
     </div>

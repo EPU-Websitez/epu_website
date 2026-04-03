@@ -440,7 +440,12 @@
     "project_details": "Project Details",
     "program_overview": "Program Overview",
     "gallery": "Gallery",
-    "attachments": "Attachments"
+    "attachments": "Attachments",
+    "EMAIL": "Email",
+    "PHONE": "Phone",
+    "ADDRESS": "Address",
+    "WEBSITE": "Website",
+    "SOCIAL_MEDIA": "Social Media"
   },
   "MemorandumOfUnderstanding": {
     "head": "Memorandum Of Understanding",

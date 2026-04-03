@@ -90,6 +90,7 @@ const InternationalRelationsHeader = () => {
   const newsPath = `/${locale}/international-relations/news`;
   const staffPath = `/${locale}/international-relations/office-staff`;
   const projectsPath = `/${locale}/international-relations/projects`;
+  const contactPath = `/${locale}/international-relations/contact`;
 
   return (
     <div className="w-full lg:h-[400px] sm:h-[300px] h-[220px] relative overflow-hidden rounded-3xl">
@@ -108,7 +109,7 @@ const InternationalRelationsHeader = () => {
         <h2 className="leading-relaxed lg:text-[32px] text-lg max-w-[710px]">
           {bgTitle}
         </h2>
-        <h3 className="leading-relaxed lg:text-[20px] text-sm max-w-[710px] mt-5">
+        <h3 className="leading-relaxed lg:text-[20px] text-xs max-w-[710px] mt-5">
           {bgDescription}
         </h3>
       </div>
@@ -161,6 +162,16 @@ const InternationalRelationsHeader = () => {
           }
         >
           {t("projects")}
+        </Link>
+        <span className="h-[20px] w-[1px] bg-white"></span>
+        <Link
+          href={`${contactPath}?id=${headerData.id}`}
+          title={t("contact")}
+          className={
+            pathname === contactPath ? "border-b-2 border-white pb-1" : ""
+          }
+        >
+          {t("contact")}
         </Link>
       </div>
     </div>

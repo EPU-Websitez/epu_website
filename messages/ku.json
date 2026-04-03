@@ -437,7 +437,13 @@
     "resource_lists": "لیستی سەرچاوەکان",
     "gallery": "گەلەری",
     "attachments": "هاوپێچەکان",
-    "project_details": "وردەکاریی پڕۆژەکە"
+    "project_details": "وردەکاریی پڕۆژەکە",
+    "EMAIL": "ئیمەیڵ",
+    "PHONE": "تەلەفۆن",
+    "ADDRESS": "ناونیشان",
+    "WEBSITE": "ماڵپەڕ",
+    "SOCIAL_MEDIA": "سۆشیاڵ میدیا",
+    "projects": "پڕۆژەکان"
   },
   "MemorandumOfUnderstanding": {
     "head": "یاداشتی لێکتێگەیشتن",
