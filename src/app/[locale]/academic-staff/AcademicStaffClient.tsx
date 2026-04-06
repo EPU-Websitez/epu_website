@@ -45,9 +45,21 @@ interface TeacherResponse {
   data: Teacher[];
 }
 
+interface Directorate {
+  id: number;
+  slug: string;
+  title: string;
+}
+
+interface DirectoratesResponse {
+  total: number;
+  data: Directorate[];
+}
+
 interface SelectOption {
   value: string;
   label: string;
+  subdomain?: string;
 }
 
 // ========== Skeleton ==========
@@ -116,6 +128,8 @@ interface SearchableSelectProps {
   value: SelectOption | null;
   onChange: (value: SelectOption | null) => void;
   initialValueId?: string;
+  isDisabled?: boolean;
+  extraParams?: Record<string, string | number | undefined>;
 }
 
 const SearchableSelect = ({
@@ -125,6 +139,8 @@ const SearchableSelect = ({
   value,
   onChange,
   initialValueId,
+  isDisabled,
+  extraParams,
 }: SearchableSelectProps) => {
   useEffect(() => {
     if (initialValueId && !value) {
@@ -135,7 +151,11 @@ const SearchableSelect = ({
           });
           if (res.ok) {
             const item = await res.json();
-            onChange({ value: item.id.toString(), label: item.title });
+            onChange({
+              value: item.id.toString(),
+              label: item.title,
+              subdomain: item.subdomain,
+            });
           }
         } catch (error) {
           console.error(
@@ -159,15 +179,17 @@ const SearchableSelect = ({
         page: page.toString(),
         limit: "10",
         ...(search && { search }),
+        ...extraParams,
       });
 
       const res = await fetch(`${apiUrl}?${params.toString()}`, {
         headers: { "website-language": locale },
       });
       const json = await res.json();
-      const options = json.data.map((item: { id: number; title: string }) => ({
+      const options = json.data.map((item: any) => ({
         value: item.id.toString(),
         label: item.title,
+        subdomain: item.subdomain,
       }));
       return {
         options,
@@ -182,6 +204,7 @@ const SearchableSelect = ({
 
   return (
     <AsyncPaginate
+      key={JSON.stringify(extraParams)}
       value={value}
       loadOptions={loadOptions}
       onChange={onChange}
@@ -190,6 +213,7 @@ const SearchableSelect = ({
       }
       isClearable
       isSearchable
+      isDisabled={isDisabled}
       placeholder={placeholder}
       debounceTimeout={500}
       styles={customStyles}
@@ -237,6 +261,11 @@ const AcademicStaffClient = () => {
       const id = searchParams.get("department_id");
       return id ? { value: id, label: id } : null;
     });
+  const [selectedDirectorate, setSelectedDirectorate] =
+    useState<SelectOption | null>(() => {
+      const id = searchParams.get("directorate_id");
+      return id ? { value: id, label: id } : null;
+    });
   const [selectedCollege, setSelectedCollege] = useState<SelectOption | null>(
     () => {
       const id = searchParams.get("college_id");
@@ -252,9 +281,17 @@ const AcademicStaffClient = () => {
   useEffect(() => {
     const hydrateFilters = async () => {
       // Helper to fetch list and find item
-      const findItem = async (endpoint: string, id: string) => {
+      const findItem = async (
+        endpoint: string,
+        id: string,
+        extraParams?: Record<string, any>,
+      ) => {
         try {
-          const res = await fetch(`${endpoint}?limit=100`, {
+          const params = new URLSearchParams({
+            limit: "100",
+            ...extraParams,
+          });
+          const res = await fetch(`${endpoint}?${params.toString()}`, {
             headers: { "website-language": locale },
           });
           if (!res.ok) return null;
@@ -276,6 +313,7 @@ const AcademicStaffClient = () => {
             setSelectedCollege({
               value: item.id.toString(),
               label: item.title,
+              subdomain: item.subdomain,
             });
           }
         });
@@ -289,6 +327,7 @@ const AcademicStaffClient = () => {
         findItem(
           `${process.env.NEXT_PUBLIC_API_URL}/website/departments`,
           selectedDepartment.value,
+          { college_subdomain: selectedCollege?.subdomain },
         ).then((item) => {
           if (item) {
             setSelectedDepartment({
@@ -299,14 +338,41 @@ const AcademicStaffClient = () => {
         });
       }
 
+      // Calculate Center params for hydration
+      const centerParams = selectedCollege?.subdomain
+        ? { college_subdomain: selectedCollege.subdomain }
+        : selectedDirectorate?.value
+          ? { university_id: 17, directorate_id: selectedDirectorate.value }
+          : { university_id: 17 };
+
       // Hydrate Center
       if (selectedCenter && selectedCenter.value === selectedCenter.label) {
         findItem(
           `${process.env.NEXT_PUBLIC_API_URL}/website/centers`,
           selectedCenter.value,
+          centerParams,
         ).then((item) => {
           if (item) {
             setSelectedCenter({
+              value: item.id.toString(),
+              label: item.title,
+            });
+          }
+        });
+      }
+
+      // Hydrate Directorate
+      if (
+        selectedDirectorate &&
+        selectedDirectorate.value === selectedDirectorate.label
+      ) {
+        findItem(
+          `${process.env.NEXT_PUBLIC_API_URL}/website/directorates`,
+          selectedDirectorate.value,
+          { university_id: 17 },
+        ).then((item) => {
+          if (item) {
+            setSelectedDirectorate({
               value: item.id.toString(),
               label: item.title,
             });
@@ -337,6 +403,8 @@ const AcademicStaffClient = () => {
     if (selectedCollege) params.set("college_id", selectedCollege.value);
     if (selectedDepartment)
       params.set("department_id", selectedDepartment.value);
+    if (selectedDirectorate)
+      params.set("directorate_id", selectedDirectorate.value);
     if (selectedCenter) params.set("center_id", selectedCenter.value);
     if (page > 1) params.set("page", page.toString());
 
@@ -357,6 +425,8 @@ const AcademicStaffClient = () => {
     if (debouncedSearch.trim()) params.append("search", debouncedSearch.trim());
     if (selectedDepartment?.value)
       params.append("department_id", selectedDepartment.value);
+    if (selectedDirectorate?.value)
+      params.append("directorate_id", selectedDirectorate.value);
     if (selectedCenter?.value) params.append("center_id", selectedCenter.value);
     if (selectedCollege?.value)
       params.append("college_id", selectedCollege.value);
@@ -368,6 +438,7 @@ const AcademicStaffClient = () => {
     page,
     debouncedSearch,
     selectedDepartment,
+    selectedDirectorate,
     selectedCenter,
     selectedCollege,
   ]);
@@ -405,6 +476,7 @@ const AcademicStaffClient = () => {
     setSearchQuery("");
     setSelectedCenter(null);
     setSelectedDepartment(null);
+    setSelectedDirectorate(null);
     setSelectedCollege(null);
     setIsSearchActive(true);
     if (page !== 1) setPage(1);
@@ -413,6 +485,12 @@ const AcademicStaffClient = () => {
         `${process.env.NEXT_PUBLIC_API_URL}/website/teachers?page=1&limit=10`,
       );
   };
+
+  const centerParams = selectedCollege?.subdomain
+    ? { college_subdomain: selectedCollege.subdomain }
+    : selectedDirectorate?.value
+      ? { university_id: 17, directorate_id: selectedDirectorate.value }
+      : { university_id: 17 };
 
   return (
     <div className="my-10 flex_center w-full">
@@ -454,14 +532,18 @@ const AcademicStaffClient = () => {
         </div>
 
         {/* Filters */}
-        <div className="grid sm:grid-cols-3 grid-cols-2 w-full gap-5">
-          <div className="w-full text-sm sm:col-span-1 col-span-2">
+        <div className="grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 w-full gap-5">
+          <div className="w-full text-sm">
             <SearchableSelect
-              apiUrl={`${process.env.NEXT_PUBLIC_API_URL}/website/centers`}
+              apiUrl={`${process.env.NEXT_PUBLIC_API_URL}/website/colleges`}
               locale={locale}
-              placeholder={t("select_center")}
-              value={selectedCenter}
-              onChange={setSelectedCenter}
+              placeholder={t("select_college")}
+              value={selectedCollege}
+              onChange={(val) => {
+                setSelectedCollege(val);
+                setSelectedDepartment(null);
+                setSelectedCenter(null);
+              }}
             />
           </div>
           <div className="w-full text-sm">
@@ -471,15 +553,31 @@ const AcademicStaffClient = () => {
               placeholder={t("select_department")}
               value={selectedDepartment}
               onChange={setSelectedDepartment}
+              isDisabled={!selectedCollege}
+              extraParams={{ college_subdomain: selectedCollege?.subdomain }}
             />
           </div>
           <div className="w-full text-sm">
             <SearchableSelect
-              apiUrl={`${process.env.NEXT_PUBLIC_API_URL}/website/colleges`}
+              apiUrl={`${process.env.NEXT_PUBLIC_API_URL}/website/directorates`}
               locale={locale}
-              placeholder={t("select_college")}
-              value={selectedCollege}
-              onChange={setSelectedCollege}
+              placeholder={t("select_directorate")}
+              value={selectedDirectorate}
+              onChange={(val) => {
+                setSelectedDirectorate(val);
+                setSelectedCenter(null);
+              }}
+              extraParams={{ university_id: 17 }}
+            />
+          </div>
+          <div className="w-full text-sm">
+            <SearchableSelect
+              apiUrl={`${process.env.NEXT_PUBLIC_API_URL}/website/centers`}
+              locale={locale}
+              placeholder={t("select_center")}
+              value={selectedCenter}
+              onChange={setSelectedCenter}
+              extraParams={centerParams}
             />
           </div>
         </div>
