@@ -13,6 +13,7 @@ import NoData from "@/components/NoData";
 // -------- Interfaces --------
 interface ImageFile {
   lg: string;
+  original: string;
 }
 interface Teacher {
   id: number;
@@ -58,7 +59,7 @@ const UniversityBoardClient = () => {
 
   const { data: leadsData, loading: leadsLoading } = useFetch<LeadsResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/website/universities/leads`,
-    locale
+    locale,
   );
 
   useEffect(() => {
@@ -74,12 +75,12 @@ const UniversityBoardClient = () => {
           headers: {
             "website-language": locale || "en",
           },
-        }
+        },
       );
       const newData: StaffResponse = await res.json();
       if (newData.data) {
         setMembers((prev) =>
-          pageNum === 1 ? newData.data : [...prev, ...newData.data]
+          pageNum === 1 ? newData.data : [...prev, ...newData.data],
         );
         setTotal(newData.total);
       }
@@ -98,20 +99,19 @@ const UniversityBoardClient = () => {
 
   const president = leadsData?.data?.[0];
   const councilMembers = members.filter(
-    (member) => member.teacher_id !== president?.teacher_id
+    (member) => member.teacher_id !== president?.teacher_id,
   );
   const isLoading = leadsLoading || (members.length === 0 && !isLoadingMore);
 
-  
-
-// For pages with NO data (optional but recommended)
-if (!president) return (
-  <div className="my-10 flex_center w-full">
-    <div className="max-w-[1024px] w-full flex_center">
-      <NoData showButton={false} />
-    </div>
-  </div>
-);
+  // For pages with NO data (optional but recommended)
+  if (!president)
+    return (
+      <div className="my-10 flex_center w-full">
+        <div className="max-w-[1024px] w-full flex_center">
+          <NoData showButton={false} />
+        </div>
+      </div>
+    );
   return (
     <div className="mb-10 -mt-5 flex_center w-full flex-col">
       {isLoading ? (
@@ -142,13 +142,16 @@ if (!president) return (
                     {president.role}
                   </h1>
                   <h4 className="lg:text-xl text-base sm:block hidden tracking-wide">
-                    {president.teacher.full_name}
+                    {president.teacher?.full_name}
                   </h4>
                 </div>
-                <div className="relative lg:w-[520px] sm:w-[396px] w-full lg:h-[465px] sm:h-[330px] h-[225px]">
+                <div className="relative lg:w-[520px] sm:w-[396px] w-full lg:h-[465px] sm:h-[330px] h-[225px] rounded-2xl overflow-hidden">
                   <Image
-                    src={president.teacher.profile_image.lg}
-                    alt={president.teacher.full_name}
+                    src={
+                      president.teacher?.profile_image?.original ||
+                      president.teacher?.profile_image?.lg
+                    }
+                    alt={president.teacher?.full_name}
                     fill
                     priority
                     className="w-full h-auto object-cover"
@@ -158,7 +161,7 @@ if (!president) return (
                   />
                 </div>
                 <h4 className="lg:text-xl text-base sm:hidden block tracking-wide">
-                  {president.teacher.full_name}
+                  {president.teacher?.full_name}
                 </h4>
               </div>
             </div>
@@ -176,10 +179,14 @@ if (!president) return (
                   <MemberCard
                     key={member.teacher_id}
                     description={member.role}
-                    image={member.teacher.profile_image.lg}
+                    image={
+                      member.teacher.profile_image?.original ||
+                      member.teacher.profile_image?.lg ||
+                      "/images/placeholder.svg"
+                    }
                     link={`/${locale}/staff/${member.teacher_id}`}
                     staticText={t("view_profile")}
-                    title={member.teacher.full_name}
+                    title={member.teacher?.full_name}
                   />
                 ))}
               </div>
