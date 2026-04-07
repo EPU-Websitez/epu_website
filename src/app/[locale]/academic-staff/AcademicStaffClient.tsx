@@ -369,7 +369,9 @@ const AcademicStaffClient = () => {
         findItem(
           `${process.env.NEXT_PUBLIC_API_URL}/website/directorates`,
           selectedDirectorate.value,
-          { university_id: 17 },
+          selectedCollege?.subdomain
+            ? { college_subdomain: selectedCollege.subdomain }
+            : { university_id: 17 },
         ).then((item) => {
           if (item) {
             setSelectedDirectorate({
@@ -413,6 +415,7 @@ const AcademicStaffClient = () => {
     debouncedSearch,
     selectedCollege,
     selectedDepartment,
+    selectedDirectorate,
     selectedCenter,
     page,
     router,
@@ -486,6 +489,10 @@ const AcademicStaffClient = () => {
       );
   };
 
+  const directorateParams = selectedCollege?.subdomain
+    ? { college_subdomain: selectedCollege.subdomain }
+    : { university_id: 17 };
+
   const centerParams = selectedCollege?.subdomain
     ? { college_subdomain: selectedCollege.subdomain }
     : selectedDirectorate?.value
@@ -543,6 +550,7 @@ const AcademicStaffClient = () => {
                 setSelectedCollege(val);
                 setSelectedDepartment(null);
                 setSelectedCenter(null);
+                setSelectedDirectorate(null);
               }}
             />
           </div>
@@ -567,7 +575,7 @@ const AcademicStaffClient = () => {
                 setSelectedDirectorate(val);
                 setSelectedCenter(null);
               }}
-              extraParams={{ university_id: 17 }}
+              extraParams={directorateParams}
             />
           </div>
           <div className="w-full text-sm">
