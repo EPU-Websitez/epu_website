@@ -67,6 +67,7 @@ interface StaffMember {
   center_id: number;
   teacher_id: number;
   role_in_center: string;
+  role: string;
   created_at: string;
   updated_at: string;
   center: Center;
@@ -274,14 +275,16 @@ const Page = () => {
                         {item.teacher?.full_name}
                       </Link>
                       <span className="opacity-70 mb-3 px-5 text-sm">
-                        {item.role_in_center}
+                        {item.role_in_center || item?.role}
                       </span>
                       <a
                         href={`mailto:${email}`}
-                        className="flex_center gap-3 w-full py-5 px-5 border-t border-t-lightBorder"
+                        className="flex_center gap-3 w-full py-5 px-5 border-t border-t-lightBorder overflow-x-hidden"
                       >
-                        <CiMail className="text-xl" />
-                        <span className="text-sm opacity-70">{email}</span>
+                        <CiMail className="text-xl flex-shrink-0" />
+                        <span className="text-sm opacity-70 w-full text-ellipsis overflow-hidden">
+                          {email}
+                        </span>
                       </a>
                     </div>
                   );
