@@ -13,8 +13,8 @@ const kurdishMonths = [
   "کانوونی یەکەم",
 ];
 
-export const formatDate = (dateString: string, locale: string) => {
-  const date = new Date(dateString);
+export const formatDate = (dateString: string | null | undefined, locale: string) => {
+  const date = dateString ? new Date(dateString) : new Date();
   if (locale === "ku") {
     const day = date.getDate();
     const month = kurdishMonths[date.getMonth()];
