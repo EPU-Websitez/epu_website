@@ -7,10 +7,11 @@ interface VideoPlayerProps {
   className?: string;
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, className }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ src }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true); // Start muted for autoplay
+  const [isMuted, setIsMuted] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -37,10 +38,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, className }) => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // Play muted when intersecting (browsers allow this)
-            video.play().catch(() => {
-              console.warn("Autoplay failed");
-            });
+            video.play().catch(() => {});
           } else {
             video.pause();
             setIsPlaying(false);
@@ -51,43 +49,46 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, className }) => {
     );
 
     observer.observe(video);
-
-    return () => {
-      observer.unobserve(video);
-    };
+    return () => observer.unobserve(video);
   }, [src]);
 
   return (
-    <div className={`relative group w-full h-full overflow-hidden`}>
+    <div
+      className="relative w-full h-full overflow-hidden"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <video
         ref={videoRef}
         src={src}
         loop
         playsInline
-        muted // Start muted to enable autoplay
-        className={className}
+        muted
+        preload="auto"
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
       />
 
-      {/* Overlay UI */}
-      <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20">
-        <div className="flex gap-4">
-          <button
-            onClick={togglePlay}
-            className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center text-black hover:bg-white transition-colors shadow-lg"
-            aria-label={isPlaying ? "Pause video" : "Play video"}
-          >
-            {isPlaying ? <FaPause /> : <FaPlay className="ml-1" />}
-          </button>
-          <button
-            onClick={toggleMute}
-            className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center text-black hover:bg-white transition-colors shadow-lg"
-            aria-label={isMuted ? "Unmute video" : "Mute video"}
-          >
-            {isMuted ? <FaVolumeXmark /> : <FaVolumeHigh />}
-          </button>
-        </div>
+      {/* Controls */}
+      <div
+        className="absolute bottom-4 left-4 z-20 flex gap-2 transition-opacity duration-300"
+        style={{ opacity: isHovered ? 1 : 0 }}
+      >
+        <button
+          onClick={togglePlay}
+          className="w-9 h-9 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+          aria-label={isPlaying ? "Pause video" : "Play video"}
+        >
+          {isPlaying ? <FaPause size={13} /> : <FaPlay size={13} className="ml-0.5" />}
+        </button>
+        <button
+          onClick={toggleMute}
+          className="w-9 h-9 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+          aria-label={isMuted ? "Unmute video" : "Mute video"}
+        >
+          {isMuted ? <FaVolumeXmark size={13} /> : <FaVolumeHigh size={13} />}
+        </button>
       </div>
     </div>
   );
