@@ -96,7 +96,7 @@ const customStyles: SelectProps<
     borderRadius: "0.5rem",
     padding: "2px",
     boxShadow: "none",
-    fontSize: "14px",
+    fontSize: "16px",
     "&:hover": { borderColor: "#1B417B" },
     minHeight: "42px",
   }),
@@ -108,14 +108,14 @@ const customStyles: SelectProps<
         ? "#eff6ff"
         : "#ffffff",
     color: state.isSelected ? "#ffffff" : "#111827",
-    fontSize: "14px",
+    fontSize: "16px",
   }),
   menuPortal: (provided) => ({ ...provided, zIndex: 9999 }),
   dropdownIndicator: (provided) => ({ ...provided, color: "#1B417B" }),
   indicatorSeparator: () => ({ display: "none" }),
   placeholder: (provided) => ({
     ...provided,
-    fontSize: "0.875rem",
+    fontSize: "16px",
     color: "#1B417B",
   }),
 };
@@ -524,7 +524,7 @@ const AcademicStaffClient = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  className="py-2 w-full border-lightBorder px-8 sm:rounded-xl rounded-lg border focus:border-primary outline-none"
+                  className="py-2 w-full border-lightBorder px-8 sm:rounded-xl rounded-lg border focus:border-primary outline-none sm:text-sm text-base"
                   placeholder={t("search_by_name")}
                 />
               </div>

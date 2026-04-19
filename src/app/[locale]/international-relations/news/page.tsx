@@ -18,6 +18,7 @@ import { CiCalendar, CiSearch } from "react-icons/ci";
 import { FaChevronDown, FaXmark } from "react-icons/fa6";
 import InternationalRelationsHeader from "@/components/InternationalRelationsHeader";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
+import SubHeader from "@/components/subHeader";
 
 // --- Interfaces ---
 interface Image {
@@ -257,7 +258,8 @@ const Page = () => {
 
   return (
     <div className="w-full flex justify-center items-start sm:my-10 my-6 min-h-screen">
-      <div className="max-w-[1024px] px-3 text-secondary flex_center flex-col gap-5 w-full">
+      <div className="max-w-[1024px] px-3 text-secondary flex_start flex-col gap-5 w-full">
+        <SubHeader title={t("international_relations")} alt={false} />
         <InternationalRelationsHeader />
 
         {/* --- FILTER CONTROLS --- */}

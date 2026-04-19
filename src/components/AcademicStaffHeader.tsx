@@ -6,15 +6,7 @@ import Link from "next/link";
 import useSWR from "swr";
 
 // Icons
-import {
-  FaFacebookF,
-  FaGoogleScholar,
-  FaResearchgate,
-  FaLinkedin,
-  FaTwitter,
-  FaPlus,
-  FaXmark,
-} from "react-icons/fa6";
+import { FaPlus, FaXmark } from "react-icons/fa6";
 
 // --- TYPE DEFINITIONS ---
 interface ImageType {
@@ -28,6 +20,7 @@ interface User {
 
 interface SocialNetwork {
   title: string;
+  icon_image: ImageType;
 }
 
 interface SocialLink {
@@ -104,14 +97,6 @@ const AcademicStaffHeader = () => {
       document.title = `${data.full_name} | EPU Academic Staff`;
     }
   }, [data]);
-
-  const socialIconMap: { [key: string]: React.ReactElement } = {
-    Facebook: <FaFacebookF />,
-    "Google Scholar": <FaGoogleScholar />,
-    ResearchGate: <FaResearchgate />,
-    LinkedIn: <FaLinkedin />,
-    Twitter: <FaTwitter />,
-  };
 
   const [showTitlesModal, setShowTitlesModal] = useState(false);
 
@@ -237,21 +222,31 @@ const AcademicStaffHeader = () => {
                 </a>
               )}
               <div className="flex_start gap-3">
-                {social_links.map((social) => {
-                  const icon = socialIconMap[social.social_network.title];
-                  return icon ? (
-                    <a
-                      key={social.id}
-                      href={social.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Visit ${full_name}'s ${social.social_network.title} profile`}
-                      className="rounded-full sm:text-base text-sm flex_center sm:w-10 w-8 sm:h-10 h-8 border border-lightBorder hover:bg-lightBorder transition-colors"
-                    >
-                      {icon}
-                    </a>
-                  ) : null;
-                })}
+                {social_links.map((social) => (
+                  <a
+                    key={social.id}
+                    href={social.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Visit ${full_name}'s ${social.social_network.title} profile`}
+                    className="rounded-full flex_center sm:w-10 w-8 sm:h-10 h-8 border border-lightBorder hover:bg-lightBorder transition-colors overflow-hidden p-1.5"
+                  >
+                    <Image
+                      src={
+                        social.social_network.icon_image?.original ||
+                        social.social_network.icon_image?.lg ||
+                        "/images/placeholder.svg"
+                      }
+                      alt={social.social_network.title}
+                      width={24}
+                      height={24}
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
+                    />
+                  </a>
+                ))}
               </div>
             </div>
           </div>

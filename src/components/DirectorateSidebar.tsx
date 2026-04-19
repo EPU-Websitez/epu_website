@@ -17,6 +17,7 @@ interface DirectorateSidebarProps {
   centersCount?: number;
   unitsCount?: number;
   labsCount?: number;
+  leadsCount?: number;
 }
 
 const DirectorateSidebar = ({
@@ -30,6 +31,7 @@ const DirectorateSidebar = ({
   centersCount = 0,
   unitsCount = 0,
   labsCount = 0,
+  leadsCount = 0,
 }: DirectorateSidebarProps) => {
   const t = useTranslations("Directorate");
   const params = useParams();
@@ -60,7 +62,7 @@ const DirectorateSidebar = ({
         </Link>
       )}
 
-      {(staffCount > 0 || isActive("staff")) &&
+      {(staffCount > 0 || leadsCount > 0 || isActive("staff")) &&
         (isActive("staff") ? (
           <div className={activeClass}>
             <span>{t("staff")}</span>

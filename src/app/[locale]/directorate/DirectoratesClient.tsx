@@ -6,8 +6,13 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { FiChevronRight } from "react-icons/fi";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import { Swiper as SwiperCore } from "swiper/types";
+import { Pagination, Autoplay } from "swiper/modules";
+import "swiper/css/pagination";
 
 import useFetch from "@/libs/hooks/useFetch";
 
@@ -52,7 +57,7 @@ interface DirectoratesTypeResponse {
 
 // -------- Skeletons --------
 const HeroSkeleton = () => (
-  <div className="w-full lg:h-[570px] sm:h-[400px] h-[300px] bg-gray-200 animate-pulse rounded-3xl"></div>
+  <div className="w-full lg:h-[570px] sm:h-[400px] h-[220px] bg-gray-200 animate-pulse rounded-3xl"></div>
 );
 
 const CardSkeleton = () => (
@@ -77,7 +82,13 @@ const DirectoratesClient = () => {
   const [directorates, setDirectorates] = useState<Directorate[]>([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
-  const [heroImage, setHeroImage] = useState<string | null>(null);
+  const swiperRef = useRef<SwiperCore>(undefined);
+
+  // --- Memoized Slides ---
+  const heroSlides = useMemo(() => {
+    const allSlides = directorates.flatMap((d) => d.galleries);
+    return [...allSlides].sort(() => Math.random() - 0.5).slice(0, 10);
+  }, [directorates]);
 
   // --- Loading States ---
   const [typesLoading, setTypesLoading] = useState(true);
@@ -95,7 +106,7 @@ const DirectoratesClient = () => {
   const { data: directoratesData, error: directoratesError } =
     useFetch<DirectoratesResponse>(
       activeTypeId
-        ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates?page=${page}&limit=8&directorate_type_id=${activeTypeId}`
+        ? `${process.env.NEXT_PUBLIC_API_URL}/website/directorates?page=${page}&limit=8&directorate_type_id=${activeTypeId}&in_menu=true`
         : "",
       locale,
     );
@@ -119,11 +130,6 @@ const DirectoratesClient = () => {
     if (directoratesData?.data) {
       if (page === 1) {
         setDirectorates(directoratesData.data);
-        if (directoratesData.data[0]?.galleries?.[0]?.image.lg) {
-          setHeroImage(directoratesData.data[0].galleries[0].image.lg);
-        } else if (directoratesData.data.length === 0) {
-          setHeroImage(null);
-        }
       } else {
         setDirectorates((prev) => [...prev, ...directoratesData.data]);
       }
@@ -168,17 +174,46 @@ const DirectoratesClient = () => {
         {initialContentLoading ? (
           <HeroSkeleton />
         ) : (
-          <div className="w-full lg:h-[570px] sm:h-[400px] h-[300px] relative">
-            <Image
-              src={heroImage || "/images/directorate.jpg"}
-              alt="University Directorate"
-              fill
-              priority
-              className="w-full h-full rounded-3xl object-cover"
-              onError={(e) => {
-                e.currentTarget.src = "/images/placeholder.svg";
-              }}
-            />
+          <div className="w-full lg:h-[570px] sm:h-[400px] h-[220px] relative rounded-3xl overflow-hidden">
+            {heroSlides.length > 0 ? (
+              <Swiper
+                modules={[Pagination, Autoplay]}
+                slidesPerView={1}
+                pagination={{ clickable: true }}
+                loop={heroSlides.length > 1}
+                autoplay={{ delay: 3000, disableOnInteraction: false }}
+                onBeforeInit={(swiper) => {
+                  swiperRef.current = swiper;
+                }}
+                className="w-full h-full"
+              >
+                {heroSlides.map((slide, index) => (
+                  <SwiperSlide key={index}>
+                    <Image
+                      src={slide.image.lg || "/images/placeholder.svg"}
+                      alt={`slide-${index}`}
+                      fill
+                      priority={index === 0}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholder.svg";
+                      }}
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            ) : (
+              <Image
+                src={"/images/directorate.jpg"}
+                alt="University Directorate"
+                fill
+                priority
+                className="w-full h-full rounded-3xl object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
+              />
+            )}
           </div>
         )}
 

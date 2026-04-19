@@ -58,6 +58,7 @@ interface UnitDetail {
   centers_count: number;
   children_count: number;
   labs_count: number;
+  leads_count: number;
   directorate_type: {
     name: string;
   };
@@ -176,6 +177,7 @@ const Page = () => {
                   centersCount={unitData?.centers_count}
                   unitsCount={unitData?.children_count}
                   labsCount={unitData?.labs_count}
+                  leadsCount={unitData?.leads_count}
                 />
 
                 <div className="lg:border-l text-secondary border-l-none lg:border-b-0 border-b border-black border-opacity-30 lg:pl-10 pb-10 flex_start flex-col gap-7 w-full">
