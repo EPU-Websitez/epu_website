@@ -15,6 +15,16 @@
   margin: 0;
 }
 
+:root {
+  --select-input-font-size: 16px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --select-input-font-size: 12px; /* Smaller font on big screens */
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }

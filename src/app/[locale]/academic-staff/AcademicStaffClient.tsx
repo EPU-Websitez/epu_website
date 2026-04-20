@@ -18,10 +18,11 @@ import { CiSearch } from "react-icons/ci";
 import { FaChevronDown, FaTimes } from "react-icons/fa";
 
 import { AsyncPaginate } from "react-select-async-paginate";
-import type {
+import {
   GroupBase,
   OptionsOrGroups,
   Props as SelectProps,
+  components,
 } from "react-select";
 
 // ========== Types ==========
@@ -96,7 +97,7 @@ const customStyles: SelectProps<
     borderRadius: "0.5rem",
     padding: "2px",
     boxShadow: "none",
-    fontSize: "16px",
+    fontSize: "var(--select-input-font-size, 16px)",
     "&:hover": { borderColor: "#1B417B" },
     minHeight: "42px",
   }),
@@ -108,14 +109,12 @@ const customStyles: SelectProps<
         ? "#eff6ff"
         : "#ffffff",
     color: state.isSelected ? "#ffffff" : "#111827",
-    fontSize: "16px",
   }),
   menuPortal: (provided) => ({ ...provided, zIndex: 9999 }),
   dropdownIndicator: (provided) => ({ ...provided, color: "#1B417B" }),
   indicatorSeparator: () => ({ display: "none" }),
   placeholder: (provided) => ({
     ...provided,
-    fontSize: "16px",
     color: "#1B417B",
   }),
 };
@@ -142,6 +141,8 @@ const SearchableSelect = ({
   isDisabled,
   extraParams,
 }: SearchableSelectProps) => {
+  const [isFocused, setIsFocused] = useState(false);
+
   useEffect(() => {
     if (initialValueId && !value) {
       const fetchInitialOption = async () => {
@@ -205,16 +206,21 @@ const SearchableSelect = ({
   return (
     <AsyncPaginate
       key={JSON.stringify(extraParams)}
+      className="text-base lg:text-xs"
       value={value}
       loadOptions={loadOptions}
       onChange={onChange}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
+      onMenuOpen={() => setIsFocused(true)}
+      onMenuClose={() => setIsFocused(false)}
       menuPortalTarget={
         typeof window !== "undefined" ? document.body : undefined
       }
       isClearable
       isSearchable
       isDisabled={isDisabled}
-      placeholder={placeholder}
+      placeholder={isFocused ? "" : placeholder}
       debounceTimeout={500}
       styles={customStyles}
       additional={{ page: 1 }}
@@ -227,6 +233,7 @@ const SearchableSelect = ({
             <FaTimes size={12} />
           </div>
         ),
+        Placeholder: (props) => (isFocused ? null : <components.Placeholder {...props} />),
       }}
     />
   );
@@ -276,6 +283,7 @@ const AcademicStaffClient = () => {
   // Initialize filters from URL
 
   const [isSearchActive, setIsSearchActive] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   // Hydrate filter titles (fetch lists to find matching IDs since individual ID endpoints fail)
   useEffect(() => {
@@ -446,6 +454,20 @@ const AcademicStaffClient = () => {
     selectedCollege,
   ]);
 
+  // Reset page to 1 when filters change
+  useEffect(() => {
+    if (!isMounted.current) return;
+    setPage(1);
+    setIsSearchActive(true);
+    setTeachers([]); // Clear results immediately to show skeleton
+  }, [
+    debouncedSearch,
+    selectedCollege,
+    selectedDepartment,
+    selectedDirectorate,
+    selectedCenter,
+  ]);
+
   const [apiUrl, setApiUrl] = useState(buildApiUrl());
   const { data, loading, error } = useFetch<TeacherResponse>(apiUrl, locale);
 
@@ -453,11 +475,16 @@ const AcademicStaffClient = () => {
   useEffect(() => {
     if (data?.data) {
       setTeachers((prev) => {
-        if (page === 1 || isSearchActive) return data.data;
+        // If we are on page 1 or a filter search was triggered, replace the entire list
+        if (page === 1 || isSearchActive) {
+          return data.data;
+        }
+        // Otherwise, append unique items for infinite scroll
         const ids = new Set(prev.map((p) => p.id));
         const unique = data.data.filter((d) => !ids.has(d.id));
         return [...prev, ...unique];
       });
+      // Deactivate search active flag after data is set
       if (isSearchActive) setIsSearchActive(false);
     }
   }, [data, page, isSearchActive]);
@@ -471,8 +498,8 @@ const AcademicStaffClient = () => {
 
   const handleSearch = () => {
     setIsSearchActive(true);
-    if (page !== 1) setPage(1);
-    else setApiUrl(buildApiUrl());
+    setPage(1);
+    // apiUrl will update via useEffect triggered by page/debouncedSearch/etc
   };
 
   const resetSearch = () => {
@@ -524,8 +551,10 @@ const AcademicStaffClient = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  className="py-2 w-full border-lightBorder px-8 sm:rounded-xl rounded-lg border focus:border-primary outline-none sm:text-sm text-base"
-                  placeholder={t("search_by_name")}
+                  onFocus={() => setIsSearchFocused(true)}
+                  onBlur={() => setIsSearchFocused(false)}
+                  className="py-2 w-full border-lightBorder px-8 sm:rounded-xl rounded-lg border focus:border-primary outline-none text-base lg:text-xs"
+                  placeholder={isSearchFocused ? "" : t("search_by_name")}
                 />
               </div>
               <button
