@@ -422,28 +422,11 @@ export default function HomePageClient() {
         </div>
 
         <div className="max-w-[1000px] w-full relative sm:mt-20 mt-10">
-          <div className="w-full sm:h-[456px] h-[200px] relative rounded-3xl overflow-hidden bg-gray-200 group">
-            {uniData?.intro_image?.media_type === "VIDEO" ? (
-              <VideoPlayer
-                src={uniData.intro_image.original}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <Image
-                src={
-                  uniData?.intro_image?.original ||
-                  uniData?.intro_image?.lg ||
-                  "/images/placeholder.svg"
-                }
-                alt="University Intro"
-                fill
-                priority
-                className="object-cover"
-                onError={(e) => {
-                  e.currentTarget.src = "/images/placeholder.svg";
-                }}
-              />
-            )}
+          <div className="w-full aspect-video relative rounded-3xl overflow-hidden bg-gray-200">
+            <VideoPlayer
+              src="/videos/intro.mp4"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
       </div>
