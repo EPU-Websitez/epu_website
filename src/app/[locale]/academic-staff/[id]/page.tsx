@@ -7,12 +7,34 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { IoMdClose } from "react-icons/io";
-import { HiOutlineBuildingLibrary } from "react-icons/hi2";
+import { HiOutlineBuildingLibrary, HiOutlineDocumentArrowDown } from "react-icons/hi2";
+import { FiExternalLink } from "react-icons/fi";
+import Image from "next/image";
 
 // --- Interfaces ---
 
 interface ImageType {
   lg: string;
+}
+
+interface SocialNetwork {
+  id: number;
+  name: string;
+  icon_image: {
+    path: string;
+  };
+}
+
+interface SocialLink {
+  id: number;
+  link: string;
+  social_network: SocialNetwork;
+}
+
+interface TitleListItem {
+  id: number;
+  title: string;
+  link: string | null;
 }
 
 interface AcademicStaff {
@@ -24,6 +46,21 @@ interface AcademicStaff {
   biography: string;
   profile_image: ImageType;
   bg_image: ImageType;
+  social_links: SocialLink[];
+  title_lists: TitleListItem[];
+}
+
+interface CV {
+  id: number;
+  title: string;
+  file: {
+    path: string;
+  };
+}
+
+interface CVResponse {
+  total: number;
+  data: CV[];
 }
 
 // Department Positions API Response Structure
@@ -171,6 +208,12 @@ const Page = () => {
       locale,
     );
 
+  // 3. Fetch CVs
+  const { data: cvData, loading: cvLoading } = useFetch<CVResponse>(
+    `${process.env.NEXT_PUBLIC_API_URL}/website/teachers/${id}/curricula`,
+    locale,
+  );
+
   const biography = data?.biography || "Biography not available.";
   const generalSpec = data?.general_spec || "Civil Engineering";
   const specificSpec =
@@ -274,6 +317,83 @@ const Page = () => {
                   onShowMore={() => setShowDepartmentModal(true)}
                   icon={HiOutlineBuildingLibrary}
                 />
+
+                {/* CV Section */}
+                {cvData?.data && cvData.data.length > 0 && (
+                  <div className="flex_start flex-col gap-3 w-full border-t border-gray-100 pt-4">
+                    <span className="text-xs text-black text-opacity-60 uppercase tracking-wider">
+                      {t("curriculum_vitae") || "Curriculum Vitae"}
+                    </span>
+                    <div className="flex flex-col gap-2 w-full">
+                      {cvData.data.map((cv) => (
+                        <a
+                          key={cv.id}
+                          href={cv.file.path}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group flex items-center gap-3 p-3 rounded-xl bg-blue-50/50 hover:bg-blue-50 transition-all border border-transparent hover:border-blue-100"
+                        >
+                          <div className="bg-white text-blue-600 p-2 rounded-lg shadow-sm group-hover:scale-110 transition-transform">
+                            <HiOutlineDocumentArrowDown className="text-lg" />
+                          </div>
+                          <div className="flex flex-col min-w-0">
+                            <span className="text-sm font-semibold text-secondary truncate block">
+                              {cv.title || t("curriculum_vitae")}
+                            </span>
+                            <span className="text-[10px] text-blue-600 font-medium">
+                              {t("download") || "Download PDF"}
+                            </span>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Title Lists Section */}
+                {data?.title_lists && data.title_lists.length > 0 && (
+                  <div className="flex_start flex-col gap-3 w-full border-t border-gray-100 pt-4">
+                    <span className="text-xs text-black text-opacity-60 uppercase tracking-wider">
+                      {t("titles") || "Additional Titles"}
+                    </span>
+                    <div className="flex flex-col gap-2 w-full">
+                      {data.title_lists.map((item) => {
+                        const content = (
+                          <>
+                            <div className="w-1.5 h-1.5 rounded-full bg-golden shrink-0" />
+                            <div className="flex items-center justify-between flex-1 min-w-0">
+                              <span className="text-xs font-semibold text-secondary truncate transition-colors group-hover:text-golden">
+                                {item.title}
+                              </span>
+                              {item.link && (
+                                <FiExternalLink className="text-[10px] text-lightText opacity-0 group-hover:opacity-100 transition-opacity ml-2" />
+                              )}
+                            </div>
+                          </>
+                        );
+
+                        const commonClassName =
+                          "group flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200 w-full text-left";
+
+                        return item.link ? (
+                          <a
+                            key={item.id}
+                            href={item.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={commonClassName}
+                          >
+                            {content}
+                          </a>
+                        ) : (
+                          <div key={item.id} className={commonClassName}>
+                            {content}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Biography Text */}

@@ -191,7 +191,10 @@
     "department_positions": "مناصب القسم",
     "degree": "الدرجة",
     "department": "القسم",
-    "scientific_title": "المسمى العلمي"
+    "scientific_title": "المسمى العلمي",
+    "social_media": "وسائل التواصل الاجتماعي",
+    "download": "تحميل PDF",
+    "titles": "العناوين الإضافية"
   },
   "Apply": {
     "head": "كيفية التقديم لجامعة أربيل التقنية؟",

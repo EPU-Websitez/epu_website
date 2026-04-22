@@ -191,7 +191,10 @@
     "department_positions": "پۆستەکانی بەش",
     "degree": "نمرە",
     "department": "بەش",
-    "scientific_title": "ناونیشانی زانستی"
+    "scientific_title": "ناونیشانی زانستی",
+    "social_media": "تۆڕە کۆمەڵایەتییەکان",
+    "download": "داگرتنی PDF",
+    "titles": "ناونیشانەکان"
   },
   "Apply": {
     "head": "چۆنیەتی داواکردن بۆ زانکۆی پۆلیتەکنیکی هەولێر؟",

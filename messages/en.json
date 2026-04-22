@@ -191,7 +191,10 @@
     "department_positions": "Department Positions",
     "degree": "Degree",
     "department": "Department",
-    "scientific_title": "Scientific Title"
+    "scientific_title": "Scientific Title",
+    "social_media": "Social Media",
+    "download": "Download PDF",
+    "titles": "Additional Titles"
   },
   "Apply": {
     "head": "How to apply for EPU?",
