@@ -37,7 +37,7 @@ export default function UsefulLink() {
               className="w-full flex justify-between items-center px-2 text-secondary border-b border-b-secondary border-opacity-30 py-3 relative group"
             >
               <h3 className="text-lg font-semibold">{t("colleges")}</h3>
-              <GoArrowRight className="text-xl" />
+              <GoArrowRight className="text-xl rtl:rotate-180" />
               <span className="absolute max-w-0 duration-200 bg-primary bg-opacity-5 h-full group-hover:max-w-full w-full left-0 top-0"></span>
             </Link>
 
@@ -47,7 +47,7 @@ export default function UsefulLink() {
               className="w-full flex justify-between items-center px-2 text-secondary border-b border-b-secondary border-opacity-30 py-3 relative group"
             >
               <h3 className="text-lg font-semibold">{t("institutions")}</h3>
-              <GoArrowRight className="text-xl" />
+              <GoArrowRight className="text-xl rtl:rotate-180" />
               <span className="absolute max-w-0 duration-200 bg-primary bg-opacity-5 h-full group-hover:max-w-full w-full left-0 top-0"></span>
             </Link>
 
@@ -57,7 +57,7 @@ export default function UsefulLink() {
               className="w-full flex justify-between items-center px-2 text-secondary border-b border-b-secondary border-opacity-30 py-3 relative group"
             >
               <h3 className="text-lg font-semibold">{t("EPU_programs")}</h3>
-              <GoArrowRight className="text-xl" />
+              <GoArrowRight className="text-xl rtl:rotate-180" />
               <span className="absolute max-w-0 duration-200 bg-primary bg-opacity-5 h-full group-hover:max-w-full w-full left-0 top-0"></span>
             </Link>
 
@@ -67,7 +67,7 @@ export default function UsefulLink() {
               className="w-full flex justify-between items-center px-2 text-secondary border-b border-b-secondary border-opacity-30 py-3 relative group"
             >
               <h3 className="text-lg font-semibold">{t("academic_staff")}</h3>
-              <GoArrowRight className="text-xl" />
+              <GoArrowRight className="text-xl rtl:rotate-180" />
               <span className="absolute max-w-0 duration-200 bg-primary bg-opacity-5 h-full group-hover:max-w-full w-full left-0 top-0"></span>
             </Link>
             <a
@@ -78,7 +78,7 @@ export default function UsefulLink() {
               className="w-full flex justify-between items-center px-2 text-secondary border-b border-b-secondary border-opacity-30 py-3 relative group"
             >
               <h3 className="text-lg font-semibold">{t("conferences")}</h3>
-              <GoArrowRight className="text-xl" />
+              <GoArrowRight className="text-xl rtl:rotate-180" />
               <span className="absolute max-w-0 duration-200 bg-primary bg-opacity-5 h-full group-hover:max-w-full w-full left-0 top-0"></span>
             </a>
           </div>

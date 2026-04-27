@@ -184,7 +184,7 @@ const UniversityBoardClient = () => {
                       member.teacher.profile_image?.lg ||
                       "/images/placeholder.svg"
                     }
-                    link={`/${locale}/staff/${member.teacher_id}`}
+                    link={`/${locale}/academic-staff/${member.teacher_id}`}
                     staticText={t("view_profile")}
                     title={member.teacher?.full_name}
                   />
