@@ -1,13 +1,12 @@
 "use client";
 
-import useFetch from "@/libs/hooks/useFetch";
+import CenterHeader from "@/components/CenterHeader";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { BsTelephoneFill } from "react-icons/bs";
 import { IoMdMail } from "react-icons/io";
-
-import CenterHeader from "@/components/CenterHeader";
+import useSWR from "swr";
 // ================= INTERFACES =================
 interface CenterResponse {
   id: number;
@@ -51,9 +50,27 @@ const Page = () => {
   const locale = params?.locale as string;
   const slug = params?.slug as string;
 
-  const { data, loading, error } = useFetch<CenterResponse>(
-    `${process.env.NEXT_PUBLIC_API_URL}/website/centers/${slug}`,
-    locale,
+  const fetcher = ([url, lang]: [string, string]) =>
+    fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        "website-language": lang,
+      },
+    }).then((res) => res.json());
+
+  const {
+    data,
+    isLoading: loading,
+    error,
+  } = useSWR<CenterResponse>(
+    slug
+      ? [`${process.env.NEXT_PUBLIC_API_URL}/website/centers/${slug}`, locale]
+      : null,
+    fetcher,
+    {
+      dedupingInterval: 1000 * 60 * 60, // 1 hour
+      revalidateOnFocus: false,
+    },
   );
 
   const email = data?.contacts.find((c) => c.type === "EMAIL")?.value;

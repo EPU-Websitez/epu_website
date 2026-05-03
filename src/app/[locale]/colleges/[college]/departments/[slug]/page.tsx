@@ -10,7 +10,7 @@ import { LuUsers } from "react-icons/lu";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
 
-import useFetch from "@/libs/hooks/useFetch";
+import useSWR from "swr";
 
 // Interfaces
 interface Image {
@@ -124,13 +124,27 @@ const Page = () => {
   const slug = params?.slug as string;
   const college = params?.college as string;
 
+  const fetcher = ([url, lang]: [string, string]) =>
+    fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        "website-language": lang,
+      },
+    }).then((res) => res.json());
+
   const {
     data: departmentData,
-    loading,
+    isLoading: loading,
     error,
-  } = useFetch<Department>(
-    `${process.env.NEXT_PUBLIC_API_URL}/website/departments/${slug}`,
-    locale
+  } = useSWR<Department>(
+    slug
+      ? [`${process.env.NEXT_PUBLIC_API_URL}/website/departments/${slug}`, locale]
+      : null,
+    fetcher,
+    {
+      dedupingInterval: 1000 * 60 * 60, // 1 hour
+      revalidateOnFocus: false,
+    }
   );
 
   // Generate consistent stats based on department ID
