@@ -37,11 +37,16 @@ const useFetch = <T = any>(
           cache: "no-store",
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
             // 2. Add the language to the request headers
             "website-language": language,
           },
         });
+
+        if (response.status === 429) {
+          const reset = response.headers.get("x-ratelimit-reset") || "60";
+          setError(`Too many requests. Please wait ${reset} seconds and try again.`);
+          return;
+        }
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -93,6 +98,12 @@ const useFetch = <T = any>(
         },
         credentials: "include",
       });
+
+      if (response.status === 429) {
+        const reset = response.headers.get("x-ratelimit-reset") || "60";
+        setError(`Too many requests. Please wait ${reset} seconds and try again.`);
+        return;
+      }
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
