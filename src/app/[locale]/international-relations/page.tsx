@@ -378,7 +378,6 @@ const Page = () => {
               <p className="text-opacity-70 text-secondary text-sm sm:rounded-none rounded-lg sm:border-none border border-lightBorder sm:p-0 p-3">
                 {mainRelation?.about}
               </p>
-
             </div>
           )}
 
@@ -549,6 +548,14 @@ const Page = () => {
               className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
             >
               <span>{t("office_staff")}</span>
+              <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
+            </Link>
+            <Link
+              href={`/${locale}/international-relations/projects?id=${mainRelation?.id}`}
+              title={t("projects")}
+              className="w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-3xl text-secondary opacity-70 border-lightBorder"
+            >
+              <span>{t("projects")}</span>
               <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
             </Link>
             <Link
