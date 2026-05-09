@@ -27,6 +27,7 @@ interface FileDetails {
 interface FileItem {
   id: number;
   file: FileDetails;
+  title?: string;
 }
 
 interface DecisionListItem {
@@ -196,30 +197,62 @@ const DecisionsClient = () => {
                       />
                     </button>
                     <div
-                      className={`flex_start duration-300 flex-col gap-5 w-full overflow-hidden ${
+                      className={`flex_start duration-300 flex-col gap-4 w-full overflow-hidden ${
                         openedAccordion === item.id
-                          ? "max-h-[700px] p-5 pt-0"
+                          ? "max-h-[800px] p-5 pt-0"
                           : "max-h-0"
                       }`}
                     >
-                      <p className="opacity-70">{item.description}</p>
-                      {item.files[0]?.file?.path && (
-                        <a
-                          href={item.files[0].file.path}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="bg-backgroundSecondary rounded-3xl flex items-center gap-4 p-2 max-w-fit"
-                        >
-                          <span className="bg-[#81B1CE] text-white flex_center w-7 h-7 rounded-full flex-shrink-0">
-                            <HiOutlineLink />
-                          </span>
-                          <span className="text-sm truncate">
-                            {getFileName(item.files[0].file.path)}
-                          </span>
-                          <span className="w-5 flex_center h-5 rounded-full border border-golden text-golden text-sm ml-2 flex-shrink-0">
-                            <GrLinkNext className="-rotate-45" />
-                          </span>
-                        </a>
+                      <p className="opacity-70 text-sm sm:text-base leading-relaxed mb-1">
+                        {item.description}
+                      </p>
+                      {item.files && item.files.length > 0 && (
+                        <div className="flex flex-col gap-3 w-full">
+                          {item.files.map((fileItem) => {
+                            if (!fileItem?.file?.path) return null;
+                            const displayName = fileItem.title || getFileName(fileItem.file.path);
+                            return (
+                              <div
+                                key={fileItem.id}
+                                className="flex sm:flex-row flex-col sm:items-center justify-between gap-4 p-4 bg-backgroundSecondary rounded-2xl border border-lightBorder hover:border-golden/40 transition-all duration-200"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <span className="bg-primary/10 text-primary flex_center w-9 h-9 rounded-xl flex-shrink-0 text-base">
+                                    <HiOutlineLink />
+                                  </span>
+                                  <div className="flex flex-col text-start min-w-0">
+                                    <span className="text-sm font-semibold text-secondary truncate max-w-[280px] sm:max-w-[450px]">
+                                      {displayName}
+                                    </span>
+                                    <span className="text-xs text-gray-400 truncate max-w-[280px] sm:max-w-[450px]">
+                                      {getFileName(fileItem.file.path)}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2.5 sm:self-center self-end">
+                                  <a
+                                    href={fileItem.file.path}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="px-4 py-2 bg-white hover:bg-gray-50 border border-lightBorder text-xs font-bold rounded-xl text-secondary flex items-center gap-1.5 transition-colors shadow-sm select-none"
+                                  >
+                                    <span>{t("view") || "View"}</span>
+                                  </a>
+                                  <a
+                                    href={fileItem.file.path}
+                                    download
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="px-4 py-2 bg-primary hover:bg-blue text-xs font-bold rounded-xl text-white flex items-center gap-1.5 transition-all shadow-sm select-none"
+                                  >
+                                    <span>{t("download") || "Download"}</span>
+                                    <GrLinkNext className="text-[10px] text-white rotate-45" />
+                                  </a>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
                       )}
                     </div>
                   </div>

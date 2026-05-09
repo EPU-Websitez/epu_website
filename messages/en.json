@@ -204,7 +204,9 @@
     "head": "Decisions And Instructions",
     "decision": "Decisions",
     "intructions": "Instructions",
-    "no_data_found": "No Data Found"
+    "no_data_found": "No Data Found",
+    "view": "View",
+    "download": "Download"
   },
   "Centers": {
     "head": "Centers",
