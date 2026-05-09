@@ -1,8 +1,11 @@
 # Use the official Node.js runtime as base image
 FROM node:20-alpine AS base
 
-# Install pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# Install pnpm — pinned to a 10.x release.
+# pnpm@latest (11.x) requires Node 22+ (uses the node:sqlite built-in),
+# which silently broke every build on this Node 20 image. Pinning here
+# keeps deploys reproducible and unblocks Node 20.
+RUN corepack enable && corepack prepare pnpm@10.33.4 --activate
 
 # Set working directory
 WORKDIR /app

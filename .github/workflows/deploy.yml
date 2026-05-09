@@ -21,11 +21,17 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           command_timeout: 30m
           script: |
+            # Fail fast — without these the script keeps running after a
+            # broken `docker-compose build`, the workflow exits 0 (last
+            # command is docker ps), and a busted deploy looks green.
+            set -euo pipefail
+
             cd /home/epuser6/Projects/EPU_WEBSITE
 
             echo ">>> Git pull"
             git fetch origin
             git reset --hard origin/main
+            echo "Now at $(git log -1 --oneline)"
 
             echo ">>> Docker rebuild"
             docker-compose down
@@ -33,5 +39,17 @@ jobs:
             docker-compose build --no-cache --pull
             docker-compose up -d --force-recreate
 
+            echo ">>> Verify container is up and healthy"
+            sleep 5
+            STATUS=$(docker ps --filter name=epu_website_web --format "{{.Status}}" | head -1)
+            echo "Container status: ${STATUS:-NOT RUNNING}"
+            if [ -z "$STATUS" ]; then
+              echo "FAIL: epu_website_web is not running"
+              exit 1
+            fi
+            case "$STATUS" in
+              Up*) echo "OK: container running" ;;
+              *)  echo "FAIL: container status not Up"; exit 1 ;;
+            esac
+
             echo ">>> Done"
-            docker ps --filter name=epu_website_web --format "{{.Names}} {{.Status}}"
