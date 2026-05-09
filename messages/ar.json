@@ -538,6 +538,11 @@
   "Journal": {
     "head": "مجلات جامعة أربيل التقنية",
     "select_date": "اختر التاريخ",
+    "year_from": "من سنة",
+    "year_to": "إلى سنة",
+    "filter_by_years": "تصفية حسب السنوات",
+    "apply": "تطبيق",
+    "reset": "إعادة تعيين",
     "search": "بحث",
     "search_journal": "البحث عن مجلة....",
     "attachment": "المرفق",
@@ -546,7 +551,9 @@
     "global_reach": "الوصول العالمي",
     "historical_significance": "الأهمية التاريخية",
     "extensive_collection": "مجموعة واسعة",
-    "leading_journal": "مجلة رائدة"
+    "leading_journal": "مجلة رائدة",
+    "results": "النتائج",
+    "reset_search": "إعادة تعيين البحث"
   },
   "Programs": {
     "head": "برامج البكالوريوس",
@@ -617,6 +624,33 @@
     "error_loading_data": "خطأ في تحميل البيانات",
     "error_description": "لم نتمكن من العثور على أي عناصر لعرضها هنا.",
     "retry": "إعادة المحاولة"
+  },
+  "Contact": {
+    "head": "الاتصال بجامعة أربيل التقنية",
+    "title": "اتصل بنا",
+    "subtitle": "جامعة أربيل التقنية دائماً هنا لمساعدتكم. تواصلوا معنا عبر أي من قنوات الدعم المتوفرة أو تفضلوا بزيارة حرمنا الجامعي في أربيل.",
+    "phone_numbers": "أرقام الهواتف",
+    "working_time": "أوقات العمل",
+    "social_media": "وسائل التواصل الاجتماعي",
+    "address": "العنوان",
+    "address_value": "طريق كركوك، أربيل، إقليم كردستان، العراق",
+    "reception": "الاستقبال الرئيسي",
+    "presidency_office": "مكتب الرئاسة",
+    "academic_affairs": "الشؤون الأكاديمية",
+    "working_days": "الأحد - الخميس",
+    "working_hours": "8:30 صباحاً - 3:00 مساءً",
+    "weekend": "الجمعة - السبت",
+    "closed": "مغلق",
+    "send_message": "إرسال رسالة",
+    "your_name": "اسمك",
+    "your_email": "بريدك الإلكتروني",
+    "subject": "الموضوع",
+    "message": "الرسالة",
+    "submit": "إرسال الرسالة",
+    "success_msg": "تم إرسال رسالتك بنجاح!",
+    "full_name_required": "الاسم الكامل مطلوب",
+    "email_invalid": "يرجى إدخال عنوان بريد إلكتروني صالح",
+    "message_required": "محتوى الرسالة مطلوب"
   },
   "Language": {
     "label": "اللغة",

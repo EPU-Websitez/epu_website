@@ -540,6 +540,11 @@
   "Journal": {
     "head": "EPU Journals",
     "select_date": "Select Date",
+    "year_from": "From Year",
+    "year_to": "To Year",
+    "filter_by_years": "Filter by Years",
+    "apply": "Apply",
+    "reset": "Reset",
     "search": "Search",
     "search_journal": "Search for journal....",
     "attachment": "Attachment",
@@ -548,7 +553,9 @@
     "global_reach": "Global Reach",
     "historical_significance": "Historical Significance",
     "extensive_collection": "Extensive Collection",
-    "leading_journal": "Leading Journal"
+    "leading_journal": "Leading Journal",
+    "results": "Results",
+    "reset_search": "Clear Filters"
   },
   "Programs": {
     "head": "Undergraduate Programs",
@@ -619,6 +626,33 @@
     "error_loading_data": "Error loading data",
     "error_description": "We couldn't find any items to show here.",
     "retry": "Retry"
+  },
+  "Contact": {
+    "head": "Contact EPU",
+    "title": "Contact Us",
+    "subtitle": "Erbil Polytechnic University is always here to assist you. Reach out through any of our support channels or visit our campus in Erbil.",
+    "phone_numbers": "Phone Numbers",
+    "working_time": "Working Hours",
+    "social_media": "Social Media",
+    "address": "Address",
+    "address_value": "Kirkuk Road, Erbil, Kurdistan Region, Iraq",
+    "reception": "Main Reception",
+    "presidency_office": "Presidency Office",
+    "academic_affairs": "Academic Affairs",
+    "working_days": "Sunday - Thursday",
+    "working_hours": "8:30 AM - 3:00 PM",
+    "weekend": "Friday - Saturday",
+    "closed": "Closed",
+    "send_message": "Send a Message",
+    "your_name": "Your Name",
+    "your_email": "Your Email",
+    "subject": "Subject",
+    "message": "Message",
+    "submit": "Send Message",
+    "success_msg": "Your message has been sent successfully!",
+    "full_name_required": "Full name is required",
+    "email_invalid": "Please enter a valid email address",
+    "message_required": "Message content is required"
   },
   "Language": {
     "label": "Language",
