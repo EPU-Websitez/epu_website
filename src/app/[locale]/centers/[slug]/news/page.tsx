@@ -1,6 +1,7 @@
 "use client";
 
 import CenterHeader from "@/components/CenterHeader";
+import CenterTabs from "@/components/CenterTabs";
 import NewsCard from "@/components/newsCard";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -314,25 +315,7 @@ const Page = () => {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="md:w-[720px] w-full mt-4 sm:h-[50px] h-[35px] grid grid-cols-3 justify-center items-center bg-lightBorder text-secondary rounded-3xl">
-          <Link
-            title={t("vision_mission")}
-            href={`/${locale}/centers/${slug}`}
-            className="opacity-70 flex_center sm:text-lg text-sm font-medium h-full"
-          >
-            {t("about")}
-          </Link>
-          <Link
-            title={t("staff")}
-            href={`/${locale}/centers/${slug}/staff`}
-            className="opacity-70 flex_center sm:text-lg text-sm font-medium h-full"
-          >
-            {t("staff")}
-          </Link>
-          <p className="bg-primary text-white rounded-3xl h-full flex_center sm:text-lg text-sm font-medium">
-            {t("news")}
-          </p>
-        </div>
+        <CenterTabs locale={locale} slug={slug} active="news" />
 
         {/* News Section */}
         <div className="flex_start w-full flex-col gap-10">

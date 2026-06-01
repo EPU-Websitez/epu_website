@@ -97,6 +97,20 @@
     "general_background": "پاشخانێکی گشتی",
     "no_data_found": "هیچ داتایەک نەدۆزرایەوە"
   },
+  "EpuLogoDefinition": {
+    "head": "پێناسەی لۆگۆی EPU",
+    "description": "لۆگۆی فەرمی زانکۆی پۆلیتەکنیکی هەولێر ناسنامە و بەهاکانی دامەزراوەکە دەنوێنێت. لە خوارەوە دەتوانیت لۆگۆ فەرمیەکان دابەزێنیت و بەڵگەنامەکانی پێناسەی لۆگۆ بە تەواوی بە ئینگلیزی و کوردی بخوێنیتەوە.",
+    "logos_title": "لۆگۆ فەرمیەکان",
+    "logo_horizontal": "لۆگۆی EPU - ئاسۆیی",
+    "logo_vertical": "لۆگۆی EPU - ستوونی",
+    "documents_title": "بەڵگەنامەکانی پێناسەی لۆگۆ",
+    "doc_english": "پێناسەی لۆگۆی EPU - ئینگلیزی",
+    "doc_kurdish": "پێناسەی لۆگۆی EPU - کوردی",
+    "download": "دابەزاندن",
+    "preview": "پێشبینین",
+    "close": "داخستن",
+    "loading_preview": "بارکردنی پێشبینین..."
+  },
   "Tutorials": {
     "head": "ڕێنماییەکان",
     "search": "گەڕان بەدوای ڕێنماییەکان...",
@@ -216,6 +230,7 @@
     "vision_statement": "ڕاگەیاندنی بینین",
     "mission_statement": "ڕاگەیاندنی ئەرک",
     "contact": "پەیوەندی",
+    "location": "شوێن",
     "email": "ئیمەیڵ",
     "phone_number": "ژمارەی تەلەفۆن",
     "staff": "کارمەندان",
@@ -232,7 +247,12 @@
     "search": "گەڕان",
     "no_news_found": "هیچ داتایەک نەدۆزرایەوە",
     "about": "دەربارە",
-    "description": "پێناسە"
+    "description": "پێناسە",
+    "overview": "پوختە",
+    "modules": "مۆدیولەکان",
+    "activities": "چالاکییەکان",
+    "program_overview": "پوختەی پڕۆگرام",
+    "program_activities": "چالاکییەکانی پڕۆگرام"
   },
   "Students": {
     "head": "ژیانی کەمپەس",
@@ -487,7 +507,12 @@
     "loading": "بارکردن...",
     "more": "زیاتر",
     "less": "کەمتر",
-    "all_years": "هەموو ساڵەکان"
+    "all_years": "هەموو ساڵەکان",
+    "sort_by": "ڕیزکردن بەپێی",
+    "sort_newest": "نوێترین لە سەرەوە",
+    "sort_oldest": "کۆنترین لە سەرەوە",
+    "sort_title_asc": "ناونیشان (A-Z)",
+    "sort_title_desc": "ناونیشان (Z-A)"
   },
   "News": {
     "head": "هەواڵ",

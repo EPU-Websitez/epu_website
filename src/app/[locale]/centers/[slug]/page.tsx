@@ -1,11 +1,13 @@
 "use client";
 
 import CenterHeader from "@/components/CenterHeader";
+import CenterTabs from "@/components/CenterTabs";
+import MapComponent from "@/components/CollegeMapComponent ";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { BsTelephoneFill } from "react-icons/bs";
 import { IoMdMail } from "react-icons/io";
+import { MdLocationOn } from "react-icons/md";
 import useSWR from "swr";
 // ================= INTERFACES =================
 interface CenterResponse {
@@ -41,6 +43,37 @@ interface CenterResponse {
       created_at: string;
       updated_at: string;
     };
+  }[];
+  address?: {
+    id: number;
+    center_id: number;
+    latitude: string;
+    longitude: string;
+    location: string;
+    created_at: string;
+    updated_at: string;
+  } | null;
+  Module?: {
+    id: number;
+    title?: string | null;
+    description?: string | null;
+    priority: number;
+    images: {
+      id: number;
+      image: { id: number; original: string; lg: string; md: string; sm: string };
+    }[];
+    items?: { id: number; value?: string | null; priority: number }[];
+  }[];
+  program_overviews?: {
+    id: number;
+    key?: string | null;
+    value?: string | null;
+    priority: number;
+  }[];
+  program_activities?: {
+    id: number;
+    value?: string | null;
+    priority: number;
   }[];
 }
 
@@ -81,25 +114,7 @@ const Page = () => {
       <div className="max-w-[1024px] px-3 text-secondary flex_center flex-col gap-5 w-full">
         <CenterHeader />
 
-        <div className="md:w-[720px] w-full sm:my-10 my-5 sm:h-[50px] h-[35px] grid grid-cols-3 justify-center items-center bg-lightBorder text-secondary rounded-3xl">
-          <p className="bg-primary text-white rounded-3xl h-full flex_center sm:text-lg text-sm font-medium">
-            {t("about")}
-          </p>
-          <Link
-            href={`/${locale}/centers/${slug}/staff`}
-            title={t("staff")}
-            className="opacity-70 flex_center sm:text-lg text-sm font-medium"
-          >
-            {t("staff")}
-          </Link>
-          <Link
-            href={`/${locale}/centers/${slug}/news`}
-            title={t("news")}
-            className="opacity-70 flex_center sm:text-lg text-sm font-medium"
-          >
-            {t("news")}
-          </Link>
-        </div>
+        <CenterTabs locale={locale} slug={slug} active="about" />
 
         {loading || !data ? (
           <div className="w-full flex_start flex-col gap-10">
@@ -210,6 +225,38 @@ const Page = () => {
                 )}
               </div>
             </div>
+
+            {/* Location */}
+            {data.address &&
+              data.address.latitude &&
+              data.address.longitude && (
+                <div className="sm:mt-10 mt-5 sm:pb-10 pb-5 border-b w-full border-b-lightBorder flex_start flex-col gap-5">
+                  <h2 className="md:text-3xl relative text-lg font-semibold ">
+                    <span className="absolute ltr:left-0 right-0 bottom-1 h-[40%] bg-golden w-full"></span>
+                    <span className="z-10 relative">{t("location")}</span>
+                  </h2>
+                  <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full overflow-hidden">
+                    <div className="flex items-start gap-3 text-secondary">
+                      <MdLocationOn
+                        size={24}
+                        className="text-golden flex-shrink-0 mt-0.5"
+                      />
+                      <span className="text-sm font-medium">
+                        {data.address.location}
+                      </span>
+                    </div>
+                    <div className="w-full h-[300px] rounded-xl overflow-hidden">
+                      <MapComponent
+                        lat={parseFloat(data.address.latitude)}
+                        lng={parseFloat(data.address.longitude)}
+                        title={data.title}
+                        address={data.address.location || ""}
+                        zoom={15}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
           </div>
         )}
       </div>

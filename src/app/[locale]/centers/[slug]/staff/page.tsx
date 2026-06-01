@@ -10,6 +10,7 @@ import { CiMail } from "react-icons/ci";
 import { useEffect, useState } from "react";
 
 import CenterHeader from "@/components/CenterHeader";
+import CenterTabs from "@/components/CenterTabs";
 
 // ========== Types ==========
 interface ImageType {
@@ -158,25 +159,7 @@ const Page = () => {
     <div className="w-full flex justify-center items-start sm:my-10 my-6 min-h-screen">
       <div className="max-w-[1024px] px-3 text-secondary flex_center flex-col gap-5 w-full">
         <CenterHeader />
-        <div className="md:w-[720px] w-full sm:h-[50px] my-10 h-[35px] grid grid-cols-3 justify-center items-center bg-lightBorder text-secondary rounded-3xl">
-          <Link
-            href={`/${locale}/centers/${slug}`}
-            title={t("vision_mission")}
-            className="opacity-70 flex_center sm:text-lg text-sm font-medium"
-          >
-            {t("about")}
-          </Link>
-          <p className="bg-primary text-white rounded-3xl h-full flex_center sm:text-lg text-sm font-medium">
-            {t("staff")}
-          </p>
-          <Link
-            href={`/${locale}/centers/${slug}/news`}
-            title={t("news")}
-            className="opacity-70 flex_center sm:text-lg text-sm font-medium"
-          >
-            {t("news")}
-          </Link>
-        </div>
+        <CenterTabs locale={locale} slug={slug} active="staff" />
 
         <div className="flex_start w-full flex-col gap-10">
           <h2 className="md:text-3xl relative text-lg font-semibold">

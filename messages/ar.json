@@ -97,6 +97,20 @@
     "general_background": "خلفية عامة",
     "no_data_found": "لم يتم العثور على بيانات"
   },
+  "EpuLogoDefinition": {
+    "head": "تعريف شعار جامعة أربيل التقنية",
+    "description": "يمثل الشعار الرسمي لجامعة أربيل التقنية هوية وقيم المؤسسة. يمكنك أدناه تنزيل الشعارات الرسمية وقراءة مستندات تعريف الشعار الكاملة باللغتين الإنجليزية والكردية.",
+    "logos_title": "الشعارات الرسمية",
+    "logo_horizontal": "شعار EPU - أفقي",
+    "logo_vertical": "شعار EPU - عمودي",
+    "documents_title": "مستندات تعريف الشعار",
+    "doc_english": "تعريف شعار EPU - الإنجليزية",
+    "doc_kurdish": "تعريف شعار EPU - الكردية",
+    "download": "تنزيل",
+    "preview": "معاينة",
+    "close": "إغلاق",
+    "loading_preview": "جارٍ تحميل المعاينة..."
+  },
   "Tutorials": {
     "head": "الدروس التعليمية",
     "search": "البحث عن الدروس التعليمية ...",
@@ -216,6 +230,7 @@
     "vision_statement": "بيان الرؤية",
     "mission_statement": "بيان الرسالة",
     "contact": "التواصل",
+    "location": "الموقع",
     "email": "البريد الإلكتروني",
     "phone_number": "رقم الهاتف",
     "staff": "الكادر",
@@ -232,7 +247,12 @@
     "search": "بحث",
     "no_news_found": "لم يتم العثور على بيانات",
     "about": "عن المركز",
-    "description": "الوصف"
+    "description": "الوصف",
+    "overview": "نظرة عامة",
+    "modules": "الوحدات",
+    "activities": "الأنشطة",
+    "program_overview": "نظرة عامة على البرنامج",
+    "program_activities": "أنشطة البرنامج"
   },
   "Students": {
     "head": "الحياة الجامعية",
@@ -487,7 +507,12 @@
     "loading": "جاري التحميل...",
     "more": "المزيد",
     "less": "أقل",
-    "all_years": "جميع السنوات"
+    "all_years": "جميع السنوات",
+    "sort_by": "ترتيب حسب",
+    "sort_newest": "الأحدث أولاً",
+    "sort_oldest": "الأقدم أولاً",
+    "sort_title_asc": "العنوان (أ-ي)",
+    "sort_title_desc": "العنوان (ي-أ)"
   },
   "News": {
     "head": "الأخبار",

@@ -65,6 +65,26 @@ interface GalleryItem {
   image: ImageFile;
 }
 
+interface SectionImage {
+  id: number;
+  image: ImageFile;
+}
+
+interface SectionItem {
+  id: number;
+  value?: string | null;
+  priority: number;
+}
+
+interface DirectorateSection {
+  id: number;
+  title?: string | null;
+  description?: string | null;
+  priority: number;
+  images: SectionImage[];
+  items?: SectionItem[];
+}
+
 interface DirectorateType {
   id: number;
   type_key: string;
@@ -93,6 +113,7 @@ interface DirectorateDetail {
   parent: any | null; // You can define a Parent interface if needed
   children: DirectorateChild[];
   galleries: GalleryItem[];
+  sections?: DirectorateSection[];
   leads_count: number;
   staff_count: number;
   news_count: number;
@@ -385,6 +406,84 @@ const Page = () => {
                           </div>
                         </>
                       )}
+                      {directorateData.sections &&
+                        directorateData.sections
+                          .filter(
+                            (section) =>
+                              (section.title && section.title.trim() !== "") ||
+                              (section.description &&
+                                section.description.trim() !== "") ||
+                              (section.images && section.images.length > 0) ||
+                              (section.items && section.items.length > 0)
+                          )
+                          .map((section) => (
+                            <div
+                              key={section.id}
+                              className="flex_start flex-col gap-5 w-full"
+                            >
+                              {section.title && section.title.trim() !== "" && (
+                                <h2 className="relative sm:text-titleNormal text-lg font-semibold ">
+                                  <span className="absolute ltr:left-0 right-0 bottom-0 h-1/2 bg-golden w-full"></span>
+                                  <span className="z-10 relative">
+                                    {section.title}
+                                  </span>
+                                </h2>
+                              )}
+                              <div className="p-5 flex_start flex-col gap-5 rounded-3xl border border-lightBorder w-full">
+                                {section.description &&
+                                  section.description.trim() !== "" && (
+                                    <p className="text-opacity-70 text-secondary text-sm prose max-w-none whitespace-pre-line">
+                                      {section.description}
+                                    </p>
+                                  )}
+                                {section.items &&
+                                  section.items.length > 0 && (
+                                    <ul className="list-none w-full flex_start flex-col gap-2">
+                                      {section.items
+                                        .filter(
+                                          (it) =>
+                                            it.value &&
+                                            it.value.trim() !== ""
+                                        )
+                                        .map((it) => (
+                                          <li
+                                            key={it.id}
+                                            className="flex items-start gap-3 text-secondary text-sm"
+                                          >
+                                            <span className="mt-2 inline-block h-1.5 w-1.5 rounded-full bg-golden flex-shrink-0" />
+                                            <span className="leading-relaxed">
+                                              {it.value}
+                                            </span>
+                                          </li>
+                                        ))}
+                                    </ul>
+                                  )}
+                                {section.images &&
+                                  section.images.length > 0 && (
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 auto-rows-[180px] sm:auto-rows-[200px] gap-3 w-full">
+                                      {section.images.map((item) => (
+                                        <div
+                                          key={item.id}
+                                          className="group relative overflow-hidden rounded-2xl bg-gray-100 shadow-sm"
+                                        >
+                                          <Image
+                                            src={item.image.lg}
+                                            alt={section.title || ""}
+                                            fill
+                                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                                            className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                                            onError={(e) => {
+                                              e.currentTarget.src =
+                                                "/images/placeholder.svg";
+                                            }}
+                                          />
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+                              </div>
+                            </div>
+                          ))}
                       {directorateData.contacts &&
                         directorateData.contacts.length > 0 && (
                           <>

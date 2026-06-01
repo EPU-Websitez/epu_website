@@ -97,6 +97,20 @@
     "general_background": "General Background",
     "no_data_found": "No Data Found"
   },
+  "EpuLogoDefinition": {
+    "head": "EPU Logo Definition",
+    "description": "Erbil Polytechnic University's official logo represents the identity and values of the institution. Below you can download the official logos and read the full logo definition documents in English and Kurdish.",
+    "logos_title": "Official Logos",
+    "logo_horizontal": "EPU Logo - Horizontal",
+    "logo_vertical": "EPU Logo - Vertical",
+    "documents_title": "Logo Definition Documents",
+    "doc_english": "EPU Logo Definition - English",
+    "doc_kurdish": "EPU Logo Definition - Kurdish",
+    "download": "Download",
+    "preview": "Preview",
+    "close": "Close",
+    "loading_preview": "Loading preview..."
+  },
   "Tutorials": {
     "head": "Tutorials",
     "search": "Search for tutorials ...",
@@ -216,6 +230,7 @@
     "vision_statement": "Vision Statement",
     "mission_statement": "Mission Statement",
     "contact": "Contact",
+    "location": "Location",
     "email": "Email",
     "phone_number": "Phone Number",
     "staff": "Staff",
@@ -232,7 +247,12 @@
     "search": "Search",
     "no_news_found": "No Data Found",
     "about": "About",
-    "description": "Description"
+    "description": "Description",
+    "overview": "Overview",
+    "modules": "Modules",
+    "activities": "Activities",
+    "program_overview": "Program Overview",
+    "program_activities": "Program Activities"
   },
   "Students": {
     "head": "Campus Life",
@@ -489,7 +509,12 @@
     "loading": "Loading...",
     "more": "More",
     "less": "Less",
-    "all_years": "All Years"
+    "all_years": "All Years",
+    "sort_by": "Sort by",
+    "sort_newest": "Newest first",
+    "sort_oldest": "Oldest first",
+    "sort_title_asc": "Title (A-Z)",
+    "sort_title_desc": "Title (Z-A)"
   },
   "News": {
     "head": "News",
