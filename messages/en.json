@@ -252,6 +252,7 @@
     "modules": "Modules",
     "activities": "Activities",
     "program_overview": "Program Overview",
+    "program_overview_and_modules": "Program Overview & Modules",
     "program_activities": "Program Activities"
   },
   "Students": {
@@ -375,6 +376,8 @@
     "loading": "Loading...",
     "no_council_members_found": "No Council Members Found",
     "no_laboratories_found": "No Laboratories Found",
+    "specialized_instruments": "Specialized Instruments",
+    "error_loading_data": "Error Loading Data",
     "no_department_staff_found": "No Department Staff Found",
     "no_department_head_found": "No Department Head Found",
     "no_dean_found": "No Dean Found",

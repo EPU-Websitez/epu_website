@@ -11,7 +11,8 @@ services:
     env_file:
       - .env
     ports:
-      - "5005:3000"
+      # bind to loopback only - nginx proxies to 127.0.0.1:5005. Never expose 0.0.0.0.
+      - "127.0.0.1:5005:3000"
     environment:
       - NODE_ENV=production
     restart: unless-stopped

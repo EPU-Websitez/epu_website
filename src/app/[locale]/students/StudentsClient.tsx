@@ -211,13 +211,67 @@ const StudentsClient = () => {
     );
   }
 
-  const gridLayoutClasses = [
-    "col-span-2 row-span-2",
-    "col-span-1 row-span-1",
-    "col-span-1 row-span-1",
-    "col-span-1 row-span-1",
-    "col-span-1 row-span-1",
-  ];
+  // Adaptive bento layout: pick a grid template + per-item spans based on how
+  // many gallery images exist, so the block is ALWAYS completely filled — no
+  // empty/gray cells when there are fewer images. Gap-free for 1–6 images.
+  const getGalleryLayout = (
+    n: number,
+  ): { grid: string; spans: string[] } => {
+    switch (n) {
+      case 1:
+        return { grid: "grid-cols-1 grid-rows-1", spans: ["col-span-1 row-span-1"] };
+      case 2:
+        return {
+          grid: "grid-cols-2 grid-rows-1",
+          spans: ["col-span-1 row-span-1", "col-span-1 row-span-1"],
+        };
+      case 3:
+        return {
+          grid: "grid-cols-3 grid-rows-2",
+          spans: [
+            "col-span-2 row-span-2",
+            "col-span-1 row-span-1",
+            "col-span-1 row-span-1",
+          ],
+        };
+      case 4:
+        return {
+          grid: "grid-cols-2 grid-rows-2",
+          spans: [
+            "col-span-1 row-span-1",
+            "col-span-1 row-span-1",
+            "col-span-1 row-span-1",
+            "col-span-1 row-span-1",
+          ],
+        };
+      case 5:
+        return {
+          grid: "grid-cols-4 grid-rows-2",
+          spans: [
+            "col-span-2 row-span-2",
+            "col-span-1 row-span-1",
+            "col-span-1 row-span-1",
+            "col-span-1 row-span-1",
+            "col-span-1 row-span-1",
+          ],
+        };
+      default: // 6 or more -> classic 3x3 bento (1 feature + 5 singles)
+        return {
+          grid: "grid-cols-3 grid-rows-3",
+          spans: [
+            "col-span-2 row-span-2",
+            "col-span-1 row-span-1",
+            "col-span-1 row-span-1",
+            "col-span-1 row-span-1",
+            "col-span-1 row-span-1",
+            "col-span-1 row-span-1",
+          ],
+        };
+    }
+  };
+
+  const visibleGalleries = galleries.slice(0, 6);
+  const galleryLayout = getGalleryLayout(visibleGalleries.length);
 
   return (
     <div className="w-full flex_center flex-col sm:my-10 my-5 min-h-screen">
@@ -376,13 +430,11 @@ const StudentsClient = () => {
         ) : (
           galleries.length > 0 && (
             <div className="w-full relative md:h-[550px] h-[500px] sm:my-10 my-5 text-white overflow-hidden">
-              <div className="w-full h-full grid grid-cols-3 grid-rows-3">
-                {galleries.slice(0, 5).map((item, index) => (
+              <div className={`w-full h-full grid ${galleryLayout.grid}`}>
+                {visibleGalleries.map((item, index) => (
                   <div
                     key={item.id}
-                    className={`relative ${
-                      gridLayoutClasses[index % gridLayoutClasses.length]
-                    }`}
+                    className={`relative ${galleryLayout.spans[index]}`}
                   >
                     <Image
                       src={item.image.lg}

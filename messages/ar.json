@@ -252,6 +252,7 @@
     "modules": "الوحدات",
     "activities": "الأنشطة",
     "program_overview": "نظرة عامة على البرنامج",
+    "program_overview_and_modules": "نظرة عامة على البرنامج والوحدات",
     "program_activities": "أنشطة البرنامج"
   },
   "Students": {
@@ -375,6 +376,8 @@
     "loading": "جاري التحميل...",
     "no_council_members_found": "لم يتم العثور على أعضاء مجلس",
     "no_laboratories_found": "لم يتم العثور على مختبرات",
+    "specialized_instruments": "أجهزة متخصصة",
+    "error_loading_data": "خطأ في تحميل البيانات",
     "no_department_staff_found": "لم يتم العثور على كادر القسم",
     "no_department_head_found": "لم يتم العثور على رئيس قسم",
     "no_dean_found": "لم يتم العثور على عميد",

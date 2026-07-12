@@ -236,6 +236,7 @@ const ResearchClient = () => {
   const currentPage = parseInt(searchParams.get("page") || "1", 10);
   const currentSearch = searchParams.get("search") || "";
   const currentYear = searchParams.get("year") || "";
+  const currentSort = searchParams.get("sort") || "newest";
 
   const [searchTerm, setSearchTerm] = useState(currentSearch);
   const [year, setYear] = useState(currentYear);
@@ -254,6 +255,7 @@ const ResearchClient = () => {
       limit: "6",
     });
     if (currentSearch) urlParams.append("search", currentSearch);
+    if (currentSort) urlParams.append("sort", currentSort);
     if (currentYear) {
       const dateParam =
         currentTab === "researches" ? "published_date_from" : "thesis_year";
@@ -264,7 +266,7 @@ const ResearchClient = () => {
     return `${
       process.env.NEXT_PUBLIC_API_URL
     }${endpoint}?${urlParams.toString()}`;
-  }, [currentTab, currentPage, currentSearch, currentYear]);
+  }, [currentTab, currentPage, currentSearch, currentYear, currentSort]);
 
   const { data, loading: isLoadingData, error } = useFetch<ApiResponse>(
     apiUrl,
@@ -302,6 +304,9 @@ const ResearchClient = () => {
 
   const handleSearch = () => updateUrlParams({ search: searchTerm, year });
 
+  const handleSortChange = (value: string) =>
+    updateUrlParams({ sort: value === "newest" ? "" : value });
+
   const handleLoadMore = () => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     current.set("page", (currentPage + 1).toString());
@@ -316,7 +321,7 @@ const ResearchClient = () => {
   const handleTabChange = (tab: string) => {
     setSearchTerm("");
     setYear("");
-    updateUrlParams({ tab, search: "", year: "" });
+    updateUrlParams({ tab, search: "", year: "", sort: "" });
   };
   const handleModal = (item: ResearchPaper | PublicationThesis) => {
     setModalItem(item);
@@ -391,6 +396,22 @@ const ResearchClient = () => {
                     {2025 - i}
                   </option>
                 ))}
+              </select>
+              <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary pointer-events-none">
+                <FaChevronDown />
+              </span>
+            </div>
+            <div className="relative lg:w-[24%] sm:w-[40%] border border-lightBorder bg-backgroundSecondary sm:rounded-xl rounded-md w-[28%] text-sm flex-shrink-0">
+              <select
+                onChange={(e) => handleSortChange(e.target.value)}
+                value={currentSort}
+                className="sm:px-2 px-1 w-full sm:py-3 py-[9px] text-black bg-inherit text-opacity-50 focus:border-primary outline-none ltr:pr-6 rtl:pl-6"
+                aria-label={t("sort_by")}
+              >
+                <option value="newest">{t("sort_newest")}</option>
+                <option value="oldest">{t("sort_oldest")}</option>
+                <option value="title_asc">{t("sort_title_asc")}</option>
+                <option value="title_desc">{t("sort_title_desc")}</option>
               </select>
               <span className="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-secondary pointer-events-none">
                 <FaChevronDown />

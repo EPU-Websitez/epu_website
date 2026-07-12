@@ -252,6 +252,7 @@
     "modules": "مۆدیولەکان",
     "activities": "چالاکییەکان",
     "program_overview": "پوختەی پڕۆگرام",
+    "program_overview_and_modules": "پوختەی پڕۆگرام و مۆدیولەکان",
     "program_activities": "چالاکییەکانی پڕۆگرام"
   },
   "Students": {
@@ -375,6 +376,8 @@
     "loading": "بارکردن...",
     "no_council_members_found": "هیچ ئەندامێکی ئەنجومەن نەدۆزرایەوە",
     "no_laboratories_found": "هیچ تاقیگەیەک نەدۆزرایەوە",
+    "specialized_instruments": "ئامێرە تایبەتمەندەکان",
+    "error_loading_data": "هەڵە لە بارکردنی داتا",
     "no_department_staff_found": "هیچ کارمەندێکی بەش نەدۆزرایەوە",
     "no_department_head_found": "هیچ سەرۆکی بەشێک نەدۆزرایەوە",
     "no_dean_found": "هیچ ڕاگرێک نەدۆزرایەوە",
