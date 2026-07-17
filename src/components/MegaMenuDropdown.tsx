@@ -48,7 +48,10 @@ const NestedItem = ({
   const handleMouseEnter = () => {
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
-      const isRtl = document.documentElement.dir === "rtl";
+      // dir is set on <body> (see navbar.tsx), not <html> — check both so the
+      // flyout opens toward the page interior (left in RTL, right in LTR).
+      const isRtl =
+        (document.documentElement.dir || document.body.dir) === "rtl";
       setPortalPos({
         top: rect.top - 16, // offset up slightly so the flyout title aligns
         left: isRtl ? rect.left : rect.right,
@@ -101,7 +104,7 @@ const NestedItem = ({
             className="fixed z-[9999]"
             style={{
               top: portalPos.top,
-              ...(document.documentElement.dir === "rtl"
+              ...((document.documentElement.dir || document.body.dir) === "rtl"
                 ? { right: window.innerWidth - portalPos.left }
                 : { left: portalPos.left }),
             }}
