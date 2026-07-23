@@ -43,11 +43,15 @@ export async function generateMetadata({
     const pageDescription =
       newsData.excerpt || "An article from Erbil Polytechnic University.";
 
+    // Prefer the resized "lg" variant for social previews: "original" is the raw
+    // upload and can be far larger than the ~8MB limit Facebook/WhatsApp enforce
+    // on og:image (a 9MB original made previews render blank). "lg" is ~0.5MB and
+    // plenty for a 1200x630 card; "original" stays only as a fallback.
     const imageUrl =
-      newsData.cover_image?.original ||
       newsData.cover_image?.lg ||
-      newsData.gallery?.[0]?.image?.original ||
+      newsData.cover_image?.original ||
       newsData.gallery?.[0]?.image?.lg ||
+      newsData.gallery?.[0]?.image?.original ||
       "/images/news.png";
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://epu.edu.iq/";

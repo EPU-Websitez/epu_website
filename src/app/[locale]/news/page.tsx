@@ -30,9 +30,11 @@ export async function generateMetadata({
     );
 
     const newsData: NewsMetadata = await response.json();
+    // Prefer "lg" over the raw "original" upload — originals can exceed the ~8MB
+    // og:image limit Facebook/WhatsApp enforce, which makes previews render blank.
     const imageUrl =
-      newsData?.data?.[0]?.cover_image?.original ||
       newsData?.data?.[0]?.cover_image?.lg ||
+      newsData?.data?.[0]?.cover_image?.original ||
       "/images/news.png";
 
     const pageTitle = "News & Announcements | EPU";

@@ -220,11 +220,14 @@ const NewsDetailClient = () => {
 
   const getNewsImage = (news: NewsDetail | null | undefined) => {
     if (!news) return "/images/news.png";
+    // Prefer the resized "lg" variant: "original" is the raw upload and can be
+    // many megabytes (one news cover was 9MB), which makes the page very heavy.
+    // "lg" is display-quality at a fraction of the size; "original" is a fallback.
     return (
-      news.cover_image?.original ||
       news.cover_image?.lg ||
-      news.gallery?.[0]?.image?.original ||
+      news.cover_image?.original ||
       news.gallery?.[0]?.image?.lg ||
+      news.gallery?.[0]?.image?.original ||
       "/images/news.png"
     );
   };
@@ -334,9 +337,12 @@ const NewsDetailClient = () => {
                         ) : (
                           <Image
                             src={
-                              g.image?.original ||
-                              g.image?.lg ||
+                              // 150px thumbnail — use the smallest adequate variant.
+                              // "original" here meant a full-size (multi-MB) download
+                              // per thumbnail; "md" is ~0.16MB and more than enough.
                               g.image?.md ||
+                              g.image?.lg ||
+                              g.image?.original ||
                               "/images/news.png"
                             }
                             alt="Gallery thumbnail"
@@ -539,7 +545,13 @@ const NewsDetailClient = () => {
               ) : (
                 <Image
                   key={activeGalleryItem.id}
-                  src={activeGalleryItem.image.original}
+                  // Display the "lg" variant — the viewer is a ~300px-tall box, so
+                  // the multi-MB original is wasted bytes. The download button below
+                  // still serves the true original for full quality.
+                  src={
+                    activeGalleryItem.image.lg ||
+                    activeGalleryItem.image.original
+                  }
                   alt="Gallery full view"
                   fill
                   className="object-contain"
