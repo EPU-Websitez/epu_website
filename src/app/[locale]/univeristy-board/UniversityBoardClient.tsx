@@ -55,6 +55,7 @@ const UniversityBoardClient = () => {
   const [members, setMembers] = useState<BoardMember[]>([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const [isStaffLoading, setIsStaffLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const { data: leadsData, loading: leadsLoading } = useFetch<LeadsResponse>(
@@ -67,7 +68,11 @@ const UniversityBoardClient = () => {
   }, []);
 
   const fetchStaff = async (pageNum: number) => {
-    if (pageNum > 1) setIsLoadingMore(true);
+    if (pageNum > 1) {
+      setIsLoadingMore(true);
+    } else {
+      setIsStaffLoading(true);
+    }
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/website/universities/staff?page=${pageNum}&limit=6`,
@@ -82,12 +87,13 @@ const UniversityBoardClient = () => {
         setMembers((prev) =>
           pageNum === 1 ? newData.data : [...prev, ...newData.data],
         );
-        setTotal(newData.total);
+        setTotal(newData.total || 0);
       }
     } catch (error) {
       console.error("Failed to fetch staff members:", error);
     } finally {
       setIsLoadingMore(false);
+      setIsStaffLoading(false);
     }
   };
 
@@ -101,16 +107,16 @@ const UniversityBoardClient = () => {
   const councilMembers = members.filter(
     (member) => member.teacher_id !== president?.teacher_id,
   );
-  const isLoading = leadsLoading || (members.length === 0 && !isLoadingMore);
+  const isLoading = leadsLoading || isStaffLoading;
 
   if (isLoading) {
     return <PageSkeleton />;
   }
 
-  // For pages with NO data (optional but recommended)
+  // For pages with NO data
   if (!president) {
     return (
-      <div className="my-10 flex_center w-full">
+      <div className="my-10 flex_center w-full min-h-[50vh]">
         <div className="max-w-[1024px] w-full flex_center">
           <NoData showButton={false} />
         </div>
@@ -150,9 +156,10 @@ const UniversityBoardClient = () => {
             <Image
               src={
                 president.teacher?.profile_image?.original ||
-                president.teacher?.profile_image?.lg
+                president.teacher?.profile_image?.lg ||
+                "/images/placeholder.svg"
               }
-              alt={president.teacher?.full_name}
+              alt={president.teacher?.full_name || "President"}
               fill
               priority
               className="w-full h-auto object-cover"
@@ -175,22 +182,28 @@ const UniversityBoardClient = () => {
           </h2>
           <div className="w-full h-[1px] bg-primary"></div>
         </div>
-        <div className="grid w-full lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-8">
-          {councilMembers.map((member) => (
-            <MemberCard
-              key={member.teacher_id}
-              description={member.role}
-              image={
-                member.teacher.profile_image?.original ||
-                member.teacher.profile_image?.lg ||
-                "/images/placeholder.svg"
-              }
-              link={`/${locale}/academic-staff/${member.teacher_id}`}
-              staticText={t("view_profile")}
-              title={member.teacher?.full_name}
-            />
-          ))}
-        </div>
+
+        {councilMembers.length > 0 ? (
+          <div className="grid w-full lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-8">
+            {councilMembers.map((member) => (
+              <MemberCard
+                key={member.teacher_id}
+                description={member.role}
+                image={
+                  member.teacher?.profile_image?.original ||
+                  member.teacher?.profile_image?.lg ||
+                  "/images/placeholder.svg"
+                }
+                link={`/${locale}/academic-staff/${member.teacher_id}`}
+                staticText={t("view_profile")}
+                title={member.teacher?.full_name}
+              />
+            ))}
+          </div>
+        ) : (
+          <NoData showButton={false} />
+        )}
+
         {members.length < total && (
           <button
             onClick={handleLoadMore}

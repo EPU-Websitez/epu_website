@@ -16,31 +16,39 @@ import CollegeMapComponent from "@/components/CollegeMapComponent ";
 import { formatDate } from "@/libs/formatDate";
 
 // -------- Interfaces --------
+// -------- Interfaces --------
 interface ImageFile {
   id: number;
-  lg: string;
-  original: string;
+  lg?: string;
+  original?: string;
+  sm?: string;
 }
 interface GalleryItem {
   id: number;
   image: ImageFile;
 }
 interface Location {
-  location_string: string;
-  address: string;
-  latitude: string;
-  longitude: string;
+  location_string?: string;
+  address?: string;
+  latitude?: string;
+  longitude?: string;
 }
 interface Schedule {
-  date_string: string;
-  time_string: string;
-  duration: string;
-  payment_type: string;
+  id?: number;
+  date_string?: string;
+  date?: string;
+  from_date?: string;
+  to_date?: string;
+  time_string?: string;
+  duration?: string;
+  payment_type?: string;
 }
 interface Speaker {
   id: number;
   name: string;
-  role: string;
+  role?: string;
+  bio?: string;
+  profile_image?: ImageFile;
 }
 interface EventCategory {
   id: number;
@@ -65,7 +73,7 @@ interface EventItem {
   title: string;
   created_at: string;
   galleries: GalleryItem[];
-  schedule: { time_string: string };
+  schedule: Schedule;
   categories: EventCategory[];
 }
 interface EventsResponse {
@@ -123,6 +131,18 @@ const EventDetailClient = () => {
     ? parseFloat(eventData.location.longitude)
     : NaN;
   const hasValidCoordinates = !isNaN(lat) && !isNaN(lng);
+
+  const scheduleDateFormatted = (() => {
+    if (!eventData?.schedule) return "N/A";
+    const s = eventData.schedule;
+    if (s.date_string) return s.date_string;
+    if (s.from_date && s.to_date) {
+      return `${formatDate(s.from_date, locale)} - ${formatDate(s.to_date, locale)}`;
+    }
+    const rawDate = s.date || s.from_date || s.to_date;
+    if (rawDate) return formatDate(rawDate, locale);
+    return "N/A";
+  })();
 
   return (
     <div className="my-10 flex_center w-full flex-col gap-10 lg:px-0 px-3 text-secondary">
@@ -218,7 +238,7 @@ const EventDetailClient = () => {
                         <FaCalendarAlt />
                       </span>
                       <p className="text-sm text-black text-opacity-60">
-                        {eventData?.schedule?.date_string || "N/A"}
+                        {scheduleDateFormatted}
                       </p>
                     </div>
                     <div className="flex_center gap-3">
@@ -253,11 +273,16 @@ const EventDetailClient = () => {
                         <div className="sm:w-[120px] w-[80px] mt-5 sm:h-[120px] h-[80px] border-[5px] border-primary rounded-full flex_center">
                           <div className="sm:w-[100px] w-[65px] sm:h-[100px] h-[65px] relative">
                             <Image
-                              src={"/images/placeholder.svg"}
+                              src={
+                                speaker?.profile_image?.original ||
+                                speaker?.profile_image?.lg ||
+                                speaker?.profile_image?.sm ||
+                                "/images/placeholder.svg"
+                              }
                               alt={speaker?.name || "Speaker"}
                               fill
                               priority
-                              className="w-full h-full rounded-full"
+                              className="w-full h-full rounded-full object-cover"
                               onError={(e) => {
                                 e.currentTarget.src = "/images/placeholder.svg";
                               }}
@@ -285,21 +310,31 @@ const EventDetailClient = () => {
                     <span className="w-full h-1 bg-golden"></span>
                   </div>
                   <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full gap-8">
-                    {similarEvents.map((event) => (
-                      <EventCard
-                        key={event?.id}
-                        image={
-                          event?.galleries?.[0]?.image?.original ||
-                          event?.galleries?.[0]?.image?.lg ||
-                          "/images/event.png"
-                        }
-                        link={`/${locale}/events/${event?.slug}`}
-                        type={event?.categories?.[0]?.name || "Event"}
-                        createdAt={formatDate(event?.created_at, locale)}
-                        time={event?.schedule?.time_string || ""}
-                        title={event?.title}
-                      />
-                    ))}
+                    {similarEvents.map((event) => {
+                      const dateRaw =
+                        event?.schedule?.date_string ||
+                        event?.schedule?.date ||
+                        event?.schedule?.from_date;
+                      return (
+                        <EventCard
+                          key={event?.id}
+                          image={
+                            event?.galleries?.[0]?.image?.original ||
+                            event?.galleries?.[0]?.image?.lg ||
+                            "/images/event.png"
+                          }
+                          link={`/${locale}/events/${event?.slug}`}
+                          type={event?.categories?.[0]?.name || "Event"}
+                          createdAt={
+                            dateRaw
+                              ? formatDate(dateRaw, locale)
+                              : formatDate(event?.created_at, locale)
+                          }
+                          time={event?.schedule?.time_string || ""}
+                          title={event?.title}
+                        />
+                      );
+                    })}
                   </div>
                 </>
               )}

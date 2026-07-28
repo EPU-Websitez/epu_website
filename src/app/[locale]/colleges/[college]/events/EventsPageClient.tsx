@@ -37,8 +37,10 @@ interface EventCategoryEvent {
   event_category: EventCategory;
 }
 interface Schedule {
-  time_string: string;
-  date_string: string;
+  time_string?: string;
+  date_string?: string;
+  date?: string;
+  from_date?: string;
 }
 interface Event {
   id: number;
@@ -212,7 +214,11 @@ const EventsPageClient = () => {
                 }
                 createdAt={
                   event.schedule?.date_string ||
-                  formatDate(event.created_at, locale)
+                  (event.schedule?.date
+                    ? formatDate(event.schedule.date, locale)
+                    : event.schedule?.from_date
+                    ? formatDate(event.schedule.from_date, locale)
+                    : formatDate(event.created_at, locale))
                 }
                 time={event.schedule?.time_string || ""}
                 title={event.title}

@@ -173,11 +173,11 @@ const PostgraduateClient = () => {
   const allSections = programInfo?.sections || [];
   const requirements = programInfo?.requirements || [];
 
-  if (error)
+  if (error || (!isLoading && !programInfo))
     return (
-      <div className="my-10 flex_center w-full">
+      <div className="my-10 flex_center w-full min-h-[50vh]">
         <div className="max-w-[1040px] w-full flex_center">
-          <NoData showButton={true} className="my-10" />
+          <NoData showButton={false} className="my-10" />
         </div>
       </div>
     );

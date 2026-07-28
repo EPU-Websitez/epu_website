@@ -136,11 +136,26 @@ const DepartmentCouncilPage = ({
   };
 
   // Find the department head from the leads data
-  const departmentHead = leads.find((lead) =>
-    ["head", "رئيس", "dean", "عميد", "ڕاگر", "سەرۆک"].some((role) =>
-      lead.role.toLowerCase().includes(role)
-    )
-  );
+  const departmentHead =
+    leads.find((lead) =>
+      [
+        "head",
+        "leader",
+        "director",
+        "manager",
+        "president",
+        "boss",
+        "رئيس",
+        "مدير",
+        "عميد",
+        "مسؤول",
+        "ڕاگر",
+        "سەرۆک",
+        "بەڕێوەبەر",
+        "بەرپرس",
+        "سەرپەرشتیار",
+      ].some((role) => lead.role?.toLowerCase().includes(role)),
+    ) || leads[0];
 
   // Helper function to safely get the best available image with fallbacks
   const getProfileImage = (teacher: Teacher | undefined) => {

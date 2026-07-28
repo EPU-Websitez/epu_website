@@ -40,8 +40,10 @@ interface EventItem {
   created_at: string;
   galleries: GalleryItem[];
   schedule: {
-    date_string: string;
-    time_string: string;
+    date_string?: string;
+    date?: string;
+    from_date?: string;
+    time_string?: string;
   };
   event_category_event: {
     event_category: {
@@ -203,7 +205,12 @@ const EventsClient = () => {
                               <FaCalendarAlt />
                             </span>
                             <p className="text-sm">
-                              {slide.schedule?.date_string}
+                              {slide.schedule?.date_string ||
+                                (slide.schedule?.date
+                                  ? formatDate(slide.schedule.date, locale)
+                                  : slide.schedule?.from_date
+                                  ? formatDate(slide.schedule.from_date, locale)
+                                  : "N/A")}
                             </p>
                           </div>
                           <div className="flex_center gap-2 text-white">

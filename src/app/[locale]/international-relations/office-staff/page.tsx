@@ -132,11 +132,26 @@ const Page = () => {
       `/images/placeholder.svg` // Fallback image
     );
   };
-  const internationalRelationHead = leads.find((lead) =>
-    ["head", "رئيس", "dean", "عميد", "ڕاگر", "سەرۆک"].some((role) =>
-      lead.role.toLowerCase().includes(role),
-    ),
-  );
+  const internationalRelationHead =
+    leads.find((lead) =>
+      [
+        "head",
+        "leader",
+        "director",
+        "manager",
+        "president",
+        "boss",
+        "رئيس",
+        "مدير",
+        "عميد",
+        "مسؤول",
+        "ڕاگر",
+        "سەرۆک",
+        "بەڕێوەبەر",
+        "بەرپرس",
+        "سەرپەرشتیار",
+      ].some((role) => lead.role?.toLowerCase().includes(role)),
+    ) || leads[0];
   const isInitialLoading = leadsLoading && staff.length === 0 && page === 1;
   const getProfileImage = (teacher: Teacher | undefined) => {
     if (!teacher?.profile_image) return "/images/placeholder.svg";
