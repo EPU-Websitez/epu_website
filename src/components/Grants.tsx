@@ -29,7 +29,7 @@ interface Grant {
   title: string;
   year: string;
   type: string;
-  achievements: Achievement | string | null;
+  achievements: Achievement[] | string | null;
   files: FileEntry[];
 }
 interface GrantsResponse {
@@ -255,12 +255,14 @@ const Grants = ({ teacherId, locale = "en" }: Props) => {
                   <span className="text-black opacity-60 text-xs">
                     {t("achievements")}
                   </span>
-                  {item.achievements ? (
-                    <p className="text-sm">
-                      {typeof item.achievements === "object"
-                        ? item.achievements.title
-                        : item.achievements}
-                    </p>
+                  {Array.isArray(item.achievements) && item.achievements.length > 0 ? (
+                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                      {item.achievements.map((ach) => (
+                        <li key={ach.id}>{ach.title}</li>
+                      ))}
+                    </ul>
+                  ) : typeof item.achievements === "string" && item.achievements ? (
+                    <p className="text-sm mt-1">{item.achievements}</p>
                   ) : (
                     <p className="text-sm text-gray-400 mt-1">
                       {t("no_achievements")}

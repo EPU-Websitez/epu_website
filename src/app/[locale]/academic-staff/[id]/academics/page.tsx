@@ -286,9 +286,9 @@ const Page = () => {
   const selectedItemForModal =
     modalId && (tab === "supervisingResearch" || tab === "researchIntrest")
       ? (data.find((item: any) => item?.id === modalId) as
-          | SupervisingResearch
-          | Research
-          | undefined)
+        | SupervisingResearch
+        | Research
+        | undefined)
       : undefined;
 
   const handleFileDownload = async (
@@ -390,11 +390,10 @@ const Page = () => {
                   key={key}
                   type="button"
                   onClick={() => setTab(key)}
-                  className={`lg:w-[250px] w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-xl transition-all ${
-                    tab === key
+                  className={`lg:w-[250px] w-full h-[45px] flex items-center justify-between border px-3 bg-background rounded-xl transition-all ${tab === key
                       ? "text-primary border-primary"
                       : "text-secondary opacity-70 border-transparent"
-                  }`}
+                    }`}
                 >
                   <span>{label}</span>
                   <MdKeyboardDoubleArrowRight className="rtl:rotate-180" />
@@ -426,7 +425,7 @@ const Page = () => {
                                 <BsBook />
                               </div>
                               <div>
-                                <h4 className="font-medium text-sm">
+                                <h4 className="font-medium text-sm text-start ">
                                   {item?.name || t("untitled")}
                                 </h4>
                                 <span className="text-black/60 text-xs">
@@ -485,7 +484,7 @@ const Page = () => {
                                   <CiSearch />
                                 </div>
                                 <div>
-                                  <h4 className="font-medium text-sm text-start">
+                                  <h4 className="font-medium text-sm text-start  text-start">
                                     {item?.title || t("untitled")}
                                   </h4>
                                   <span className="text-black/60 text-xs">
@@ -498,7 +497,7 @@ const Page = () => {
                                   <span className="opacity-60">
                                     {t("journal")}
                                   </span>
-                                  <p className="font-medium text-sm">
+                                  <p className="font-medium text-sm text-start ">
                                     {item?.journal_title || "-"}
                                   </p>
                                 </div>
@@ -506,7 +505,7 @@ const Page = () => {
                                   <span className="opacity-60">
                                     {t("impact_factor")}
                                   </span>
-                                  <p className="font-medium text-sm">
+                                  <p className="font-medium text-sm text-start ">
                                     {item?.impact_factor || "-"}
                                   </p>
                                 </div>
@@ -569,7 +568,7 @@ const Page = () => {
                                 <CiSearch className="text-2xl" />
                               </div>
                               <div>
-                                <h4 className="font-medium text-sm">
+                                <h4 className="font-medium text-sm text-start ">
                                   {item?.title || t("untitled")}
                                 </h4>
                                 <span className="text-black/60 text-xs">
@@ -631,22 +630,20 @@ const Page = () => {
                               <CiSearch className="text-2xl" />
                             </div>
                             <div>
-                              <h4 className="font-medium text-sm">
+                              <h4 className="font-medium text-sm text-start ">
                                 {item?.title || t("untitled")}
                               </h4>
-                              {`${formatYearOnly(item?.year_from)}${
-                                item?.year_to
+                              {`${formatYearOnly(item?.year_from)}${item?.year_to
                                   ? ` - ${formatYearOnly(item?.year_to)}`
                                   : ""
-                              }`.trim() && (
-                                <span className="text-black/60 text-xs">
-                                  {`${formatYearOnly(item?.year_from)}${
-                                    item?.year_to
-                                      ? ` - ${formatYearOnly(item?.year_to)}`
-                                      : ""
-                                  }`}
-                                </span>
-                              )}
+                                }`.trim() && (
+                                  <span className="text-black/60 text-xs">
+                                    {`${formatYearOnly(item?.year_from)}${item?.year_to
+                                        ? ` - ${formatYearOnly(item?.year_to)}`
+                                        : ""
+                                      }`}
+                                  </span>
+                                )}
                             </div>
                           </div>
                           <div className="flex w-full p-3 h-16 items-center">
@@ -690,7 +687,7 @@ const Page = () => {
                                 </div>
                               </div>
                               <div>
-                                <h4 className="font-medium text-sm">
+                                <h4 className="font-medium text-sm text-start ">
                                   {item?.title || t("untitled")}
                                 </h4>
                                 <span className="text-black/60 text-xs">
@@ -703,7 +700,7 @@ const Page = () => {
                                 <span className="opacity-60">
                                   {t("number_of_audience")}
                                 </span>
-                                <p className="font-medium text-sm">
+                                <p className="font-medium text-sm text-start ">
                                   + {item?.attendance_number ?? 0}
                                 </p>
                               </div>
@@ -757,7 +754,7 @@ const Page = () => {
                                   <FiUsers />
                                 </div>
                                 <div>
-                                  <h4 className="font-medium text-sm">
+                                  <h4 className="font-medium text-sm text-start ">
                                     {item?.title || t("untitled")}
                                   </h4>
                                   <span className="text-black/60 text-xs">
@@ -770,7 +767,7 @@ const Page = () => {
                                   <span className="opacity-60">
                                     {t("number_of_audience")}
                                   </span>
-                                  <p className="font-medium text-sm">
+                                  <p className="font-medium text-sm text-start ">
                                     + {item?.attendance_number ?? 0}
                                   </p>
                                 </div>
@@ -824,7 +821,7 @@ const Page = () => {
                                 <AiOutlineRise />
                               </div>
                               <div>
-                                <h4 className="font-medium text-sm">
+                                <h4 className="font-medium text-sm text-start ">
                                   {item?.title || t("untitled")}
                                 </h4>
                                 <span className="text-black/60 text-xs">
@@ -835,13 +832,13 @@ const Page = () => {
                             <div className="grid grid-cols-2 w-full gap-y-3 gap-x-2 text-xs">
                               <div className="flex flex-col">
                                 <span className="opacity-60">{t("level")}</span>
-                                <p className="font-medium text-sm">
+                                <p className="font-medium text-sm text-start ">
                                   {item?.level || "-"}
                                 </p>
                               </div>
                               <div className="flex flex-col">
                                 <span className="opacity-60">{t("type")}</span>
-                                <p className="font-medium text-sm">
+                                <p className="font-medium text-sm text-start ">
                                   {item?.type || "-"}
                                 </p>
                               </div>
@@ -894,7 +891,7 @@ const Page = () => {
                                 <CiSearch className="text-2xl" />
                               </div>
                               <div>
-                                <h4 className="font-medium text-sm">
+                                <h4 className="font-medium text-sm text-start ">
                                   {item?.title || t("untitled")}
                                 </h4>
                                 <div className="text-black/60 text-xs flex gap-2 flex-wrap">
