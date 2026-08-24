@@ -9,6 +9,7 @@ import useFetch from "@/libs/hooks/useFetch";
 import { FaPlus, FaFileDownload, FaPlay, FaSearchPlus } from "react-icons/fa";
 import { FaXmark, FaCalendarDays } from "react-icons/fa6";
 import { formatDate } from "@/libs/formatDate";
+import ZoomableImage from "@/components/ZoomableImage";
 
 // --- START: Types ---
 interface Img {
@@ -321,14 +322,16 @@ const Page = () => {
                         ) : (
                           <Image
                             src={
+                              g.image?.lg ||
                               g.image?.original ||
                               g.image?.md ||
-                              g.image?.lg ||
                               "/images/placeholder.svg"
                             }
                             alt="Gallery thumbnail"
                             fill
-                            sizes="150px"
+                            // "150px" made the browser fetch a 150px-wide file for
+                            // a ~350px tile and stretch it. Describe the real grid.
+                            sizes="(min-width: 768px) 350px, 50vw"
                             className="object-contain transition-transform duration-500 group-hover:scale-110"
                             onError={(e) => {
                               e.currentTarget.src = "/images/placeholder.svg";
@@ -400,7 +403,7 @@ const Page = () => {
             </div>
 
             {/* Main Content */}
-            <div className="relative sm:flex-grow flex-grow-0 h-[300px] w-full bg-black/5 rounded-xl flex items-center justify-center overflow-hidden">
+            <div className="relative flex-grow h-[45vh] min-h-[240px] sm:h-auto w-full bg-black/5 rounded-xl flex items-center justify-center overflow-hidden">
               {activeGalleryItem.image.media_type === "VIDEO" ? (
                 <video
                   key={activeGalleryItem.id}
@@ -410,16 +413,16 @@ const Page = () => {
                   autoPlay
                 />
               ) : (
-                <Image
-                  key={activeGalleryItem.id}
-                  src={activeGalleryItem.image.original}
+                <ZoomableImage
+                  // Rest on "lg" where available — this modal was pulling the raw
+                  // original (often multi-MB) just to fill a small box.
+                  src={
+                    activeGalleryItem.image.lg || activeGalleryItem.image.original
+                  }
+                  zoomSrc={activeGalleryItem.image.original}
                   alt="Gallery full view"
-                  fill
-                  className="object-contain"
+                  resetKey={activeGalleryItem.id}
                   sizes="90vw"
-                  onError={(e) => {
-                    e.currentTarget.src = "/images/placeholder.svg";
-                  }}
                 />
               )}
               {/* Optional Download button can remain here */}

@@ -21,6 +21,7 @@ import {
 import { FaXmark } from "react-icons/fa6";
 import Link from "next/link";
 import { formatDate } from "@/libs/formatDate";
+import ZoomableImage from "@/components/ZoomableImage";
 
 // --- START: Types ---
 interface Img {
@@ -337,17 +338,26 @@ const NewsDetailClient = () => {
                         ) : (
                           <Image
                             src={
-                              // 150px thumbnail — use the smallest adequate variant.
-                              // "original" here meant a full-size (multi-MB) download
-                              // per thumbnail; "md" is ~0.16MB and more than enough.
-                              g.image?.md ||
+                              // "lg" (1024x585), NOT "md" (512x293): object-cover
+                              // crops these 1.75:1 images to a square, so only the
+                              // HEIGHT survives — md leaves 293px for a tile that
+                              // needs 339 (1x) to 677 (2x) and looks washed out.
+                              // Not "original" either: images.unoptimized is on in
+                              // next.config, so whatever is named here is what the
+                              // browser downloads, and original is ~736KB each.
                               g.image?.lg ||
                               g.image?.original ||
+                              g.image?.md ||
                               "/images/news.png"
                             }
                             alt="Gallery thumbnail"
                             fill
-                            sizes="150px"
+                            // Inert while images.unoptimized is on, but correct if
+                            // it is ever turned back on: ~1.75x the tile width, to
+                            // cover the square crop. The old "150px" was wrong by
+                            // any measure. No `quality` prop: Next 16 rejects any
+                            // value outside images.qualities with a 400.
+                            sizes="(min-width: 768px) 600px, 88vw"
                             className="object-cover"
                             onError={(e) => {
                               e.currentTarget.src = "/images/placeholder.svg";
@@ -533,7 +543,9 @@ const NewsDetailClient = () => {
             </div>
 
             {/* Main Content */}
-            <div className="relative sm:flex-grow flex-grow-0 h-[300px] w-full bg-black/10 rounded-lg flex items-center justify-center">
+            {/* Taller than the old fixed 300px: a 300px box leaves nowhere to
+                pan once zoomed, which makes the zoom close to useless on a phone. */}
+            <div className="relative flex-grow h-[45vh] min-h-[240px] sm:h-auto w-full bg-black/10 rounded-lg overflow-hidden flex items-center justify-center">
               {activeGalleryItem.image.media_type === "VIDEO" ? (
                 <video
                   key={activeGalleryItem.id}
@@ -543,22 +555,19 @@ const NewsDetailClient = () => {
                   autoPlay
                 />
               ) : (
-                <Image
-                  key={activeGalleryItem.id}
-                  // Display the "lg" variant — the viewer is a ~300px-tall box, so
-                  // the multi-MB original is wasted bytes. The download button below
-                  // still serves the true original for full quality.
+                <ZoomableImage
+                  // Rest on "lg" — the viewer is a small box, so the multi-MB
+                  // original is wasted bytes until someone actually zooms in.
                   src={
                     activeGalleryItem.image.lg ||
                     activeGalleryItem.image.original
                   }
+                  // ...then swap to the true original on zoom, so magnifying
+                  // reveals real detail instead of an upscaled thumbnail.
+                  zoomSrc={activeGalleryItem.image.original}
                   alt="Gallery full view"
-                  fill
-                  className="object-contain"
+                  resetKey={activeGalleryItem.id}
                   sizes="90vw"
-                  onError={(e) => {
-                    e.currentTarget.src = "/images/placeholder.svg";
-                  }}
                 />
               )}
               <button
