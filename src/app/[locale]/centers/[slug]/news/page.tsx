@@ -156,6 +156,18 @@ const DatePicker = ({
   );
 };
 
+// useParams() returns the path segment STILL percent-encoded (a name with spaces
+// comes back as "A%20B"). Handing that to URLSearchParams re-encodes the '%' to
+// "%2520", so the backend matched no record and the list came back empty. Decode
+// once; a slug with no special characters is returned unchanged.
+const decodeParam = (v: string): string => {
+  try {
+    return decodeURIComponent(v);
+  } catch {
+    return v;
+  }
+};
+
 const Page = () => {
   const t = useTranslations("Centers");
   const params = useParams();
@@ -186,7 +198,7 @@ const Page = () => {
     const urlParams = new URLSearchParams({
       page: currentPage.toString(),
       limit: "12",
-      center_slug: slug,
+      center_slug: decodeParam(slug),
     });
     if (currentSearch) urlParams.append("search", currentSearch);
     if (currentDates.from) urlParams.append("date_from", currentDates.from);

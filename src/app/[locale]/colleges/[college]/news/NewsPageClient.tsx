@@ -206,6 +206,18 @@ const CategoriesSkeleton = () => (
 );
 // ---
 
+// useParams() returns the path segment STILL percent-encoded (a name with spaces
+// comes back as "A%20B"). Handing that to URLSearchParams re-encodes the '%' to
+// "%2520", so the backend matched no record and the list came back empty. Decode
+// once; a slug with no special characters is returned unchanged.
+const decodeParam = (v: string): string => {
+  try {
+    return decodeURIComponent(v);
+  } catch {
+    return v;
+  }
+};
+
 const NewsPageClient = () => {
   const t = useTranslations("Colleges");
 
@@ -246,7 +258,7 @@ const NewsPageClient = () => {
     const urlParams = new URLSearchParams({
       page: currentPage.toString(),
       limit: "8",
-      college_slug: college,
+      college_slug: decodeParam(college),
     });
     if (currentSearch) urlParams.append("search", currentSearch);
     if (currentDates.from) urlParams.append("date_from", currentDates.from);

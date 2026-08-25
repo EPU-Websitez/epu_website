@@ -212,8 +212,16 @@ const Page = () => {
 
   const newsApiUrl = useMemo(() => {
     if (!id) return "";
+    // useParams() returns the path segment STILL percent-encoded (e.g.
+    // "Directorate%20of%20Sports%20Activities"). Passing it straight into
+    // URLSearchParams re-encodes the '%', so the backend received the literal
+    // text "...%20..." and matched no directorate — the news list came back
+    // empty. Prefer the numeric directorate id from ?parent_id when present
+    // (no encoding to get wrong at all); otherwise decode the slug once.
+    let slug = id;
+    try { slug = decodeURIComponent(id); } catch { /* malformed → use as-is */ }
     const urlParams = new URLSearchParams({
-      directorate_slug: id,
+      ...(parentId ? { directorate_id: parentId } : { directorate_slug: slug }),
       page: currentPage.toString(),
       limit: "10",
     });
@@ -223,7 +231,7 @@ const Page = () => {
     return `${
       process.env.NEXT_PUBLIC_API_URL
     }/website/news?${urlParams.toString()}`;
-  }, [id, currentPage, currentSearch, currentDates]);
+  }, [id, parentId, currentPage, currentSearch, currentDates]);
 
   const { data: newsData, loading: newsLoading } = useFetch<NewsResponse>(
     newsApiUrl,
