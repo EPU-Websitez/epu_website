@@ -7,7 +7,18 @@ import { FaCompress } from "react-icons/fa";
 
 const MIN_SCALE = 1;
 const MAX_SCALE = 5;
-const DOUBLE_TAP_SCALE = 2.5;
+const TAP_SCALE = 2.5;
+
+/** A press counts as a tap only if it barely moved and was short. */
+const TAP_MOVE_PX = 12;
+const TAP_MS = 350;
+/**
+ * After a tap toggles the zoom, ignore taps for this long. People double-tap
+ * out of habit (every other photo viewer trains them to), and without this the
+ * second tap would immediately undo the first and nothing would appear to
+ * happen — which is exactly how the old double-click-only version felt.
+ */
+const TOGGLE_COOLDOWN_MS = 400;
 
 interface ZoomableImageProps {
   /** shown at rest — a downscaled variant is fine here */
@@ -19,6 +30,14 @@ interface ZoomableImageProps {
    */
   zoomSrc?: string;
   alt: string;
+  /**
+   * A tiny variant that is ALREADY in the browser cache — the gallery strip's
+   * thumbnail. Shown, upscaled and blurred, until `src` finishes downloading,
+   * so switching pictures responds instantly instead of going blank while a
+   * large file is fetched. next.config sets images.unoptimized, so passing the
+   * same URL the thumbnail used is a guaranteed cache hit.
+   */
+  placeholderSrc?: string | null;
   /** reset zoom whenever this changes (e.g. the gallery item id) */
   resetKey?: string | number;
   sizes?: string;
@@ -26,17 +45,23 @@ interface ZoomableImageProps {
 }
 
 /**
- * Pan/zoom viewer: wheel, pinch, double-click/tap, drag, and explicit buttons.
+ * Pan/zoom viewer: wheel, pinch, tap-to-toggle, drag, and explicit buttons.
  *
  * The image sits in a layer transformed as translate(t) scale(s) about its
  * centre. To keep the point under the cursor fixed while scaling from s to s',
  * the offset becomes  t' = c - (s'/s)(c - t)  where c is the cursor measured
  * from the container's centre.
+ *
+ * Gestures are driven entirely by pointer events. `dblclick` is deliberately
+ * NOT used: mobile Safari synthesises it unreliably on an element with
+ * `touch-action: none` that also captures pointers, so double-tap-to-zoom
+ * worked only every few attempts.
  */
 export default function ZoomableImage({
   src,
   zoomSrc,
   alt,
+  placeholderSrc,
   resetKey,
   sizes = "90vw",
   fallbackSrc = "/images/placeholder.svg",
@@ -45,13 +70,33 @@ export default function ZoomableImage({
   const [scale, setScale] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
+  /** any finger/button down — kills the transition so gestures track 1:1 */
+  const [gesturing, setGesturing] = useState(false);
   // Once the hi-res source has been fetched, keep it: flipping back on
-  // zoom-out would re-download the large file on every gesture.
+  // zoom-out would re-download the large file on every gesture. Dropped when
+  // the picture changes — see the reset effect.
   const [hiRes, setHiRes] = useState(false);
+  /** has the resting-size picture painted yet? false = still fetching it */
+  const [baseLoaded, setBaseLoaded] = useState(false);
+  /** has the full-resolution overlay painted yet? */
+  const [hiResLoaded, setHiResLoaded] = useState(false);
 
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pinch = useRef<{ dist: number; scale: number } | null>(null);
   const dragStart = useRef({ x: 0, y: 0, ox: 0, oy: 0 });
+
+  // Gesture handlers run between renders, so they must not read `offset` /
+  // `scale` from a stale closure — a pinch changes both many times per frame.
+  const offsetRef = useRef(offset);
+  offsetRef.current = offset;
+  const scaleRef = useRef(scale);
+  scaleRef.current = scale;
+
+  /** Intrinsic size of the loaded image, for clamping against the real picture. */
+  const naturalRef = useRef<{ w: number; h: number } | null>(null);
+  /** Where the press started, to tell a tap from a drag. */
+  const press = useRef<{ x: number; y: number; t: number; moved: boolean } | null>(null);
+  const lastToggle = useRef(0);
 
   const reset = useCallback(() => {
     setScale(1);
@@ -59,22 +104,57 @@ export default function ZoomableImage({
   }, []);
 
   useEffect(() => {
+    setBaseLoaded(false);
+  }, [src]);
+
+  useEffect(() => {
+    setHiResLoaded(false);
+  }, [zoomSrc]);
+
+  useEffect(() => {
     reset();
+    // Drop back to the light variant for the new picture. Without this, zooming
+    // ONCE left hiRes latched on for the rest of the session, so every later
+    // gallery image was fetched at full original size — several MB apiece —
+    // before it would appear. That was the "changing image takes time".
+    setHiRes(false);
   }, [resetKey, reset]);
 
-  /** Keep the image from being dragged entirely out of view. */
+  /**
+   * Keep the picture's own edges inside the viewport.
+   *
+   * Clamping against the VIEWPORT (the previous behaviour) is wrong whenever
+   * the image is letterboxed by `object-contain`: on a phone, a landscape photo
+   * in a tall box could be dragged far into the empty bands above and below it,
+   * so panning went nowhere useful and the photo could vanish off-screen.
+   */
   const clamp = useCallback((x: number, y: number, s: number) => {
     const el = viewportRef.current;
     if (!el || s <= 1) return { x: 0, y: 0 };
-    const maxX = (el.clientWidth * (s - 1)) / 2;
-    const maxY = (el.clientHeight * (s - 1)) / 2;
+
+    const vw = el.clientWidth;
+    const vh = el.clientHeight;
+    const natural = naturalRef.current;
+
+    // Rendered size at scale 1 under object-contain; fall back to the viewport
+    // until the image has reported its intrinsic size.
+    let iw = vw;
+    let ih = vh;
+    if (natural && natural.w > 0 && natural.h > 0) {
+      const ratio = Math.min(vw / natural.w, vh / natural.h);
+      iw = natural.w * ratio;
+      ih = natural.h * ratio;
+    }
+
+    const maxX = Math.max(0, (iw * s - vw) / 2);
+    const maxY = Math.max(0, (ih * s - vh) / 2);
     return {
       x: Math.min(maxX, Math.max(-maxX, x)),
       y: Math.min(maxY, Math.max(-maxY, y)),
     };
   }, []);
 
-  /** Scale to `next` while holding the point (cx, cy) — viewport coords — still. */
+  /** Scale to `next` while holding the point (cx, cy) — client coords — still. */
   const zoomTo = useCallback(
     (next: number, cx?: number, cy?: number) => {
       const el = viewportRef.current;
@@ -117,52 +197,116 @@ export default function ZoomableImage({
     return () => el.removeEventListener("wheel", onWheel);
   }, [clamp]);
 
+  /** (Re)start a one-finger pan from wherever the image currently sits. */
+  const beginDrag = useCallback((x: number, y: number) => {
+    dragStart.current = {
+      x,
+      y,
+      ox: offsetRef.current.x,
+      oy: offsetRef.current.y,
+    };
+    setDragging(true);
+  }, []);
+
   const onPointerDown = (e: React.PointerEvent) => {
     // The controls sit inside the viewport, so a press on them bubbles here.
     // Starting a drag would call setPointerCapture on the viewport, which
     // retargets the follow-up click away from the button — the buttons then
     // silently stop working the moment you are zoomed in.
     if ((e.target as HTMLElement).closest("[data-zoom-controls]")) return;
+
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (pointers.current.size === 2) {
-      const [a, b] = [...pointers.current.values()];
-      pinch.current = { dist: Math.hypot(a.x - b.x, a.y - b.y), scale };
+    setGesturing(true);
+    // Capture every pointer, not just drags: without it a finger that strays
+    // outside the box mid-pinch stops reporting and the gesture dies.
+    e.currentTarget.setPointerCapture(e.pointerId);
+
+    if (pointers.current.size === 1) {
+      press.current = { x: e.clientX, y: e.clientY, t: Date.now(), moved: false };
+      if (scaleRef.current > 1) beginDrag(e.clientX, e.clientY);
       return;
     }
-    if (scale <= 1) return;
-    e.currentTarget.setPointerCapture(e.pointerId);
-    setDragging(true);
-    dragStart.current = { x: e.clientX, y: e.clientY, ox: offset.x, oy: offset.y };
+
+    // Second finger down: pinch takes over, and a pinch is never a tap.
+    if (press.current) press.current.moved = true;
+    if (pointers.current.size === 2) {
+      const [a, b] = [...pointers.current.values()];
+      pinch.current = { dist: Math.hypot(a.x - b.x, a.y - b.y), scale: scaleRef.current };
+      setDragging(false);
+    }
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
     if (!pointers.current.has(e.pointerId)) return;
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
-    if (pointers.current.size === 2 && pinch.current) {
+    if (press.current && !press.current.moved) {
+      const dx = e.clientX - press.current.x;
+      const dy = e.clientY - press.current.y;
+      if (Math.hypot(dx, dy) > TAP_MOVE_PX) press.current.moved = true;
+    }
+
+    if (pointers.current.size >= 2 && pinch.current) {
       const [a, b] = [...pointers.current.values()];
       const dist = Math.hypot(a.x - b.x, a.y - b.y);
-      zoomTo(
-        (pinch.current.scale * dist) / pinch.current.dist,
-        (a.x + b.x) / 2,
-        (a.y + b.y) / 2,
-      );
+      if (dist > 0) {
+        zoomTo(
+          (pinch.current.scale * dist) / pinch.current.dist,
+          (a.x + b.x) / 2,
+          (a.y + b.y) / 2,
+        );
+      }
       return;
     }
+
     if (!dragging) return;
     setOffset(
       clamp(
         dragStart.current.ox + (e.clientX - dragStart.current.x),
         dragStart.current.oy + (e.clientY - dragStart.current.y),
-        scale,
+        scaleRef.current,
       ),
     );
   };
 
+  /** Tap toggles: zoom in where you tapped, or back out again. */
+  const handleTap = (x: number, y: number) => {
+    const now = Date.now();
+    if (now - lastToggle.current < TOGGLE_COOLDOWN_MS) return;
+    lastToggle.current = now;
+    if (scaleRef.current > 1) reset();
+    else zoomTo(TAP_SCALE, x, y);
+  };
+
   const endPointer = (e: React.PointerEvent) => {
-    pointers.current.delete(e.pointerId);
-    if (pointers.current.size < 2) pinch.current = null;
-    if (pointers.current.size === 0) setDragging(false);
+    const wasTracked = pointers.current.delete(e.pointerId);
+    if (!wasTracked) return;
+
+    const remaining = [...pointers.current.entries()];
+
+    if (remaining.length < 2) pinch.current = null;
+
+    if (remaining.length === 1) {
+      // Lifting one finger of a pinch used to leave the survivor doing nothing
+      // (drag was never armed) or panning from the pre-pinch origin (a violent
+      // jump). Re-baseline so the remaining finger just keeps panning.
+      const [, pt] = remaining[0];
+      if (scaleRef.current > 1) beginDrag(pt.x, pt.y);
+      else setDragging(false);
+      // Whatever happens next is a continuation, not a tap.
+      press.current = null;
+      return;
+    }
+
+    if (remaining.length === 0) {
+      setDragging(false);
+      setGesturing(false);
+      const p = press.current;
+      press.current = null;
+      if (p && !p.moved && Date.now() - p.t < TAP_MS && e.type === "pointerup") {
+        handleTap(e.clientX, e.clientY);
+      }
+    }
   };
 
   const zoomed = scale > 1;
@@ -178,32 +322,80 @@ export default function ZoomableImage({
       onPointerMove={onPointerMove}
       onPointerUp={endPointer}
       onPointerCancel={endPointer}
-      onPointerLeave={endPointer}
-      onDoubleClick={(e) => {
-        if ((e.target as HTMLElement).closest("[data-zoom-controls]")) return;
-        zoomed ? reset() : zoomTo(DOUBLE_TAP_SCALE, e.clientX, e.clientY);
-      }}
     >
       <div
         className="relative h-full w-full"
         style={{
           transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
           transformOrigin: "center",
-          transition: dragging || pinch.current ? "none" : "transform 150ms ease-out",
+          transition: gesturing ? "none" : "transform 150ms ease-out",
         }}
       >
+        {/*
+          Three stacked layers, so nothing ever goes blank:
+            1. the gallery thumbnail, already cached — visible immediately
+            2. the resting-size picture, fading in over it
+            3. the full original, only once someone zooms, fading in over that
+          The old single <Image> meant a picture change showed an empty box for
+          as long as the download took, and a zoom swapped the source outright.
+        */}
+        {placeholderSrc && !baseLoaded && (
+          <Image
+            src={placeholderSrc}
+            alt=""
+            aria-hidden
+            fill
+            sizes={sizes}
+            className="object-contain scale-[1.02] blur-[6px]"
+            draggable={false}
+            unoptimized
+            priority
+          />
+        )}
+
         <Image
-          src={hiRes && zoomSrc ? zoomSrc : src}
+          key={src}
+          src={src}
           alt={alt}
           fill
           sizes={sizes}
-          className="object-contain"
+          className={`object-contain transition-opacity duration-200 ${
+            baseLoaded ? "opacity-100" : "opacity-0"
+          }`}
           draggable={false}
-          unoptimized={hiRes}
+          unoptimized
+          onLoad={(e) => {
+            const img = e.currentTarget;
+            if (img.naturalWidth && img.naturalHeight) {
+              naturalRef.current = { w: img.naturalWidth, h: img.naturalHeight };
+              // The allowed pan range just changed — pull the image back inside it.
+              setOffset((o) => clamp(o.x, o.y, scaleRef.current));
+            }
+            setBaseLoaded(true);
+          }}
           onError={(e) => {
             e.currentTarget.src = fallbackSrc;
+            setBaseLoaded(true);
           }}
         />
+
+        {hiRes && zoomSrc && zoomSrc !== src && (
+          <Image
+            key={zoomSrc}
+            src={zoomSrc}
+            alt=""
+            aria-hidden
+            fill
+            sizes={sizes}
+            className={`object-contain transition-opacity duration-200 ${
+              hiResLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            draggable={false}
+            unoptimized
+            onLoad={() => setHiResLoaded(true)}
+            onError={() => setHiResLoaded(false)}
+          />
+        )}
       </div>
 
       <div

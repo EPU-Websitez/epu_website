@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import NewsCard from "@/components/newsCard";
 import SubHeader from "@/components/subHeader";
 import { useTranslations } from "next-intl";
@@ -234,6 +234,34 @@ const NewsDetailClient = () => {
   };
 
   const allGalleries = mainNews?.gallery ?? [];
+
+  /**
+   * Warm the neighbouring gallery images so stepping through the strip is
+   * instant rather than a fresh download each time. next.config sets
+   * images.unoptimized, so these are byte-for-byte the same URLs <Image>
+   * requests — the browser serves the next picture straight from cache.
+   * Only the immediate neighbours: pre-fetching a whole gallery would burn a
+   * lot of phone data for pictures nobody may look at.
+   */
+  const preloadedRef = useRef<Set<string>>(new Set());
+  const activeGalleryId = activeGalleryItem?.id;
+  useEffect(() => {
+    if (!showGalleryModal || activeGalleryId == null) return;
+    const index = allGalleries.findIndex((g) => g.id === activeGalleryId);
+    if (index < 0) return;
+
+    for (const neighbour of [allGalleries[index - 1], allGalleries[index + 1]]) {
+      if (!neighbour || neighbour.image.media_type !== "IMAGE") continue;
+      const url = neighbour.image.lg || neighbour.image.original;
+      if (!url || preloadedRef.current.has(url)) continue;
+      preloadedRef.current.add(url);
+      const img = new window.Image();
+      img.src = url;
+    }
+    // allGalleries is rebuilt each render; the id is what actually changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showGalleryModal, activeGalleryId]);
+
   const inlineGalleries = allGalleries.slice(0, GALLERY_INLINE_COUNT);
   const remainingGalleryCount = Math.max(
     0,
@@ -562,6 +590,9 @@ const NewsDetailClient = () => {
                     activeGalleryItem.image.lg ||
                     activeGalleryItem.image.original
                   }
+                  // The strip below already downloaded this exact URL, so it
+                  // paints instantly while "lg" is still on the wire.
+                  placeholderSrc={activeGalleryItem.image.sm}
                   // ...then swap to the true original on zoom, so magnifying
                   // reveals real detail instead of an upscaled thumbnail.
                   zoomSrc={activeGalleryItem.image.original}
