@@ -173,12 +173,17 @@ const StudentsClient = () => {
 
   const isLoading =
     campusLoading || sectionsLoading || addressLoading || galleriesLoading;
-  const hasError =
-    campusError || sectionsError || addressError || galleriesError;
+  // Only the main campus record is essential. Sections, address (a map's
+  // lat/long) and galleries are secondary widgets that already render safe
+  // fallbacks when empty — so a failure on any of them (e.g. the address
+  // endpoint intermittently 500s under the 4 concurrent requests this page
+  // fires) must NOT blank the whole page. Previously ANY of the four errors
+  // flipped hasError and showed "We couldn't find any items", hiding a page
+  // whose data had actually loaded.
+  const hasError = campusError;
   const mainCampus = campusData?.data?.[0];
   const sections = sectionsData?.data || [];
   const galleries = galleriesData?.data || [];
-  console.log(mainCampus?.description);
 
   useEffect(() => {
     if (galleries.length > 0) {
