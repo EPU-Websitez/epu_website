@@ -337,63 +337,9 @@ const MapSection = () => {
                           </div>
                         </div>
 
-                        {college.latest_news && (
-                          <div className="flex_start w-full flex-col sm:gap-5 gap-3 mt-5">
-                            <div className="flex justify-between items-center w-full">
-                              <h2 className="sm:text-lg text-base font-medium text-secondary">
-                                {t("latest_news")}
-                              </h2>
-                              <Link
-                                href={`/${locale}/colleges/${college.subdomain}/news`}
-                                title={t("see_all")}
-                                className="border-b border-b-secondary text-secondary sm:text-sm text-xs"
-                              >
-                                {t("see_all")}
-                              </Link>
-                            </div>
-                            <div className="w-full flex_start flex-col gap-4 group relative">
-                              <Link
-                                href={`/${locale}/news/${college.latest_news?.slug}`}
-                                title={college.latest_news?.title}
-                                className="relative w-full h-[190px] rounded-xl overflow-hidden bg-gray-200"
-                              >
-                                <div className="text-secondary bg-white h-6 w-6 flex_center rounded-full z-10 absolute top-2 right-2">
-                                  <IoArrowForwardOutline />
-                                </div>
-                                {college.latest_news?.cover_image && (
-                                  <Image
-                                    src={
-                                      college.latest_news?.cover_image.original
-                                    }
-                                    alt={college.latest_news?.title}
-                                    fill
-                                    className="w-full h-auto object-cover group-hover:scale-105 duration-300"
-                                    onError={(e) => {
-                                      e.currentTarget.src =
-                                        "/images/placeholder.svg";
-                                    }}
-                                  />
-                                )}
-                              </Link>
-                              <div className="flex_center gap-1 text-secondary text-sm">
-                                <p>{college.latest_news?.author}</p>
-                                <span className="opacity-75">-</span>
-                                <span className="opacity-75">
-                                  {new Date(
-                                    college.latest_news?.published_at
-                                  ).toLocaleDateString()}
-                                </span>
-                              </div>
-                              <Link
-                                href={`/news/${college.latest_news?.slug}`}
-                                title={college.latest_news?.title}
-                                className="text-lg font-bold hover:text-primary text-secondary duration-300"
-                              >
-                                {college.latest_news?.title}
-                              </Link>
-                            </div>
-                          </div>
-                        )}
+                        {/* College news intentionally hidden on the home page — the home surfaces
+                            UNIVERSITY news only. Each college’s news stays on its own
+                            /colleges/<subdomain>/news page. */}
                       </div>
                     </SwiperSlide>
                   );
