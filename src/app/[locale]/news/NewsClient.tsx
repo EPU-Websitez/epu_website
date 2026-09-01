@@ -237,7 +237,7 @@ const NewsClient = () => {
     loading: sliderLoading,
     error: sliderError,
   } = useFetch<NewsResponse>(
-    `${process.env.NEXT_PUBLIC_API_URL}/website/news?limit=10&page=1`,
+    `${process.env.NEXT_PUBLIC_API_URL}/website/news?limit=10&page=1&university_only=true`,
     locale,
   );
 
@@ -255,6 +255,9 @@ const NewsClient = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", currentPage.toString());
     params.set("limit", "4");
+    // The public news list shows main-university news only — college and
+    // directorate news are hidden here (they live on their own pages).
+    params.set("university_only", "true");
     return `${
       process.env.NEXT_PUBLIC_API_URL
     }/website/news?${params.toString()}`;
